@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.niji7120.nijistring",
+    "sha256_cert_fingerprints": ["31:36:33:4E:1E:9C:7C:94:BD:72:0B:A7:06:AF:B7:23:EF:AC:07:90:F0:08:53:30:07:73:B2:E7:45:28:79:70"]
+  }
+}]
