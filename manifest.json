@@ -1,6 +1,6 @@
 {
-  "name": "NIJI STING - 테니스·배드민턴 기록",
-  "short_name": "NIJI STING",
+  "name": "NIJI STRING - 테니스·배드민턴 기록",
+  "short_name": "NIJI STRING",
   "description": "테니스·배드민턴 개인 경기 기록, 통계, 선수 관리 앱",
   "start_url": "/niji/index.html",
   "display": "standalone",
