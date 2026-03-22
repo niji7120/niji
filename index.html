@@ -1067,14 +1067,14 @@
     <div id="tv-list">
       <div class="page-header">🏆 한울 대회</div>
       <div class="page-sub">파트너·상대방 순환 복식 대회</div>
-      <div style="padding:0 16px 16px;">
+      <div style="margin-bottom:16px;">
         <button onclick="showTVCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">+ 새 대회 만들기</button>
       </div>
-      <div id="tv-list-items" style="padding:0 16px;"></div>
+      <div id="tv-list-items"></div>
     </div>
 
     <!-- 대회 만들기 -->
-    <div id="tv-create" style="display:none;padding:16px;">
+    <div id="tv-create" style="display:none;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
         <button onclick="showTVList()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer;">← 목록</button>
         <span style="font-size:18px;font-weight:700;">새 대회 만들기</span>
@@ -1091,23 +1091,24 @@
 
       <div class="section-title">참가 선수</div>
       <div id="tv-player-btns" style="margin-bottom:10px;"></div>
-      <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
         <input id="tv-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;">
         <button onclick="tvAddPlayer()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;cursor:pointer;">추가</button>
       </div>
-      <div id="tv-selected" style="margin-bottom:16px;"></div>
+      <div id="tv-selected" style="margin-bottom:80px;"></div>
+
       <div style="position:sticky;bottom:0;background:var(--bg);padding:12px 0 4px;">
         <button onclick="tvCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">대진표 생성</button>
       </div>
     </div>
 
     <!-- 대회 상세 -->
-    <div id="tv-detail" style="display:none;padding:16px;">
+    <div id="tv-detail" style="display:none;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
         <button onclick="showTVList()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer;">← 목록</button>
         <span id="tv-detail-name" style="font-size:18px;font-weight:700;"></span>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <div style="display:flex;gap:8px;margin-bottom:16px;position:sticky;top:0;background:var(--bg);z-index:10;padding:4px 0;">
         <button id="tv-tab-b" onclick="tvTab('bracket')" style="flex:1;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">대진표</button>
         <button id="tv-tab-r" onclick="tvTab('ranking')" style="flex:1;padding:10px;background:var(--surface2);color:var(--text-muted);border:none;border-radius:10px;font-size:14px;cursor:pointer;">순위표</button>
       </div>
