@@ -1,5 +1,5 @@
-// NIJI STING Service Worker
-const CACHE_NAME = 'niji-sting-v1';
+// NIJI STRING Service Worker
+const CACHE_NAME = 'niji-string-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -26,9 +26,13 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
-// 요청 가로채기: 캐시 우선, 없으면 네트워크
+// 요청 가로채기: 네트워크 우선, 없으면 캐시
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    fetch(e.request).then(response => {
+      const clone = response.clone();
+      caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+      return response;
+    }).catch(() => caches.match(e.request))
   );
 });
