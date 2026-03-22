@@ -1056,6 +1056,58 @@
     </div>
   </div>
 
+  <!-- ===== KDK 대회 페이지 ===== -->
+  <div class="page" id="page-tournament">
+    <div id="tournament-list-view">
+      <div class="page-header">🏆 한울 대회</div>
+      <div class="page-sub">파트너·상대방 순환 복식 대회를 관리하세요</div>
+      <div style="padding:0 16px 16px;">
+        <button onclick="showCreateTournament()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">+ 새 대회 만들기</button>
+      </div>
+      <div id="tournament-list" style="padding:0 16px;"></div>
+    </div>
+
+    <!-- 대회 만들기 폼 -->
+    <div id="tournament-create-view" style="display:none;padding:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <button onclick="showTournamentList()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer;">← 목록</button>
+        <span style="font-size:18px;font-weight:700;">새 대회 만들기</span>
+      </div>
+      <div class="section-title">대회 정보</div>
+      <input id="t-name" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
+      <input id="t-date" type="date" style="width:100%;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
+      <select id="t-games" style="width:100%;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:16px;">
+        <option value="4">4게임</option>
+        <option value="6">6게임</option>
+        <option value="8">8게임</option>
+      </select>
+
+      <div class="section-title">참가 선수 선택</div>
+      <div id="t-player-list" style="margin-bottom:16px;"></div>
+      <input id="t-new-player" placeholder="새 선수 이름 직접 입력" style="width:100%;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:8px;">
+      <button onclick="addTournamentPlayer()" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;cursor:pointer;margin-bottom:16px;">+ 선수 추가</button>
+
+      <div id="t-selected-players" style="margin-bottom:16px;"></div>
+
+      <button onclick="createTournament()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">대진표 생성</button>
+    </div>
+
+    <!-- 대회 진행 화면 -->
+    <div id="tournament-detail-view" style="display:none;padding:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <button onclick="showTournamentList()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer;">← 목록</button>
+        <span id="t-detail-name" style="font-size:18px;font-weight:700;"></span>
+      </div>
+      <!-- 탭 -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <button onclick="showTournamentTab('bracket')" id="t-tab-bracket" style="flex:1;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">대진표</button>
+        <button onclick="showTournamentTab('ranking')" id="t-tab-ranking" style="flex:1;padding:10px;background:var(--surface2);color:var(--text-muted);border:none;border-radius:10px;font-size:14px;cursor:pointer;">순위표</button>
+      </div>
+      <div id="t-bracket-view"></div>
+      <div id="t-ranking-view" style="display:none;"></div>
+    </div>
+  </div>
+
   <!-- ===== BOTTOM NAV ===== -->
   <nav class="nav">
     <button class="nav-btn active" onclick="showPage('profile')" id="nav-profile">
@@ -1077,6 +1129,10 @@
     <button class="nav-btn" onclick="showPage('stringing')" id="nav-stringing">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a9.6 9.6 0 0 1 0 18M12 3a9.6 9.6 0 0 0 0 18"/></svg>
       스트링
+    </button>
+    <button class="nav-btn" onclick="showPage('tournament')" id="nav-tournament">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8M12 17v4M7 4h10l-1 7H8L7 4zM5 4H4M20 4h-1"/><path d="M8 11c0 2.2 1.8 4 4 4s4-1.8 4-4"/></svg>
+      대회
     </button>
     <button class="nav-btn" onclick="showPage('share')" id="nav-share">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -1290,6 +1346,7 @@ let state = {
   matches: [],
   players: [],  // { id, name, memo, club }
   clubs: [],    // ['클럽A', '클럽B', ...]
+  tournaments: [], // KDK 대회 목록
   currentResult: null,
   nextMatchId: 1,
   nextPlayerId: 1,
@@ -1332,6 +1389,7 @@ function load() {
     if (!state.stringInterval) state.stringInterval = 3;
     if (!state.stringingHistory) state.stringingHistory = [];
     if (!state.playerSort) state.playerSort = 'name';
+    if (!state.tournaments) state.tournaments = [];
     state._matchPage = 0; // 페이지 항상 초기화
     state.editingMatchId = null; // 항상 초기화 (새로고침 시 수정모드 잔류 방지)
     // restore sport type selector
@@ -1354,6 +1412,386 @@ function showPage(name) {
   if (name === 'players') renderPlayers();
   if (name === 'match') renderMatchList();
   if (name === 'stringing') renderStringing();
+  if (name === 'tournament') renderTournamentList();
+}
+
+// ===== 한울 대회 =====
+let tSelectedPlayers = [];
+let currentTournamentId = null;
+
+function showTournamentList() {
+  document.getElementById('tournament-list-view').style.display = '';
+  document.getElementById('tournament-create-view').style.display = 'none';
+  document.getElementById('tournament-detail-view').style.display = 'none';
+  renderTournamentList();
+}
+
+function showCreateTournament() {
+  document.getElementById('tournament-list-view').style.display = 'none';
+  document.getElementById('tournament-create-view').style.display = '';
+  document.getElementById('tournament-detail-view').style.display = 'none';
+  tSelectedPlayers = [];
+  document.getElementById('t-date').value = new Date().toISOString().slice(0,10);
+  renderTPlayerList();
+  renderTSelectedPlayers();
+}
+
+function renderTournamentList() {
+  const el = document.getElementById('tournament-list');
+  if (!el) return;
+  if (!state.tournaments || state.tournaments.length === 0) {
+    el.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px 0;">대회가 없습니다.<br>새 대회를 만들어보세요!</div>';
+    return;
+  }
+  el.innerHTML = state.tournaments.slice().reverse().map(t => {
+    const done = t.rounds.every(r => r.games.every(g => g.scoreA !== null));
+    return `<div onclick="openTournament(${t.id})" style="background:var(--surface);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:16px;font-weight:700;">${escHtml(t.name)}</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${t.date} · ${t.players.length}명 · ${t.numGames}게임</div>
+        </div>
+        <div style="font-size:12px;padding:4px 10px;border-radius:20px;background:${done?'rgba(74,222,128,.15)':'rgba(124,106,247,.15)'};color:${done?'#4ade80':'var(--accent)'};">
+          ${done ? '완료' : '진행중'}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTPlayerList() {
+  const el = document.getElementById('t-player-list');
+  if (!el) return;
+  const players = state.players || [];
+  if (players.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">등록된 선수가 없습니다. 아래에서 직접 입력하세요.</div>';
+    return;
+  }
+  el.innerHTML = players.map(p => {
+    const sel = tSelectedPlayers.includes(p.name);
+    return `<div onclick="toggleTPlayer('${escHtml(p.name)}')" style="display:inline-block;margin:4px;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:14px;background:${sel?'var(--accent)':'var(--surface2)'};color:${sel?'#fff':'var(--text-muted)'};">${escHtml(p.name)}</div>`;
+  }).join('');
+}
+
+function toggleTPlayer(name) {
+  const idx = tSelectedPlayers.indexOf(name);
+  if (idx >= 0) tSelectedPlayers.splice(idx, 1);
+  else tSelectedPlayers.push(name);
+  renderTPlayerList();
+  renderTSelectedPlayers();
+}
+
+function addTournamentPlayer() {
+  const input = document.getElementById('t-new-player');
+  const name = input.value.trim();
+  if (!name) return;
+  if (!tSelectedPlayers.includes(name)) tSelectedPlayers.push(name);
+  input.value = '';
+  renderTPlayerList();
+  renderTSelectedPlayers();
+}
+
+function renderTSelectedPlayers() {
+  const el = document.getElementById('t-selected-players');
+  if (!el) return;
+  if (tSelectedPlayers.length === 0) {
+    el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">선수를 선택하세요 (최소 4명)</div>';
+    return;
+  }
+  el.innerHTML = `<div style="background:var(--surface);border-radius:10px;padding:12px;">
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">선택된 선수 ${tSelectedPlayers.length}명</div>
+    ${tSelectedPlayers.map((n,i) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:14px;">${i+1}. ${escHtml(n)}</span>
+      <button onclick="removeTPlayer(${i})" style="background:none;border:none;color:#f87171;cursor:pointer;font-size:16px;">×</button>
+    </div>`).join('')}
+  </div>`;
+}
+
+function removeTPlayer(idx) {
+  tSelectedPlayers.splice(idx, 1);
+  renderTPlayerList();
+  renderTSelectedPlayers();
+}
+
+// 한울 방식 대진표 생성
+// 파트너 + 상대방 모두 매 게임 바뀌도록 설계
+function generateHanulBracket(players, numGames) {
+  const n = players.length;
+  const rounds = [];
+
+  // 파트너/상대 중복 횟수 추적
+  const partnerCount = {};
+  const opponentCount = {};
+  const key = (a, b) => [a, b].sort().join('|');
+
+  players.forEach(p1 => {
+    players.forEach(p2 => {
+      if (p1 !== p2) {
+        partnerCount[key(p1,p2)] = 0;
+        opponentCount[key(p1,p2)] = 0;
+      }
+    });
+  });
+
+  // 가능한 모든 4인 조합 생성 (팀A 2명, 팀B 2명)
+  function getAllMatchups(pool) {
+    const matchups = [];
+    for (let i = 0; i < pool.length; i++)
+    for (let j = i+1; j < pool.length; j++)
+    for (let k = 0; k < pool.length; k++) {
+      if (k === i || k === j) continue;
+      for (let l = k+1; l < pool.length; l++) {
+        if (l === i || l === j) continue;
+        matchups.push({ teamA: [pool[i], pool[j]], teamB: [pool[k], pool[l]] });
+      }
+    }
+    return matchups;
+  }
+
+  // 한 라운드에 코트 수 = Math.floor(n/4)
+  const courts = Math.floor(n / 4);
+  const hasBye = n % 4 !== 0;
+
+  for (let g = 0; g < numGames; g++) {
+    const games = [];
+    const usedPlayers = new Set();
+    let byePlayers = [];
+
+    // 쉬는 선수 결정 (인원이 4의 배수 아닐 때)
+    if (hasBye) {
+      const extraCount = n % 4;
+      // 이전 라운드에서 쉰 선수 우선 경기
+      const byeCandidates = [...players].sort((a, b) => {
+        const aByeCount = rounds.filter(r => r.bye && r.bye.includes(a)).length;
+        const bByeCount = rounds.filter(r => r.bye && r.bye.includes(b)).length;
+        return bByeCount - aByeCount; // 많이 쉰 사람이 이번엔 경기
+      });
+      // 가장 많이 쉰 사람들부터 경기에 포함
+      const playingCount = courts * 4;
+      byePlayers = byeCandidates.slice(playingCount);
+      byePlayers.forEach(p => usedPlayers.add(p));
+    }
+
+    const available = players.filter(p => !usedPlayers.has(p));
+
+    // 코트별로 최적 대진 배정 (중복 최소화)
+    for (let c = 0; c < courts && available.length >= 4; c++) {
+      const pool = available.filter(p => !usedPlayers.has(p));
+      if (pool.length < 4) break;
+
+      // 이 코트에 쓸 4명 선택 - 파트너/상대 중복 최소화
+      let bestGroup = null;
+      let bestScore = Infinity;
+
+      // 4명 조합 탐색
+      for (let i = 0; i < pool.length && bestScore > 0; i++)
+      for (let j = i+1; j < pool.length && bestScore > 0; j++)
+      for (let k = j+1; k < pool.length && bestScore > 0; k++)
+      for (let l = k+1; l < pool.length && bestScore > 0; l++) {
+        const group = [pool[i], pool[j], pool[k], pool[l]];
+        // 이 4명 안에서 최적 팀 배정 점수
+        const configs = [
+          { teamA: [group[0],group[1]], teamB: [group[2],group[3]] },
+          { teamA: [group[0],group[2]], teamB: [group[1],group[3]] },
+          { teamA: [group[0],group[3]], teamB: [group[1],group[2]] },
+        ];
+        configs.forEach(cfg => {
+          const pScore = partnerCount[key(cfg.teamA[0],cfg.teamA[1])] +
+                        partnerCount[key(cfg.teamB[0],cfg.teamB[1])];
+          const oScore = opponentCount[key(cfg.teamA[0],cfg.teamB[0])] +
+                        opponentCount[key(cfg.teamA[0],cfg.teamB[1])] +
+                        opponentCount[key(cfg.teamA[1],cfg.teamB[0])] +
+                        opponentCount[key(cfg.teamA[1],cfg.teamB[1])];
+          const total = pScore * 3 + oScore;
+          if (total < bestScore) {
+            bestScore = total;
+            bestGroup = cfg;
+          }
+        });
+      }
+
+      if (!bestGroup) break;
+
+      // 중복 카운트 업데이트
+      partnerCount[key(bestGroup.teamA[0], bestGroup.teamA[1])]++;
+      partnerCount[key(bestGroup.teamB[0], bestGroup.teamB[1])]++;
+      opponentCount[key(bestGroup.teamA[0], bestGroup.teamB[0])]++;
+      opponentCount[key(bestGroup.teamA[0], bestGroup.teamB[1])]++;
+      opponentCount[key(bestGroup.teamA[1], bestGroup.teamB[0])]++;
+      opponentCount[key(bestGroup.teamA[1], bestGroup.teamB[1])]++;
+
+      bestGroup.teamA.forEach(p => usedPlayers.add(p));
+      bestGroup.teamB.forEach(p => usedPlayers.add(p));
+
+      games.push({
+        teamA: bestGroup.teamA,
+        teamB: bestGroup.teamB,
+        scoreA: null,
+        scoreB: null
+      });
+    }
+
+    rounds.push({ gameNum: g+1, games, bye: byePlayers });
+  }
+  return rounds;
+}
+
+function createTournament() {
+  const name = document.getElementById('t-name').value.trim();
+  const date = document.getElementById('t-date').value;
+  const numGames = parseInt(document.getElementById('t-games').value);
+  
+  if (!name) { showToast('대회 이름을 입력하세요'); return; }
+  if (tSelectedPlayers.length < 4) { showToast('최소 4명 이상 선택하세요'); return; }
+  
+  const rounds = generateHanulBracket(tSelectedPlayers, numGames);
+  
+  const t = {
+    id: Date.now(),
+    name, date, numGames,
+    players: [...tSelectedPlayers],
+    rounds
+  };
+  
+  if (!state.tournaments) state.tournaments = [];
+  state.tournaments.push(t);
+  save();
+  showToast('대회가 생성됐어요!');
+  openTournament(t.id);
+}
+
+function openTournament(id) {
+  currentTournamentId = id;
+  const t = state.tournaments.find(x => x.id === id);
+  if (!t) return;
+  
+  document.getElementById('tournament-list-view').style.display = 'none';
+  document.getElementById('tournament-create-view').style.display = 'none';
+  document.getElementById('tournament-detail-view').style.display = '';
+  document.getElementById('t-detail-name').textContent = t.name;
+  
+  showTournamentTab('bracket');
+}
+
+function showTournamentTab(tab) {
+  document.getElementById('t-bracket-view').style.display = tab === 'bracket' ? '' : 'none';
+  document.getElementById('t-ranking-view').style.display = tab === 'ranking' ? '' : 'none';
+  document.getElementById('t-tab-bracket').style.background = tab === 'bracket' ? 'var(--accent)' : 'var(--surface2)';
+  document.getElementById('t-tab-bracket').style.color = tab === 'bracket' ? '#fff' : 'var(--text-muted)';
+  document.getElementById('t-tab-ranking').style.background = tab === 'ranking' ? 'var(--accent)' : 'var(--surface2)';
+  document.getElementById('t-tab-ranking').style.color = tab === 'ranking' ? '#fff' : 'var(--text-muted)';
+  
+  if (tab === 'bracket') renderBracket();
+  if (tab === 'ranking') renderRanking();
+}
+
+function renderBracket() {
+  const t = state.tournaments.find(x => x.id === currentTournamentId);
+  if (!t) return;
+  const el = document.getElementById('t-bracket-view');
+  
+  let html = '';
+  t.rounds.forEach((round, ri) => {
+    html += `<div style="margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:8px;">${round.gameNum}게임</div>`;
+    round.games.forEach((game, gi) => {
+      const scoreA = game.scoreA !== null ? game.scoreA : '';
+      const scoreB = game.scoreB !== null ? game.scoreB : '';
+      const aWin = game.scoreA !== null && game.scoreA > game.scoreB;
+      const bWin = game.scoreB !== null && game.scoreB > game.scoreA;
+      html += `<div style="background:var(--surface);border-radius:12px;padding:12px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="flex:1;text-align:center;">
+            <div style="font-size:13px;font-weight:${aWin?'700':'400'};color:${aWin?'#4ade80':'#fff'};">${escHtml(game.teamA[0])}</div>
+            <div style="font-size:13px;font-weight:${aWin?'700':'400'};color:${aWin?'#4ade80':'#fff'};">${escHtml(game.teamA[1])}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <input type="number" min="0" value="${scoreA}" onchange="updateScore(${t.id},${ri},${gi},'A',this.value)" 
+              style="width:44px;padding:8px 4px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:16px;font-weight:700;">
+            <span style="color:var(--text-muted);font-weight:700;">:</span>
+            <input type="number" min="0" value="${scoreB}" onchange="updateScore(${t.id},${ri},${gi},'B',this.value)"
+              style="width:44px;padding:8px 4px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:16px;font-weight:700;">
+          </div>
+          <div style="flex:1;text-align:center;">
+            <div style="font-size:13px;font-weight:${bWin?'700':'400'};color:${bWin?'#4ade80':'#fff'};">${escHtml(game.teamB[0])}</div>
+            <div style="font-size:13px;font-weight:${bWin?'700':'400'};color:${bWin?'#4ade80':'#fff'};">${escHtml(game.teamB[1])}</div>
+          </div>
+        </div>
+        ${round.bye && round.bye.length > 0 ? `<div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;padding:8px;background:var(--surface2);border-radius:8px;">⏸ 이번 게임 쉬는 선수: ${round.bye.map(b => escHtml(b)).join(', ')}</div>` : ''}
+      </div>`;
+    });
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function updateScore(tid, ri, gi, team, val) {
+  const t = state.tournaments.find(x => x.id === tid);
+  if (!t) return;
+  const score = parseInt(val);
+  if (isNaN(score) || score < 0) return;
+  if (team === 'A') t.rounds[ri].games[gi].scoreA = score;
+  else t.rounds[ri].games[gi].scoreB = score;
+  save();
+}
+
+function renderRanking() {
+  const t = state.tournaments.find(x => x.id === currentTournamentId);
+  if (!t) return;
+  const el = document.getElementById('t-ranking-view');
+  
+  // 선수별 통계 계산
+  const stats = {};
+  t.players.forEach(p => { stats[p] = { win: 0, lose: 0, draw: 0, score: 0, against: 0 }; });
+  
+  t.rounds.forEach(round => {
+    round.games.forEach(game => {
+      if (game.scoreA === null || game.scoreB === null) return;
+      const sA = game.scoreA, sB = game.scoreB;
+      
+      game.teamA.forEach(p => {
+        if (!stats[p]) stats[p] = { win:0, lose:0, draw:0, score:0, against:0 };
+        stats[p].score += sA;
+        stats[p].against += sB;
+        if (sA > sB) stats[p].win++;
+        else if (sA < sB) stats[p].lose++;
+        else stats[p].draw++;
+      });
+      game.teamB.forEach(p => {
+        if (!stats[p]) stats[p] = { win:0, lose:0, draw:0, score:0, against:0 };
+        stats[p].score += sB;
+        stats[p].against += sA;
+        if (sB > sA) stats[p].win++;
+        else if (sB < sA) stats[p].lose++;
+        else stats[p].draw++;
+      });
+    });
+  });
+  
+  const ranking = Object.entries(stats)
+    .map(([name, s]) => ({ name, ...s, point: s.win * 2 + s.draw, diff: s.score - s.against }))
+    .sort((a, b) => b.point - a.point || b.diff - a.diff || b.score - a.score);
+  
+  const medals = ['🥇', '🥈', '🥉'];
+  let html = `<div style="background:var(--surface);border-radius:12px;overflow:hidden;">
+    <div style="display:grid;grid-template-columns:40px 1fr 40px 40px 40px 50px;padding:10px 12px;background:var(--surface2);font-size:12px;color:var(--text-muted);font-weight:700;">
+      <span>순위</span><span>이름</span><span style="text-align:center;">승</span><span style="text-align:center;">패</span><span style="text-align:center;">득점</span><span style="text-align:center;">승점</span>
+    </div>`;
+  
+  ranking.forEach((p, i) => {
+    const medal = medals[i] || '';
+    html += `<div style="display:grid;grid-template-columns:40px 1fr 40px 40px 40px 50px;padding:12px;border-top:1px solid var(--border);align-items:center;">
+      <span style="font-size:16px;">${medal || (i+1)}</span>
+      <span style="font-size:14px;font-weight:${i<3?'700':'400'};">${escHtml(p.name)}</span>
+      <span style="text-align:center;color:#4ade80;font-size:14px;">${p.win}</span>
+      <span style="text-align:center;color:#f87171;font-size:14px;">${p.lose}</span>
+      <span style="text-align:center;font-size:14px;">${p.score}</span>
+      <span style="text-align:center;font-weight:700;color:var(--accent);font-size:14px;">${p.point}점</span>
+    </div>`;
+  });
+  
+  html += '</div>';
+  el.innerHTML = html;
 }
 
 // ===== TOAST =====
@@ -1431,7 +1869,6 @@ function renderProfile() {
 
   // 필드 그룹: [age,hand], [career,style], [racket], [string,tension]
   const groups = [
-    ['name','club'],
     ['age','hand'],
     ['career','style'],
     ['racket'],
