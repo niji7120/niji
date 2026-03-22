@@ -1098,28 +1098,34 @@
 <!-- ===== MANUAL MODAL ===== -->
 <!-- 대회 만들기 모달 -->
 <div class="modal-overlay" id="tvCreateModal">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title">새 대회 만들기</span>
-      <button class="modal-close" onclick="closeModal('tvCreateModal')">✕</button>
+  <div class="modal" style="display:flex;flex-direction:column;max-height:92vh;padding:0;">
+    <div style="padding:20px 20px 0;flex-shrink:0;">
+      <div class="modal-header">
+        <span class="modal-title">새 대회 만들기</span>
+        <button class="modal-close" onclick="closeModal('tvCreateModal')">✕</button>
+      </div>
     </div>
-    <div class="section-title">대회 정보</div>
-    <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
-    <input id="tv-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
-    <select id="tv-tgames" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:16px;">
-      <option value="3">3게임</option>
-      <option value="4" selected>4게임</option>
-      <option value="5">5게임</option>
-      <option value="6">6게임</option>
-    </select>
-    <div class="section-title">참가 선수</div>
-    <div id="tv-player-btns" style="margin-bottom:10px;"></div>
-    <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <input id="tv-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;">
-      <button onclick="tvAddPlayer()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;cursor:pointer;">추가</button>
+    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;">
+      <div class="section-title">대회 정보</div>
+      <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
+      <input id="tv-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
+      <select id="tv-tgames" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:16px;">
+        <option value="3">3게임</option>
+        <option value="4" selected>4게임</option>
+        <option value="5">5게임</option>
+        <option value="6">6게임</option>
+      </select>
+      <div class="section-title">참가 선수</div>
+      <div id="tv-player-btns" style="margin-bottom:10px;"></div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <input id="tv-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;">
+        <button onclick="tvAddPlayer()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;cursor:pointer;">추가</button>
+      </div>
+      <div id="tv-selected" style="margin-bottom:16px;"></div>
     </div>
-    <div id="tv-selected" style="margin-bottom:16px;"></div>
-    <button onclick="tvCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">대진표 생성</button>
+    <div style="padding:12px 20px max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;">
+      <button onclick="tvCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">대진표 생성</button>
+    </div>
   </div>
 </div>
 
