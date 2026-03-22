@@ -1062,18 +1062,12 @@
 
   <!-- ===== 한울 대회 페이지 ===== -->
   <div class="page" id="page-tournament">
-
-    <!-- 목록 화면 -->
     <div id="tv-list">
       <div class="page-header">🏆 한울 대회</div>
       <div class="page-sub">파트너·상대방 순환 복식 대회</div>
-      <div style="margin-bottom:16px;">
-        <button onclick="showTVCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">+ 새 대회 만들기</button>
-      </div>
+      <button onclick="showTVCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:16px;">+ 새 대회 만들기</button>
       <div id="tv-list-items"></div>
     </div>
-
-    <!-- 대회 만들기 -->
     <div id="tv-create" style="display:none;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
         <button onclick="showTVList()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer;">← 목록</button>
@@ -1088,7 +1082,6 @@
         <option value="5">5게임</option>
         <option value="6">6게임</option>
       </select>
-
       <div class="section-title">참가 선수</div>
       <div id="tv-player-btns" style="margin-bottom:10px;"></div>
       <div style="display:flex;gap:8px;margin-bottom:10px;">
@@ -1098,14 +1091,12 @@
       <div id="tv-selected" style="margin-bottom:16px;"></div>
       <button onclick="tvCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:20px;">대진표 생성</button>
     </div>
-
-    <!-- 대회 상세 -->
     <div id="tv-detail" style="display:none;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
         <button onclick="showTVList()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer;">← 목록</button>
         <span id="tv-detail-name" style="font-size:18px;font-weight:700;"></span>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:16px;position:sticky;top:0;background:var(--bg);z-index:10;padding:4px 0;">
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
         <button id="tv-tab-b" onclick="tvTab('bracket')" style="flex:1;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">대진표</button>
         <button id="tv-tab-r" onclick="tvTab('ranking')" style="flex:1;padding:10px;background:var(--surface2);color:var(--text-muted);border:none;border-radius:10px;font-size:14px;cursor:pointer;">순위표</button>
       </div>
@@ -1410,6 +1401,9 @@ function showPage(name) {
   const navEl = document.getElementById('nav-' + name);
   if (navEl) navEl.classList.add('active');
   else if (name === 'player-detail') document.getElementById('nav-players').classList.add('active');
+  // 스크롤 맨 위로 초기화
+  const content = document.querySelector('.content');
+  if (content) content.scrollTop = 0;
   if (name === 'stats') renderStats();
   if (name === 'players') renderPlayers();
   if (name === 'match') renderMatchList();
@@ -1425,6 +1419,7 @@ function showTVList() {
   document.getElementById('tv-list').style.display = '';
   document.getElementById('tv-create').style.display = 'none';
   document.getElementById('tv-detail').style.display = 'none';
+  document.querySelector('.content').scrollTop = 0;
   renderTournamentList();
 }
 
@@ -1432,6 +1427,7 @@ function showTVCreate() {
   document.getElementById('tv-list').style.display = 'none';
   document.getElementById('tv-create').style.display = '';
   document.getElementById('tv-detail').style.display = 'none';
+  document.querySelector('.content').scrollTop = 0;
   tvSelected = [];
   document.getElementById('tv-tdate').value = new Date().toISOString().slice(0,10);
   tvRenderPlayerBtns();
@@ -1631,6 +1627,7 @@ function tvOpen(id) {
   document.getElementById('tv-list').style.display = 'none';
   document.getElementById('tv-create').style.display = 'none';
   document.getElementById('tv-detail').style.display = '';
+  document.querySelector('.content').scrollTop = 0;
   document.getElementById('tv-detail-name').textContent = t.name;
   tvTab('bracket');
 }
