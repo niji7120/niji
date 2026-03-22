@@ -1074,7 +1074,7 @@
     </div>
 
     <!-- 대회 만들기 -->
-    <div id="tv-create" style="display:none;padding:16px;">
+    <div id="tv-create" style="display:none;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
         <button onclick="showTVList()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer;">← 목록</button>
         <span style="font-size:18px;font-weight:700;">새 대회 만들기</span>
@@ -1100,7 +1100,7 @@
     </div>
 
     <!-- 대회 상세 -->
-    <div id="tv-detail" style="display:none;padding:16px;">
+    <div id="tv-detail" style="display:none;padding:16px;overflow-y:auto;height:100%;box-sizing:border-box;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
         <button onclick="showTVList()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer;">← 목록</button>
         <span id="tv-detail-name" style="font-size:18px;font-weight:700;"></span>
@@ -1131,10 +1131,6 @@
     <button class="nav-btn" onclick="showPage('players')" id="nav-players">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       선수
-    </button>
-    <button class="nav-btn" onclick="showPage('stringing')" id="nav-stringing">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a9.6 9.6 0 0 1 0 18M12 3a9.6 9.6 0 0 0 0 18"/></svg>
-      스트링
     </button>
     <button class="nav-btn" onclick="showPage('tournament')" id="nav-tournament">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8M12 17v4M7 4h10l-1 7H8L7 4z"/><path d="M5 4H4M20 4h-1"/></svg>
@@ -1453,15 +1449,19 @@ function renderTournamentList() {
   el.innerHTML = list.slice().reverse().map(t => {
     const total = t.rounds.reduce((s,r) => s + r.games.length, 0);
     const done = t.rounds.reduce((s,r) => s + r.games.filter(g=>g.scoreA!==null).length, 0);
-    return `<div onclick="tvOpen(${t.id})" style="background:var(--surface);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div>
+    return `<div style="background:var(--surface);border-radius:12px;padding:16px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;" onclick="tvOpen(${t.id})">
+        <div style="flex:1;">
           <div style="font-size:16px;font-weight:700;">${escHtml(t.name)}</div>
           <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${t.date} · ${t.players.length}명 · ${t.numGames}게임</div>
         </div>
         <div style="font-size:12px;padding:4px 10px;border-radius:20px;background:${done===total?'rgba(74,222,128,.15)':'rgba(124,106,247,.15)'};color:${done===total?'#4ade80':'var(--accent)'};">
           ${done===total?'완료':'진행중'}
         </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button onclick="tvEdit(${t.id})" style="flex:1;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:13px;cursor:pointer;">✏️ 수정</button>
+        <button onclick="tvDelete(${t.id})" style="flex:1;padding:8px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size:13px;cursor:pointer;">🗑️ 삭제</button>
       </div>
     </div>`;
   }).join('');
@@ -1583,6 +1583,25 @@ function genHanul(players, numGames) {
     rounds.push({ gameNum: g+1, games, bye });
   }
   return rounds;
+}
+
+function tvDelete(id) {
+  if (!confirm('대회를 삭제하시겠어요?')) return;
+  state.tournaments = state.tournaments.filter(t => t.id !== id);
+  save();
+  showToast('대회가 삭제됐어요!');
+  renderTournamentList();
+}
+
+function tvEdit(id) {
+  const t = state.tournaments.find(x => x.id === id);
+  if (!t) return;
+  const newName = prompt('대회 이름을 입력하세요', t.name);
+  if (!newName || !newName.trim()) return;
+  t.name = newName.trim();
+  save();
+  showToast('수정됐어요!');
+  renderTournamentList();
 }
 
 function tvCreate() {
@@ -1764,6 +1783,7 @@ const PROFILE_FIELDS = [
   { key:'racket',  lbl:'RACQUET', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><ellipse cx="11" cy="9" rx="6" ry="8" transform="rotate(-45 11 9)"/><line x1="16" y1="16" x2="21" y2="21"/><line x1="8" y1="11" x2="11" y2="8"/></svg>', type:'text',   ph:'예) 윌슨 블레이드 98',  full:true,  section:'장비 정보' },
   { key:'string',  lbl:'STRING',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>',                                                                  type:'text',   ph:'예) 럭실론 4G 1.25',   full:false },
   { key:'tension', lbl:'TENSION', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',                                                         type:'text',   ph:'예) 50/52 파운드',     full:false },
+  { key:'stringDate', lbl:'교체일', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg>', type:'date', ph:'', full:true },
 ];
 
 function renderProfile() {
@@ -1801,6 +1821,7 @@ function renderProfile() {
     ['career','style'],
     ['racket'],
     ['string','tension'],
+    ['stringDate'],
   ];
   const fieldMap = {};
   PROFILE_FIELDS.forEach(f => fieldMap[f.key] = f);
@@ -1817,6 +1838,9 @@ function renderProfile() {
              <option value="">미설정</option>
              ${f.opts.map(o=>`<option${val===o?' selected':''}>${o}</option>`).join('')}
            </select>`
+        : f.type === 'date'
+        ? `<input type="date" class="pf-item-input" value="${escHtml(val)}"
+             onchange="saveProfileField('${f.key}',this.value)">`
         : `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${f.ph||''}"
              onblur="saveProfileField('${f.key}',this.value)"
              onkeydown="if(event.key==='Enter')this.blur()">`;
