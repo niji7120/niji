@@ -1096,6 +1096,48 @@
 </div>
 
 <!-- ===== MANUAL MODAL ===== -->
+<!-- 대회 만들기 모달 -->
+<div class="modal-overlay" id="tvCreateModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">새 대회 만들기</span>
+      <button class="modal-close" onclick="closeModal('tvCreateModal')">✕</button>
+    </div>
+    <div class="section-title">대회 정보</div>
+    <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
+    <input id="tv-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
+    <select id="tv-tgames" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:16px;">
+      <option value="3">3게임</option>
+      <option value="4" selected>4게임</option>
+      <option value="5">5게임</option>
+      <option value="6">6게임</option>
+    </select>
+    <div class="section-title">참가 선수</div>
+    <div id="tv-player-btns" style="margin-bottom:10px;"></div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <input id="tv-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;">
+      <button onclick="tvAddPlayer()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;cursor:pointer;">추가</button>
+    </div>
+    <div id="tv-selected" style="margin-bottom:16px;"></div>
+    <button onclick="tvCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">대진표 생성</button>
+  </div>
+</div>
+
+<!-- 대회 상세 모달 -->
+<div class="modal-overlay" id="tvDetailModal">
+  <div class="modal" style="max-height:92vh;">
+    <div class="modal-header">
+      <span id="tv-modal-name" class="modal-title"></span>
+      <button class="modal-close" onclick="closeModal('tvDetailModal')">✕</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <button id="tv-tab-b" onclick="tvTabSwitch('bracket')" style="flex:1;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">대진표</button>
+      <button id="tv-tab-r" onclick="tvTabSwitch('ranking')" style="flex:1;padding:10px;background:var(--surface2);color:var(--text-muted);border:none;border-radius:10px;font-size:14px;cursor:pointer;">순위표</button>
+    </div>
+    <div id="tv-modal-content"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="manualModal">
   <div class="modal">
     <div class="modal-header">
@@ -1377,9 +1419,9 @@ let tvSelected = [];
 let tvCurrentId = null;
 let tvCurrentTab = 'bracket';
 
-function tvRoot() { return document.getElementById('tv-root'); }
-
 function renderTournamentList() {
+  const el = document.getElementById('tv-root');
+  if (!el) return;
   const list = state.tournaments || [];
   let html = `
     <div class="page-header">🏆 한울 대회</div>
@@ -1393,7 +1435,7 @@ function renderTournamentList() {
       const total = t.rounds.reduce((s,r) => s + r.games.length, 0);
       const done = t.rounds.reduce((s,r) => s + r.games.filter(g=>g.scoreA!==null).length, 0);
       return `<div style="background:var(--surface);border-radius:12px;padding:16px;margin-bottom:12px;">
-        <div onclick="tvOpen(${t.id})" style="cursor:pointer;">
+        <div onclick="tvOpen(${t.id})" style="cursor:pointer;margin-bottom:10px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <div>
               <div style="font-size:16px;font-weight:700;">${escHtml(t.name)}</div>
@@ -1404,48 +1446,30 @@ function renderTournamentList() {
             </div>
           </div>
         </div>
-        <div style="display:flex;gap:8px;margin-top:12px;">
+        <div style="display:flex;gap:8px;">
           <button onclick="tvEdit(${t.id})" style="flex:1;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:13px;cursor:pointer;">✏️ 수정</button>
           <button onclick="tvDelete(${t.id})" style="flex:1;padding:8px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size:13px;cursor:pointer;">🗑️ 삭제</button>
         </div>
       </div>`;
     }).join('');
   }
-  tvRoot().innerHTML = html;
+  el.innerHTML = html;
 }
 
 function showTVCreate() {
   tvSelected = [];
-  const today = new Date().toISOString().slice(0,10);
-  const playerBtns = (state.players||[]).map(p => {
-    const sel = tvSelected.includes(p.name);
-    return `<span onclick="tvToggle('${p.name.replace(/'/g,"\\'")}', this)" style="display:inline-block;margin:4px;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`;
-  }).join('');
-
-  tvRoot().innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-      <button onclick="renderTournamentList()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer;">← 목록</button>
-      <span style="font-size:18px;font-weight:700;">새 대회 만들기</span>
-    </div>
-    <div class="section-title">대회 정보</div>
-    <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
-    <input id="tv-tdate" type="date" value="${today}" style="width:100%;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
-    <select id="tv-tgames" style="width:100%;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:16px;">
-      <option value="3">3게임</option>
-      <option value="4" selected>4게임</option>
-      <option value="5">5게임</option>
-      <option value="6">6게임</option>
-    </select>
-    <div class="section-title">참가 선수</div>
-    <div id="tv-player-btns" style="margin-bottom:10px;">${playerBtns.length ? playerBtns : '<div style="color:var(--text-muted);font-size:13px;">선수 탭에 등록된 선수가 없어요.</div>'}</div>
-    <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <input id="tv-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;">
-      <button onclick="tvAddPlayer()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;cursor:pointer;">추가</button>
-    </div>
-    <div id="tv-selected" style="margin-bottom:16px;"><div style="color:var(--text-muted);font-size:13px;">선수를 선택하세요 (최소 4명)</div></div>
-    <button onclick="tvCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:20px;">대진표 생성</button>
-  `;
-  document.querySelector('.content').scrollTop = 0;
+  document.getElementById('tv-tname').value = '';
+  document.getElementById('tv-tdate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('tv-tgames').value = '4';
+  // 선수 버튼 렌더
+  const playerBtns = (state.players||[]).map(p =>
+    `<span onclick="tvToggle('${p.name.replace(/'/g,"\\'")}', this)" style="display:inline-block;margin:4px;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`
+  ).join('');
+  document.getElementById('tv-player-btns').innerHTML = playerBtns ||
+    '<div style="color:var(--text-muted);font-size:13px;">선수 탭에서 먼저 선수를 등록하세요.</div>';
+  document.getElementById('tv-selected').innerHTML =
+    '<div style="color:var(--text-muted);font-size:13px;">선수를 선택하세요 (최소 4명)</div>';
+  document.getElementById('tvCreateModal').classList.add('open');
 }
 
 function tvToggle(name, el) {
@@ -1527,38 +1551,36 @@ function tvCreate() {
   if (!state.tournaments) state.tournaments = [];
   state.tournaments.push(t);
   save();
+  closeModal('tvCreateModal');
   showToast('대회가 생성됐어요!');
-  tvOpen(t.id);
+  renderTournamentList();
+  setTimeout(() => tvOpen(t.id), 300);
 }
 
 function tvOpen(id) {
   tvCurrentId = id;
   tvCurrentTab = 'bracket';
-  tvRenderDetail();
-}
-
-function tvRenderDetail() {
-  const t = state.tournaments.find(x => x.id === tvCurrentId);
+  const t = state.tournaments.find(x => x.id === id);
   if (!t) return;
-  const bracketHTML = tvCurrentTab === 'bracket' ? tvBracketHTML(t) : '';
-  const rankingHTML = tvCurrentTab === 'ranking' ? tvRankingHTML(t) : '';
-  tvRoot().innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-      <button onclick="renderTournamentList()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer;">← 목록</button>
-      <span style="font-size:18px;font-weight:700;">${escHtml(t.name)}</span>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:16px;">
-      <button onclick="tvTabSwitch('bracket')" style="flex:1;padding:10px;background:${tvCurrentTab==='bracket'?'var(--accent)':'var(--surface2)'};color:${tvCurrentTab==='bracket'?'#fff':'var(--text-muted)'};border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">대진표</button>
-      <button onclick="tvTabSwitch('ranking')" style="flex:1;padding:10px;background:${tvCurrentTab==='ranking'?'var(--accent)':'var(--surface2)'};color:${tvCurrentTab==='ranking'?'#fff':'var(--text-muted)'};border:none;border-radius:10px;font-size:14px;cursor:pointer;">순위표</button>
-    </div>
-    ${tvCurrentTab==='bracket' ? bracketHTML : rankingHTML}
-  `;
-  document.querySelector('.content').scrollTop = 0;
+  document.getElementById('tv-modal-name').textContent = t.name;
+  tvRefreshModal();
+  document.getElementById('tvDetailModal').classList.add('open');
 }
 
 function tvTabSwitch(tab) {
   tvCurrentTab = tab;
-  tvRenderDetail();
+  document.getElementById('tv-tab-b').style.background = tab==='bracket'?'var(--accent)':'var(--surface2)';
+  document.getElementById('tv-tab-b').style.color = tab==='bracket'?'#fff':'var(--text-muted)';
+  document.getElementById('tv-tab-r').style.background = tab==='ranking'?'var(--accent)':'var(--surface2)';
+  document.getElementById('tv-tab-r').style.color = tab==='ranking'?'#fff':'var(--text-muted)';
+  tvRefreshModal();
+}
+
+function tvRefreshModal() {
+  const t = state.tournaments.find(x => x.id === tvCurrentId);
+  if (!t) return;
+  const el = document.getElementById('tv-modal-content');
+  el.innerHTML = tvCurrentTab === 'bracket' ? tvBracketHTML(t) : tvRankingHTML(t);
 }
 
 function tvBracketHTML(t) {
@@ -1571,7 +1593,7 @@ function tvBracketHTML(t) {
       const sB = game.scoreB !== null ? game.scoreB : '';
       const aW = game.scoreA !== null && game.scoreA > game.scoreB;
       const bW = game.scoreB !== null && game.scoreB > game.scoreA;
-      html += `<div style="background:var(--surface);border-radius:12px;padding:14px;margin-bottom:8px;">
+      html += `<div style="background:var(--surface2);border-radius:12px;padding:14px;margin-bottom:8px;">
         <div style="display:flex;align-items:center;gap:8px;">
           <div style="flex:1;text-align:center;">
             <div style="font-size:14px;font-weight:${aW?700:400};color:${aW?'#4ade80':'#fff'};margin-bottom:4px;">${escHtml(game.teamA[0])}</div>
@@ -1579,10 +1601,10 @@ function tvBracketHTML(t) {
           </div>
           <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
             <input type="number" min="0" value="${sA}" onchange="tvScore(${t.id},${ri},${gi},'A',this.value)"
-              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:18px;font-weight:700;">
+              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:18px;font-weight:700;">
             <span style="color:var(--text-muted);font-size:16px;">:</span>
             <input type="number" min="0" value="${sB}" onchange="tvScore(${t.id},${ri},${gi},'B',this.value)"
-              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:18px;font-weight:700;">
+              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:18px;font-weight:700;">
           </div>
           <div style="flex:1;text-align:center;">
             <div style="font-size:14px;font-weight:${bW?700:400};color:${bW?'#4ade80':'#fff'};margin-bottom:4px;">${escHtml(game.teamB[0])}</div>
@@ -1690,7 +1712,6 @@ function genHanul(players, numGames) {
   return rounds;
 }
 
-// ===== TOAST =====
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
