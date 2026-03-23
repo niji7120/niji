@@ -1634,7 +1634,61 @@ function tvScore(tid, ri, gi, team, val) {
   if (isNaN(v) || v < 0) return;
   if (team==='A') t.rounds[ri].games[gi].scoreA = v;
   else t.rounds[ri].games[gi].scoreB = v;
+
+  // 양쪽 스코어 다 입력됐으면 경기기록에 자동 반영
+  const game = t.rounds[ri].games[gi];
+  if (game.scoreA !== null && game.scoreB !== null) {
+    tvSyncToMatch(t, ri, gi);
+  }
   save();
+}
+
+function tvSyncToMatch(t, ri, gi) {
+  const game = t.rounds[ri].games[gi];
+  const myName = state.profile.name || '선수';
+
+  // 내가 이 게임에 참여했는지 확인
+  const inA = game.teamA.includes(myName);
+  const inB = game.teamB.includes(myName);
+  if (!inA && !inB) return;
+
+  const myTeam = inA ? game.teamA : game.teamB;
+  const oppTeam = inA ? game.teamB : game.teamA;
+  const myScore = inA ? game.scoreA : game.scoreB;
+  const oppScore = inA ? game.scoreB : game.scoreA;
+
+  // 파트너 (나 제외)
+  const partner = myTeam.find(p => p !== myName) || '';
+  // 상대 (두 명 모두)
+  const opponent = oppTeam[0] || '';
+  const opponent2 = oppTeam[1] || '';
+
+  const result = myScore > oppScore ? 'win' : myScore < oppScore ? 'lose' : 'win';
+
+  // 기존 대회 기록 찾기 (같은 대회+라운드+게임)
+  const matchMemo = `[${t.name}] ${t.rounds[ri].gameNum}게임`;
+  const existIdx = state.matches.findIndex(m => m.memo && m.memo === matchMemo && m.partner === partner);
+
+  const matchData = {
+    id: existIdx >= 0 ? state.matches[existIdx].id : state.nextMatchId++,
+    date: t.date,
+    format: 'doubles',
+    partner,
+    opponent,
+    opponent2,
+    result,
+    myScore,
+    oppScore,
+    myTiebreak: '',
+    oppTiebreak: '',
+    memo: matchMemo,
+  };
+
+  if (existIdx >= 0) {
+    state.matches[existIdx] = matchData;
+  } else {
+    state.matches.push(matchData);
+  }
 }
 
 function tvRankingHTML(t) {
