@@ -2078,7 +2078,9 @@ function renderMatchList() {
         </div>
         <div class="match-team" style="font-size:12px;">${opps}</div>
       </div>
-      ${m.memo ? `<div style="margin-top:8px;font-size:11px;color:var(--text-muted);border-top:1px solid var(--border);padding-top:8px;">📝 ${m.memo}</div>` : ''}
+      ${m.memo ? `<div style="margin-top:8px;font-size:11px;border-top:1px solid var(--border);padding-top:8px;">
+        ${m.memo.startsWith('[') ? `<span style="background:rgba(124,106,247,.15);color:var(--accent);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;">🏆 ${m.memo}</span>` : `<span style="color:var(--text-muted);">📝 ${escHtml(m.memo)}</span>`}
+      </div>` : ''}
     </div>`;
   }).join('');
 
