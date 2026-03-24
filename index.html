@@ -30,6 +30,21 @@
     --radius: 14px;
   }
 
+  /* 라이트 테마 */
+  body.light-theme {
+    --bg: #f5f5f8;
+    --surface: #ffffff;
+    --surface2: #eeeeF4;
+    --border: #dddde8;
+    --accent: #6c5ce7;
+    --accent2: #e056b8;
+    --text: #1a1a2e;
+    --text-muted: #6666888;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warn: #f59e0b;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 15px; overflow: hidden; }
 
@@ -746,7 +761,10 @@
 <div id="app">
   <div class="topbar">
     <span class="topbar-logo">NIJI STRING</span>
-    <div class="topbar-avatar" id="avatarBtn" onclick="showPage('profile')">A</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button onclick="toggleTheme()" id="themeBtn" style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;color:var(--text);font-size:13px;cursor:pointer;">🌙</button>
+      <div class="topbar-avatar" id="avatarBtn" onclick="showPage('profile')">A</div>
+    </div>
   </div>
 
   <div class="content">
@@ -1028,6 +1046,17 @@
       <div class="page-header">공유 & 백업</div>
       <div class="page-sub">데이터를 백업하거나 공유하세요</div>
 
+      <div class="section-title">니지스트링</div>
+      <div class="share-btn-group">
+        <div class="share-item" onclick="window.open('https://open.kakao.com/o/gPgChZmi','_blank')">
+          <div class="share-icon" style="background:rgba(255,235,0,.15);">💬</div>
+          <div>
+            <div class="share-text">카카오 오픈채팅 참여하기</div>
+            <div class="share-sub">니지스트링 테니스·배드민턴 커뮤니티</div>
+          </div>
+        </div>
+      </div>
+
       <div class="section-title">백업</div>
       <div class="share-btn-group">
         <div class="share-item" onclick="exportData()">
@@ -1110,10 +1139,10 @@
       <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
       <input id="tv-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
       <select id="tv-tgames" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:16px;">
+        <option value="1">1게임</option>
+        <option value="2">2게임</option>
         <option value="3">3게임</option>
         <option value="4" selected>4게임</option>
-        <option value="5">5게임</option>
-        <option value="6">6게임</option>
       </select>
       <div class="section-title">참가 선수</div>
       <div id="tv-player-btns" style="margin-bottom:10px;"></div>
@@ -1164,11 +1193,15 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>이름·클럽·나이대·손잡이·구력·플레이 스타일·라켓·스트링·텐션을 저장하세요</span>
+            <span>이름·클럽·나이대·손잡이·구력·스타일·라켓·스트링·텐션·<b>스트링교체일</b>을 저장하세요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
             <span>각 항목을 탭하면 바로 수정되고 자동 저장됩니다</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>상단 🌙/☀️ 버튼으로 <b>다크/라이트 테마</b>를 전환할 수 있어요</span>
           </div>
         </div>
       </div>
@@ -1191,12 +1224,15 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>스코어 · 타이브레이크 · 메모는 선택 사항입니다<br>
-            예) 스코어 <b>21:19</b> / 타이브레이크 <b>11-9</b></span>
+            <span>스코어 · 타이브레이크 · 메모는 선택 사항입니다</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
             <span>저장된 경기는 목록에서 ✏️ 수정 · 🗑️ 삭제 가능해요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>🏆 대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다</span>
           </div>
         </div>
       </div>
@@ -1227,15 +1263,7 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>상대 전적</b> — 자주 만난 상대별 승률 분석</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>파트너 궁합</b> — 복식 파트너별 팀 승률 분석</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>상대팀 상성</b> — 복식에서 만난 상대 조합별 전적</span>
+            <span><b>상대 전적 · 파트너 궁합 · 상대팀 상성</b> 분석</span>
           </div>
         </div>
       </div>
@@ -1258,19 +1286,11 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>상세 페이지에서 선수 프로필을 직접 수정할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
             <span>나와의 전적 (승·패·승률%), 최근 대전 기록을 확인하세요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>클럽 관리</b>에서 클럽을 만들고 선수에게 배정할 수 있어요. 클럽별 필터도 가능합니다</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>✏️ 이름수정 · 📝 메모 · 🗑️ 삭제 버튼으로 선수를 관리하세요</span>
+            <span><b>클럽 관리</b>에서 클럽을 만들고 선수에게 배정할 수 있어요</span>
           </div>
         </div>
       </div>
@@ -1279,21 +1299,29 @@
 
       <div class="manual-section">
         <div class="manual-sec-header">
-          <span class="manual-sec-icon">🎯</span>
-          <span class="manual-sec-title">5. 스트링 관리</span>
+          <span class="manual-sec-icon">🏆</span>
+          <span class="manual-sec-title">5. 한울 대회</span>
         </div>
         <div class="manual-items">
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>마지막 스트링 교체일을 입력하면 <b>교체 권장 알림</b>이 자동으로 표시됩니다</span>
+            <span>파트너와 상대방이 매 게임 바뀌는 <b>순환 복식 대회</b>를 관리해요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>교체 권장 주기를 1·2·3·6·12개월 중 선택하세요</span>
+            <span><b>+ 새 대회 만들기</b>를 탭해 대회명·날짜·게임수를 설정하세요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>스트링명과 날짜를 입력해 <b>장비 교체 히스토리</b>를 기록할 수 있어요</span>
+            <span>선수 추가 후 <b>↑↓ 버튼</b>으로 순서를 조정하면 시드 배정이 가능해요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>대진표에서 스코어를 입력하면 <b>경기기록에 자동 반영</b>됩니다</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>순위표에서 🥇🥈🥉 순위를 확인하세요</span>
           </div>
         </div>
       </div>
@@ -1317,6 +1345,25 @@
           <div class="manual-item">
             <span class="manual-dot"></span>
             <span>데이터는 기기 내 브라우저에 저장되므로 정기적인 백업을 권장합니다</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="manual-divider"></div>
+
+      <div class="manual-section">
+        <div class="manual-sec-header">
+          <span class="manual-sec-icon">💬</span>
+          <span class="manual-sec-title">7. 니지스트링 커뮤니티</span>
+        </div>
+        <div class="manual-items">
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>스트링 교체, 라켓 수리 등 <b>니지스트링</b> 전문 서비스를 이용하세요</span>
           </div>
         </div>
       </div>
@@ -1365,6 +1412,21 @@ let confirmCallback = null;
 
 // ===== STORAGE =====
 function save() { localStorage.setItem('nijiData', JSON.stringify(state)); }
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('nijiTheme', isLight ? 'light' : 'dark');
+}
+
+function applyTheme() {
+  const theme = localStorage.getItem('nijiTheme');
+  if (theme === 'light') {
+    document.body.classList.add('light-theme');
+    const btn = document.getElementById('themeBtn');
+    if (btn) btn.textContent = '☀️';
+  }
+}
 function load() {
   const d = localStorage.getItem('nijiData');
   if (d) {
@@ -1511,12 +1573,30 @@ function tvRenderSelected() {
     return;
   }
   el.innerHTML = `<div style="background:var(--surface);border-radius:10px;padding:12px;">
-    <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">선택된 선수 ${tvSelected.length}명</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">선택된 선수 ${tvSelected.length}명</div>
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">↕️ 순서 조정으로 시드 배정 (위가 강한 선수)</div>
     ${tvSelected.map((n,i) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);">
-      <span style="font-size:14px;">${i+1}. ${escHtml(n)}</span>
-      <button onclick="tvRemove(${i})" style="background:none;border:none;color:#f87171;cursor:pointer;font-size:18px;padding:0 4px;">×</button>
+      <span style="font-size:13px;color:var(--accent);font-weight:700;width:24px;">${i+1}.</span>
+      <span style="flex:1;font-size:14px;">${escHtml(n)}</span>
+      <div style="display:flex;gap:4px;align-items:center;">
+        <button onclick="tvMoveUp(${i})" ${i===0?'disabled':''} style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:${i===0?'var(--text-muted)':'#fff'};cursor:${i===0?'default':'pointer'};padding:2px 8px;font-size:14px;">↑</button>
+        <button onclick="tvMoveDown(${i})" ${i===tvSelected.length-1?'disabled':''} style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:${i===tvSelected.length-1?'var(--text-muted)':'#fff'};cursor:${i===tvSelected.length-1?'default':'pointer'};padding:2px 8px;font-size:14px;">↓</button>
+        <button onclick="tvRemove(${i})" style="background:none;border:none;color:#f87171;cursor:pointer;font-size:18px;padding:0 4px;">×</button>
+      </div>
     </div>`).join('')}
   </div>`;
+}
+
+function tvMoveUp(idx) {
+  if (idx === 0) return;
+  [tvSelected[idx-1], tvSelected[idx]] = [tvSelected[idx], tvSelected[idx-1]];
+  tvRenderSelected();
+}
+
+function tvMoveDown(idx) {
+  if (idx === tvSelected.length-1) return;
+  [tvSelected[idx+1], tvSelected[idx]] = [tvSelected[idx], tvSelected[idx+1]];
+  tvRenderSelected();
 }
 
 function tvRemove(idx) {
@@ -3036,6 +3116,7 @@ function setTodayDate() {
 
 // ===== INIT =====
 load();
+applyTheme();
 renderProfile();
 renderMatchList();
 setTodayDate();
