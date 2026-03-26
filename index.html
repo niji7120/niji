@@ -32,18 +32,40 @@
 
   /* 라이트 테마 */
   body.light-theme {
-    --bg: #f5f5f8;
+    --bg: #f0f0f5;
     --surface: #ffffff;
-    --surface2: #eeeef4;
-    --border: #dddde8;
-    --accent: #6c5ce7;
-    --accent2: #e056b8;
-    --text: #1a1a2e;
-    --text-muted: #666688;
-    --success: #22c55e;
-    --danger: #ef4444;
-    --warn: #f59e0b;
+    --surface2: #e8e8f0;
+    --border: #ccccdd;
+    --accent: #5a4cd6;
+    --accent2: #cc44a8;
+    --text: #111122;
+    --text-muted: #555577;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warn: #d97706;
   }
+
+  /* 라이트 테마 추가 스타일 */
+  body.light-theme .topbar { background: #ffffff; border-bottom: 1px solid #ccccdd; }
+  body.light-theme .nav { background: #ffffff; border-top: 1px solid #ccccdd; }
+  body.light-theme .match-card { background: #ffffff; border: 1px solid #ccccdd; }
+  body.light-theme .card { background: #ffffff; border: 1px solid #ccccdd; }
+  body.light-theme .form-input { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
+  body.light-theme .form-select { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
+  body.light-theme .topbar-logo { color: var(--accent); }
+  body.light-theme .pf-name-text { color: #111122; }
+  body.light-theme .page-header { color: #111122; }
+  body.light-theme .section-title { color: #555577; }
+  body.light-theme .pf-item-lbl { color: #555577; }
+  body.light-theme .pf-item-input { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
+  body.light-theme .pf-item-select { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
+  body.light-theme .btn-secondary { background: #e8e8f0; color: #111122; border-color: #ccccdd; }
+  body.light-theme .share-item { background: #ffffff; border: 1px solid #ccccdd; }
+  body.light-theme .share-text { color: #111122; }
+  body.light-theme .modal { background: #ffffff; }
+  body.light-theme .modal-title { color: #111122; }
+  body.light-theme .manual-sec-title { color: #111122; }
+  body.light-theme .manual-item span { color: #333344; }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 15px; overflow: hidden; }
@@ -1089,7 +1111,7 @@
     </div>
   </div>
 
-  <!-- ===== 한울 대회 페이지 ===== -->
+  <!-- ===== 한울방식 페이지 ===== -->
   <div class="page" id="page-tournament">
     <div id="tv-root"></div>
     <div style="height:60px;"></div>
@@ -1136,9 +1158,9 @@
     </div>
     <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;">
       <div class="section-title">대회 정보</div>
-      <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
-      <input id="tv-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;">
-      <select id="tv-tgames" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:16px;">
+      <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;box-sizing:border-box;margin-bottom:10px;">
+      <input id="tv-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;box-sizing:border-box;margin-bottom:10px;">
+      <select id="tv-tgames" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;box-sizing:border-box;margin-bottom:16px;">
         <option value="1">1게임</option>
         <option value="2">2게임</option>
         <option value="3">3게임</option>
@@ -1147,8 +1169,8 @@
       <div class="section-title">참가 선수</div>
       <div id="tv-player-btns" style="margin-bottom:10px;"></div>
       <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <input id="tv-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;">
-        <button onclick="tvAddPlayer()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;cursor:pointer;">추가</button>
+        <input id="tv-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;">
+        <button onclick="tvAddPlayer()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;cursor:pointer;">추가</button>
       </div>
       <div id="tv-selected" style="margin-bottom:16px;"></div>
     </div>
@@ -1300,7 +1322,7 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">🏆</span>
-          <span class="manual-sec-title">5. 한울 대회</span>
+          <span class="manual-sec-title">5. 한울방식</span>
         </div>
         <div class="manual-items">
           <div class="manual-item">
@@ -1482,7 +1504,7 @@ function showPage(name) {
   if (name === 'tournament') renderTournamentList();
 }
 
-// ===== 한울 대회 =====
+// ===== 한울방식 =====
 let tvSelected = [];
 let tvCurrentId = null;
 let tvCurrentTab = 'bracket';
@@ -1492,7 +1514,7 @@ function renderTournamentList() {
   if (!el) return;
   const list = state.tournaments || [];
   let html = `
-    <div class="page-header">🏆 한울 대회</div>
+    <div class="page-header">🏆 한울방식</div>
     <div class="page-sub">파트너·상대방 순환 복식 대회</div>
     <button onclick="showTVCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:16px;">+ 새 대회 만들기</button>
   `;
@@ -1515,7 +1537,7 @@ function renderTournamentList() {
           </div>
         </div>
         <div style="display:flex;gap:8px;">
-          <button onclick="tvEdit(${t.id})" style="flex:1;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:13px;cursor:pointer;">✏️ 수정</button>
+          <button onclick="tvEdit(${t.id})" style="flex:1;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;">✏️ 수정</button>
           <button onclick="tvDelete(${t.id})" style="flex:1;padding:8px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size:13px;cursor:pointer;">🗑️ 삭제</button>
         </div>
       </div>`;
@@ -1682,19 +1704,19 @@ function tvBracketHTML(t) {
       html += `<div style="background:var(--surface2);border-radius:12px;padding:14px;margin-bottom:8px;">
         <div style="display:flex;align-items:center;gap:8px;">
           <div style="flex:1;text-align:center;">
-            <div style="font-size:14px;font-weight:${aW?700:400};color:${aW?'#4ade80':'#fff'};margin-bottom:4px;">${escHtml(game.teamA[0])}</div>
-            <div style="font-size:14px;font-weight:${aW?700:400};color:${aW?'#4ade80':'#fff'};">${escHtml(game.teamA[1])}</div>
+            <div style="font-size:14px;font-weight:${aW?700:400};color:${aW?'#4ade80':'var(--text)'};margin-bottom:4px;">${escHtml(game.teamA[0])}</div>
+            <div style="font-size:14px;font-weight:${aW?700:400};color:${aW?'#4ade80':'var(--text)'};">${escHtml(game.teamA[1])}</div>
           </div>
           <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
             <input type="number" min="0" value="${sA}" onchange="tvScore(${t.id},${ri},${gi},'A',this.value)"
-              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:18px;font-weight:700;">
+              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:18px;font-weight:700;">
             <span style="color:var(--text-muted);font-size:16px;">:</span>
             <input type="number" min="0" value="${sB}" onchange="tvScore(${t.id},${ri},${gi},'B',this.value)"
-              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:18px;font-weight:700;">
+              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:18px;font-weight:700;">
           </div>
           <div style="flex:1;text-align:center;">
-            <div style="font-size:14px;font-weight:${bW?700:400};color:${bW?'#4ade80':'#fff'};margin-bottom:4px;">${escHtml(game.teamB[0])}</div>
-            <div style="font-size:14px;font-weight:${bW?700:400};color:${bW?'#4ade80':'#fff'};">${escHtml(game.teamB[1])}</div>
+            <div style="font-size:14px;font-weight:${bW?700:400};color:${bW?'#4ade80':'var(--text)'};margin-bottom:4px;">${escHtml(game.teamB[0])}</div>
+            <div style="font-size:14px;font-weight:${bW?700:400};color:${bW?'#4ade80':'var(--text)'};">${escHtml(game.teamB[1])}</div>
           </div>
         </div>
       </div>`;
