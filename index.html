@@ -57,8 +57,13 @@
   body.light-theme .page-header { color: #111122; }
   body.light-theme .section-title { color: #555577; }
   body.light-theme .pf-item-lbl { color: #555577; }
-  body.light-theme .pf-item-input { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
-  body.light-theme .pf-item-select { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
+  body.light-theme .pf-item-input { background: none; color: #111122; border-color: transparent; }
+  body.light-theme .pf-item-select { background: none; color: #111122; border-color: transparent; }
+  body.light-theme .pf-item-input::placeholder { color: rgba(0,0,0,.3); }
+  body.light-theme .pf-item-select.unset { color: rgba(0,0,0,.3); }
+  body.light-theme .pf-item-select option { background: #ffffff; color: #111122; }
+  body.light-theme .pf-name-text { color: #111122 !important; }
+  body.light-theme .pf-club-tag { color: var(--accent) !important; }
   body.light-theme .btn-secondary { background: #e8e8f0; color: #111122; border-color: #ccccdd; }
   body.light-theme .share-item { background: #ffffff; border: 1px solid #ccccdd; }
   body.light-theme .share-text { color: #111122; }
