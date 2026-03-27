@@ -1606,8 +1606,8 @@ function tvRenderSelected() {
       <span style="font-size:13px;color:var(--accent);font-weight:700;width:24px;">${i+1}.</span>
       <span style="flex:1;font-size:14px;">${escHtml(n)}</span>
       <div style="display:flex;gap:4px;align-items:center;">
-        <button onclick="tvMoveUp(${i})" ${i===0?'disabled':''} style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:${i===0?'var(--text-muted)':'#fff'};cursor:${i===0?'default':'pointer'};padding:2px 8px;font-size:14px;">↑</button>
-        <button onclick="tvMoveDown(${i})" ${i===tvSelected.length-1?'disabled':''} style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:${i===tvSelected.length-1?'var(--text-muted)':'#fff'};cursor:${i===tvSelected.length-1?'default':'pointer'};padding:2px 8px;font-size:14px;">↓</button>
+        <button onclick="tvMoveUp(${i})" ${i===0?'disabled':''} style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:${i===0?'var(--text-muted)':'var(--text)'};cursor:${i===0?'default':'pointer'};padding:2px 8px;font-size:14px;">↑</button>
+        <button onclick="tvMoveDown(${i})" ${i===tvSelected.length-1?'disabled':''} style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:${i===tvSelected.length-1?'var(--text-muted)':'var(--text)'};cursor:${i===tvSelected.length-1?'default':'pointer'};padding:2px 8px;font-size:14px;">↓</button>
         <button onclick="tvRemove(${i})" style="background:none;border:none;color:#f87171;cursor:pointer;font-size:18px;padding:0 4px;">×</button>
       </div>
     </div>`).join('')}
