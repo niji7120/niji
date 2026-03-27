@@ -670,38 +670,38 @@
 
   /* 카드 */
   .pf-item {
-    background: #141420; border: 1px solid #222235;
+    background: var(--surface); border: 1px solid var(--border);
     border-radius: 12px; padding: 10px 14px;
     display: flex; align-items: center; gap: 12px;
   }
   .pf-item.full { grid-column: 1 / -1; }
   .pf-item-icon {
-    color: rgba(255,255,255,.35); flex-shrink: 0;
+    color: var(--text-muted); flex-shrink: 0;
   }
   .pf-item-body { flex: 1; min-width: 0; }
   .pf-item-lbl {
     font-size: 9px; font-weight: 700; letter-spacing: 1px;
-    text-transform: uppercase; color: rgba(255,255,255,.4);
+    text-transform: uppercase; color: var(--text-muted);
     margin-bottom: 3px;
   }
   .pf-item-val {
-    font-size: 14px; font-weight: 700; color: #fff;
+    font-size: 14px; font-weight: 700; color: var(--text);
     word-break: keep-all; overflow-wrap: break-word; line-height: 1.3;
   }
-  .pf-item-val.unset { color: rgba(255,255,255,.25); font-size: 12px; font-weight: 400; font-style: italic; }
+  .pf-item-val.unset { color: var(--text-muted); font-size: 12px; font-weight: 400; font-style: italic; }
   .pf-item-input {
     width: 100%; background: none; border: none; outline: none;
-    color: #fff; font-family: inherit; font-size: 14px; font-weight: 700; padding: 0;
+    color: var(--text); font-family: inherit; font-size: 14px; font-weight: 700; padding: 0;
     word-break: keep-all;
   }
-  .pf-item-input::placeholder { color: rgba(255,255,255,.22); font-weight: 400; font-size: 12px; font-style: italic; }
+  .pf-item-input::placeholder { color: var(--text-muted); font-weight: 400; font-size: 12px; font-style: italic; }
   .pf-item-select {
     width: 100%; background: none; border: none; outline: none;
-    color: #fff; font-family: inherit; font-size: 14px; font-weight: 700;
+    color: var(--text); font-family: inherit; font-size: 14px; font-weight: 700;
     padding: 0; -webkit-appearance: none; cursor: pointer;
   }
-  .pf-item-select.unset { color: rgba(255,255,255,.25); font-size: 12px; font-weight: 400; font-style: italic; }
-  .pf-item-select option { background: #1a1a22; }
+  .pf-item-select.unset { color: var(--text-muted); font-size: 12px; font-weight: 400; font-style: italic; }
+  .pf-item-select option { background: var(--surface); color: var(--text); }
 
   /* ===== PLAYER DETAIL REDESIGN ===== */
   .pd-hero {
