@@ -1032,6 +1032,11 @@
             <option>네트플레이</option><option>베이스라인</option>
           </select>
         </div>
+        <div class="form-group" style="margin-bottom:12px;" id="newPlayerClubWrap">
+          <select class="form-select" id="newPlayerClub">
+            <option value="">클럽 선택 (선택사항)</option>
+          </select>
+        </div>
         <button class="btn btn-primary" onclick="addPlayer()" style="width:100%;padding:12px;">+ 선수 등록</button>
       </div>
 
@@ -2872,7 +2877,9 @@ function addPlayer() {
   const career= document.getElementById('newPlayerCareer').value;
   const hand  = document.getElementById('newPlayerHand').value;
   const style = document.getElementById('newPlayerStyle').value;
-  state.players.push({ id: state.nextPlayerId++, name, memo: '', clubs: [],
+  const club  = document.getElementById('newPlayerClub') ? document.getElementById('newPlayerClub').value : '';
+  const clubs = club ? [club] : [];
+  state.players.push({ id: state.nextPlayerId++, name, memo: '', clubs,
     age, career, hand, style });
   save();
   document.getElementById('newPlayerName').value = '';
@@ -2880,6 +2887,7 @@ function addPlayer() {
   document.getElementById('newPlayerCareer').value = '';
   document.getElementById('newPlayerHand').value = '';
   document.getElementById('newPlayerStyle').value = '';
+  if (document.getElementById('newPlayerClub')) document.getElementById('newPlayerClub').value = '';
   renderPlayers();
   showToast(`✅ ${name} 추가 완료!`);
 }
@@ -2891,9 +2899,24 @@ function savePlayerProfile(playerId, key, value) {
   save();
 }
 
+function savePlayerClub(playerId, club) {
+  const player = state.players.find(p => p.id === playerId);
+  if (!player) return;
+  player.clubs = club ? [club] : [];
+  save();
+  showToast('클럽이 저장됐어요!');
+}
+
 function renderPlayers() {
   renderClubTags();
   renderPlayerClubFilter();
+  // 선수 등록 폼 클럽 드롭다운 업데이트
+  const clubSelect = document.getElementById('newPlayerClub');
+  if (clubSelect) {
+    const currentVal = clubSelect.value;
+    clubSelect.innerHTML = '<option value="">클럽 선택 (선택사항)</option>' +
+      (state.clubs || []).map(c => `<option value="${escHtml(c)}"${currentVal===c?' selected':''}>${escHtml(c)}</option>`).join('');
+  }
   // 정렬 셀렉트 동기화
   const sortEl = document.getElementById('playerSortSelect');
   if (sortEl) sortEl.value = state.playerSort || 'name';
@@ -3073,6 +3096,7 @@ function showPlayerDetail(playerId) {
   const pHand  = player.hand  || '';
   const pCareer= player.career|| '';
   const pStyle = player.style || '';
+  const pClubs = player.clubs || [];
   const profileItems = [
     { lbl:'나이대', val:pAge,    key:'age',    type:'select', opts:['10대','20대','30대','40대','50대','60대 이상'] },
     { lbl:'손잡이', val:pHand,   key:'hand',   type:'select', opts:['오른손','왼손'] },
@@ -3088,6 +3112,19 @@ function showPlayerDetail(playerId) {
         ${item.opts.map(o=>`<option${item.val===o?' selected':''}>${o}</option>`).join('')}
       </select>
     </div>`).join('');
+
+  // 클럽 수정 UI
+  const clubOptions = (state.clubs || []).map(c =>
+    `<option value="${escHtml(c)}"${pClubs.includes(c)?' selected':''}>${escHtml(c)}</option>`
+  ).join('');
+  const clubEditHtml = state.clubs && state.clubs.length > 0 ? `
+    <div class="card" style="margin-bottom:12px;">
+      <div class="pd-section-title">🏠 클럽</div>
+      <select class="form-select" onchange="savePlayerClub(${player.id}, this.value)">
+        <option value="">클럽 없음</option>
+        ${clubOptions}
+      </select>
+    </div>` : '';
 
   document.getElementById('playerDetailContent').innerHTML = `
     <!-- 히어로 헤더 -->
@@ -3109,6 +3146,8 @@ function showPlayerDetail(playerId) {
       <div class="pd-section-title">👤 선수 프로필</div>
       <div class="pd-profile-grid">${profileGrid}</div>
     </div>
+
+    ${clubEditHtml}
 
     <!-- 전적 요약 -->
     <div class="pd-stat-row">
