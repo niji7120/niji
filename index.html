@@ -72,7 +72,6 @@
   body.light-theme .manual-sec-title { color: #111122; }
   body.light-theme .manual-item span { color: #333344; }
   body.light-theme .pf-content { background: #f0f0f5; }
-  body.light-theme .pf-bg-initial { color: #ffffff; }
   body.light-theme .pf-name-text { color: #111122 !important; }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1957,12 +1956,14 @@ function genHanul(players, numGames) {
     const games = [];
     const bye = [];
     const courts = Math.floor(n / 4);
-    const extra = n - courts * 4;
+    const extra = n % 4; // 수정: n - courts*4 대신 n%4 사용 (동일하지만 명확)
     if (extra > 0) {
       const byeCount = {};
-      players.forEach(p => byeCount[p] = 0);
-      rounds.forEach(r => r.bye.forEach(p => byeCount[p]++));
-      const sorted = [...players].sort((a,b) => byeCount[b] - byeCount[a]);
+      players.forEach(p => { byeCount[p] = 0; });
+      rounds.forEach(r => r.bye.forEach(p => { byeCount[p] = (byeCount[p]||0) + 1; }));
+      // 버그 수정: byeCount[b]-byeCount[a] (내림차순) → byeCount[a]-byeCount[b] (오름차순)
+      // 덜 쉰 선수(bye 횟수 적은)가 이번에 쉬도록 오름차순 정렬
+      const sorted = [...players].sort((a,b) => byeCount[a] - byeCount[b]);
       sorted.slice(0, extra).forEach(p => { bye.push(p); used.add(p); });
     }
     const avail = players.filter(p => !used.has(p));
@@ -2603,7 +2604,6 @@ function addClub() {
 }
 
 function deleteClub(name) {
-  if (typeof name !== 'string') name = name; // accept both string and button element
   showConfirm(`"${name}" 클럽 삭제`, '클럽을 삭제해도 선수 기록은 유지됩니다. 소속 선수는 클럽 없음으로 변경됩니다.', '🏠', () => {
     state.clubs = state.clubs.filter(c => c !== name);
     state.players.forEach(p => {
@@ -2849,10 +2849,10 @@ function addStringingHistory() {
   if (!state.stringingHistory) state.stringingHistory = [];
   const id = Date.now();
   state.stringingHistory.push({ id, name, date });
-  // 가장 최근 교체일 자동 갱신 (스트링 이력 + 프로필 stringDate 동시 업데이트)
+  // 가장 최근 교체일 자동 갱신 (프로필 stringDate도 동기화)
   const latest = [...state.stringingHistory].sort((a,b) => b.date.localeCompare(a.date))[0];
   state.lastStringDate = latest.date;
-  state.profile.stringDate = latest.date; // 프로필 스트링교체일도 동기화
+  state.profile.stringDate = latest.date;
   save();
   document.getElementById('newStringName').value = '';
   renderStringing();
