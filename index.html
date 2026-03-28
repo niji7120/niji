@@ -940,40 +940,19 @@
       </div>
 
       <!-- 상대 전적 -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;margin-bottom:10px;">
-        <div class="section-title" style="margin:0;">상대 전적</div>
-        <select onchange="renderStats()" id="oppSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;">
-          <option value="games">경기 많은 순</option>
-          <option value="winrate">승률 높은 순</option>
-          <option value="name">이름순</option>
-        </select>
-      </div>
+      <div class="section-title">상대 전적</div>
       <div class="card" id="opponentCard">
         <div class="empty-state"><div class="empty-icon">⚔️</div><div class="empty-text">경기를 입력하면<br>상대 데이터가 표시됩니다</div></div>
       </div>
 
       <!-- 파트너 궁합 -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;margin-bottom:10px;">
-        <div class="section-title" style="margin:0;">파트너 궁합</div>
-        <select onchange="renderStats()" id="partnerSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;">
-          <option value="games">경기 많은 순</option>
-          <option value="winrate">승률 높은 순</option>
-          <option value="name">이름순</option>
-        </select>
-      </div>
+      <div class="section-title">파트너 궁합</div>
       <div class="card" id="partnerCard">
         <div class="empty-state"><div class="empty-icon">🤝</div><div class="empty-text">복식 경기를 입력하면<br>파트너 데이터가 표시됩니다</div></div>
       </div>
 
       <!-- 상대팀 상성 -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;margin-bottom:10px;">
-        <div class="section-title" style="margin:0;">상대팀 상성 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">(복식)</span></div>
-        <select onchange="renderStats()" id="enemySort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;">
-          <option value="games">경기 많은 순</option>
-          <option value="winrate">승률 높은 순</option>
-          <option value="name">이름순</option>
-        </select>
-      </div>
+      <div class="section-title">상대팀 상성 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">(복식)</span></div>
       <div class="card" id="enemyTeamCard">
         <div class="empty-state"><div class="empty-icon">🆚</div><div class="empty-text">복식 경기를 입력하면<br>상대팀 데이터가 표시됩니다</div></div>
       </div>
@@ -1030,11 +1009,6 @@
             <option value="">플레이스타일</option>
             <option>공격형</option><option>수비형</option><option>올라운드</option>
             <option>네트플레이</option><option>베이스라인</option>
-          </select>
-        </div>
-        <div class="form-group" style="margin-bottom:12px;" id="newPlayerClubWrap">
-          <select class="form-select" id="newPlayerClub">
-            <option value="">클럽 선택 (선택사항)</option>
           </select>
         </div>
         <button class="btn btn-primary" onclick="addPlayer()" style="width:100%;padding:12px;">+ 선수 등록</button>
@@ -1582,99 +1556,15 @@ function showTVCreate() {
   document.getElementById('tv-tname').value = '';
   document.getElementById('tv-tdate').value = new Date().toISOString().slice(0,10);
   document.getElementById('tv-tgames').value = '4';
-
-  // 클럽별 그룹으로 선수 렌더
-  const players = state.players || [];
-  const clubs = state.clubs || [];
-
-  let html = '';
-
-  if (players.length === 0) {
-    html = '<div style="color:var(--text-muted);font-size:13px;">선수 탭에서 먼저 선수를 등록하세요.</div>';
-  } else {
-    // 전체 선택 버튼
-    html += `<div style="margin-bottom:8px;">
-      <button onclick="tvSelectAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:12px;cursor:pointer;margin-right:6px;">전체 선택</button>
-      <button onclick="tvClearAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:12px;cursor:pointer;">전체 해제</button>
-    </div>`;
-
-    // 클럽별 그룹
-    const grouped = {};
-    const noClub = [];
-    players.forEach(p => {
-      const playerClubs = p.clubs && p.clubs.length > 0 ? p.clubs : [];
-      if (playerClubs.length === 0) {
-        noClub.push(p);
-      } else {
-        playerClubs.forEach(c => {
-          if (!grouped[c]) grouped[c] = [];
-          grouped[c].push(p);
-        });
-      }
-    });
-
-    // 클럽별 섹션
-    Object.entries(grouped).forEach(([club, clubPlayers]) => {
-      html += `<div style="margin-bottom:10px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-          <span style="font-size:12px;font-weight:700;color:var(--accent);">🏠 ${escHtml(club)}</span>
-          <button onclick="tvSelectClub('${club.replace(/'/g,"\\'")}')" style="padding:3px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:11px;cursor:pointer;">전체선택</button>
-        </div>
-        <div>
-          ${clubPlayers.map(p => `<span id="tvbtn-${p.id}" onclick="tvToggle('${p.name.replace(/'/g,"\\'")}', this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
-        </div>
-      </div>`;
-    });
-
-    // 클럽 없는 선수
-    if (noClub.length > 0) {
-      html += `<div style="margin-bottom:10px;">
-        <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:6px;">기타</div>
-        <div>
-          ${noClub.map(p => `<span id="tvbtn-${p.id}" onclick="tvToggle('${p.name.replace(/'/g,"\\'")}', this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
-        </div>
-      </div>`;
-    }
-  }
-
-  document.getElementById('tv-player-btns').innerHTML = html;
+  // 선수 버튼 렌더
+  const playerBtns = (state.players||[]).map(p =>
+    `<span onclick="tvToggle('${p.name.replace(/'/g,"\\'")}', this)" style="display:inline-block;margin:4px;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`
+  ).join('');
+  document.getElementById('tv-player-btns').innerHTML = playerBtns ||
+    '<div style="color:var(--text-muted);font-size:13px;">선수 탭에서 먼저 선수를 등록하세요.</div>';
   document.getElementById('tv-selected').innerHTML =
     '<div style="color:var(--text-muted);font-size:13px;">선수를 선택하세요 (최소 4명)</div>';
   document.getElementById('tvCreateModal').classList.add('open');
-}
-
-function tvSelectClub(club) {
-  const players = state.players || [];
-  players.filter(p => p.clubs && p.clubs.includes(club)).forEach(p => {
-    if (!tvSelected.includes(p.name)) {
-      tvSelected.push(p.name);
-      const el = document.getElementById('tvbtn-' + p.id);
-      if (el) { el.style.background = 'var(--accent)'; el.style.color = '#fff'; }
-    }
-  });
-  tvRenderSelected();
-}
-
-function tvSelectAll() {
-  const players = state.players || [];
-  players.forEach(p => {
-    if (!tvSelected.includes(p.name)) {
-      tvSelected.push(p.name);
-      const el = document.getElementById('tvbtn-' + p.id);
-      if (el) { el.style.background = 'var(--accent)'; el.style.color = '#fff'; }
-    }
-  });
-  tvRenderSelected();
-}
-
-function tvClearAll() {
-  tvSelected = [];
-  const players = state.players || [];
-  players.forEach(p => {
-    const el = document.getElementById('tvbtn-' + p.id);
-    if (el) { el.style.background = 'var(--surface2)'; el.style.color = 'var(--text-muted)'; }
-  });
-  tvRenderSelected();
 }
 
 function tvToggle(name, el) {
@@ -2456,18 +2346,7 @@ function renderOpponentStats() {
     document.getElementById('opponentCard').innerHTML = '<div class="empty-state"><div class="empty-icon">⚔️</div><div class="empty-text">경기를 입력하면<br>상대 데이터가 표시됩니다</div></div>';
     return;
   }
-  const sortEl = document.getElementById('oppSort');
-  const sortBy = sortEl ? sortEl.value : 'games';
-  const sorted = Object.entries(om).sort((a,b) => {
-    if (sortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      return rb - ra;
-    } else if (sortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    return (b[1].w+b[1].l) - (a[1].w+a[1].l);
-  });
+  const sorted = Object.entries(om).sort((a,b) => (b[1].w+b[1].l) - (a[1].w+a[1].l));
   document.getElementById('opponentCard').innerHTML = sorted.map(([name, d]) => {
     const total = d.w + d.l;
     const rate = Math.round(d.w / total * 100);
@@ -2498,18 +2377,7 @@ function renderPartnerStats() {
     document.getElementById('partnerCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🤝</div><div class="empty-text">복식 경기를 입력하면<br>파트너 데이터가 표시됩니다</div></div>';
     return;
   }
-  const partnerSortEl = document.getElementById('partnerSort');
-  const partnerSortBy = partnerSortEl ? partnerSortEl.value : 'games';
-  const sorted = Object.entries(pm).sort((a,b) => {
-    if (partnerSortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      return rb - ra;
-    } else if (partnerSortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    return (b[1].w+b[1].l) - (a[1].w+a[1].l);
-  });
+  const sorted = Object.entries(pm).sort((a,b) => (b[1].w+b[1].l) - (a[1].w+a[1].l));
   document.getElementById('partnerCard').innerHTML = sorted.map(([name, d]) => {
     const total = d.w + d.l;
     const rate = Math.round(d.w / total * 100);
@@ -2542,18 +2410,7 @@ function renderEnemyTeamStats() {
     document.getElementById('enemyTeamCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🆚</div><div class="empty-text">복식 경기를 입력하면<br>상대팀 데이터가 표시됩니다</div></div>';
     return;
   }
-  const enemySortEl = document.getElementById('enemySort');
-  const enemySortBy = enemySortEl ? enemySortEl.value : 'games';
-  const sorted = Object.entries(tm).sort((a,b) => {
-    if (enemySortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      return rb - ra;
-    } else if (enemySortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    return (b[1].w+b[1].l) - (a[1].w+a[1].l);
-  });
+  const sorted = Object.entries(tm).sort((a,b) => (b[1].w+b[1].l) - (a[1].w+a[1].l));
   document.getElementById('enemyTeamCard').innerHTML = sorted.map(([team, d]) => {
     const total = d.w + d.l;
     const rate = Math.round(d.w / total * 100);
@@ -2877,9 +2734,7 @@ function addPlayer() {
   const career= document.getElementById('newPlayerCareer').value;
   const hand  = document.getElementById('newPlayerHand').value;
   const style = document.getElementById('newPlayerStyle').value;
-  const club  = document.getElementById('newPlayerClub') ? document.getElementById('newPlayerClub').value : '';
-  const clubs = club ? [club] : [];
-  state.players.push({ id: state.nextPlayerId++, name, memo: '', clubs,
+  state.players.push({ id: state.nextPlayerId++, name, memo: '', clubs: [],
     age, career, hand, style });
   save();
   document.getElementById('newPlayerName').value = '';
@@ -2887,7 +2742,6 @@ function addPlayer() {
   document.getElementById('newPlayerCareer').value = '';
   document.getElementById('newPlayerHand').value = '';
   document.getElementById('newPlayerStyle').value = '';
-  if (document.getElementById('newPlayerClub')) document.getElementById('newPlayerClub').value = '';
   renderPlayers();
   showToast(`✅ ${name} 추가 완료!`);
 }
@@ -2899,24 +2753,9 @@ function savePlayerProfile(playerId, key, value) {
   save();
 }
 
-function savePlayerClub(playerId, club) {
-  const player = state.players.find(p => p.id === playerId);
-  if (!player) return;
-  player.clubs = club ? [club] : [];
-  save();
-  showToast('클럽이 저장됐어요!');
-}
-
 function renderPlayers() {
   renderClubTags();
   renderPlayerClubFilter();
-  // 선수 등록 폼 클럽 드롭다운 업데이트
-  const clubSelect = document.getElementById('newPlayerClub');
-  if (clubSelect) {
-    const currentVal = clubSelect.value;
-    clubSelect.innerHTML = '<option value="">클럽 선택 (선택사항)</option>' +
-      (state.clubs || []).map(c => `<option value="${escHtml(c)}"${currentVal===c?' selected':''}>${escHtml(c)}</option>`).join('');
-  }
   // 정렬 셀렉트 동기화
   const sortEl = document.getElementById('playerSortSelect');
   if (sortEl) sortEl.value = state.playerSort || 'name';
@@ -3096,7 +2935,6 @@ function showPlayerDetail(playerId) {
   const pHand  = player.hand  || '';
   const pCareer= player.career|| '';
   const pStyle = player.style || '';
-  const pClubs = player.clubs || [];
   const profileItems = [
     { lbl:'나이대', val:pAge,    key:'age',    type:'select', opts:['10대','20대','30대','40대','50대','60대 이상'] },
     { lbl:'손잡이', val:pHand,   key:'hand',   type:'select', opts:['오른손','왼손'] },
@@ -3112,19 +2950,6 @@ function showPlayerDetail(playerId) {
         ${item.opts.map(o=>`<option${item.val===o?' selected':''}>${o}</option>`).join('')}
       </select>
     </div>`).join('');
-
-  // 클럽 수정 UI
-  const clubOptions = (state.clubs || []).map(c =>
-    `<option value="${escHtml(c)}"${pClubs.includes(c)?' selected':''}>${escHtml(c)}</option>`
-  ).join('');
-  const clubEditHtml = state.clubs && state.clubs.length > 0 ? `
-    <div class="card" style="margin-bottom:12px;">
-      <div class="pd-section-title">🏠 클럽</div>
-      <select class="form-select" onchange="savePlayerClub(${player.id}, this.value)">
-        <option value="">클럽 없음</option>
-        ${clubOptions}
-      </select>
-    </div>` : '';
 
   document.getElementById('playerDetailContent').innerHTML = `
     <!-- 히어로 헤더 -->
@@ -3146,8 +2971,6 @@ function showPlayerDetail(playerId) {
       <div class="pd-section-title">👤 선수 프로필</div>
       <div class="pd-profile-grid">${profileGrid}</div>
     </div>
-
-    ${clubEditHtml}
 
     <!-- 전적 요약 -->
     <div class="pd-stat-row">
