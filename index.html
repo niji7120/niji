@@ -72,8 +72,19 @@
   body.light-theme .modal-title { color: #111122; }
   body.light-theme .manual-sec-title { color: #111122; }
   body.light-theme .manual-item span { color: #333344; }
+  body.light-theme .pf-wrap { background: #f0f0f5; }
   body.light-theme .pf-content { background: #f0f0f5; }
   body.light-theme .pf-name-text { color: #111122 !important; }
+  body.light-theme .match-item { background: #ffffff; border-color: #ccccdd; }
+  body.light-theme .player-item { background: #ffffff; border-color: #ccccdd; }
+  body.light-theme .player-memo-input { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
+  body.light-theme .stat-box { background: #e8e8f0; border-color: #ccccdd; }
+  body.light-theme .pd-profile-item { background: #e8e8f0; }
+  body.light-theme .pd-profile-select { color: #111122; }
+  body.light-theme .pd-profile-select option { background: #ffffff; color: #111122; }
+  body.light-theme .confirm-box { background: #ffffff; }
+  body.light-theme .confirm-title { color: #111122; }
+  body.light-theme .confirm-desc { color: #555577; }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 15px; overflow: hidden; }
@@ -1467,7 +1478,14 @@ let state = {
 let confirmCallback = null;
 
 // ===== STORAGE =====
-function save() { localStorage.setItem('nijiData', JSON.stringify(state)); }
+function save() {
+  try {
+    localStorage.setItem('nijiData', JSON.stringify(state));
+  } catch(e) {
+    console.warn('저장 용량 초과 또는 저장 오류:', e);
+    showToast('⚠️ 저장 공간이 부족합니다. 백업 후 오래된 데이터를 정리하세요.');
+  }
+}
 
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
@@ -1486,8 +1504,14 @@ function applyTheme() {
 function load() {
   const d = localStorage.getItem('nijiData');
   if (d) {
-    const parsed = JSON.parse(d);
-    state = { ...state, ...parsed };
+    try {
+      const parsed = JSON.parse(d);
+      state = { ...state, ...parsed };
+    } catch(e) {
+      console.warn('저장 데이터 파싱 오류, 초기화합니다.', e);
+      localStorage.removeItem('nijiData');
+      return;
+    }
     // migrate old players format (strings → objects)
     if (state.players.length && typeof state.players[0] === 'string') {
       state.players = state.players.map((n, i) => ({ id: i + 1, name: n, memo: '' }));
@@ -1621,10 +1645,10 @@ function showTVCreate() {
       html += `<div style="margin-bottom:10px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
           <span style="font-size:12px;font-weight:700;color:var(--accent);">🏠 ${escHtml(club)}</span>
-          <button onclick="tvSelectClub('${club.replace(/'/g,"\\'")}')" style="padding:3px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:11px;cursor:pointer;">전체선택</button>
+          <button onclick="tvSelectClub(this.dataset.club)" data-club="${escHtml(club)}" style="padding:3px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:11px;cursor:pointer;">전체선택</button>
         </div>
         <div>
-          ${clubPlayers.map(p => `<span id="tvbtn-${p.id}" onclick="tvToggle('${p.name.replace(/'/g,"\\'")}', this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
+          ${clubPlayers.map(p => `<span id="tvbtn-${p.id}" data-pname="${escHtml(p.name)}" onclick="tvToggle(this.dataset.pname,this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
         </div>
       </div>`;
     });
@@ -1634,7 +1658,7 @@ function showTVCreate() {
       html += `<div style="margin-bottom:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:6px;">기타</div>
         <div>
-          ${noClub.map(p => `<span id="tvbtn-${p.id}" onclick="tvToggle('${p.name.replace(/'/g,"\\'")}', this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
+          ${noClub.map(p => `<span id="tvbtn-${p.id}" data-pname="${escHtml(p.name)}" onclick="tvToggle(this.dataset.pname,this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
         </div>
       </div>`;
     }
@@ -1957,13 +1981,12 @@ function genHanul(players, numGames) {
     const games = [];
     const bye = [];
     const courts = Math.floor(n / 4);
-    const extra = n % 4; // 수정: n - courts*4 대신 n%4 사용 (동일하지만 명확)
+    const extra = n % 4;
     if (extra > 0) {
       const byeCount = {};
       players.forEach(p => { byeCount[p] = 0; });
       rounds.forEach(r => r.bye.forEach(p => { byeCount[p] = (byeCount[p]||0) + 1; }));
-      // 버그 수정: byeCount[b]-byeCount[a] (내림차순) → byeCount[a]-byeCount[b] (오름차순)
-      // 덜 쉰 선수(bye 횟수 적은)가 이번에 쉬도록 오름차순 정렬
+      // 수정: 덜 쉰 선수(오름차순)가 이번에 bye가 되도록
       const sorted = [...players].sort((a,b) => byeCount[a] - byeCount[b]);
       sorted.slice(0, extra).forEach(p => { bye.push(p); used.add(p); });
     }
@@ -2341,7 +2364,8 @@ function editMatch(id) {
   document.getElementById('matchSaveBtn').textContent = '수정 저장';
 
   // 폼 상단으로 스크롤
-  document.getElementById('page-match').scrollTo({ top: 0, behavior: 'smooth' });
+  const contentEl = document.querySelector('.content');
+  if (contentEl) contentEl.scrollTo({ top: 0, behavior: 'smooth' });
   showPage('match');
 }
 
@@ -3006,7 +3030,7 @@ function renderPlayers() {
         <div class="memo-label">🏠 클럽 배정 (복수 선택 가능)</div>
         <div class="club-assign-btns">
           <button class="club-assign-btn none-btn${playerClubs.length===0?' selected':''}" data-club="" onclick="clearPlayerClubs(${p.id})">없음</button>
-          ${state.clubs.map(c => `<button class="club-assign-btn${playerClubs.includes(c)?' selected':''}" data-club="${escHtml(c)}" onclick="togglePlayerClub(${p.id},'${escHtml(c)}')">${escHtml(c)}</button>`).join('')}
+          ${state.clubs.map(c => `<button class="club-assign-btn${playerClubs.includes(c)?' selected':''}" data-club="${escHtml(c)}" onclick="togglePlayerClub(${p.id},this.dataset.club)">${escHtml(c)}</button>`).join('')}
         </div>
       </div>` : ''}
       <!-- EDIT AREA -->
@@ -3115,7 +3139,8 @@ function showPlayerDetail(playerId) {
     <div class="pd-profile-item">
       <div class="pd-profile-lbl">${item.lbl}</div>
       <select class="pd-profile-select${item.val?'':' unset'}"
-        onchange="savePlayerProfile(${player.id},'${item.key}',this.value);this.classList.toggle('unset',!this.value)">
+        data-pid="${player.id}" data-key="${item.key}"
+        onchange="savePlayerProfile(parseInt(this.dataset.pid),this.dataset.key,this.value);this.classList.toggle('unset',!this.value)">
         <option value="">미설정</option>
         ${item.opts.map(o=>`<option${item.val===o?' selected':''}>${o}</option>`).join('')}
       </select>
