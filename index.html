@@ -13,6 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="NIJI STRING">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
+<script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Orbitron:wght@700;900&display=swap');
 
@@ -3351,7 +3352,63 @@ function setTodayDate() {
   document.getElementById('matchDate').value = today;
 }
 
-// ===== INIT =====
+// ===== 새로운 데이터 저장소 (용량 무제한) =====
+function save() {
+  localforage.setItem('nijiData', state).catch(function(err) {
+    console.error('저장 실패:', err);
+  });
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  const btn = document.getElementById('themeBtn');
+  if(btn) btn.textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('nijiTheme', isLight ? 'light' : 'dark');
+}
+
+function applyTheme() {
+  const theme = localStorage.getItem('nijiTheme');
+  if (theme === 'light') {
+    document.body.classList.add('light-theme');
+    const btn = document.getElementById('themeBtn');
+    if (btn) btn.textContent = '☀️';
+  }
+}
+
+function load() {
+  localforage.getItem('nijiData').then(function(value) {
+    if (value) {
+      Object.assign(state, value);
+      // 데이터 형식 자동 정리 (마이그레이션)
+      if (state.players.length && typeof state.players[0] === 'string') {
+        state.players = state.players.map((n, i) => ({ id: i+1, name: n, memo: '', clubs: [] }));
+        state.nextPlayerId = state.players.length + 1;
+      }
+      state.players = state.players.map(p => ({
+        memo: '', clubs: [], age: '', career: '', hand: '', style: '', ...p,
+        clubs: p.clubs ? p.clubs : (p.club ? [p.club] : []),
+      }));
+      if (!state.clubs) state.clubs = [];
+      if (!state.rankingClubFilter || !Array.isArray(state.rankingClubFilter)) state.rankingClubFilter = [];
+      if (!state.stringingHistory) state.stringingHistory = [];
+      
+      // 화면 업데이트
+      renderProfile();
+      renderMatchList();
+    }
+  }).catch(function(err) {
+    console.error('데이터 불러오기 실패:', err);
+  });
+}
+
+// ===== 오늘 날짜 설정 =====
+function setTodayDate() {
+  const today = new Date().toISOString().split('T')[0];
+  const dateInput = document.getElementById('matchDate');
+  if (dateInput) dateInput.value = today;
+}
+
+// ===== 앱 시작 실행 =====
 load();
 applyTheme();
 renderProfile();
