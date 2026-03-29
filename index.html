@@ -13,21 +13,26 @@
 <meta name="apple-mobile-web-app-title" content="NIJI STRING">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<!-- Firebase SDK (compat 버전 - 전역 스크립트로 사용, 타이밍 문제 없음) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<!-- Firebase SDK 9.23.0 compat (안정 버전) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
-    authDomain: "niji-string-app.firebaseapp.com",
-    databaseURL: "https://niji-string-app-default-rtdb.firebaseio.com",
-    projectId: "niji-string-app",
-    storageBucket: "niji-string-app.firebasestorage.app",
-    messagingSenderId: "179605771373",
-    appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
-  };
-  firebase.initializeApp(firebaseConfig);
-  window._firebaseDB = firebase.database();
+  try {
+    const firebaseConfig = {
+      apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
+      authDomain: "niji-string-app.firebaseapp.com",
+      databaseURL: "https://niji-string-app-default-rtdb.firebaseio.com",
+      projectId: "niji-string-app",
+      storageBucket: "niji-string-app.firebasestorage.app",
+      messagingSenderId: "179605771373",
+      appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
+    };
+    firebase.initializeApp(firebaseConfig);
+    window._firebaseDB = firebase.database();
+  } catch(e) {
+    console.warn('Firebase 초기화 실패:', e);
+    window._firebaseDB = null;
+  }
 </script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Orbitron:wght@700;900&display=swap');
@@ -88,8 +93,7 @@
   body.light-theme .modal-title { color: #111122; }
   body.light-theme .manual-sec-title { color: #111122; }
   body.light-theme .manual-item span { color: #333344; }
-  body.light-theme .pf-wrap { background: #f0f0f5; }
-  body.light-theme .pf-content { background: #f0f0f5; }
+  body.light-theme .pf-wrap { background: var(--bg); }
   body.light-theme .pf-name-text { color: #111122 !important; }
   body.light-theme .match-item { background: #ffffff; border-color: #ccccdd; }
   body.light-theme .player-item { background: #ffffff; border-color: #ccccdd; }
@@ -104,6 +108,21 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 15px; overflow: hidden; }
+
+  /* 모든 클릭 가능한 요소 터치 최적화 */
+  button, .nav-btn, .player-action-btn, .topbar-avatar, .club-filter-btn,
+  .format-btn, .winner-btn, .pill-tab, .club-assign-btn, .match-delete-btn, .match-edit-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  /* 모바일 입력 폰트 크기 16px 이상으로 자동줌 방지 */
+  .form-input, .form-select, .form-textarea,
+  .pf-item-input, .pf-item-select, .player-memo-input,
+  .match-score-input {
+    font-size: 16px !important;
+  }
+  /* 스코어 입력만 예외 (크게 표시) */
+  .match-score-input { font-size: 22px !important; }
 
   /* ===== APP SHELL ===== */
   #app { display: flex; flex-direction: column; height: 100%; height: 100dvh; max-width: 480px; margin: 0 auto; position: relative; }
@@ -144,15 +163,15 @@
     font-size: 16px; font-weight: 700; cursor: pointer;
     position: relative;
   }
-  .topbar-avatar::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid transparent; background: linear-gradient(135deg, var(--accent), var(--accent2)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; }
+  .topbar-avatar::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0.6; }
 
   /* ===== CONTENT ===== */
   .content { flex: 1; height: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 16px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
   .content::-webkit-scrollbar { width: 4px; }
   .content::-webkit-scrollbar-track { background: transparent; }
   .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  /* 프로필 페이지는 패딩 제거 */
-  .content:has(#page-profile.active) { padding: 0; }
+  /* 프로필 페이지는 패딩 제거 - JS로 처리 */
+  .content.profile-active { padding: 0; }
 
   /* ===== BOTTOM NAV ===== */
   .nav {
@@ -311,7 +330,7 @@
     display: flex; align-items: center; gap: 12px; padding: 12px 14px;
   }
   .player-avatar-sm {
-    width: 44px; height: 56px; border-radius: 8px;
+    width: 44px; height: 44px; border-radius: 8px;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     display: flex; align-items: center; justify-content: center;
     font-size: 18px; font-weight: 700; flex-shrink: 0;
@@ -390,6 +409,7 @@
     background: var(--surface); border-radius: 20px 20px 0 0;
     padding: 20px 20px max(20px, env(safe-area-inset-bottom));
     width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     transform: translateY(100%); transition: transform .3s cubic-bezier(.32,.72,0,1);
   }
   .modal-overlay.open .modal { transform: translateY(0); }
@@ -637,7 +657,7 @@
 
   .pf-wrap {
     width: 100%;
-    background: #0a0a12;
+    background: var(--bg);
     display: flex; flex-direction: column;
   }
 
@@ -675,7 +695,7 @@
 
   /* 하단 콘텐츠 */
   .pf-content {
-    background: #0a0a12;
+    background: var(--bg);
     padding: 14px 12px 20px;
     flex: 1;
   }
@@ -688,7 +708,7 @@
     display: block; margin-bottom: 3px;
   }
   .pf-name-text {
-    font-size: 28px; font-weight: 900; color: #fff;
+    font-size: 28px; font-weight: 900; color: var(--text);
     line-height: 1.1;
   }
 
@@ -815,6 +835,24 @@
 </style>
 </head>
 <body>
+<!-- 로딩 화면 (Firebase 연결 전 빈 화면 방지) -->
+<div id="loadingScreen" style="
+  position:fixed; inset:0; z-index:9999;
+  background:var(--bg); display:flex;
+  flex-direction:column; align-items:center; justify-content:center; gap:16px;">
+  <div style="font-family:'Orbitron',sans-serif; font-size:20px; font-weight:900;
+    background:linear-gradient(135deg,#7c6af7,#f76ac8);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+    NIJI STRING
+  </div>
+  <div style="width:36px; height:36px; border:3px solid #2e2e3e;
+    border-top-color:#7c6af7; border-radius:50%;
+    animation:spin .8s linear infinite;"></div>
+  <div style="font-size:12px; color:#7a7a95;">데이터 불러오는 중...</div>
+</div>
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
 <div id="app">
   <div class="topbar">
     <span class="topbar-logo">NIJI STRING</span>
@@ -1495,24 +1533,30 @@ let confirmCallback = null;
 
 // ===== STORAGE =====
 function save() {
-  if (window._firebaseDB) {
-    // 사진(base64)은 Firebase 용량 초과 유발 → 별도 처리, 나머지만 저장
-    const saveState = { ...state };
-    const photo = saveState.profile && saveState.profile.photo;
-    if (saveState.profile) saveState.profile = { ...saveState.profile, photo: '' };
+  try {
+    var saveState = JSON.parse(JSON.stringify(state));
+    var photo = saveState.profile ? saveState.profile.photo : '';
+    if (saveState.profile) saveState.profile.photo = '';
+    delete saveState.currentResult;
+    delete saveState._matchPage;
+    delete saveState.editingMatchId;
 
-    window._firebaseDB.ref('nijiData').set(saveState).catch(e => {
-      console.warn('Firebase 저장 실패:', e);
-      showToast('⚠️ 저장 실패. 인터넷 연결을 확인하세요.');
-    });
+    if (window._firebaseDB) {
+      window._firebaseDB.ref('nijiData').set(saveState)
+        .catch(function(e) {
+          console.warn('Firebase 저장 실패:', e);
+          try { localStorage.setItem('nijiData', JSON.stringify(saveState)); } catch(ex) {}
+          showToast('⚠️ 저장 실패. 인터넷 연결을 확인하세요.');
+        });
+    } else {
+      try { localStorage.setItem('nijiData', JSON.stringify(saveState)); } catch(e) {}
+    }
 
-    // 사진만 localStorage에 따로 보관
     if (photo) {
       try { localStorage.setItem('nijiPhoto', photo); } catch(e) {}
     }
-  } else {
-    // Firebase 미준비 시 localStorage 임시
-    try { localStorage.setItem('nijiData', JSON.stringify(state)); } catch(e) {}
+  } catch(e) {
+    console.warn('save 오류:', e);
   }
 }
 
@@ -1530,72 +1574,135 @@ function applyTheme() {
     if (btn) btn.textContent = '☀️';
   }
 }
+function _loadFromLocalStorage() {
+  try {
+    var d = localStorage.getItem('nijiData');
+    if (d) _applyFirebaseData(JSON.parse(d));
+    var photo = localStorage.getItem('nijiPhoto');
+    if (photo && photo.length > 10 && state.profile) state.profile.photo = photo;
+  } catch(e) { console.warn('localStorage 로드 실패:', e); }
+}
+
 function load() {
-  // Firebase에서 데이터 로드 (compat SDK)
+  applyTheme();
   if (window._firebaseDB) {
-    window._firebaseDB.ref('nijiData').once('value').then(snapshot => {
-      if (snapshot.exists()) {
-        _applyFirebaseData(snapshot.val());
-      }
-      // 사진은 localStorage에서 복원
-      const photo = localStorage.getItem('nijiPhoto');
-      if (photo && state.profile) state.profile.photo = photo;
+    try {
+      window._firebaseDB.ref('nijiData').once('value')
+        .then(function(snapshot) {
+          if (snapshot.exists()) _applyFirebaseData(snapshot.val());
+          try {
+            var photo = localStorage.getItem('nijiPhoto');
+            if (photo && photo.length > 10) {
+              if (!state.profile) state.profile = {};
+              state.profile.photo = photo;
+            }
+          } catch(e) {}
+          _initApp();
+        })
+        .catch(function(e) {
+          console.warn('Firebase 로드 실패, localStorage 사용:', e);
+          _loadFromLocalStorage();
+          _initApp();
+        });
+    } catch(e) {
+      console.warn('Firebase 연결 오류, localStorage 사용:', e);
+      _loadFromLocalStorage();
       _initApp();
-    }).catch(e => {
-      console.warn('Firebase 로드 실패:', e);
-      // 실패 시 localStorage fallback
-      const d = localStorage.getItem('nijiData');
-      if (d) { try { _applyFirebaseData(JSON.parse(d)); } catch(e2) {} }
-      _initApp();
-    });
+    }
   } else {
-    // Firebase 없으면 localStorage
-    const d = localStorage.getItem('nijiData');
-    if (d) { try { _applyFirebaseData(JSON.parse(d)); } catch(e) {} }
+    // Firebase 없으면 localStorage 사용
+    _loadFromLocalStorage();
     _initApp();
   }
 }
 
+// Firebase는 배열을 객체로 저장할 수 있음 → 안전하게 배열로 변환
+function _toArray(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  // 객체인 경우 (Firebase가 배열을 {0:..., 1:...} 형태로 저장)
+  if (typeof val === 'object') return Object.values(val);
+  return [];
+}
+
 function _applyFirebaseData(parsed) {
   try {
-    state = { ...state, ...parsed };
-    if (state.players && state.players.length && typeof state.players[0] === 'string') {
-      state.players = state.players.map((n, i) => ({ id: i + 1, name: n, memo: '' }));
+    if (!parsed || typeof parsed !== 'object') return;
+
+    // 기본 값 병합
+    state.sportType     = parsed.sportType     || state.sportType;
+    state.nextMatchId   = parsed.nextMatchId   || state.nextMatchId;
+    state.nextPlayerId  = parsed.nextPlayerId  || state.nextPlayerId;
+    state.playerClubFilter = parsed.playerClubFilter || '전체';
+    state.playerSort    = parsed.playerSort    || 'name';
+    state.lastStringDate = parsed.lastStringDate || '';
+    state.stringInterval = parsed.stringInterval || 3;
+
+    // 배열 데이터 (Firebase 객체→배열 변환 포함)
+    state.matches          = _toArray(parsed.matches);
+    state.players          = _toArray(parsed.players);
+    state.clubs            = _toArray(parsed.clubs);
+    state.tournaments      = _toArray(parsed.tournaments);
+    state.stringingHistory = _toArray(parsed.stringingHistory);
+    state.rankingClubFilter = _toArray(parsed.rankingClubFilter);
+
+    // 프로필 (photo는 Firebase에 저장 안 함 → 덮어쓰지 않음)
+    if (parsed.profile && typeof parsed.profile === 'object') {
+      var savedPhoto = state.profile ? state.profile.photo : '';
+      state.profile = { ...state.profile, ...parsed.profile };
+      // Firebase의 photo는 항상 '' → 기존 사진 유지
+      if (savedPhoto) state.profile.photo = savedPhoto;
+    }
+
+    // 구버전 선수 형식 마이그레이션 (문자열 → 객체)
+    if (state.players.length && typeof state.players[0] === 'string') {
+      state.players = state.players.map(function(n, i) {
+        return { id: i + 1, name: n, memo: '', clubs: [] };
+      });
       state.nextPlayerId = state.players.length + 1;
     }
-    if (!state.players) state.players = [];
-    state.players = state.players.map(p => ({
-      memo: '', clubs: [], age: '', career: '', hand: '', style: '', ...p,
-      clubs: p.clubs ? p.clubs : (p.club ? [p.club] : []),
-    }));
-    if (!state.clubs) state.clubs = [];
-    if (!state.rankingClubFilter || !Array.isArray(state.rankingClubFilter)) state.rankingClubFilter = [];
-    if (!state.playerClubFilter) state.playerClubFilter = '전체';
-    if (!state.matches) state.matches = [];
-    if (!state.nextMatchId) state.nextMatchId = (state.matches.length || 0) + 1;
-    if (!state.nextPlayerId) state.nextPlayerId = (state.players.length || 0) + 1;
-    if (!state.sportType) state.sportType = 'badminton';
-    if (!state.lastStringDate) state.lastStringDate = '';
-    if (!state.stringInterval) state.stringInterval = 3;
-    if (!state.stringingHistory) state.stringingHistory = [];
-    if (!state.playerSort) state.playerSort = 'name';
-    if (!state.tournaments) state.tournaments = [];
-    if (!state.profile) state.profile = {};
+
+    // 선수 필드 정규화
+    state.players = state.players.map(function(p) {
+      if (!p || typeof p !== 'object') return null;
+      return {
+        memo: '', clubs: [], age: '', career: '', hand: '', style: '',
+        ...p,
+        clubs: _toArray(p.clubs).length ? _toArray(p.clubs) : (p.club ? [p.club] : []),
+      };
+    }).filter(Boolean);
+
+    // id 없는 선수 id 보정
+    if (!state.nextMatchId) state.nextMatchId = state.matches.length + 1;
+    if (!state.nextPlayerId) state.nextPlayerId = state.players.length + 1;
+
     state._matchPage = 0;
     state.editingMatchId = null;
+
   } catch(e) {
-    console.warn('데이터 파싱 오류:', e);
+    console.warn('데이터 적용 오류:', e);
   }
 }
 
 function _initApp() {
-  applyTheme();
+  // 로딩 화면 숨기기
+  var ls = document.getElementById('loadingScreen');
+  if (ls) ls.style.display = 'none';
+
   if (document.getElementById('sportType')) {
     document.getElementById('sportType').value = state.sportType || 'badminton';
   }
   renderProfile();
   renderMatchList();
   setTodayDate();
+  // 초기 페이지가 profile이면 패딩 제거 클래스 적용
+  const content = document.querySelector('.content');
+  if (content) {
+    const activePage = document.querySelector('.page.active');
+    if (activePage && activePage.id === 'page-profile') {
+      content.classList.add('profile-active');
+    }
+  }
 }
 
 // ===== NAVIGATION =====
@@ -1609,7 +1716,11 @@ function showPage(name) {
   else if (name === 'player-detail') document.getElementById('nav-players').classList.add('active');
   // 스크롤 맨 위로 초기화
   const content = document.querySelector('.content');
-  if (content) content.scrollTop = 0;
+  if (content) {
+    content.scrollTop = 0;
+    // 프로필 페이지 패딩 제거 (content:has 대체)
+    content.classList.toggle('profile-active', name === 'profile');
+  }
   if (name === 'stats') renderStats();
   if (name === 'players') renderPlayers();
   if (name === 'match') renderMatchList();
@@ -1824,22 +1935,37 @@ function tvRemove(idx) {
 }
 
 function tvDelete(id) {
-  if (!confirm('대회를 삭제하시겠어요?')) return;
-  state.tournaments = state.tournaments.filter(t => t.id !== id);
-  save();
-  showToast('대회가 삭제됐어요!');
-  renderTournamentList();
+  showConfirm('대회 삭제', '대회를 삭제하면 복구할 수 없습니다.', '🗑️', () => {
+    state.tournaments = state.tournaments.filter(t => t.id !== id);
+    save();
+    showToast('대회가 삭제됐어요!');
+    renderTournamentList();
+  });
 }
 
 function tvEdit(id) {
   const t = state.tournaments.find(x => x.id === id);
   if (!t) return;
-  const newName = prompt('대회 이름을 입력하세요', t.name);
-  if (!newName || !newName.trim()) return;
-  t.name = newName.trim();
-  save();
-  showToast('수정됐어요!');
-  renderTournamentList();
+  showConfirm(`대회 이름 수정`, `현재 이름: ${t.name}`, '✏️', () => {
+    const newName = document.getElementById('tvEditInput') ? document.getElementById('tvEditInput').value.trim() : '';
+    if (!newName) return;
+    t.name = newName.trim();
+    save();
+    showToast('수정됐어요!');
+    renderTournamentList();
+  }, '저장');
+  // confirmDialog에 입력창 추가
+  setTimeout(() => {
+    const descEl = document.getElementById('confirmDesc');
+    if (descEl) {
+      descEl.innerHTML = `<input id="tvEditInput" value="${escHtml(t.name)}"
+        style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+        color:var(--text);font-size:14px;padding:10px 12px;margin-top:8px;outline:none;font-family:inherit;"
+        placeholder="새 대회 이름">`;
+      const inp = document.getElementById('tvEditInput');
+      if (inp) setTimeout(() => inp.focus(), 50);
+    }
+  }, 30);
 }
 
 function tvCreate() {
@@ -2118,34 +2244,42 @@ const PROFILE_FIELDS = [
 ];
 
 function renderProfile() {
+  if (!state.profile) state.profile = {};
   const p = state.profile;
   const name = p.name || '선수';
   const initial = name.charAt(0).toUpperCase();
 
   // 상단 아바타 버튼
-  document.getElementById('avatarBtn').textContent = initial;
+  const avatarBtn = document.getElementById('avatarBtn');
+  if (avatarBtn) avatarBtn.textContent = initial;
 
   // 이름 + 클럽 오버레이
   const nameRow = document.getElementById('profileNameBig');
-  nameRow.innerHTML = `
-    <span class="pf-club-tag">${p.club ? escHtml(p.club.toUpperCase()) : ''}</span>
-    <span class="pf-name-text">${escHtml(name)}</span>`;
+  if (nameRow) {
+    nameRow.innerHTML = `
+      <span class="pf-club-tag">${p.club ? escHtml(p.club.toUpperCase()) : ''}</span>
+      <span class="pf-name-text">${escHtml(name)}</span>`;
+  }
 
   // 배경 사진 / 이니셜
   const avatarInitial = document.getElementById('avatarInitial');
   const avatarImage   = document.getElementById('avatarImage');
-  if (p.photo) {
-    avatarInitial.style.display = 'none';
-    avatarImage.src = p.photo; avatarImage.style.display = 'block';
-  } else {
-    avatarInitial.textContent = initial;
-    avatarInitial.style.display = 'flex'; avatarImage.style.display = 'none';
+  if (avatarInitial && avatarImage) {
+    if (p.photo) {
+      avatarInitial.style.display = 'none';
+      avatarImage.src = p.photo;
+      avatarImage.style.display = 'block';
+    } else {
+      avatarInitial.textContent = initial;
+      avatarInitial.style.display = 'flex';
+      avatarImage.style.display = 'none';
+    }
   }
 
   // 정보 항목 렌더링
   const grid = document.getElementById('profileInfoGrid');
+  if (!grid) return;
 
-  // 필드 그룹: [age,hand], [career,style], [racket], [string,tension]
   const groups = [
     ['name','club'],
     ['age','hand'],
@@ -2160,7 +2294,6 @@ function renderProfile() {
   let html = '';
   groups.forEach(keys => {
     if (keys.length === 1) {
-      // 전체 너비
       const f = fieldMap[keys[0]];
       if (!f) return;
       const val = p[f.key] || '';
@@ -2183,7 +2316,6 @@ function renderProfile() {
         </div>
       </div>`;
     } else {
-      // 2칸 행
       html += '<div class="pf-row-2">';
       keys.forEach(key => {
         const f = fieldMap[key];
@@ -2340,7 +2472,8 @@ function saveMatch() {
 }
 function renderMatchList() {
   const el = document.getElementById('matchList');
-  if (!state.matches.length) {
+  if (!el) return;
+  if (!state.matches || !state.matches.length) {
     el.innerHTML = '<div class="empty-state"><div class="empty-icon">🏸</div><div class="empty-text">아직 경기 기록이 없어요</div></div>';
     return;
   }
@@ -3377,24 +3510,17 @@ function importData(input) {
   reader.onload = e => {
     try {
       const d = JSON.parse(e.target.result);
-      Object.assign(state, d);
-      // migrate
-      if (state.players.length && typeof state.players[0] === 'string') {
-        state.players = state.players.map((n, i) => ({ id: i+1, name: n, memo: '', clubs: [] }));
-        state.nextPlayerId = state.players.length + 1;
+      _applyFirebaseData(d);
+      // 사진도 복원
+      if (d.profile && d.profile.photo) {
+        state.profile.photo = d.profile.photo;
+        try { localStorage.setItem('nijiPhoto', d.profile.photo); } catch(ex) {}
       }
-      state.players = state.players.map(p => ({
-        memo: '', clubs: [], age: '', career: '', hand: '', style: '', ...p,
-        clubs: p.clubs ? p.clubs : (p.club ? [p.club] : []),
-      }));
-      if (!state.clubs) state.clubs = [];
-      if (!state.rankingClubFilter || !Array.isArray(state.rankingClubFilter)) state.rankingClubFilter = [];
-      if (!state.stringingHistory) state.stringingHistory = [];
       save();
       renderProfile();
       renderMatchList();
       showToast('✅ 가져오기 완료!');
-    } catch { showToast('❌ 파일 형식 오류'); }
+    } catch(ex) { showToast('❌ 파일 형식 오류'); }
   };
   reader.readAsText(file);
   input.value = '';
