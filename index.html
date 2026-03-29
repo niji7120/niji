@@ -1117,6 +1117,31 @@
       <div class="page-header">공유 & 백업</div>
       <div class="page-sub">데이터를 백업하거나 공유하세요</div>
 
+      <div class="section-title">내 계정</div>
+      <div class="share-btn-group">
+        <div class="share-item">
+          <div class="share-icon" style="background:rgba(124,106,247,.1);">👤</div>
+          <div>
+            <div class="share-text" id="loginUserName">-</div>
+            <div class="share-sub" id="loginUserEmail"></div>
+          </div>
+        </div>
+        <div class="share-item" onclick="logoutUser()" style="cursor:pointer;">
+          <div class="share-icon" style="background:rgba(251,191,36,.1);">🚪</div>
+          <div>
+            <div class="share-text">로그아웃</div>
+            <div class="share-sub">다른 계정으로 전환</div>
+          </div>
+        </div>
+        <div class="share-item" onclick="document.getElementById('deleteAccountDialog').classList.add('open')" style="cursor:pointer;">
+          <div class="share-icon" style="background:rgba(248,113,113,.1);">🗑️</div>
+          <div>
+            <div class="share-text" style="color:var(--danger);">회원 탈퇴 & 데이터 삭제</div>
+            <div class="share-sub">모든 기록이 영구 삭제됩니다</div>
+          </div>
+        </div>
+      </div>
+
       <div class="section-title">니지스트링</div>
       <div class="share-btn-group">
         <div class="share-item" onclick="window.open('https://open.kakao.com/o/gPgChZmi','_blank')">
@@ -1154,31 +1179,6 @@
           <div>
             <div class="share-text">사용 설명서 보기</div>
             <div class="share-sub">앱 사용법 안내</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-title">내 계정</div>
-      <div class="share-btn-group">
-        <div class="share-item">
-          <div class="share-icon" style="background:rgba(124,106,247,.1);">👤</div>
-          <div>
-            <div class="share-text" id="loginUserName">-</div>
-            <div class="share-sub" id="loginUserEmail"></div>
-          </div>
-        </div>
-        <div class="share-item" onclick="logoutUser()" style="cursor:pointer;">
-          <div class="share-icon" style="background:rgba(251,191,36,.1);">🚪</div>
-          <div>
-            <div class="share-text">로그아웃</div>
-            <div class="share-sub">다른 계정으로 전환</div>
-          </div>
-        </div>
-        <div class="share-item" onclick="document.getElementById('deleteAccountDialog').classList.add('open')" style="cursor:pointer;">
-          <div class="share-icon" style="background:rgba(248,113,113,.1);">🗑️</div>
-          <div>
-            <div class="share-text" style="color:var(--danger);">회원 탈퇴 & 데이터 삭제</div>
-            <div class="share-sub">모든 기록이 영구 삭제됩니다</div>
           </div>
         </div>
       </div>
@@ -1579,38 +1579,57 @@ function save() {
   if (!currentUser) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    const d = JSON.parse(JSON.stringify(state));
-    delete d._matchPage; delete d.editingMatchId; delete d.currentResult;
+    // Firebase는 배열을 객체로 바꾸므로, 저장 전에 배열임을 명시
+    const d = {
+      profile: state.profile || {},
+      matches: state.matches || [],
+      players: state.players || [],
+      clubs: state.clubs || [],
+      tournaments: state.tournaments || [],
+      nextMatchId: state.nextMatchId || 1,
+      nextPlayerId: state.nextPlayerId || 1,
+      sportType: state.sportType || 'badminton',
+      rankingClubFilter: state.rankingClubFilter || [],
+      playerClubFilter: state.playerClubFilter || '전체',
+      playerSort: state.playerSort || 'name',
+      lastStringDate: state.lastStringDate || '',
+      stringInterval: state.stringInterval || 3,
+      stringingHistory: state.stringingHistory || [],
+    };
     db.ref('users/' + currentUser.uid).set(d)
-      .catch(e => console.warn('Firebase 저장 오류:', e));
-  }, 800);
+      .then(() => console.log('저장 완료'))
+      .catch(e => { console.warn('Firebase 저장 오류:', e); showToast('⚠️ 저장 실패: ' + e.message); });
+  }, 500);
 }
 
 function loadFromFirebase() {
   if (!currentUser) return;
+  showToast('⏳ 데이터 불러오는 중...');
   db.ref('users/' + currentUser.uid).once('value').then(snap => {
     const d = snap.val();
     if (d) {
-      state = { ...state, ...d };
-      if (state.players && state.players.length && typeof state.players[0] === 'string') {
-        state.players = state.players.map((n,i) => ({ id:i+1, name:n, memo:'', clubs:[] }));
-        state.nextPlayerId = state.players.length + 1;
-      }
-      if (state.players) state.players = state.players.map(p => ({
+      // Firebase가 배열을 객체로 바꾸는 경우 다시 배열로 복원
+      const toArr = v => v ? (Array.isArray(v) ? v : Object.values(v)) : [];
+      state.profile = d.profile || state.profile;
+      state.matches = toArr(d.matches);
+      state.players = toArr(d.players);
+      state.clubs = toArr(d.clubs);
+      state.tournaments = toArr(d.tournaments);
+      state.stringingHistory = toArr(d.stringingHistory);
+      state.rankingClubFilter = toArr(d.rankingClubFilter);
+      state.nextMatchId = d.nextMatchId || state.matches.length + 1;
+      state.nextPlayerId = d.nextPlayerId || state.players.length + 1;
+      state.sportType = d.sportType || 'badminton';
+      state.playerClubFilter = d.playerClubFilter || '전체';
+      state.playerSort = d.playerSort || 'name';
+      state.lastStringDate = d.lastStringDate || '';
+      state.stringInterval = d.stringInterval || 3;
+
+      // 선수 데이터 형식 정리
+      state.players = state.players.map(p => ({
         memo:'', clubs:[], age:'', career:'', hand:'', style:'', ...p,
-        clubs: p.clubs ? p.clubs : (p.club ? [p.club] : []),
+        clubs: p.clubs ? (Array.isArray(p.clubs) ? p.clubs : Object.values(p.clubs)) : (p.club ? [p.club] : []),
       }));
-      if (!state.clubs) state.clubs = [];
-      if (!state.rankingClubFilter || !Array.isArray(state.rankingClubFilter)) state.rankingClubFilter = [];
-      if (!state.playerClubFilter) state.playerClubFilter = '전체';
-      if (!state.nextMatchId) state.nextMatchId = (state.matches||[]).length + 1;
-      if (!state.nextPlayerId) state.nextPlayerId = (state.players||[]).length + 1;
-      if (!state.sportType) state.sportType = 'badminton';
-      if (!state.lastStringDate) state.lastStringDate = '';
-      if (!state.stringInterval) state.stringInterval = 3;
-      if (!state.stringingHistory) state.stringingHistory = [];
-      if (!state.playerSort) state.playerSort = 'name';
-      if (!state.tournaments) state.tournaments = [];
     }
     state._matchPage = 0;
     state.editingMatchId = null;
@@ -1620,7 +1639,10 @@ function loadFromFirebase() {
     const sportEl = document.getElementById('sportType');
     if (sportEl) sportEl.value = state.sportType;
     showToast('✅ 데이터를 불러왔어요!');
-  }).catch(e => showToast('❌ 불러오기 실패: ' + e.message));
+  }).catch(e => {
+    console.error('불러오기 오류:', e);
+    showToast('❌ 불러오기 실패: ' + e.message);
+  });
 }
 
 function toggleTheme() {
