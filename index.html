@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,7 +13,6 @@
 <meta name="apple-mobile-web-app-title" content="NIJI STRING">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Orbitron:wght@700;900&display=swap');
 
@@ -74,19 +72,6 @@
   body.light-theme .modal-title { color: #111122; }
   body.light-theme .manual-sec-title { color: #111122; }
   body.light-theme .manual-item span { color: #333344; }
-  body.light-theme .pf-wrap { background: #f0f0f5; }
-  body.light-theme .pf-content { background: #f0f0f5; }
-  body.light-theme .pf-name-text { color: #111122 !important; }
-  body.light-theme .match-item { background: #ffffff; border-color: #ccccdd; }
-  body.light-theme .player-item { background: #ffffff; border-color: #ccccdd; }
-  body.light-theme .player-memo-input { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
-  body.light-theme .stat-box { background: #e8e8f0; border-color: #ccccdd; }
-  body.light-theme .pd-profile-item { background: #e8e8f0; }
-  body.light-theme .pd-profile-select { color: #111122; }
-  body.light-theme .pd-profile-select option { background: #ffffff; color: #111122; }
-  body.light-theme .confirm-box { background: #ffffff; }
-  body.light-theme .confirm-title { color: #111122; }
-  body.light-theme .confirm-desc { color: #555577; }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 15px; overflow: hidden; }
@@ -619,12 +604,11 @@
   .stringing-add-row .btn { white-space: nowrap; font-size: 12px; padding: 0 14px; }
 
   /* ===== PROFILE DESIGN ===== */
-  .profile-page { padding: 0 !important; min-height: 100%; display: block; }
+  .profile-page { padding: 0 !important; }
 
   .pf-wrap {
     width: 100%;
-    min-height: 100%;
-    background: var(--bg);
+    background: #0a0a12;
     display: flex; flex-direction: column;
   }
 
@@ -662,7 +646,7 @@
 
   /* 하단 콘텐츠 */
   .pf-content {
-    background: var(--bg);
+    background: #0a0a12;
     padding: 14px 12px 20px;
     flex: 1;
   }
@@ -675,7 +659,7 @@
     display: block; margin-bottom: 3px;
   }
   .pf-name-text {
-    font-size: 28px; font-weight: 900; color: var(--text);
+    font-size: 28px; font-weight: 900; color: #fff;
     line-height: 1.1;
   }
 
@@ -802,7 +786,7 @@
 </style>
 </head>
 <body>
-<div id="app" style="display:none;">
+<div id="app">
   <div class="topbar">
     <span class="topbar-logo">NIJI STRING</span>
     <div style="display:flex;align-items:center;gap:8px;">
@@ -1115,31 +1099,6 @@
     <div class="page" id="page-share">
       <div class="page-header">공유 & 백업</div>
       <div class="page-sub">데이터를 백업하거나 공유하세요</div>
-
-      <div class="section-title">내 계정</div>
-      <div class="share-btn-group">
-        <div class="share-item">
-          <div class="share-icon" style="background:rgba(124,106,247,.1);">👤</div>
-          <div>
-            <div class="share-text" id="loginUserName">-</div>
-            <div class="share-sub" id="loginUserEmail"></div>
-          </div>
-        </div>
-        <div class="share-item" onclick="logoutUser()" style="cursor:pointer;">
-          <div class="share-icon" style="background:rgba(251,191,36,.1);">🚪</div>
-          <div>
-            <div class="share-text">로그아웃</div>
-            <div class="share-sub">다른 계정으로 전환</div>
-          </div>
-        </div>
-        <div class="share-item" onclick="document.getElementById('deleteAccountDialog').classList.add('open')" style="cursor:pointer;">
-          <div class="share-icon" style="background:rgba(248,113,113,.1);">🗑️</div>
-          <div>
-            <div class="share-text" style="color:var(--danger);">회원 탈퇴 & 데이터 삭제</div>
-            <div class="share-sub">모든 기록이 영구 삭제됩니다</div>
-          </div>
-        </div>
-      </div>
 
       <div class="section-title">니지스트링</div>
       <div class="share-btn-group">
@@ -1467,37 +1426,6 @@
   </div>
 </div>
 
-<!-- ===== 로그인 화면 ===== -->
-<div id="loginScreen" style="display:flex;position:fixed;inset:0;z-index:9999;background:#0f0f13;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:40px;">
-  <div style="text-align:center;">
-    <div style="font-family:'Orbitron',sans-serif;font-size:26px;font-weight:900;color:#7c6af7;letter-spacing:2px;">NIJI STRING</div>
-    <div style="font-size:13px;color:#7a7a95;margin-top:6px;">테니스 · 배드민턴 기록 앱</div>
-  </div>
-  <div style="width:72px;height:72px;border-radius:50%;background:#22222e;display:flex;align-items:center;justify-content:center;font-size:36px;">🎾</div>
-  <div style="text-align:center;">
-    <div style="font-size:15px;color:#e8e8f0;margin-bottom:8px;">내 기록을 클라우드에 안전하게 저장하세요</div>
-    <div style="font-size:12px;color:#7a7a95;">구글 계정으로 로그인하면<br>어느 기기에서나 기록을 확인할 수 있어요</div>
-  </div>
-  <button onclick="loginWithGoogle()" style="display:flex;align-items:center;gap:12px;background:#fff;color:#333;border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.3);">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="22" height="22">
-    구글 계정으로 로그인
-  </button>
-  <div id="loginError" style="color:#f87171;font-size:13px;display:none;"></div>
-</div>
-
-<!-- ===== 회원 탈퇴 모달 ===== -->
-<div class="confirm-overlay" id="deleteAccountDialog">
-  <div class="confirm-box">
-    <div class="confirm-icon">⚠️</div>
-    <div class="confirm-title">회원 탈퇴 & 데이터 삭제</div>
-    <div class="confirm-desc">모든 경기 기록, 선수, 프로필 데이터가 영구 삭제됩니다. 되돌릴 수 없습니다.</div>
-    <div class="confirm-btns">
-      <button class="btn btn-secondary" onclick="document.getElementById('deleteAccountDialog').classList.remove('open')">취소</button>
-      <button class="btn btn-danger" onclick="deleteAccountAndData()">탈퇴 및 삭제</button>
-    </div>
-  </div>
-</div>
-
 <!-- ===== CONFIRM DIALOG ===== -->
 <div class="confirm-overlay" id="confirmDialog">
   <div class="confirm-box">
@@ -1514,69 +1442,7 @@
 <!-- ===== TOAST ===== -->
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
-// ===== FIREBASE 초기화 =====
-const firebaseConfig = {
-  apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
-  authDomain: "niji-string-app.firebaseapp.com",
-  databaseURL: "https://niji-string-app-default-rtdb.firebaseio.com",
-  projectId: "niji-string-app",
-  storageBucket: "niji-string-app.firebasestorage.app",
-  messagingSenderId: "179605771373",
-  appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
-let currentUser = null;
-
-function loginWithGoogle() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  // 모바일에서는 redirect 방식이 더 안정적
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    auth.signInWithRedirect(provider).catch(err => {
-      const el = document.getElementById('loginError');
-      el.style.display = 'block';
-      el.textContent = '로그인 실패: ' + err.message;
-    });
-  } else {
-    auth.signInWithPopup(provider).catch(err => {
-      const el = document.getElementById('loginError');
-      el.style.display = 'block';
-      el.textContent = '로그인 실패: ' + err.message;
-    });
-  }
-}
-
-// 구글 로그인 후 돌아왔을 때 결과 처리
-auth.getRedirectResult().then(result => {
-  // 리다이렉트 로그인 성공 시 onAuthStateChanged가 자동으로 처리함
-  if (result && result.user) {
-    console.log('리다이렉트 로그인 성공:', result.user.displayName);
-  }
-}).catch(err => {
-  if (err.code !== 'auth/no-auth-event') {
-    const el = document.getElementById('loginError');
-    if (el) { el.style.display = 'block'; el.textContent = '로그인 오류: ' + err.message; }
-  }
-});
-function logoutUser() {
-  if (!confirm('로그아웃 하시겠어요?')) return;
-  auth.signOut();
-}
-function deleteAccountAndData() {
-  document.getElementById('deleteAccountDialog').classList.remove('open');
-  if (!currentUser) return;
-  db.ref('users/' + currentUser.uid).remove()
-    .then(() => currentUser.delete())
-    .then(() => showToast('탈퇴 완료. 모든 데이터가 삭제됐습니다.'))
-    .catch(err => showToast('오류: ' + err.message));
-}
-
 // ===== STATE =====
 let state = {
   profile: { name: '', age: '', career: '', hand: '', style: '', photo: '' },
@@ -1598,86 +1464,8 @@ let state = {
 
 let confirmCallback = null;
 
-// ===== STORAGE (Firebase) =====
-let saveTimer = null;
-function save() {
-  if (!currentUser) return;
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    // 사진은 용량이 크면 Firebase 저장 실패 원인이 되므로 제외
-    const profileToSave = { ...state.profile };
-    if (profileToSave.photo && profileToSave.photo.length > 500000) {
-      profileToSave.photo = '';
-    }
-    const d = {
-      profile: profileToSave,
-      matches: state.matches || [],
-      players: state.players || [],
-      clubs: state.clubs || [],
-      tournaments: state.tournaments || [],
-      nextMatchId: state.nextMatchId || 1,
-      nextPlayerId: state.nextPlayerId || 1,
-      sportType: state.sportType || 'badminton',
-      rankingClubFilter: state.rankingClubFilter || [],
-      playerClubFilter: state.playerClubFilter || '전체',
-      playerSort: state.playerSort || 'name',
-      lastStringDate: state.lastStringDate || '',
-      stringInterval: state.stringInterval || 3,
-      stringingHistory: state.stringingHistory || [],
-    };
-    db.ref('users/' + currentUser.uid).set(d)
-      .then(() => console.log('Firebase 저장 완료'))
-      .catch(e => { console.warn('Firebase 저장 오류:', e); showToast('⚠️ 저장 실패: ' + e.message); });
-  }, 500);
-}
-
-function loadFromFirebase() {
-  if (!currentUser) return;
-  showToast('⏳ 데이터 불러오는 중...');
-  db.ref('users/' + currentUser.uid).once('value').then(snap => {
-    const d = snap.val();
-    if (d) {
-      const toArr = v => v ? (Array.isArray(v) ? v : Object.values(v)) : [];
-      state.profile = d.profile || state.profile;
-      state.matches = toArr(d.matches);
-      state.players = toArr(d.players);
-      state.clubs = toArr(d.clubs);
-      state.tournaments = toArr(d.tournaments);
-      state.stringingHistory = toArr(d.stringingHistory);
-      state.rankingClubFilter = toArr(d.rankingClubFilter);
-      state.nextMatchId = d.nextMatchId || state.matches.length + 1;
-      state.nextPlayerId = d.nextPlayerId || state.players.length + 1;
-      state.sportType = d.sportType || 'badminton';
-      state.playerClubFilter = d.playerClubFilter || '전체';
-      state.playerSort = d.playerSort || 'name';
-      state.lastStringDate = d.lastStringDate || '';
-      state.stringInterval = d.stringInterval || 3;
-      state.players = state.players.map(p => ({
-        memo:'', clubs:[], age:'', career:'', hand:'', style:'', ...p,
-        clubs: p.clubs ? (Array.isArray(p.clubs) ? p.clubs : Object.values(p.clubs)) : (p.club ? [p.club] : []),
-      }));
-      // 사진이 너무 크면 저장 실패 원인이 되므로 제거
-      if (state.profile && state.profile.photo && state.profile.photo.length > 500000) {
-        state.profile.photo = '';
-      }
-      showToast('✅ 데이터를 불러왔어요!');
-    } else {
-      showToast('👋 처음 오셨군요! 프로필을 설정해보세요.');
-    }
-    state._matchPage = 0;
-    state.editingMatchId = null;
-    renderProfile();
-    renderMatchList();
-    setTodayDate();
-    const sportEl = document.getElementById('sportType');
-    if (sportEl) sportEl.value = state.sportType;
-  }).catch(e => {
-    console.error('불러오기 오류:', e);
-    showToast('❌ 불러오기 실패: ' + e.message);
-    renderProfile();
-    renderMatchList();
-  });
-}
+// ===== STORAGE =====
+function save() { localStorage.setItem('nijiData', JSON.stringify(state)); }
 
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
@@ -1693,7 +1481,41 @@ function applyTheme() {
     if (btn) btn.textContent = '☀️';
   }
 }
-// load()는 loadFromFirebase()로 대체됨
+function load() {
+  const d = localStorage.getItem('nijiData');
+  if (d) {
+    const parsed = JSON.parse(d);
+    state = { ...state, ...parsed };
+    // migrate old players format (strings → objects)
+    if (state.players.length && typeof state.players[0] === 'string') {
+      state.players = state.players.map((n, i) => ({ id: i + 1, name: n, memo: '' }));
+      state.nextPlayerId = state.players.length + 1;
+    }
+    // ensure all players have memo and club field
+    state.players = state.players.map(p => ({
+      memo: '', clubs: [], age: '', career: '', hand: '', style: '', ...p,
+      // 기존 단일 club 문자열 → clubs 배열로 마이그레이션
+      clubs: p.clubs ? p.clubs : (p.club ? [p.club] : []),
+    }));
+    if (!state.clubs) state.clubs = [];
+    if (!state.rankingClubFilter || !Array.isArray(state.rankingClubFilter)) state.rankingClubFilter = [];
+    if (!state.playerClubFilter) state.playerClubFilter = '전체';
+    if (!state.nextMatchId) state.nextMatchId = state.matches.length + 1;
+    if (!state.nextPlayerId) state.nextPlayerId = state.players.length + 1;
+    if (!state.sportType) state.sportType = 'badminton';
+    if (!state.lastStringDate) state.lastStringDate = '';
+    if (!state.stringInterval) state.stringInterval = 3;
+    if (!state.stringingHistory) state.stringingHistory = [];
+    if (!state.playerSort) state.playerSort = 'name';
+    if (!state.tournaments) state.tournaments = [];
+    state._matchPage = 0; // 페이지 항상 초기화
+    state.editingMatchId = null; // 항상 초기화 (새로고침 시 수정모드 잔류 방지)
+    // restore sport type selector
+    if (document.getElementById('sportType')) {
+      document.getElementById('sportType').value = state.sportType;
+    }
+  }
+}
 
 // ===== NAVIGATION =====
 function showPage(name) {
@@ -1797,10 +1619,10 @@ function showTVCreate() {
       html += `<div style="margin-bottom:10px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
           <span style="font-size:12px;font-weight:700;color:var(--accent);">🏠 ${escHtml(club)}</span>
-          <button onclick="tvSelectClub(this.dataset.club)" data-club="${escHtml(club)}" style="padding:3px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:11px;cursor:pointer;">전체선택</button>
+          <button onclick="tvSelectClub('${club.replace(/'/g,"\\'")}')" style="padding:3px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:11px;cursor:pointer;">전체선택</button>
         </div>
         <div>
-          ${clubPlayers.map(p => `<span id="tvbtn-${p.id}" data-pname="${escHtml(p.name)}" onclick="tvToggle(this.dataset.pname,this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
+          ${clubPlayers.map(p => `<span id="tvbtn-${p.id}" onclick="tvToggle('${p.name.replace(/'/g,"\\'")}', this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
         </div>
       </div>`;
     });
@@ -1810,7 +1632,7 @@ function showTVCreate() {
       html += `<div style="margin-bottom:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:6px;">기타</div>
         <div>
-          ${noClub.map(p => `<span id="tvbtn-${p.id}" data-pname="${escHtml(p.name)}" onclick="tvToggle(this.dataset.pname,this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
+          ${noClub.map(p => `<span id="tvbtn-${p.id}" onclick="tvToggle('${p.name.replace(/'/g,"\\'")}', this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
         </div>
       </div>`;
     }
@@ -2133,13 +1955,12 @@ function genHanul(players, numGames) {
     const games = [];
     const bye = [];
     const courts = Math.floor(n / 4);
-    const extra = n % 4;
+    const extra = n - courts * 4;
     if (extra > 0) {
       const byeCount = {};
-      players.forEach(p => { byeCount[p] = 0; });
-      rounds.forEach(r => r.bye.forEach(p => { byeCount[p] = (byeCount[p]||0) + 1; }));
-      // 수정: 덜 쉰 선수(오름차순)가 이번에 bye가 되도록
-      const sorted = [...players].sort((a,b) => byeCount[a] - byeCount[b]);
+      players.forEach(p => byeCount[p] = 0);
+      rounds.forEach(r => r.bye.forEach(p => byeCount[p]++));
+      const sorted = [...players].sort((a,b) => byeCount[b] - byeCount[a]);
       sorted.slice(0, extra).forEach(p => { bye.push(p); used.add(p); });
     }
     const avail = players.filter(p => !used.has(p));
@@ -2215,10 +2036,6 @@ const PROFILE_FIELDS = [
 ];
 
 function renderProfile() {
-  // 현재 포커스된 입력창이 프로필 안에 있으면 렌더 건너뜀 (입력 중 내용 날아감 방지)
-  const focused = document.activeElement;
-  if (focused && focused.closest && focused.closest('#profileInfoGrid')) return;
-
   const p = state.profile;
   const name = p.name || '선수';
   const initial = name.charAt(0).toUpperCase();
@@ -2274,7 +2091,6 @@ function renderProfile() {
         ? `<input type="date" class="pf-item-input" value="${escHtml(val)}"
              onchange="saveProfileField('${f.key}',this.value)">`
         : `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${f.ph||''}"
-             oninput="saveProfileFieldDebounced('${f.key}',this.value)"
              onblur="saveProfileField('${f.key}',this.value)"
              onkeydown="if(event.key==='Enter')this.blur()">`;
       html += `<div class="pf-item">
@@ -2297,7 +2113,6 @@ function renderProfile() {
                ${f.opts.map(o=>`<option${val===o?' selected':''}>${o}</option>`).join('')}
              </select>`
           : `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${f.ph||''}"
-               oninput="saveProfileFieldDebounced('${f.key}',this.value)"
                onblur="saveProfileField('${f.key}',this.value)"
                onkeydown="if(event.key==='Enter')this.blur()">`;
         html += `<div class="pf-item">
@@ -2315,28 +2130,17 @@ function renderProfile() {
 }
 
 function saveProfileField(key, value) {
-  const trimmed = typeof value === 'string' ? value.trim() : value;
-  // 이름 필드가 빈 값이면 저장하지 않음 (기존 이름 유지)
-  if (key === 'name' && !trimmed) return;
-  state.profile[key] = trimmed;
+  state.profile[key] = typeof value === 'string' ? value.trim() : value;
+  if (!state.profile.name) state.profile.name = '선수';
   state.profile.photo = state.profile.photo || '';
   save();
-  const p = state.profile; const name = p.name || '';
+  const p = state.profile; const name = p.name || '선수';
   const nameRow = document.getElementById('profileNameBig');
   if (nameRow) nameRow.innerHTML = `
     <span class="pf-club-tag">${p.club ? escHtml(p.club.toUpperCase()) : ''}</span>
     <span class="pf-name-text">${escHtml(name)}</span>`;
-  if (name) {
-    document.getElementById('avatarBtn').textContent = name.charAt(0).toUpperCase();
-    if (!p.photo) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
-  }
-}
-
-// 모바일 실시간 입력을 위한 debounce (1초 후 저장)
-let _pfDebounceTimer = {};
-function saveProfileFieldDebounced(key, value) {
-  clearTimeout(_pfDebounceTimer[key]);
-  _pfDebounceTimer[key] = setTimeout(() => saveProfileField(key, value), 1000);
+  document.getElementById('avatarBtn').textContent = name.charAt(0).toUpperCase();
+  if (!p.photo) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
 }
 
 function uploadPhoto(input) {
@@ -2533,8 +2337,7 @@ function editMatch(id) {
   document.getElementById('matchSaveBtn').textContent = '수정 저장';
 
   // 폼 상단으로 스크롤
-  const contentEl = document.querySelector('.content');
-  if (contentEl) contentEl.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('page-match').scrollTo({ top: 0, behavior: 'smooth' });
   showPage('match');
 }
 
@@ -2823,7 +2626,7 @@ function renderClubTags() {
   el.innerHTML = state.clubs.map(c =>
     `<div class="club-tag">
       <span>${escHtml(c)}</span>
-      <button class="club-tag-del" onclick="deleteClub(this.dataset.club)" data-club="${escHtml(c)}" title="클럽 삭제">✕</button>
+      <button class="club-tag-del" onclick="deleteClub('${escHtml(c)}')" title="클럽 삭제">✕</button>
     </div>`
   ).join('');
 }
@@ -2842,7 +2645,7 @@ function renderPlayerClubFilter() {
   if (!state.clubs.length) { el.innerHTML = ''; return; }
   const all = ['전체', ...state.clubs, '클럽 없음'];
   el.innerHTML = `<div class="club-filter">${all.map(c =>
-    `<button class="club-filter-btn${state.playerClubFilter===c?' active':''}" onclick="setPlayerClubFilter(this.dataset.club)" data-club="${escHtml(c)}">${escHtml(c)}</button>`
+    `<button class="club-filter-btn${state.playerClubFilter===c?' active':''}" onclick="setPlayerClubFilter('${escHtml(c)}')">${escHtml(c)}</button>`
   ).join('')}</div>`;
 }
 
@@ -3043,10 +2846,9 @@ function addStringingHistory() {
   if (!state.stringingHistory) state.stringingHistory = [];
   const id = Date.now();
   state.stringingHistory.push({ id, name, date });
-  // 가장 최근 교체일 자동 갱신 (프로필 stringDate도 동기화)
+  // 가장 최근 교체일 자동 갱신
   const latest = [...state.stringingHistory].sort((a,b) => b.date.localeCompare(a.date))[0];
   state.lastStringDate = latest.date;
-  state.profile.stringDate = latest.date;
   save();
   document.getElementById('newStringName').value = '';
   renderStringing();
@@ -3055,14 +2857,12 @@ function addStringingHistory() {
 
 function deleteStringingHistory(id) {
   state.stringingHistory = state.stringingHistory.filter(h => h.id !== id);
-  // 최근 교체일 재계산 (프로필도 동기화)
+  // 최근 교체일 재계산
   if (state.stringingHistory.length) {
     const latest = [...state.stringingHistory].sort((a,b) => b.date.localeCompare(a.date))[0];
     state.lastStringDate = latest.date;
-    state.profile.stringDate = latest.date;
   } else {
     state.lastStringDate = '';
-    state.profile.stringDate = '';
   }
   save();
   renderStringing();
@@ -3199,7 +2999,7 @@ function renderPlayers() {
         <div class="memo-label">🏠 클럽 배정 (복수 선택 가능)</div>
         <div class="club-assign-btns">
           <button class="club-assign-btn none-btn${playerClubs.length===0?' selected':''}" data-club="" onclick="clearPlayerClubs(${p.id})">없음</button>
-          ${state.clubs.map(c => `<button class="club-assign-btn${playerClubs.includes(c)?' selected':''}" data-club="${escHtml(c)}" onclick="togglePlayerClub(${p.id},this.dataset.club)">${escHtml(c)}</button>`).join('')}
+          ${state.clubs.map(c => `<button class="club-assign-btn${playerClubs.includes(c)?' selected':''}" data-club="${escHtml(c)}" onclick="togglePlayerClub(${p.id},'${escHtml(c)}')">${escHtml(c)}</button>`).join('')}
         </div>
       </div>` : ''}
       <!-- EDIT AREA -->
@@ -3308,8 +3108,7 @@ function showPlayerDetail(playerId) {
     <div class="pd-profile-item">
       <div class="pd-profile-lbl">${item.lbl}</div>
       <select class="pd-profile-select${item.val?'':' unset'}"
-        data-pid="${player.id}" data-key="${item.key}"
-        onchange="savePlayerProfile(parseInt(this.dataset.pid),this.dataset.key,this.value);this.classList.toggle('unset',!this.value)">
+        onchange="savePlayerProfile(${player.id},'${item.key}',this.value);this.classList.toggle('unset',!this.value)">
         <option value="">미설정</option>
         ${item.opts.map(o=>`<option${item.val===o?' selected':''}>${o}</option>`).join('')}
       </select>
@@ -3521,25 +3320,11 @@ function setTodayDate() {
 }
 
 // ===== INIT =====
+load();
 applyTheme();
-
-// 로그인 상태 감지 (모든 함수 선언 이후 실행됨)
-auth.onAuthStateChanged(user => {
-  if (user) {
-    currentUser = user;
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = '';
-    document.getElementById('loginUserName').textContent = user.displayName || '사용자';
-    document.getElementById('loginUserEmail').textContent = user.email || '';
-    applyTheme();
-    setTodayDate();
-    loadFromFirebase(); // ✅ 데이터 불러온 후 render가 자동 실행됨
-  } else {
-    currentUser = null;
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
-  }
-});
+renderProfile();
+renderMatchList();
+setTodayDate();
 
 // ===== SERVICE WORKER 등록 =====
 if ('serviceWorker' in navigator) {
