@@ -1586,9 +1586,25 @@ function _loadFromLocalStorage() {
 function load() {
   applyTheme();
   if (window._firebaseDB) {
+    var done = false;
+
+    // 5초 타임아웃 — Firebase 응답 없으면 localStorage로 대체
+    var timer = setTimeout(function() {
+      if (!done) {
+        done = true;
+        console.warn('Firebase 타임아웃, localStorage 사용');
+        _loadFromLocalStorage();
+        _initApp();
+        showToast('⚠️ 오프라인 모드로 실행됩니다');
+      }
+    }, 5000);
+
     try {
       window._firebaseDB.ref('nijiData').once('value')
         .then(function(snapshot) {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
           if (snapshot.exists()) _applyFirebaseData(snapshot.val());
           try {
             var photo = localStorage.getItem('nijiPhoto');
@@ -1600,14 +1616,21 @@ function load() {
           _initApp();
         })
         .catch(function(e) {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
           console.warn('Firebase 로드 실패, localStorage 사용:', e);
           _loadFromLocalStorage();
           _initApp();
         });
     } catch(e) {
-      console.warn('Firebase 연결 오류, localStorage 사용:', e);
-      _loadFromLocalStorage();
-      _initApp();
+      if (!done) {
+        done = true;
+        clearTimeout(timer);
+        console.warn('Firebase 연결 오류, localStorage 사용:', e);
+        _loadFromLocalStorage();
+        _initApp();
+      }
     }
   } else {
     // Firebase 없으면 localStorage 사용
