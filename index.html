@@ -619,10 +619,11 @@
   .stringing-add-row .btn { white-space: nowrap; font-size: 12px; padding: 0 14px; }
 
   /* ===== PROFILE DESIGN ===== */
-  .profile-page { padding: 0 !important; }
+  .profile-page { padding: 0 !important; min-height: 100%; display: block; }
 
   .pf-wrap {
     width: 100%;
+    min-height: 100%;
     background: var(--bg);
     display: flex; flex-direction: column;
   }
@@ -1534,15 +1535,30 @@ let currentUser = null;
 
 function loginWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithRedirect(provider).catch(err => {
-    const el = document.getElementById('loginError');
-    el.style.display = 'block';
-    el.textContent = '로그인 실패: ' + err.message;
-  });
+  // 모바일에서는 redirect 방식이 더 안정적
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    auth.signInWithRedirect(provider).catch(err => {
+      const el = document.getElementById('loginError');
+      el.style.display = 'block';
+      el.textContent = '로그인 실패: ' + err.message;
+    });
+  } else {
+    auth.signInWithPopup(provider).catch(err => {
+      const el = document.getElementById('loginError');
+      el.style.display = 'block';
+      el.textContent = '로그인 실패: ' + err.message;
+    });
+  }
 }
 
 // 구글 로그인 후 돌아왔을 때 결과 처리
-auth.getRedirectResult().catch(err => {
+auth.getRedirectResult().then(result => {
+  // 리다이렉트 로그인 성공 시 onAuthStateChanged가 자동으로 처리함
+  if (result && result.user) {
+    console.log('리다이렉트 로그인 성공:', result.user.displayName);
+  }
+}).catch(err => {
   if (err.code !== 'auth/no-auth-event') {
     const el = document.getElementById('loginError');
     if (el) { el.style.display = 'block'; el.textContent = '로그인 오류: ' + err.message; }
@@ -2199,6 +2215,10 @@ const PROFILE_FIELDS = [
 ];
 
 function renderProfile() {
+  // 현재 포커스된 입력창이 프로필 안에 있으면 렌더 건너뜀 (입력 중 내용 날아감 방지)
+  const focused = document.activeElement;
+  if (focused && focused.closest && focused.closest('#profileInfoGrid')) return;
+
   const p = state.profile;
   const name = p.name || '선수';
   const initial = name.charAt(0).toUpperCase();
@@ -2254,6 +2274,7 @@ function renderProfile() {
         ? `<input type="date" class="pf-item-input" value="${escHtml(val)}"
              onchange="saveProfileField('${f.key}',this.value)">`
         : `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${f.ph||''}"
+             oninput="saveProfileFieldDebounced('${f.key}',this.value)"
              onblur="saveProfileField('${f.key}',this.value)"
              onkeydown="if(event.key==='Enter')this.blur()">`;
       html += `<div class="pf-item">
@@ -2276,6 +2297,7 @@ function renderProfile() {
                ${f.opts.map(o=>`<option${val===o?' selected':''}>${o}</option>`).join('')}
              </select>`
           : `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${f.ph||''}"
+               oninput="saveProfileFieldDebounced('${f.key}',this.value)"
                onblur="saveProfileField('${f.key}',this.value)"
                onkeydown="if(event.key==='Enter')this.blur()">`;
         html += `<div class="pf-item">
@@ -2293,17 +2315,28 @@ function renderProfile() {
 }
 
 function saveProfileField(key, value) {
-  state.profile[key] = typeof value === 'string' ? value.trim() : value;
-  if (!state.profile.name) state.profile.name = '선수';
+  const trimmed = typeof value === 'string' ? value.trim() : value;
+  // 이름 필드가 빈 값이면 저장하지 않음 (기존 이름 유지)
+  if (key === 'name' && !trimmed) return;
+  state.profile[key] = trimmed;
   state.profile.photo = state.profile.photo || '';
   save();
-  const p = state.profile; const name = p.name || '선수';
+  const p = state.profile; const name = p.name || '';
   const nameRow = document.getElementById('profileNameBig');
   if (nameRow) nameRow.innerHTML = `
     <span class="pf-club-tag">${p.club ? escHtml(p.club.toUpperCase()) : ''}</span>
     <span class="pf-name-text">${escHtml(name)}</span>`;
-  document.getElementById('avatarBtn').textContent = name.charAt(0).toUpperCase();
-  if (!p.photo) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+  if (name) {
+    document.getElementById('avatarBtn').textContent = name.charAt(0).toUpperCase();
+    if (!p.photo) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+  }
+}
+
+// 모바일 실시간 입력을 위한 debounce (1초 후 저장)
+let _pfDebounceTimer = {};
+function saveProfileFieldDebounced(key, value) {
+  clearTimeout(_pfDebounceTimer[key]);
+  _pfDebounceTimer[key] = setTimeout(() => saveProfileField(key, value), 1000);
 }
 
 function uploadPhoto(input) {
