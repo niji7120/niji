@@ -13,11 +13,10 @@
 <meta name="apple-mobile-web-app-title" content="NIJI STRING">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
+<!-- Firebase SDK (compat 버전 - 전역 스크립트로 사용, 타이밍 문제 없음) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
   const firebaseConfig = {
     apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
     authDomain: "niji-string-app.firebaseapp.com",
@@ -27,31 +26,8 @@
     messagingSenderId: "179605771373",
     appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
   };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  // 전역으로 노출
-  window._firebaseDB = db;
-  window._firebaseRef = ref;
-  window._firebaseSet = set;
-  window._firebaseGet = get;
-
-  // Firebase에서 데이터 로드 후 앱 초기화
-  window._firebaseLoaded = false;
-  const dataRef = ref(db, 'nijiData');
-  get(dataRef).then((snapshot) => {
-    if (snapshot.exists()) {
-      const parsed = snapshot.val();
-      if (window._applyFirebaseData) window._applyFirebaseData(parsed);
-    }
-    window._firebaseLoaded = true;
-    if (window._initApp) window._initApp();
-  }).catch((e) => {
-    console.warn('Firebase 로드 실패, localStorage 사용:', e);
-    window._firebaseLoaded = true;
-    if (window._initApp) window._initApp();
-  });
+  firebase.initializeApp(firebaseConfig);
+  window._firebaseDB = firebase.database();
 </script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Orbitron:wght@700;900&display=swap');
@@ -1519,16 +1495,23 @@ let confirmCallback = null;
 
 // ===== STORAGE =====
 function save() {
-  // Firebase에 저장
-  if (window._firebaseDB && window._firebaseRef && window._firebaseSet) {
-    const dataRef = window._firebaseRef(window._firebaseDB, 'nijiData');
-    window._firebaseSet(dataRef, state).catch(e => {
+  if (window._firebaseDB) {
+    // 사진(base64)은 Firebase 용량 초과 유발 → 별도 처리, 나머지만 저장
+    const saveState = { ...state };
+    const photo = saveState.profile && saveState.profile.photo;
+    if (saveState.profile) saveState.profile = { ...saveState.profile, photo: '' };
+
+    window._firebaseDB.ref('nijiData').set(saveState).catch(e => {
       console.warn('Firebase 저장 실패:', e);
-      // Firebase 실패 시 localStorage 백업
-      try { localStorage.setItem('nijiData', JSON.stringify(state)); } catch(e2) {}
+      showToast('⚠️ 저장 실패. 인터넷 연결을 확인하세요.');
     });
+
+    // 사진만 localStorage에 따로 보관
+    if (photo) {
+      try { localStorage.setItem('nijiPhoto', photo); } catch(e) {}
+    }
   } else {
-    // Firebase 미준비 시 localStorage 임시 저장
+    // Firebase 미준비 시 localStorage 임시
     try { localStorage.setItem('nijiData', JSON.stringify(state)); } catch(e) {}
   }
 }
@@ -1548,20 +1531,39 @@ function applyTheme() {
   }
 }
 function load() {
-  // localStorage에서 테마만 복원 (테마는 로컬 유지)
-  // 데이터는 Firebase에서 로드 (위 module script에서 처리)
+  // Firebase에서 데이터 로드 (compat SDK)
+  if (window._firebaseDB) {
+    window._firebaseDB.ref('nijiData').once('value').then(snapshot => {
+      if (snapshot.exists()) {
+        _applyFirebaseData(snapshot.val());
+      }
+      // 사진은 localStorage에서 복원
+      const photo = localStorage.getItem('nijiPhoto');
+      if (photo && state.profile) state.profile.photo = photo;
+      _initApp();
+    }).catch(e => {
+      console.warn('Firebase 로드 실패:', e);
+      // 실패 시 localStorage fallback
+      const d = localStorage.getItem('nijiData');
+      if (d) { try { _applyFirebaseData(JSON.parse(d)); } catch(e2) {} }
+      _initApp();
+    });
+  } else {
+    // Firebase 없으면 localStorage
+    const d = localStorage.getItem('nijiData');
+    if (d) { try { _applyFirebaseData(JSON.parse(d)); } catch(e) {} }
+    _initApp();
+  }
 }
 
-// Firebase 데이터 적용 함수
-window._applyFirebaseData = function(parsed) {
+function _applyFirebaseData(parsed) {
   try {
     state = { ...state, ...parsed };
-    // migrate old players format (strings → objects)
-    if (state.players.length && typeof state.players[0] === 'string') {
+    if (state.players && state.players.length && typeof state.players[0] === 'string') {
       state.players = state.players.map((n, i) => ({ id: i + 1, name: n, memo: '' }));
       state.nextPlayerId = state.players.length + 1;
     }
-    // ensure all players have memo and club field
+    if (!state.players) state.players = [];
     state.players = state.players.map(p => ({
       memo: '', clubs: [], age: '', career: '', hand: '', style: '', ...p,
       clubs: p.clubs ? p.clubs : (p.club ? [p.club] : []),
@@ -1569,31 +1571,32 @@ window._applyFirebaseData = function(parsed) {
     if (!state.clubs) state.clubs = [];
     if (!state.rankingClubFilter || !Array.isArray(state.rankingClubFilter)) state.rankingClubFilter = [];
     if (!state.playerClubFilter) state.playerClubFilter = '전체';
-    if (!state.nextMatchId) state.nextMatchId = state.matches.length + 1;
-    if (!state.nextPlayerId) state.nextPlayerId = state.players.length + 1;
+    if (!state.matches) state.matches = [];
+    if (!state.nextMatchId) state.nextMatchId = (state.matches.length || 0) + 1;
+    if (!state.nextPlayerId) state.nextPlayerId = (state.players.length || 0) + 1;
     if (!state.sportType) state.sportType = 'badminton';
     if (!state.lastStringDate) state.lastStringDate = '';
     if (!state.stringInterval) state.stringInterval = 3;
     if (!state.stringingHistory) state.stringingHistory = [];
     if (!state.playerSort) state.playerSort = 'name';
     if (!state.tournaments) state.tournaments = [];
+    if (!state.profile) state.profile = {};
     state._matchPage = 0;
     state.editingMatchId = null;
-    if (document.getElementById('sportType')) {
-      document.getElementById('sportType').value = state.sportType;
-    }
   } catch(e) {
-    console.warn('Firebase 데이터 파싱 오류:', e);
+    console.warn('데이터 파싱 오류:', e);
   }
-};
+}
 
-// 앱 초기화 함수 (Firebase 로드 후 호출)
-window._initApp = function() {
+function _initApp() {
   applyTheme();
+  if (document.getElementById('sportType')) {
+    document.getElementById('sportType').value = state.sportType || 'badminton';
+  }
   renderProfile();
   renderMatchList();
   setTodayDate();
-};
+}
 
 // ===== NAVIGATION =====
 function showPage(name) {
@@ -3404,18 +3407,7 @@ function setTodayDate() {
 }
 
 // ===== INIT =====
-load();
-// Firebase 로드가 이미 완료됐으면 바로 실행, 아니면 Firebase module이 완료 후 호출
-if (window._firebaseLoaded) {
-  applyTheme();
-  renderProfile();
-  renderMatchList();
-  setTodayDate();
-} else {
-  // Firebase 로드 대기 (module script가 완료되면 _initApp 호출함)
-  applyTheme();
-  setTodayDate();
-}
+load(); // Firebase에서 데이터 로드 후 _initApp 자동 호출
 
 // ===== SERVICE WORKER 등록 =====
 if ('serviceWorker' in navigator) {
