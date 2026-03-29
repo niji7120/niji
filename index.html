@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,6 +14,10 @@
 <meta name="apple-mobile-web-app-title" content="NIJI STRING">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
+<!-- ===== Firebase SDK ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Orbitron:wght@700;900&display=swap');
 
@@ -799,7 +804,7 @@
 </style>
 </head>
 <body>
-<div id="app">
+<div id="app" style="display:none;">
   <div class="topbar">
     <span class="topbar-logo">NIJI STRING</span>
     <div style="display:flex;align-items:center;gap:8px;">
@@ -1153,6 +1158,31 @@
           </div>
         </div>
       </div>
+
+      <div class="section-title">계정</div>
+      <div class="share-btn-group">
+        <div class="share-item">
+          <div class="share-icon" style="background:rgba(124,106,247,.1);">👤</div>
+          <div style="flex:1;">
+            <div class="share-text" id="loginUserName">로그인 중...</div>
+            <div class="share-sub" id="loginUserEmail"></div>
+          </div>
+        </div>
+        <div class="share-item" onclick="logoutUser()" style="cursor:pointer;">
+          <div class="share-icon" style="background:rgba(251,191,36,.1);">🚪</div>
+          <div>
+            <div class="share-text">로그아웃</div>
+            <div class="share-sub">다른 계정으로 전환</div>
+          </div>
+        </div>
+        <div class="share-item" onclick="document.getElementById('deleteAccountDialog').classList.add('open')" style="cursor:pointer;">
+          <div class="share-icon" style="background:rgba(248,113,113,.1);">🗑️</div>
+          <div>
+            <div class="share-text" style="color:var(--danger);">회원 탈퇴 & 데이터 삭제</div>
+            <div class="share-sub">모든 기록이 영구 삭제됩니다</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1439,6 +1469,37 @@
   </div>
 </div>
 
+<!-- ===== 로그인 화면 ===== -->
+<div id="loginScreen" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:40px;">
+  <div style="text-align:center;">
+    <div style="font-family:'Orbitron',sans-serif;font-size:26px;font-weight:900;color:var(--accent);letter-spacing:2px;">NIJI STRING</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-top:6px;">테니스 · 배드민턴 기록 앱</div>
+  </div>
+  <div style="width:72px;height:72px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:36px;">🎾</div>
+  <div style="text-align:center;">
+    <div style="font-size:15px;color:var(--text);margin-bottom:6px;">내 기록을 클라우드에 안전하게 저장하세요</div>
+    <div style="font-size:12px;color:var(--text-muted);">구글 계정으로 로그인하면<br>어느 기기에서나 기록을 확인할 수 있어요</div>
+  </div>
+  <button id="googleLoginBtn" onclick="loginWithGoogle()" style="display:flex;align-items:center;gap:12px;background:#fff;color:#333;border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.15);">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="22" height="22">
+    구글 계정으로 로그인
+  </button>
+  <div id="loginError" style="color:var(--danger);font-size:13px;display:none;"></div>
+</div>
+
+<!-- ===== 회원 탈퇴 확인 모달 ===== -->
+<div class="confirm-overlay" id="deleteAccountDialog">
+  <div class="confirm-box">
+    <div class="confirm-icon">⚠️</div>
+    <div class="confirm-title">회원 탈퇴 & 데이터 삭제</div>
+    <div class="confirm-desc">모든 경기 기록, 선수, 프로필 데이터가 영구 삭제됩니다. 이 작업은 되돌릴 수 없습니다.</div>
+    <div class="confirm-btns">
+      <button class="btn btn-secondary" onclick="document.getElementById('deleteAccountDialog').classList.remove('open')">취소</button>
+      <button class="btn btn-danger" onclick="deleteAccountAndData()">탈퇴 및 삭제</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== CONFIRM DIALOG ===== -->
 <div class="confirm-overlay" id="confirmDialog">
   <div class="confirm-box">
@@ -1456,6 +1517,67 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ===== FIREBASE 초기화 =====
+const firebaseConfig = {
+  apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
+  authDomain: "niji-string-app.firebaseapp.com",
+  databaseURL: "https://niji-string-app-default-rtdb.firebaseio.com",
+  projectId: "niji-string-app",
+  storageBucket: "niji-string-app.firebasestorage.app",
+  messagingSenderId: "179605771373",
+  appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+let currentUser = null;
+
+// 구글 로그인
+function loginWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(err => {
+    const errEl = document.getElementById('loginError');
+    errEl.style.display = 'block';
+    errEl.textContent = '로그인 실패: ' + err.message;
+  });
+}
+
+// 로그아웃
+function logoutUser() {
+  if (!confirm('로그아웃 하시겠어요?')) return;
+  auth.signOut();
+}
+
+// 회원 탈퇴 & 데이터 전체 삭제
+function deleteAccountAndData() {
+  document.getElementById('deleteAccountDialog').classList.remove('open');
+  if (!currentUser) return;
+  const uid = currentUser.uid;
+  db.ref('users/' + uid).remove()
+    .then(() => currentUser.delete())
+    .then(() => { showToast('탈퇴 완료. 모든 데이터가 삭제됐습니다.'); })
+    .catch(err => { showToast('오류: ' + err.message); });
+}
+
+// 로그인 상태 감지 → 앱 시작
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = '';
+    // 계정 정보 표시
+    document.getElementById('loginUserName').textContent = user.displayName || '사용자';
+    document.getElementById('loginUserEmail').textContent = user.email || '';
+    // 파이어베이스에서 데이터 불러오기
+    loadFromFirebase();
+  } else {
+    currentUser = null;
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
+
 // ===== STATE =====
 let state = {
   profile: { name: '', age: '', career: '', hand: '', style: '', photo: '' },
@@ -1477,14 +1599,60 @@ let state = {
 
 let confirmCallback = null;
 
-// ===== STORAGE =====
+// ===== STORAGE (Firebase) =====
+let saveTimer = null;
 function save() {
-  try {
-    localStorage.setItem('nijiData', JSON.stringify(state));
-  } catch(e) {
-    console.warn('저장 용량 초과 또는 저장 오류:', e);
-    showToast('⚠️ 저장 공간이 부족합니다. 백업 후 오래된 데이터를 정리하세요.');
-  }
+  if (!currentUser) return;
+  // 0.8초 후 저장 (연속 입력 시 한 번만 저장)
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    const saveData = { ...state };
+    delete saveData._matchPage;
+    delete saveData.editingMatchId;
+    delete saveData.currentResult;
+    db.ref('users/' + currentUser.uid).set(saveData)
+      .catch(e => console.warn('Firebase 저장 오류:', e));
+  }, 800);
+}
+
+function loadFromFirebase() {
+  if (!currentUser) return;
+  db.ref('users/' + currentUser.uid).once('value').then(snapshot => {
+    const d = snapshot.val();
+    if (d) {
+      state = { ...state, ...d };
+      // 마이그레이션
+      if (state.players.length && typeof state.players[0] === 'string') {
+        state.players = state.players.map((n, i) => ({ id: i+1, name: n, memo: '', clubs: [] }));
+        state.nextPlayerId = state.players.length + 1;
+      }
+      state.players = state.players.map(p => ({
+        memo: '', clubs: [], age: '', career: '', hand: '', style: '', ...p,
+        clubs: p.clubs ? p.clubs : (p.club ? [p.club] : []),
+      }));
+      if (!state.clubs) state.clubs = [];
+      if (!state.rankingClubFilter || !Array.isArray(state.rankingClubFilter)) state.rankingClubFilter = [];
+      if (!state.playerClubFilter) state.playerClubFilter = '전체';
+      if (!state.nextMatchId) state.nextMatchId = state.matches.length + 1;
+      if (!state.nextPlayerId) state.nextPlayerId = state.players.length + 1;
+      if (!state.sportType) state.sportType = 'badminton';
+      if (!state.lastStringDate) state.lastStringDate = '';
+      if (!state.stringInterval) state.stringInterval = 3;
+      if (!state.stringingHistory) state.stringingHistory = [];
+      if (!state.playerSort) state.playerSort = 'name';
+      if (!state.tournaments) state.tournaments = [];
+    }
+    state._matchPage = 0;
+    state.editingMatchId = null;
+    applyTheme();
+    renderProfile();
+    renderMatchList();
+    setTodayDate();
+    if (document.getElementById('sportType'))
+      document.getElementById('sportType').value = state.sportType;
+  }).catch(e => {
+    showToast('❌ 데이터 불러오기 실패: ' + e.message);
+  });
 }
 
 function toggleTheme() {
@@ -1501,47 +1669,7 @@ function applyTheme() {
     if (btn) btn.textContent = '☀️';
   }
 }
-function load() {
-  const d = localStorage.getItem('nijiData');
-  if (d) {
-    try {
-      const parsed = JSON.parse(d);
-      state = { ...state, ...parsed };
-    } catch(e) {
-      console.warn('저장 데이터 파싱 오류, 초기화합니다.', e);
-      localStorage.removeItem('nijiData');
-      return;
-    }
-    // migrate old players format (strings → objects)
-    if (state.players.length && typeof state.players[0] === 'string') {
-      state.players = state.players.map((n, i) => ({ id: i + 1, name: n, memo: '' }));
-      state.nextPlayerId = state.players.length + 1;
-    }
-    // ensure all players have memo and club field
-    state.players = state.players.map(p => ({
-      memo: '', clubs: [], age: '', career: '', hand: '', style: '', ...p,
-      // 기존 단일 club 문자열 → clubs 배열로 마이그레이션
-      clubs: p.clubs ? p.clubs : (p.club ? [p.club] : []),
-    }));
-    if (!state.clubs) state.clubs = [];
-    if (!state.rankingClubFilter || !Array.isArray(state.rankingClubFilter)) state.rankingClubFilter = [];
-    if (!state.playerClubFilter) state.playerClubFilter = '전체';
-    if (!state.nextMatchId) state.nextMatchId = state.matches.length + 1;
-    if (!state.nextPlayerId) state.nextPlayerId = state.players.length + 1;
-    if (!state.sportType) state.sportType = 'badminton';
-    if (!state.lastStringDate) state.lastStringDate = '';
-    if (!state.stringInterval) state.stringInterval = 3;
-    if (!state.stringingHistory) state.stringingHistory = [];
-    if (!state.playerSort) state.playerSort = 'name';
-    if (!state.tournaments) state.tournaments = [];
-    state._matchPage = 0; // 페이지 항상 초기화
-    state.editingMatchId = null; // 항상 초기화 (새로고침 시 수정모드 잔류 방지)
-    // restore sport type selector
-    if (document.getElementById('sportType')) {
-      document.getElementById('sportType').value = state.sportType;
-    }
-  }
-}
+// load() 함수는 loadFromFirebase()로 대체됨
 
 // ===== NAVIGATION =====
 function showPage(name) {
@@ -3352,10 +3480,9 @@ function setTodayDate() {
 }
 
 // ===== INIT =====
-load();
-applyTheme();
-renderProfile();
-renderMatchList();
+// 로그인 전에는 앱 숨김 (auth.onAuthStateChanged 에서 처리)
+document.getElementById('app').style.display = 'none';
+applyTheme(); // 테마는 로그인 전에도 적용
 setTodayDate();
 
 // ===== SERVICE WORKER 등록 =====
