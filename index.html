@@ -14,9 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="NIJI STRING">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Orbitron:wght@700;900&display=swap');
 
@@ -1515,6 +1513,9 @@
 <!-- ===== TOAST ===== -->
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
 // ===== FIREBASE 초기화 =====
 const firebaseConfig = {
@@ -1533,12 +1534,20 @@ let currentUser = null;
 
 function loginWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(err => {
+  auth.signInWithRedirect(provider).catch(err => {
     const el = document.getElementById('loginError');
     el.style.display = 'block';
     el.textContent = '로그인 실패: ' + err.message;
   });
 }
+
+// 구글 로그인 후 돌아왔을 때 결과 처리
+auth.getRedirectResult().catch(err => {
+  if (err.code !== 'auth/no-auth-event') {
+    const el = document.getElementById('loginError');
+    if (el) { el.style.display = 'block'; el.textContent = '로그인 오류: ' + err.message; }
+  }
+});
 function logoutUser() {
   if (!confirm('로그아웃 하시겠어요?')) return;
   auth.signOut();
@@ -1579,9 +1588,13 @@ function save() {
   if (!currentUser) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    // Firebase는 배열을 객체로 바꾸므로, 저장 전에 배열임을 명시
+    // 사진은 용량이 크면 Firebase 저장 실패 원인이 되므로 제외
+    const profileToSave = { ...state.profile };
+    if (profileToSave.photo && profileToSave.photo.length > 500000) {
+      profileToSave.photo = '';
+    }
     const d = {
-      profile: state.profile || {},
+      profile: profileToSave,
       matches: state.matches || [],
       players: state.players || [],
       clubs: state.clubs || [],
@@ -1597,7 +1610,7 @@ function save() {
       stringingHistory: state.stringingHistory || [],
     };
     db.ref('users/' + currentUser.uid).set(d)
-      .then(() => console.log('저장 완료'))
+      .then(() => console.log('Firebase 저장 완료'))
       .catch(e => { console.warn('Firebase 저장 오류:', e); showToast('⚠️ 저장 실패: ' + e.message); });
   }, 500);
 }
@@ -1608,7 +1621,6 @@ function loadFromFirebase() {
   db.ref('users/' + currentUser.uid).once('value').then(snap => {
     const d = snap.val();
     if (d) {
-      // Firebase가 배열을 객체로 바꾸는 경우 다시 배열로 복원
       const toArr = v => v ? (Array.isArray(v) ? v : Object.values(v)) : [];
       state.profile = d.profile || state.profile;
       state.matches = toArr(d.matches);
@@ -1624,12 +1636,17 @@ function loadFromFirebase() {
       state.playerSort = d.playerSort || 'name';
       state.lastStringDate = d.lastStringDate || '';
       state.stringInterval = d.stringInterval || 3;
-
-      // 선수 데이터 형식 정리
       state.players = state.players.map(p => ({
         memo:'', clubs:[], age:'', career:'', hand:'', style:'', ...p,
         clubs: p.clubs ? (Array.isArray(p.clubs) ? p.clubs : Object.values(p.clubs)) : (p.club ? [p.club] : []),
       }));
+      // 사진이 너무 크면 저장 실패 원인이 되므로 제거
+      if (state.profile && state.profile.photo && state.profile.photo.length > 500000) {
+        state.profile.photo = '';
+      }
+      showToast('✅ 데이터를 불러왔어요!');
+    } else {
+      showToast('👋 처음 오셨군요! 프로필을 설정해보세요.');
     }
     state._matchPage = 0;
     state.editingMatchId = null;
@@ -1638,10 +1655,11 @@ function loadFromFirebase() {
     setTodayDate();
     const sportEl = document.getElementById('sportType');
     if (sportEl) sportEl.value = state.sportType;
-    showToast('✅ 데이터를 불러왔어요!');
   }).catch(e => {
     console.error('불러오기 오류:', e);
     showToast('❌ 불러오기 실패: ' + e.message);
+    renderProfile();
+    renderMatchList();
   });
 }
 
@@ -3481,10 +3499,8 @@ auth.onAuthStateChanged(user => {
     document.getElementById('loginUserName').textContent = user.displayName || '사용자';
     document.getElementById('loginUserEmail').textContent = user.email || '';
     applyTheme();
-    renderProfile();
-    renderMatchList();
     setTodayDate();
-    loadFromFirebase();
+    loadFromFirebase(); // ✅ 데이터 불러온 후 render가 자동 실행됨
   } else {
     currentUser = null;
     document.getElementById('loginScreen').style.display = 'flex';
