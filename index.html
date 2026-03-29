@@ -13,6 +13,46 @@
 <meta name="apple-mobile-web-app-title" content="NIJI STRING">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
+    authDomain: "niji-string-app.firebaseapp.com",
+    databaseURL: "https://niji-string-app-default-rtdb.firebaseio.com",
+    projectId: "niji-string-app",
+    storageBucket: "niji-string-app.firebasestorage.app",
+    messagingSenderId: "179605771373",
+    appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // 전역으로 노출
+  window._firebaseDB = db;
+  window._firebaseRef = ref;
+  window._firebaseSet = set;
+  window._firebaseGet = get;
+
+  // Firebase에서 데이터 로드 후 앱 초기화
+  window._firebaseLoaded = false;
+  const dataRef = ref(db, 'nijiData');
+  get(dataRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      const parsed = snapshot.val();
+      if (window._applyFirebaseData) window._applyFirebaseData(parsed);
+    }
+    window._firebaseLoaded = true;
+    if (window._initApp) window._initApp();
+  }).catch((e) => {
+    console.warn('Firebase 로드 실패, localStorage 사용:', e);
+    window._firebaseLoaded = true;
+    if (window._initApp) window._initApp();
+  });
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Orbitron:wght@700;900&display=swap');
 
@@ -1479,11 +1519,17 @@ let confirmCallback = null;
 
 // ===== STORAGE =====
 function save() {
-  try {
-    localStorage.setItem('nijiData', JSON.stringify(state));
-  } catch(e) {
-    console.warn('저장 용량 초과 또는 저장 오류:', e);
-    showToast('⚠️ 저장 공간이 부족합니다. 백업 후 오래된 데이터를 정리하세요.');
+  // Firebase에 저장
+  if (window._firebaseDB && window._firebaseRef && window._firebaseSet) {
+    const dataRef = window._firebaseRef(window._firebaseDB, 'nijiData');
+    window._firebaseSet(dataRef, state).catch(e => {
+      console.warn('Firebase 저장 실패:', e);
+      // Firebase 실패 시 localStorage 백업
+      try { localStorage.setItem('nijiData', JSON.stringify(state)); } catch(e2) {}
+    });
+  } else {
+    // Firebase 미준비 시 localStorage 임시 저장
+    try { localStorage.setItem('nijiData', JSON.stringify(state)); } catch(e) {}
   }
 }
 
@@ -1502,16 +1548,14 @@ function applyTheme() {
   }
 }
 function load() {
-  const d = localStorage.getItem('nijiData');
-  if (d) {
-    try {
-      const parsed = JSON.parse(d);
-      state = { ...state, ...parsed };
-    } catch(e) {
-      console.warn('저장 데이터 파싱 오류, 초기화합니다.', e);
-      localStorage.removeItem('nijiData');
-      return;
-    }
+  // localStorage에서 테마만 복원 (테마는 로컬 유지)
+  // 데이터는 Firebase에서 로드 (위 module script에서 처리)
+}
+
+// Firebase 데이터 적용 함수
+window._applyFirebaseData = function(parsed) {
+  try {
+    state = { ...state, ...parsed };
     // migrate old players format (strings → objects)
     if (state.players.length && typeof state.players[0] === 'string') {
       state.players = state.players.map((n, i) => ({ id: i + 1, name: n, memo: '' }));
@@ -1520,7 +1564,6 @@ function load() {
     // ensure all players have memo and club field
     state.players = state.players.map(p => ({
       memo: '', clubs: [], age: '', career: '', hand: '', style: '', ...p,
-      // 기존 단일 club 문자열 → clubs 배열로 마이그레이션
       clubs: p.clubs ? p.clubs : (p.club ? [p.club] : []),
     }));
     if (!state.clubs) state.clubs = [];
@@ -1534,14 +1577,23 @@ function load() {
     if (!state.stringingHistory) state.stringingHistory = [];
     if (!state.playerSort) state.playerSort = 'name';
     if (!state.tournaments) state.tournaments = [];
-    state._matchPage = 0; // 페이지 항상 초기화
-    state.editingMatchId = null; // 항상 초기화 (새로고침 시 수정모드 잔류 방지)
-    // restore sport type selector
+    state._matchPage = 0;
+    state.editingMatchId = null;
     if (document.getElementById('sportType')) {
       document.getElementById('sportType').value = state.sportType;
     }
+  } catch(e) {
+    console.warn('Firebase 데이터 파싱 오류:', e);
   }
-}
+};
+
+// 앱 초기화 함수 (Firebase 로드 후 호출)
+window._initApp = function() {
+  applyTheme();
+  renderProfile();
+  renderMatchList();
+  setTodayDate();
+};
 
 // ===== NAVIGATION =====
 function showPage(name) {
@@ -3353,10 +3405,17 @@ function setTodayDate() {
 
 // ===== INIT =====
 load();
-applyTheme();
-renderProfile();
-renderMatchList();
-setTodayDate();
+// Firebase 로드가 이미 완료됐으면 바로 실행, 아니면 Firebase module이 완료 후 호출
+if (window._firebaseLoaded) {
+  applyTheme();
+  renderProfile();
+  renderMatchList();
+  setTodayDate();
+} else {
+  // Firebase 로드 대기 (module script가 완료되면 _initApp 호출함)
+  applyTheme();
+  setTodayDate();
+}
 
 // ===== SERVICE WORKER 등록 =====
 if ('serviceWorker' in navigator) {
