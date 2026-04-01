@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -16,8 +17,9 @@
 <!-- Firebase SDK 9.23.0 compat (안정 버전) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script>
- try {
+  try {
     const firebaseConfig = {
       apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
       authDomain: "niji-string-app.firebaseapp.com",
@@ -28,10 +30,15 @@
       appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
     };
     firebase.initializeApp(firebaseConfig);
-    var db = firebase.database();
-    console.log("Firebase 연결 성공!");
-  } catch (e) {
-    console.error("Firebase 연결 실패:", e);
+    window._firebaseDB = firebase.database();
+    window._firebaseAuth = firebase.auth();
+    // 현재 사용자 ID (익명 로그인 후 설정됨)
+    window._userId = null;
+  } catch(e) {
+    console.warn('Firebase 초기화 실패:', e);
+    window._firebaseDB = null;
+    window._firebaseAuth = null;
+    window._userId = null;
   }
 </script>
 <style>
@@ -863,7 +870,7 @@
   <div style="width:36px; height:36px; border:3px solid #2e2e3e;
     border-top-color:#7c6af7; border-radius:50%;
     animation:spin .8s linear infinite;"></div>
-  <div style="font-size:12px; color:#7a7a95;">데이터 불러오는 중...</div>
+  <div id="loadingMsg" style="font-size:12px; color:#7a7a95;">서버 연결 중...</div>
 </div>
 <style>
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -1240,6 +1247,24 @@
         </div>
       </div>
 
+      <div class="section-title">내 기기 정보</div>
+      <div class="share-btn-group">
+        <div class="share-item" style="cursor:default;">
+          <div class="share-icon" style="background:rgba(124,106,247,.1);">🔑</div>
+          <div style="flex:1;min-width:0;">
+            <div class="share-text">내 고유 ID</div>
+            <div class="share-sub" id="myUidDisplay" style="font-size:10px;word-break:break-all;">로딩 중...</div>
+          </div>
+        </div>
+        <div class="share-item" onclick="clearLocalStorageCache()">
+          <div class="share-icon" style="background:rgba(248,113,113,.1);">🧹</div>
+          <div>
+            <div class="share-text">저장공간 정리</div>
+            <div class="share-sub">기기 캐시 삭제 (데이터는 Firebase에 안전 보관)</div>
+          </div>
+        </div>
+      </div>
+
       <div class="section-title">백업</div>
       <div class="share-btn-group">
         <div class="share-item" onclick="exportData()">
@@ -1594,6 +1619,14 @@ let state = {
 let confirmCallback = null;
 
 // ===== STORAGE =====
+// Firebase 저장 경로: users/{userId}/nijiData
+function _getDbRef() {
+  if (!window._firebaseDB) return null;
+  var uid = window._userId;
+  if (!uid) return null;
+  return window._firebaseDB.ref('users/' + uid + '/nijiData');
+}
+
 function save() {
   try {
     var saveState = JSON.parse(JSON.stringify(state));
@@ -1603,19 +1636,27 @@ function save() {
     delete saveState._matchPage;
     delete saveState.editingMatchId;
 
-    if (window._firebaseDB) {
-      window._firebaseDB.ref('nijiData').set(saveState)
+    var dbRef = _getDbRef();
+    if (dbRef) {
+      dbRef.set(saveState)
         .catch(function(e) {
           console.warn('Firebase 저장 실패:', e);
-          try { localStorage.setItem('nijiData', JSON.stringify(saveState)); } catch(ex) {}
+          try { localStorage.setItem('nijiData_' + window._userId, JSON.stringify(saveState)); } catch(ex) {}
           showToast('⚠️ 저장 실패. 인터넷 연결을 확인하세요.');
         });
     } else {
-      try { localStorage.setItem('nijiData', JSON.stringify(saveState)); } catch(e) {}
+      try { localStorage.setItem('nijiData_offline', JSON.stringify(saveState)); } catch(e) {}
     }
 
-    if (photo) {
-      try { localStorage.setItem('nijiPhoto', photo); } catch(e) {}
+    // 사진은 localStorage에 저장 (500KB 이하만 - 저장공간 절약)
+    if (photo && photo.length > 10) {
+      try {
+        if (photo.length < 500000) {
+          localStorage.setItem('nijiPhoto_' + (window._userId || 'local'), photo);
+        }
+      } catch(e) {
+        console.warn('사진 저장 실패(용량 초과):', e);
+      }
     }
   } catch(e) {
     console.warn('save 오류:', e);
@@ -1638,53 +1679,115 @@ function applyTheme() {
 }
 function _loadFromLocalStorage() {
   try {
-    var d = localStorage.getItem('nijiData');
+    var uid = window._userId || 'offline';
+    var d = localStorage.getItem('nijiData_' + uid) || localStorage.getItem('nijiData_offline') || localStorage.getItem('nijiData');
     if (d) _applyFirebaseData(JSON.parse(d));
-    var photo = localStorage.getItem('nijiPhoto');
+    var photo = localStorage.getItem('nijiPhoto_' + uid) || localStorage.getItem('nijiPhoto');
     if (photo && photo.length > 10 && state.profile) state.profile.photo = photo;
   } catch(e) { console.warn('localStorage 로드 실패:', e); }
 }
 
 function load() {
   applyTheme();
-  if (window._firebaseDB) {
-    // 5초 타임아웃 - Firebase 응답 없으면 localStorage로 fallback
+  var msgEl = document.getElementById('loadingMsg');
+  if (msgEl) msgEl.textContent = '로그인 중...';
+
+  if (window._firebaseAuth && window._firebaseDB) {
+    window._firebaseAuth.signInAnonymously()
+      .then(function(result) {
+        window._userId = result.user.uid;
+        if (msgEl) msgEl.textContent = '데이터 불러오는 중...';
+        _migrateOfflineData();
+        return _loadFromFirebase();
+      })
+      .catch(function(e) {
+        console.warn('익명 로그인 실패, localStorage 사용:', e);
+        if (msgEl) msgEl.textContent = '오프라인 모드로 시작...';
+        _loadFromLocalStorage();
+        _initApp();
+      });
+  } else {
+    if (msgEl) msgEl.textContent = '오프라인 모드...';
+    _loadFromLocalStorage();
+    _initApp();
+  }
+}
+
+function _migrateOfflineData() {
+  // 기존 구버전 데이터(nijiData) or 오프라인 데이터를 Firebase로 이전
+  try {
+    var oldData = localStorage.getItem('nijiData') || localStorage.getItem('nijiData_offline');
+    if (!oldData || !window._userId) return;
+    var parsed = JSON.parse(oldData);
+    // Firebase에 아직 데이터 없을 때만 마이그레이션
+    window._firebaseDB.ref('users/' + window._userId + '/nijiData').once('value')
+      .then(function(snap) {
+        if (!snap.exists()) {
+          if (parsed.matches && parsed.matches.length > 0) {
+            // 기존 데이터가 있으면 마이그레이션
+            window._firebaseDB.ref('users/' + window._userId + '/nijiData').set(parsed)
+              .then(function() {
+                localStorage.removeItem('nijiData');
+                localStorage.removeItem('nijiData_offline');
+                console.log('기존 데이터 마이그레이션 완료');
+              });
+          }
+        }
+      }).catch(function(){});
+  } catch(e) {}
+}
+
+function _loadFromFirebase() {
+  return new Promise(function(resolve) {
+    // 5초 타임아웃
     var timeout = setTimeout(function() {
       console.warn('Firebase 타임아웃 → localStorage 사용');
       _loadFromLocalStorage();
       _initApp();
+      resolve();
     }, 5000);
 
     try {
-      window._firebaseDB.ref('nijiData').once('value')
+      var dbRef = _getDbRef();
+      if (!dbRef) {
+        clearTimeout(timeout);
+        _loadFromLocalStorage();
+        _initApp();
+        resolve();
+        return;
+      }
+      dbRef.once('value')
         .then(function(snapshot) {
-          clearTimeout(timeout); // 타임아웃 취소
+          clearTimeout(timeout);
           if (snapshot.exists()) _applyFirebaseData(snapshot.val());
+          else _loadFromLocalStorage(); // Firebase에 데이터 없으면 localStorage 확인
+          // 사진 불러오기
           try {
-            var photo = localStorage.getItem('nijiPhoto');
+            var uid = window._userId || 'local';
+            var photo = localStorage.getItem('nijiPhoto_' + uid) || localStorage.getItem('nijiPhoto');
             if (photo && photo.length > 10) {
               if (!state.profile) state.profile = {};
               state.profile.photo = photo;
             }
           } catch(e) {}
           _initApp();
+          resolve();
         })
         .catch(function(e) {
           clearTimeout(timeout);
           console.warn('Firebase 로드 실패, localStorage 사용:', e);
           _loadFromLocalStorage();
           _initApp();
+          resolve();
         });
     } catch(e) {
       clearTimeout(timeout);
-      console.warn('Firebase 연결 오류, localStorage 사용:', e);
+      console.warn('Firebase 연결 오류:', e);
       _loadFromLocalStorage();
       _initApp();
+      resolve();
     }
-  } else {
-    _loadFromLocalStorage();
-    _initApp();
-  }
+  });
 }
 
 // Firebase는 배열을 객체로 저장할 수 있음 → 안전하게 배열로 변환
@@ -1768,6 +1871,37 @@ function _initApp() {
   renderProfile();
   renderMatchList();
   setTodayDate();
+
+  // 내 고유 ID 표시 (공유 탭)
+  var uidEl = document.getElementById('myUidDisplay');
+  if (uidEl) {
+    var uid = window._userId || '(오프라인)';
+    uidEl.textContent = uid;
+  }
+}
+
+// ===== 저장공간 정리 =====
+function clearLocalStorageCache() {
+  showConfirm('저장공간 정리', '기기의 캐시를 삭제합니다. 데이터는 Firebase에 안전하게 보관됩니다.', '🧹', function() {
+    try {
+      // 현재 사용자 사진만 남기고 나머지 오래된 데이터 삭제
+      var uid = window._userId || 'local';
+      var photo = localStorage.getItem('nijiPhoto_' + uid);
+      // 모든 niji 관련 키 삭제
+      var keysToDelete = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.startsWith('niji')) keysToDelete.push(k);
+      }
+      keysToDelete.forEach(function(k) { localStorage.removeItem(k); });
+      // 현재 사용자 사진 복원 (사진은 보존)
+      if (photo) localStorage.setItem('nijiPhoto_' + uid, photo);
+      localStorage.setItem('nijiTheme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+      showToast('🧹 저장공간 정리 완료!');
+    } catch(e) {
+      showToast('❌ 정리 실패: ' + e.message);
+    }
+  });
 }
 
 // ===== NAVIGATION =====
@@ -2417,8 +2551,8 @@ function uploadPhoto(input) {
   reader.onload = e => {
     const img = new Image();
     img.onload = () => {
-      // Canvas로 최대 1200px 리사이즈 + 압축
-      const MAX = 1200;
+      // Canvas로 최대 400px 리사이즈 + 강한 압축 (저장공간 절약)
+      const MAX = 400;
       let w = img.width, h = img.height;
       if (w > MAX || h > MAX) {
         const r = Math.min(MAX/w, MAX/h);
@@ -2427,8 +2561,17 @@ function uploadPhoto(input) {
       const canvas = document.createElement('canvas');
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      const compressed = canvas.toDataURL('image/jpeg', 0.82);
-      state.profile.photo = compressed;
+      const compressed = canvas.toDataURL('image/jpeg', 0.6);
+      // 압축 후 크기 확인 (500KB 초과시 더 압축)
+      if (compressed.length > 500000) {
+        const canvas2 = document.createElement('canvas');
+        canvas2.width = Math.round(w*0.7); canvas2.height = Math.round(h*0.7);
+        canvas2.getContext('2d').drawImage(img, 0, 0, canvas2.width, canvas2.height);
+        const compressed2 = canvas2.toDataURL('image/jpeg', 0.5);
+        state.profile.photo = compressed2;
+      } else {
+        state.profile.photo = compressed;
+      }
       save(); renderProfile();
       showToast('📷 사진 업로드 완료!');
     };
@@ -2507,7 +2650,7 @@ function saveMatch() {
   state.currentResult = null;
   document.getElementById('winBtn').className = 'winner-btn';
   document.getElementById('loseBtn').className = 'winner-btn';
-  document.getElementById('matchDate').value = '';
+  document.getElementById('matchDate').value = getTodayStr();
   document.getElementById('matchFormat').value = '';
   document.getElementById('btnSingles').classList.remove('selected');
   document.getElementById('btnDoubles').classList.remove('selected');
@@ -2560,7 +2703,7 @@ function _matchCardHTML(m) {
 }
 
 function renderMatchList() {
-  const today = new Date().toISOString().split('T')[0];
+  const today = getTodayStr();
   const todayEl = document.getElementById('matchListToday');
   const pastEl  = document.getElementById('matchListPast');
   const countEl = document.getElementById('matchHistoryCount');
@@ -2646,7 +2789,7 @@ function cancelEditMatch() {
   state.currentResult = null;
   document.getElementById('winBtn').className = 'winner-btn';
   document.getElementById('loseBtn').className = 'winner-btn';
-  document.getElementById('matchDate').value = '';
+  document.getElementById('matchDate').value = getTodayStr();
   document.getElementById('matchFormat').value = '';
   document.getElementById('btnSingles').classList.remove('selected');
   document.getElementById('btnDoubles').classList.remove('selected');
@@ -3080,7 +3223,7 @@ function renderStringing() {
   document.getElementById('stringInterval').value = state.stringInterval || 3;
   // 새 교체 날짜 기본값
   if (!document.getElementById('newStringDate').value) {
-    document.getElementById('newStringDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('newStringDate').value = getTodayStr();
   }
 
   // 알림 렌더링
@@ -3599,7 +3742,7 @@ function exportData() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `niji-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.download = `niji-backup-${getTodayStr()}.json`;
   a.click();
   showToast('💾 내보내기 완료!');
 }
@@ -3614,7 +3757,10 @@ function importData(input) {
       // 사진도 복원
       if (d.profile && d.profile.photo) {
         state.profile.photo = d.profile.photo;
-        try { localStorage.setItem('nijiPhoto', d.profile.photo); } catch(ex) {}
+        try {
+          const uid = window._userId || 'local';
+          localStorage.setItem('nijiPhoto_' + uid, d.profile.photo);
+        } catch(ex) {}
       }
       save();
       renderProfile();
@@ -3627,9 +3773,15 @@ function importData(input) {
 }
 
 // ===== SET TODAY DATE =====
+function getTodayStr() {
+  // 한국 시간(KST) 기준으로 오늘 날짜 반환
+  const now = new Date();
+  const kst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+  return kst.toISOString().split('T')[0];
+}
 function setTodayDate() {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('matchDate').value = today;
+  const el = document.getElementById('matchDate');
+  if (el) el.value = getTodayStr();
 }
 
 // ===== INIT =====
