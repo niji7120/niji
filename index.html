@@ -17,7 +17,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-  try {
+ try {
     const firebaseConfig = {
       apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
       authDomain: "niji-string-app.firebaseapp.com",
@@ -28,10 +28,10 @@
       appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
     };
     firebase.initializeApp(firebaseConfig);
-    window._firebaseDB = firebase.database();
-  } catch(e) {
-    console.warn('Firebase 초기화 실패:', e);
-    window._firebaseDB = null;
+    var db = firebase.database();
+    console.log("Firebase 연결 성공!");
+  } catch (e) {
+    console.error("Firebase 연결 실패:", e);
   }
 </script>
 <style>
