@@ -30,6 +30,15 @@
       appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
     };
     firebase.initializeApp(firebaseConfig);
+    firebase.auth().signInAnonymously()
+  .then((userCredential) => {
+    const user = userCredential.user;
+    window._userId = user.uid;
+    console.log("익명 로그인 성공:", user.uid);
+  })
+  .catch((error) => {
+    console.error("익명 로그인 실패:", error);
+  });
     window._firebaseDB = firebase.database();
     window._firebaseAuth = firebase.auth();
     // 현재 사용자 ID (익명 로그인 후 설정됨)
