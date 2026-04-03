@@ -2806,6 +2806,10 @@ function saveProfileField(key, value) {
   state.profile[key] = typeof value === 'string' ? value.trim() : value;
   if (!state.profile.name) state.profile.name = '선수';
   state.profile.photo = state.profile.photo || '';
+  // 스트링교체일 변경 시 lastStringDate도 동기화
+  if (key === 'stringDate') {
+    state.lastStringDate = state.profile[key];
+  }
   save();
   const p = state.profile; const name = p.name || '선수';
   const nameRow = document.getElementById('profileNameBig');
@@ -2816,6 +2820,8 @@ function saveProfileField(key, value) {
   if (avatarBtnEl) avatarBtnEl.textContent = name.charAt(0).toUpperCase();
   const avatarInitialEl = document.getElementById('avatarInitial');
   if (!p.photo && avatarInitialEl) avatarInitialEl.textContent = name.charAt(0).toUpperCase();
+  // 스트링교체일 변경 시 배너 즉시 갱신
+  if (key === 'stringDate') renderStringBanner();
 }
 
 function uploadPhoto(input) {
