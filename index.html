@@ -80,7 +80,7 @@
   body.light-theme .match-card { background: #ffffff; border: 1px solid #ccccdd; }
   body.light-theme .card { background: #ffffff; border: 1px solid #ccccdd; }
   body.light-theme .form-input { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
-  body.light-theme .form-select { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
+  body.light-theme .form-select { background: #f0f0f5; color: #111122; border-color: #ccccdd; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555577' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); }
   body.light-theme .topbar-logo { color: var(--accent); }
   body.light-theme .pf-name-text { color: #111122; }
   body.light-theme .page-header { color: #111122; }
@@ -97,6 +97,7 @@
   body.light-theme .share-item { background: #ffffff; border: 1px solid #ccccdd; }
   body.light-theme .share-text { color: #111122; }
   body.light-theme .modal { background: #ffffff; }
+  body.light-theme #tv-modal-content, body.light-theme #tn-modal-content { background: #ffffff; }
   body.light-theme .modal-title { color: #111122; }
   body.light-theme .manual-sec-title { color: #111122; }
   body.light-theme .manual-item span { color: #333344; }
@@ -178,9 +179,9 @@
   .nav::-webkit-scrollbar { display: none; }
   .nav-btn {
     flex: 0 0 auto; min-width: 60px; display: flex; flex-direction: column; align-items: center; gap: 2px;
-    padding: 6px 4px 10px; background: none; border: none; color: var(--text-muted);
+    padding: 8px 4px 10px; background: none; border: none; color: var(--text-muted);
     font-family: inherit; font-size: 9px; cursor: pointer; transition: all .2s;
-    position: relative;
+    position: relative; min-height: 44px;
   }
   .nav-btn svg { width: 20px; height: 20px; }
   .nav-btn.active { color: var(--accent); }
@@ -213,7 +214,7 @@
   .form-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: block; font-weight: 500; }
   .form-input, .form-select, .form-textarea {
     width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
-    color: var(--text); font-family: inherit; font-size: 14px; padding: 11px 14px;
+    color: var(--text); font-family: inherit; font-size: 16px; padding: 11px 14px;
     outline: none; transition: border-color .2s;
     -webkit-appearance: none;
   }
@@ -238,7 +239,7 @@
   /* ===== MATCH RESULT ===== */
   .match-result { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 14px; }
   .match-result-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; text-align: center; }
-  .match-score-input { width: 64px; text-align: center; font-size: 22px; font-weight: 700; }
+  .match-score-input { width: 64px; text-align: center; font-size: 20px; font-weight: 700; }
   .vs-text { font-size: 12px; color: var(--text-muted); font-weight: 700; }
   .match-result-winner { display: flex; gap: 8px; justify-content: center; }
   .winner-btn {
@@ -410,7 +411,7 @@
 
   /* ===== TOAST ===== */
   .toast {
-    position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px);
+    position: fixed; top: max(80px, calc(env(safe-area-inset-top) + 60px)); left: 50%; transform: translateX(-50%) translateY(-20px);
     background: var(--surface); border: 1px solid var(--accent); border-radius: 12px;
     padding: 10px 20px; font-size: 13px; font-weight: 600; color: var(--text);
     z-index: 999; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap;
@@ -640,7 +641,7 @@
   .stringing-history-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
   .stringing-history-del { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 6px; font-size: 13px; }
   .stringing-add-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-  .stringing-add-row .form-input { flex: 1; min-width: 0; font-size: 13px; padding: 8px 12px; }
+  .stringing-add-row .form-input { flex: 1; min-width: 0; font-size: 16px; padding: 8px 12px; }
   .stringing-add-row .btn { white-space: nowrap; font-size: 12px; padding: 0 14px; }
 
   /* ===== PROFILE DESIGN ===== */
@@ -663,6 +664,7 @@
     width: 100%; height: 100%;
     object-fit: cover; object-position: center top;
   }
+  .pf-divider { height: 1px; background: var(--border); margin: 10px 0; }
   .pf-bg-initial {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
@@ -891,6 +893,42 @@
     border-top: 1px solid var(--border);
   }
   .acc-body.open { display: block; }
+
+  /* ===== PAGE HEADER ===== */
+  .page-header {
+    font-size: 22px; font-weight: 900; color: var(--text);
+    margin-bottom: 4px; letter-spacing: -.5px;
+  }
+  .page-sub {
+    font-size: 13px; color: var(--text-muted); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  }
+
+  /* ===== PLAYER DETAIL BACK ===== */
+  .player-detail-back {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+    cursor: pointer; padding: 8px 0 14px; margin-bottom: 4px;
+    min-height: 44px;
+  }
+  .player-detail-back:active { color: var(--accent); }
+
+  /* ===== PLAYER MATCH HISTORY (선수 상세) ===== */
+  .player-match-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .player-match-row:last-child { border-bottom: none; }
+  .player-match-badge {
+    width: 24px; height: 24px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 900; flex-shrink: 0;
+  }
+  .player-match-badge.W { background: rgba(74,222,128,.15); color: var(--success); }
+  .player-match-badge.L { background: rgba(248,113,113,.15); color: var(--danger); }
+  .player-match-info { flex: 1; min-width: 0; }
+  .player-match-date { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
+  .player-match-score { font-size: 13px; font-weight: 600; color: var(--text); }
 </style>
 </head>
 <body>
@@ -998,12 +1036,12 @@
           <div class="match-result">
             <div>
               <div class="match-result-label">나</div>
-              <input type="number" class="form-input match-score-input" id="myScore" placeholder="0" min="0" max="99">
+              <input type="number" class="form-input match-score-input" id="myScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
             </div>
             <div class="vs-text">VS</div>
             <div>
               <div class="match-result-label">상대</div>
-              <input type="number" class="form-input match-score-input" id="oppScore" placeholder="0" min="0" max="99">
+              <input type="number" class="form-input match-score-input" id="oppScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
             </div>
           </div>
         </div>
@@ -1013,12 +1051,12 @@
           <div class="match-result">
             <div>
               <div class="match-result-label">나</div>
-              <input type="number" class="form-input match-score-input" id="myTiebreak" placeholder="-" min="0" max="99">
+              <input type="number" class="form-input match-score-input" id="myTiebreak" placeholder="-" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
             </div>
             <div class="vs-text">VS</div>
             <div>
               <div class="match-result-label">상대</div>
-              <input type="number" class="form-input match-score-input" id="oppTiebreak" placeholder="-" min="0" max="99">
+              <input type="number" class="form-input match-score-input" id="oppTiebreak" placeholder="-" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
             </div>
           </div>
         </div>
@@ -1172,7 +1210,7 @@
       <div class="card club-section">
         <div class="card-title">🏠 클럽 관리</div>
         <div class="club-add-row">
-          <input class="form-input" id="newClubName" placeholder="클럽 이름 입력" onkeydown="if(event.key==='Enter')addClub()">
+          <input class="form-input" id="newClubName" placeholder="클럽 이름 입력" onkeydown="if(event.key==='Enter')addClub()" style="font-size:16px;">
           <button class="btn btn-primary btn-sm" onclick="addClub()" style="white-space:nowrap;padding:0 16px;">+ 추가</button>
         </div>
         <div class="club-tag-list" id="clubTagList"></div>
@@ -1182,7 +1220,7 @@
       <div class="card" style="margin-bottom:10px;">
         <div class="card-title" style="margin-bottom:12px;">👤 선수 등록</div>
         <div class="form-group" style="margin-bottom:8px;">
-          <input class="form-input" id="newPlayerName" placeholder="이름 (필수)" onkeydown="if(event.key==='Enter')addPlayer()">
+          <input class="form-input" id="newPlayerName" placeholder="이름 (필수)" onkeydown="if(event.key==='Enter')addPlayer()" style="font-size:16px;">
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
           <select class="form-select" id="newPlayerAge">
@@ -1333,26 +1371,25 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- ===== 대회 페이지 ===== -->
-  <div class="page" id="page-tournament">
-    <!-- 대회 타입 탭 -->
-    <div style="display:flex;gap:8px;margin-bottom:16px;padding-top:4px;">
-      <button id="ctab-hanul" onclick="switchContestTab('hanul')"
-        style="flex:1;padding:10px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;transition:all .2s;">
-        🔄 한울방식
-      </button>
-      <button id="ctab-tour" onclick="switchContestTab('tour')"
-        style="flex:1;padding:10px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);transition:all .2s;">
-        🏆 토너먼트
-      </button>
+    <!-- ===== 대회 페이지 ===== -->
+    <div class="page" id="page-tournament">
+      <!-- 대회 타입 탭 -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;padding-top:4px;">
+        <button id="ctab-hanul" onclick="switchContestTab('hanul')"
+          style="flex:1;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;transition:all .2s;min-height:44px;">
+          🔄 한울방식
+        </button>
+        <button id="ctab-tour" onclick="switchContestTab('tour')"
+          style="flex:1;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);transition:all .2s;min-height:44px;">
+          🏆 토너먼트
+        </button>
+      </div>
+      <!-- 한울방식 섹션 -->
+      <div id="tv-root"></div>
+      <!-- 토너먼트 섹션 -->
+      <div id="tn-root" style="display:none;"></div>
+      <div style="height:60px;"></div>
     </div>
-    <!-- 한울방식 섹션 -->
-    <div id="tv-root"></div>
-    <!-- 토너먼트 섹션 -->
-    <div id="tn-root" style="display:none;"></div>
-    <div style="height:60px;"></div>
   </div>
 
   <!-- ===== BOTTOM NAV ===== -->
@@ -1396,8 +1433,8 @@
     </div>
     <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;">
       <div class="section-title">대회 정보</div>
-      <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;box-sizing:border-box;margin-bottom:10px;">
-      <input id="tv-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;box-sizing:border-box;margin-bottom:10px;">
+      <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;box-sizing:border-box;margin-bottom:10px;">
+      <input id="tv-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;box-sizing:border-box;margin-bottom:10px;">
       <select id="tv-tgames" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;box-sizing:border-box;margin-bottom:16px;">
         <option value="1">1게임</option>
         <option value="2">2게임</option>
@@ -1407,7 +1444,7 @@
       <div class="section-title">참가 선수</div>
       <div id="tv-player-btns" style="margin-bottom:10px;"></div>
       <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <input id="tv-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;">
+        <input id="tv-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;">
         <button onclick="tvAddPlayer()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;cursor:pointer;">추가</button>
       </div>
       <div id="tv-selected" style="margin-bottom:16px;"></div>
@@ -1420,16 +1457,18 @@
 
 <!-- 대회 상세 모달 -->
 <div class="modal-overlay" id="tvDetailModal">
-  <div class="modal" style="max-height:92vh;">
-    <div class="modal-header">
-      <span id="tv-modal-name" class="modal-title"></span>
-      <button class="modal-close" onclick="closeModal('tvDetailModal')">✕</button>
+  <div class="modal" style="max-height:92vh;display:flex;flex-direction:column;padding:0;">
+    <div style="padding:20px 20px 0;flex-shrink:0;">
+      <div class="modal-header">
+        <span id="tv-modal-name" class="modal-title"></span>
+        <button class="modal-close" onclick="closeModal('tvDetailModal')">✕</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <button id="tv-tab-b" onclick="tvTabSwitch('bracket')" style="flex:1;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px;">대진표</button>
+        <button id="tv-tab-r" onclick="tvTabSwitch('ranking')" style="flex:1;padding:10px;background:var(--surface2);color:var(--text-muted);border:none;border-radius:10px;font-size:14px;cursor:pointer;min-height:44px;">순위표</button>
+      </div>
     </div>
-    <div style="display:flex;gap:8px;margin-bottom:16px;">
-      <button id="tv-tab-b" onclick="tvTabSwitch('bracket')" style="flex:1;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">대진표</button>
-      <button id="tv-tab-r" onclick="tvTabSwitch('ranking')" style="flex:1;padding:10px;background:var(--surface2);color:var(--text-muted);border:none;border-radius:10px;font-size:14px;cursor:pointer;">순위표</button>
-    </div>
-    <div id="tv-modal-content"></div>
+    <div id="tv-modal-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;padding-bottom:max(20px,env(safe-area-inset-bottom));"></div>
   </div>
 </div>
 
@@ -1445,8 +1484,8 @@
     </div>
     <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;">
       <div class="section-title">대회 정보</div>
-      <input id="tn-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;box-sizing:border-box;margin-bottom:10px;">
-      <input id="tn-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;box-sizing:border-box;margin-bottom:10px;">
+      <input id="tn-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;box-sizing:border-box;margin-bottom:10px;">
+      <input id="tn-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;box-sizing:border-box;margin-bottom:10px;">
 
       <div class="section-title">형식 선택</div>
       <div style="display:flex;gap:8px;margin-bottom:8px;">
@@ -1460,7 +1499,7 @@
       <div class="section-title">참가 선수</div>
       <div id="tn-player-btns" style="margin-bottom:10px;"></div>
       <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <input id="tn-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;">
+        <input id="tn-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;">
         <button onclick="tnAddManual()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;cursor:pointer;">추가</button>
       </div>
       <div id="tn-selected" style="margin-bottom:16px;"></div>
@@ -1473,15 +1512,17 @@
 
 <!-- ===== 토너먼트 상세 모달 ===== -->
 <div class="modal-overlay" id="tnDetailModal">
-  <div class="modal" style="max-height:92vh;">
-    <div class="modal-header">
-      <div>
-        <span id="tn-modal-name" class="modal-title"></span>
-        <span id="tn-modal-fmt" style="margin-left:8px;font-size:12px;padding:2px 8px;border-radius:20px;background:rgba(124,106,247,.15);color:var(--accent);font-weight:700;"></span>
+  <div class="modal" style="max-height:92vh;display:flex;flex-direction:column;padding:0;">
+    <div style="padding:20px 20px 0;flex-shrink:0;">
+      <div class="modal-header">
+        <div>
+          <span id="tn-modal-name" class="modal-title"></span>
+          <span id="tn-modal-fmt" style="margin-left:8px;font-size:12px;padding:2px 8px;border-radius:20px;background:rgba(124,106,247,.15);color:var(--accent);font-weight:700;"></span>
+        </div>
+        <button class="modal-close" onclick="closeModal('tnDetailModal')">✕</button>
       </div>
-      <button class="modal-close" onclick="closeModal('tnDetailModal')">✕</button>
     </div>
-    <div id="tn-modal-content"></div>
+    <div id="tn-modal-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;padding-bottom:max(20px,env(safe-area-inset-bottom));"></div>
   </div>
 </div>
 
@@ -1929,9 +1970,35 @@ function _applyFirebaseData(parsed) {
     state.matches          = _toArray(parsed.matches);
     state.players          = _toArray(parsed.players);
     state.clubs            = _toArray(parsed.clubs);
-    state.tournaments      = _toArray(parsed.tournaments);
+    // tournaments: rounds/games 내부 배열도 변환
+    state.tournaments = _toArray(parsed.tournaments).map(function(t) {
+      if (!t) return null;
+      t.players = _toArray(t.players);
+      t.rounds = _toArray(t.rounds).map(function(r) {
+        if (!r) return null;
+        r.games = _toArray(r.games).map(function(g) {
+          if (!g) return null;
+          if (!Array.isArray(g.teamA)) g.teamA = _toArray(g.teamA);
+          if (!Array.isArray(g.teamB)) g.teamB = _toArray(g.teamB);
+          return g;
+        }).filter(Boolean);
+        if (!Array.isArray(r.bye)) r.bye = _toArray(r.bye);
+        return r;
+      }).filter(Boolean);
+      return t;
+    }).filter(Boolean);
     state.stringingHistory = _toArray(parsed.stringingHistory);
-    state.tnTournaments     = _toArray(parsed.tnTournaments);
+    // tnTournaments: bracket 내부 games 배열도 변환 필요
+    state.tnTournaments = _toArray(parsed.tnTournaments).map(function(t) {
+      if (!t) return null;
+      t.bracket = _toArray(t.bracket).map(function(r) {
+        if (!r) return null;
+        r.games = _toArray(r.games);
+        return r;
+      }).filter(Boolean);
+      t.players = _toArray(t.players);
+      return t;
+    }).filter(Boolean);
     state.rankingClubFilter = _toArray(parsed.rankingClubFilter);
 
     // 프로필 (photo는 Firebase에 저장 안 함 → 덮어쓰지 않음)
@@ -2035,8 +2102,10 @@ function showPage(name) {
   if (name === 'match') { renderMatchList(); if (!state.editingMatchId) setTodayDate(); }
   if (name === 'stringing') renderStringing();
   if (name === 'tournament') {
-    renderTournamentList();
+    // 탭 진입 시 현재 선택된 탭 기준으로 렌더링
     renderTournamentSection();
+    // 스크롤 초기화 (대회 탭은 content 안에 있으므로)
+    if (content) content.scrollTop = 0;
   }
 }
 
@@ -2342,11 +2411,13 @@ function tvBracketHTML(t) {
             <div style="font-size:14px;font-weight:${aW?700:400};color:${aW?'#4ade80':'var(--text)'};">${escHtml(game.teamA[1])}</div>
           </div>
           <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-            <input type="number" min="0" value="${sA}" onchange="tvScore(${t.id},${ri},${gi},'A',this.value)"
-              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:18px;font-weight:700;">
+            <input type="number" min="0" value="${sA}" oninput="tvScore(${t.id},${ri},${gi},'A',this.value)"
+              inputmode="numeric" pattern="[0-9]*"
+              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:16px;font-weight:700;">
             <span style="color:var(--text-muted);font-size:16px;">:</span>
-            <input type="number" min="0" value="${sB}" onchange="tvScore(${t.id},${ri},${gi},'B',this.value)"
-              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:18px;font-weight:700;">
+            <input type="number" min="0" value="${sB}" oninput="tvScore(${t.id},${ri},${gi},'B',this.value)"
+              inputmode="numeric" pattern="[0-9]*"
+              style="width:46px;padding:8px 4px;text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:16px;font-weight:700;">
           </div>
           <div style="flex:1;text-align:center;">
             <div style="font-size:14px;font-weight:${bW?700:400};color:${bW?'#4ade80':'var(--text)'};margin-bottom:4px;">${escHtml(game.teamB[0])}</div>
@@ -2366,7 +2437,15 @@ function tvBracketHTML(t) {
 function tvScore(tid, ri, gi, team, val) {
   const t = state.tournaments.find(x => x.id === tid);
   if (!t) return;
-  const v = parseInt(val);
+  const trimmed = String(val).trim();
+  if (trimmed === '') {
+    // 빈 값 입력 중 → null로 초기화
+    if (team==='A') t.rounds[ri].games[gi].scoreA = null;
+    else t.rounds[ri].games[gi].scoreB = null;
+    save();
+    return;
+  }
+  const v = parseInt(trimmed);
   if (isNaN(v) || v < 0) return;
   if (team==='A') t.rounds[ri].games[gi].scoreA = v;
   else t.rounds[ri].games[gi].scoreB = v;
@@ -2518,6 +2597,17 @@ function showToast(msg) {
 
 // ===== MODAL =====
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// 모달 오버레이 바깥 터치시 닫기
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        overlay.classList.remove('open');
+      }
+    });
+  });
+});
 function showManual() { document.getElementById('manualModal').classList.add('open'); }
 
 // ===== CONFIRM =====
@@ -2719,8 +2809,10 @@ function saveProfileField(key, value) {
   if (nameRow) nameRow.innerHTML = `
     <span class="pf-club-tag">${p.club ? escHtml(p.club.toUpperCase()) : ''}</span>
     <span class="pf-name-text">${escHtml(name)}</span>`;
-  document.getElementById('avatarBtn').textContent = name.charAt(0).toUpperCase();
-  if (!p.photo) document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+  const avatarBtnEl = document.getElementById('avatarBtn');
+  if (avatarBtnEl) avatarBtnEl.textContent = name.charAt(0).toUpperCase();
+  const avatarInitialEl = document.getElementById('avatarInitial');
+  if (!p.photo && avatarInitialEl) avatarInitialEl.textContent = name.charAt(0).toUpperCase();
 }
 
 function uploadPhoto(input) {
@@ -3960,6 +4052,7 @@ function importData(input) {
 
 // ===== 대회 탭 전환 =====
 let _contestTab = 'hanul'; // 'hanul' | 'tour'
+let _contestTabInitialized = false;
 
 function switchContestTab(tab) {
   _contestTab = tab;
@@ -3985,7 +4078,15 @@ function switchContestTab(tab) {
 }
 
 function renderTournamentSection() {
-  // 탭 진입 시 현재 선택된 탭 유지
+  // 탭 진입 시 현재 선택된 탭 유지 + 버튼 상태 동기화
+  const hanulBtn = document.getElementById('ctab-hanul');
+  const tourBtn  = document.getElementById('ctab-tour');
+  if (hanulBtn && tourBtn) {
+    hanulBtn.style.background = _contestTab === 'hanul' ? 'var(--accent)' : 'var(--surface2)';
+    hanulBtn.style.color      = _contestTab === 'hanul' ? '#fff' : 'var(--text-muted)';
+    tourBtn.style.background  = _contestTab === 'tour'  ? 'var(--accent)' : 'var(--surface2)';
+    tourBtn.style.color       = _contestTab === 'tour'  ? '#fff' : 'var(--text-muted)';
+  }
   switchContestTab(_contestTab);
 }
 
@@ -4357,7 +4458,8 @@ function tnBracketHTML(t) {
     round.games.forEach((game, gi) => {
       const aName = game.a || '미정';
       const bName = game.b || '미정';
-      const isBye = (game.a && !game.b) || (!game.a && game.b); // 부전승
+      // 부전승: 한쪽만 있고 반대쪽이 null인 경우 (winner 여부 무관)
+      const isBye = (game.a && !game.b) || (!game.a && game.b);
       const aWin = game.winner === 'a';
       const bWin = game.winner === 'b';
       const pending = !game.a || !game.b;
@@ -4384,15 +4486,14 @@ function tnBracketHTML(t) {
           <!-- 스코어 입력 -->
           <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
             ${!pending ? `
-            <input type="number" min="0" value="${game.scoreA}"
-              onchange="tnScore(${t.id},${ri},${gi},'a',this.value)"
-              style="width:44px;padding:6px 2px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:17px;font-weight:700;"
-              ${game.winner?'':''}
+            <input type="number" min="0" inputmode="numeric" pattern="[0-9]*" value="${game.scoreA}"
+              oninput="tnScore(${t.id},${ri},${gi},'a',this.value)"
+              style="width:48px;padding:8px 2px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:16px;font-weight:700;"
             >
             <span style="color:var(--text-muted);font-weight:700;">:</span>
-            <input type="number" min="0" value="${game.scoreB}"
-              onchange="tnScore(${t.id},${ri},${gi},'b',this.value)"
-              style="width:44px;padding:6px 2px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:17px;font-weight:700;"
+            <input type="number" min="0" inputmode="numeric" pattern="[0-9]*" value="${game.scoreB}"
+              oninput="tnScore(${t.id},${ri},${gi},'b',this.value)"
+              style="width:48px;padding:8px 2px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:16px;font-weight:700;"
             >` : `<span style="color:var(--text-muted);font-size:12px;">대기중</span>`}
           </div>
           <!-- B팀 -->
@@ -4401,11 +4502,11 @@ function tnBracketHTML(t) {
           </div>
         </div>
         ${game.winner ? `<div style="text-align:center;margin-top:6px;font-size:11px;color:var(--success);">🏆 승자: ${escHtml(game.winner==='a'?aName:bName)}</div>` : ''}
-        ${!pending && !game.winner ? `<div style="display:flex;gap:6px;margin-top:8px;">
-          <button onclick="tnSetWinner(${t.id},${ri},${gi},'a')" style="flex:1;padding:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:8px;color:var(--success);font-size:12px;font-weight:700;cursor:pointer;">${escHtml(aName)} 승</button>
-          <button onclick="tnSetWinner(${t.id},${ri},${gi},'b')" style="flex:1;padding:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:8px;color:var(--success);font-size:12px;font-weight:700;cursor:pointer;">${escHtml(bName)} 승</button>
+        ${!pending && !game.winner ? `<div style="display:flex;gap:6px;margin-top:10px;">
+          <button onclick="tnSetWinner(${t.id},${ri},${gi},'a')" style="flex:1;padding:10px 6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:8px;color:var(--success);font-size:13px;font-weight:700;cursor:pointer;min-height:44px;">${escHtml(aName)} 승</button>
+          <button onclick="tnSetWinner(${t.id},${ri},${gi},'b')" style="flex:1;padding:10px 6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:8px;color:var(--success);font-size:13px;font-weight:700;cursor:pointer;min-height:44px;">${escHtml(bName)} 승</button>
         </div>` : ''}
-        ${game.winner ? `<button onclick="tnResetWinner(${t.id},${ri},${gi})" style="width:100%;margin-top:6px;padding:5px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text-muted);font-size:11px;cursor:pointer;">↩️ 결과 취소</button>` : ''}
+        ${game.winner ? `<button onclick="tnResetWinner(${t.id},${ri},${gi})" style="width:100%;margin-top:8px;padding:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text-muted);font-size:12px;cursor:pointer;min-height:40px;">↩️ 결과 취소</button>` : ''}
       </div>`;
     });
 
@@ -4429,7 +4530,15 @@ function tnBracketHTML(t) {
 function tnScore(tid, ri, gi, side, val) {
   const t = (state.tnTournaments || []).find(x => x.id === tid);
   if (!t) return;
-  const v = parseInt(val);
+  const trimmed = String(val).trim();
+  // 빈 값이면 빈 문자열로 저장 (입력 중에 저장 안 막음)
+  if (trimmed === '') {
+    if (side === 'a') t.bracket[ri].games[gi].scoreA = '';
+    else t.bracket[ri].games[gi].scoreB = '';
+    save();
+    return;
+  }
+  const v = parseInt(trimmed);
   if (isNaN(v) || v < 0) return;
   if (side === 'a') t.bracket[ri].games[gi].scoreA = v;
   else t.bracket[ri].games[gi].scoreB = v;
@@ -4446,6 +4555,7 @@ function tnSetWinner(tid, ri, gi, side) {
   const game = t.bracket[ri].games[gi];
   game.winner = side;
   const winnerName = side === 'a' ? game.a : game.b;
+  const loserName  = side === 'a' ? game.b : game.a;
 
   // 다음 라운드에 승자 배치
   if (!game.is3rd) {
@@ -4455,13 +4565,13 @@ function tnSetWinner(tid, ri, gi, side) {
     if (t.bracket[nextRi] && t.bracket[nextRi].games[nextGi]) {
       t.bracket[nextRi].games[nextGi][nextSlot] = winnerName;
     }
-    // 3/4위전에 패자 배치 (준결승 = 결승 바로 전 라운드)
-    const loserName = side === 'a' ? game.b : game.a;
-    const thirdRound = t.bracket.find(r => r.name === '3·4위전');
+    // 3/4위전에 패자 배치 (준결승에서만)
     const finalRoundIdx = t.bracket.findIndex(r => r.name === '결승');
-    if (thirdRound && finalRoundIdx > 0 && ri === finalRoundIdx - 1) { // 준결승
-      if (nextSlot === 'a') thirdRound.games[0].a = loserName;
-      else thirdRound.games[0].b = loserName;
+    const thirdRound = t.bracket.find(r => r.name === '3·4위전');
+    if (thirdRound && finalRoundIdx > 0 && ri === finalRoundIdx - 1) {
+      // 준결승 gi===0 → 3위전 a슬롯, gi===1 → 3위전 b슬롯
+      const thirdSlot = gi === 0 ? 'a' : 'b';
+      thirdRound.games[0][thirdSlot] = loserName;
     }
   }
 
@@ -4475,19 +4585,30 @@ function tnResetWinner(tid, ri, gi) {
   const t = (state.tnTournaments || []).find(x => x.id === tid);
   if (!t) return;
   const game = t.bracket[ri].games[gi];
+  if (!game.winner) return;
   const oldWinner = game.winner === 'a' ? game.a : game.b;
+  const oldLoser  = game.winner === 'a' ? game.b : game.a;
   game.winner = null;
 
-  // 다음 라운드에서 이 승자 제거
   if (!game.is3rd) {
+    // 다음 라운드에서 승자 제거
     const nextRi = ri + 1;
     const nextGi = Math.floor(gi / 2);
     const nextSlot = gi % 2 === 0 ? 'a' : 'b';
     if (t.bracket[nextRi] && t.bracket[nextRi].games[nextGi]) {
       if (t.bracket[nextRi].games[nextGi][nextSlot] === oldWinner) {
         t.bracket[nextRi].games[nextGi][nextSlot] = null;
-        // 그 이후 라운드도 연쇄 초기화
         tnCascadeReset(t, nextRi, nextGi);
+      }
+    }
+    // 3위전에서 패자 제거
+    const finalRoundIdx = t.bracket.findIndex(r => r.name === '결승');
+    const thirdRound = t.bracket.find(r => r.name === '3·4위전');
+    if (thirdRound && finalRoundIdx > 0 && ri === finalRoundIdx - 1) {
+      const thirdSlot = gi === 0 ? 'a' : 'b';
+      if (thirdRound.games[0][thirdSlot] === oldLoser) {
+        thirdRound.games[0][thirdSlot] = null;
+        thirdRound.games[0].winner = null;
       }
     }
   }
@@ -4522,7 +4643,7 @@ function tnSyncToMatch(t, ri, gi) {
   if (!inA && !inB) return;
   const result = (inA && game.winner === 'a') || (inB && game.winner === 'b') ? 'win' : 'lose';
   const opponent = inA ? bName : aName;
-  const memo = `[${t.name}] ${t.bracket[ri].name}`;
+  const memo = `[${t.name}] ${t.bracket[ri].name} #${gi+1}`;
   const matchData = {
     id: state.nextMatchId++,
     date: t.date,
@@ -4567,6 +4688,33 @@ if ('serviceWorker' in navigator) {
       .catch(e => console.log('SW error:', e));
   });
 }
+
+// ===== 안드로이드 뒤로가기 버튼 처리 =====
+window.addEventListener('popstate', function() {
+  // 열린 모달이 있으면 닫기
+  const openModal = document.querySelector('.modal-overlay.open');
+  if (openModal) {
+    openModal.classList.remove('open');
+    history.pushState(null, '', location.href);
+    return;
+  }
+  // 열린 confirm이 있으면 닫기
+  const openConfirm = document.querySelector('.confirm-overlay.open');
+  if (openConfirm) {
+    openConfirm.classList.remove('open');
+    confirmCallback = null;
+    history.pushState(null, '', location.href);
+    return;
+  }
+  // player-detail 페이지면 선수 목록으로
+  if (document.getElementById('page-player-detail') &&
+      document.getElementById('page-player-detail').classList.contains('active')) {
+    showPage('players');
+    history.pushState(null, '', location.href);
+  }
+});
+// 히스토리 초기 상태 push
+history.pushState(null, '', location.href);
 </script>
 </body>
 </html>
