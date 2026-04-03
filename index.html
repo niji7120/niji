@@ -2064,7 +2064,7 @@ function renderTournamentList() {
         <div onclick="tvOpen(${t.id})" style="cursor:pointer;margin-bottom:10px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <div>
-              <div style="font-size:16px;font-weight:700;">${escHtml(t.name)}</div>
+              <div id="tv-name-${t.id}" style="font-size:16px;font-weight:700;">${escHtml(t.name)}</div>
               <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${t.date} · ${t.players.length}명 · ${t.numGames}게임</div>
             </div>
             <div style="font-size:12px;padding:4px 10px;border-radius:20px;background:${done===total?'rgba(74,222,128,.15)':'rgba(124,106,247,.15)'};color:${done===total?'#4ade80':'var(--accent)'};">
@@ -2247,22 +2247,36 @@ function tvRemove(idx) {
 }
 
 function tvDelete(id) {
-  if (!confirm('대회를 삭제하시겠어요?')) return;
-  state.tournaments = state.tournaments.filter(t => t.id !== id);
-  save();
-  showToast('대회가 삭제됐어요!');
-  renderTournamentList();
+  showConfirm('대회 삭제', '삭제하면 복구할 수 없습니다.', '🗑️', () => {
+    state.tournaments = state.tournaments.filter(t => t.id !== id);
+    save();
+    showToast('대회가 삭제됐어요!');
+    renderTournamentList();
+  });
 }
 
 function tvEdit(id) {
   const t = state.tournaments.find(x => x.id === id);
   if (!t) return;
-  const newName = prompt('대회 이름을 입력하세요', t.name);
-  if (!newName || !newName.trim()) return;
-  t.name = newName.trim();
-  save();
-  showToast('수정됐어요!');
-  renderTournamentList();
+  // 인라인 편집: 카드 이름 클릭 시 input으로 교체
+  const nameEl = document.getElementById('tv-name-' + id);
+  if (!nameEl) return;
+  const input = document.createElement('input');
+  input.value = t.name;
+  input.style.cssText = 'font-size:16px;font-weight:700;width:100%;background:var(--surface2);border:1px solid var(--accent);border-radius:8px;padding:4px 8px;color:var(--text);font-family:inherit;';
+  input.onblur = () => {
+    const val = input.value.trim();
+    if (val && val !== t.name) {
+      t.name = val;
+      save();
+      showToast('수정됐어요!');
+    }
+    renderTournamentList();
+  };
+  input.onkeydown = (e) => { if (e.key === 'Enter') input.blur(); if (e.key === 'Escape') renderTournamentList(); };
+  nameEl.replaceWith(input);
+  input.focus();
+  input.select();
 }
 
 function tvCreate() {
@@ -4224,8 +4238,7 @@ function tnCreate() {
 
 // 시드 배정 대진표 생성
 function tnBuildBracket(players, format) {
-  // 복식: 플레이어를 2명씩 팀으로 묶기 (1+마지막, 2+마지막-1...)
-  let entries; // 단식: ['이름'], 복식: ['이름1/이름2']
+  let entries;
   if (format === 'doubles') {
     entries = [];
     const n = players.length;
@@ -4237,33 +4250,29 @@ function tnBuildBracket(players, format) {
   }
 
   // 2의 제곱수로 올림 (부전승 처리)
-  const size = Math.pow(2, Math.ceil(Math.log2(entries.length)));
-  // 시드 배정 순서 (1 vs size, 2 vs size-1, ...)
+  const size = Math.pow(2, Math.ceil(Math.log2(Math.max(entries.length, 2))));
+
+  // 시드 배정 (1번시드 vs 마지막, 2번 vs 마지막-1 ...)
   let seeded = new Array(size).fill(null);
   seeded[0] = entries[0] || null;
-  seeded[1] = entries.length > 1 ? entries[entries.length - 1] : null;
-  // 나머지 배치
+  if (entries.length > 1) seeded[1] = entries[entries.length - 1];
   let remaining = entries.slice(1, entries.length - 1);
   let positions = [];
   for (let i = 2; i < size; i++) positions.push(i);
-  // 셔플
   for (let i = positions.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [positions[i], positions[j]] = [positions[j], positions[i]];
   }
   remaining.forEach((e, i) => { if (positions[i] !== undefined) seeded[positions[i]] = e; });
 
-  // 라운드별 대진표 생성
-  const rounds = [];
-  const roundNames = ['결승','3/4위전'];
   const getRoundName = (total, roundIdx) => {
-    const matchesInRound = total / Math.pow(2, roundIdx + 1);
-    if (matchesInRound === 1) return '결승';
-    if (matchesInRound === 2) return '준결승';
-    if (matchesInRound === 4) return '8강';
-    if (matchesInRound === 8) return '16강';
-    if (matchesInRound === 16) return '32강';
-    return matchesInRound + '강';
+    const m = total / Math.pow(2, roundIdx + 1);
+    if (m === 1) return '결승';
+    if (m === 2) return '준결승';
+    if (m === 4) return '8강';
+    if (m === 8) return '16강';
+    if (m === 16) return '32강';
+    return m + '강';
   };
 
   // 1라운드 생성
@@ -4272,6 +4281,7 @@ function tnBuildBracket(players, format) {
     r1games.push({ a: seeded[i], b: seeded[i+1], winner: null, scoreA: '', scoreB: '' });
   }
   const totalMatches = size;
+  const rounds = [];
   rounds.push({ name: getRoundName(totalMatches, 0), games: r1games });
 
   // 이후 라운드 (빈 슬롯)
@@ -4286,10 +4296,25 @@ function tnBuildBracket(players, format) {
     prev = prev / 2;
     ri++;
   }
-  // 3/4위전 추가 (4명 이상일 때)
+  // 3·4위전: 준결승이 있는 경우(4강 이상)에만 추가
   if (size >= 4) {
     rounds.push({ name: '3·4위전', games: [{ a: null, b: null, winner: null, scoreA: '', scoreB: '', is3rd: true }] });
   }
+
+  // ★ 부전승 자동 처리: 1라운드에서 한쪽이 null이면 즉시 다음 라운드 진출
+  r1games.forEach((game, gi) => {
+    if (game.a && !game.b) {
+      game.winner = 'a';
+      if (rounds[1] && rounds[1].games[Math.floor(gi/2)]) {
+        rounds[1].games[Math.floor(gi/2)][gi % 2 === 0 ? 'a' : 'b'] = game.a;
+      }
+    } else if (!game.a && game.b) {
+      game.winner = 'b';
+      if (rounds[1] && rounds[1].games[Math.floor(gi/2)]) {
+        rounds[1].games[Math.floor(gi/2)][gi % 2 === 0 ? 'a' : 'b'] = game.b;
+      }
+    }
+  });
 
   return rounds;
 }
@@ -4340,8 +4365,12 @@ function tnBracketHTML(t) {
       if (isBye) {
         // 부전승 처리
         const winner = game.a || game.b;
-        html += `<div style="background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border);">
-          <div style="font-size:13px;font-weight:700;color:var(--success);">${escHtml(winner)} <span style="font-size:11px;font-weight:400;color:var(--text-muted);">부전승</span></div>
+        html += `<div style="background:rgba(74,222,128,.06);border-radius:10px;padding:10px 14px;margin-bottom:8px;border:1px solid rgba(74,222,128,.25);display:flex;align-items:center;gap:10px;">
+          <span style="font-size:16px;">🎾</span>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--success);">${escHtml(winner)}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">부전승 — 자동 진출</div>
+          </div>
         </div>`;
         return;
       }
@@ -4405,6 +4434,10 @@ function tnScore(tid, ri, gi, side, val) {
   if (side === 'a') t.bracket[ri].games[gi].scoreA = v;
   else t.bracket[ri].games[gi].scoreB = v;
   save();
+  // 승자가 이미 결정된 경우 경기기록도 업데이트
+  if (t.bracket[ri].games[gi].winner) {
+    tnSyncToMatch(t, ri, gi);
+  }
 }
 
 function tnSetWinner(tid, ri, gi, side) {
@@ -4422,10 +4455,11 @@ function tnSetWinner(tid, ri, gi, side) {
     if (t.bracket[nextRi] && t.bracket[nextRi].games[nextGi]) {
       t.bracket[nextRi].games[nextGi][nextSlot] = winnerName;
     }
-    // 3/4위전에 패자 배치
+    // 3/4위전에 패자 배치 (준결승 = 결승 바로 전 라운드)
     const loserName = side === 'a' ? game.b : game.a;
     const thirdRound = t.bracket.find(r => r.name === '3·4위전');
-    if (thirdRound && ri === t.bracket.length - 3) { // 준결승
+    const finalRoundIdx = t.bracket.findIndex(r => r.name === '결승');
+    if (thirdRound && finalRoundIdx > 0 && ri === finalRoundIdx - 1) { // 준결승
       if (nextSlot === 'a') thirdRound.games[0].a = loserName;
       else thirdRound.games[0].b = loserName;
     }
