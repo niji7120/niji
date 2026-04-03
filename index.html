@@ -2601,7 +2601,7 @@ function renderProfile() {
            </select>`
         : f.type === 'date'
         ? `<input type="date" class="pf-item-input" value="${escHtml(val)}"
-             onchange="saveProfileField('${f.key}',this.value)">`
+             onchange="saveProfileField('${f.key}',this.value);renderStringBanner()">`
         : `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${f.ph||''}"
              oninput="pfDebounceSave('${f.key}',this.value)"
              onkeydown="if(event.key==='Enter')this.blur()">`;
@@ -4056,19 +4056,62 @@ function tnRenderPlayerBtns() {
     container.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">선수 탭에서 먼저 선수를 등록하세요.</div>';
     return;
   }
+
+  // 클럽별 그룹 분류
+  const grouped = {};
+  const noClub = [];
+  players.forEach(p => {
+    const pClubs = p.clubs && p.clubs.length > 0 ? p.clubs : [];
+    if (pClubs.length === 0) {
+      noClub.push(p);
+    } else {
+      pClubs.forEach(c => {
+        if (!grouped[c]) grouped[c] = [];
+        grouped[c].push(p);
+      });
+    }
+  });
+
   let html = `<div style="margin-bottom:8px;">
     <button onclick="tnSelectAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:12px;cursor:pointer;margin-right:6px;">전체 선택</button>
     <button onclick="tnClearAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:12px;cursor:pointer;">전체 해제</button>
   </div>`;
-  html += '<div>' + players.map(p =>
-    `<span id="tnbtn-${p.id}" onclick="tnToggle(this,${JSON.stringify(escHtml(p.name))})"
-      style="display:inline-block;margin:3px;padding:7px 14px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`
-  ).join('') + '</div>';
+
+  // 클럽별 섹션
+  Object.entries(grouped).forEach(([club, clubPlayers]) => {
+    const safeClub = club.replace(/"/g,'&quot;');
+    html += `<div style="margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:12px;font-weight:700;color:var(--accent);">🏠 ${escHtml(club)}</span>
+        <button data-club="${safeClub}" onclick="tnSelectClub(this.dataset.club)" style="padding:3px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size:11px;cursor:pointer;">전체선택</button>
+      </div>
+      <div>${clubPlayers.map(p => {
+        const safeName = p.name.replace(/"/g,'&quot;');
+        return `<span id="tnbtn-${p.id}" data-pname="${safeName}" onclick="tnToggle(this)"
+          style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`;
+      }).join('')}</div>
+    </div>`;
+  });
+
+  // 클럽 없는 선수
+  if (noClub.length > 0) {
+    html += `<div style="margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:6px;">기타</div>
+      <div>${noClub.map(p => {
+        const safeName = p.name.replace(/"/g,'&quot;');
+        return `<span id="tnbtn-${p.id}" data-pname="${safeName}" onclick="tnToggle(this)"
+          style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size:14px;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`;
+      }).join('')}</div>
+    </div>`;
+  }
+
   container.innerHTML = html;
   tnRenderSelected();
 }
 
-function tnToggle(el, name) {
+function tnToggle(el) {
+  const name = el.dataset.pname;
+  if (!name) return;
   const idx = _tnSelected.indexOf(name);
   if (idx >= 0) {
     _tnSelected.splice(idx, 1);
@@ -4079,6 +4122,17 @@ function tnToggle(el, name) {
     el.style.background = 'var(--accent)';
     el.style.color = '#fff';
   }
+  tnRenderSelected();
+}
+
+function tnSelectClub(club) {
+  (state.players || []).filter(p => p.clubs && p.clubs.includes(club)).forEach(p => {
+    if (!_tnSelected.includes(p.name)) {
+      _tnSelected.push(p.name);
+      const el = document.getElementById('tnbtn-' + p.id);
+      if (el) { el.style.background = 'var(--accent)'; el.style.color = '#fff'; }
+    }
+  });
   tnRenderSelected();
 }
 
