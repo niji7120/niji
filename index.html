@@ -80,7 +80,7 @@
   body.light-theme .match-card { background: #ffffff; border: 1px solid #ccccdd; }
   body.light-theme .card { background: #ffffff; border: 1px solid #ccccdd; }
   body.light-theme .form-input { background: #f0f0f5; color: #111122; border-color: #ccccdd; }
-  body.light-theme .form-select { background: #f0f0f5; color: #111122; border-color: #ccccdd; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555577' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); }
+  body.light-theme .form-select { background: #f0f0f5; color: #111122; border-color: #ccccdd; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
   body.light-theme .topbar-logo { color: var(--accent); }
   body.light-theme .pf-name-text { color: #111122; }
   body.light-theme .page-header { color: #111122; }
@@ -219,7 +219,7 @@
     -webkit-appearance: none;
   }
   .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
-  .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a7a95' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 40px; }
+  .form-select { -webkit-appearance: none; -moz-appearance: none; appearance: none; padding-right: 14px; }
   .form-select option { background: var(--surface2); }
   .form-textarea { resize: vertical; min-height: 70px; }
 
@@ -2705,6 +2705,8 @@ function renderProfile() {
            </select>`
         : f.type === 'date'
         ? `<input type="date" class="pf-item-input" value="${escHtml(val)}"
+             style="cursor:pointer;"
+             onclick="try{this.showPicker()}catch(e){}"
              onchange="saveProfileField('${f.key}',this.value);renderStringBanner()">`
         : `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${f.ph||''}"
              oninput="pfDebounceSave('${f.key}',this.value)"
@@ -2766,10 +2768,11 @@ function renderStringBanner() {
     return;
   }
 
-  // D+일수 계산
-  const replaced = new Date(dateStr);
-  const today = new Date();
-  today.setHours(0,0,0,0); replaced.setHours(0,0,0,0);
+  // D+일수 계산 (KST 기준 - 날짜 문자열 직접 파싱으로 시간대 오류 방지)
+  const [ry, rm, rd] = dateStr.split('-').map(Number);
+  const replaced = new Date(ry, rm - 1, rd);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const diffDays = Math.floor((today - replaced) / 86400000);
 
   // 교체일 이후 게임 수 계산
