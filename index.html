@@ -2766,21 +2766,16 @@ function renderStringBanner() {
     return;
   }
 
-  // 하이픈(-)을 슬래시(/)로 바꿔서 스마트폰에서도 날짜 계산이 되게 함
-  const replaced = new Date(dateStr.replace(/-/g, '/'));
+  // D+일수 계산
+  const replaced = new Date(dateStr);
   const today = new Date();
-  
-  today.setHours(0,0,0,0);
-  replaced.setHours(0,0,0,0);
-  
+  today.setHours(0,0,0,0); replaced.setHours(0,0,0,0);
   const diffDays = Math.floor((today - replaced) / 86400000);
 
-  // 게임 수 계산 시에도 날짜 형식을 맞춰줌
-  const gamesAfter = (state.matches || []).filter(m => {
-    if (!m.date) return false;
-    return m.date >= dateStr;
-  }).length;
+  // 교체일 이후 게임 수 계산
+  const gamesAfter = (state.matches || []).filter(m => m.date >= dateStr).length;
 
+  // 색상 결정
   const colorClass = diffDays <= 30 ? 'green' : diffDays <= 90 ? 'yellow' : 'red';
   const icon = diffDays <= 30 ? '🟢' : diffDays <= 90 ? '🟡' : '🔴';
 
@@ -2796,22 +2791,6 @@ function renderStringBanner() {
       </div>
     </div>`;
 }
-4단계: 저장하고 확인하기
-파일을 **저장(Ctrl + S)**합니다.
-
-수정한 파일을 서버에 올리거나, 스마트폰에서 브라우저 캐시를 새로고침(강력 새로고침)해서 확인해 보세요.
-
-주의사항: 코드를 붙여넣을 때 앞뒤에 있는 다른 코드(예: 다른 function ...이나 const ...)를 건드리지 않도록 주의해 주세요. 딱 function renderStringBanner 부분만 교체하시면 됩니다!
-
-[English Translation]
-
-Find: Search for function renderStringBanner() in your index.html.
-
-Delete: Select from function renderStringBanner() { down to the closing }.
-
-Paste: Replace it with the corrected code provided above.
-
-Save: Save the file and refresh your mobile browser to check.
 
 // 프로필 입력 디바운스 (모바일에서 oninput 과도한 저장 방지)
 let _pfDebounceTimer = null;
