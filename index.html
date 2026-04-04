@@ -4361,7 +4361,7 @@ function tnBuildBracket(players, format) {
 
   const size = Math.pow(2, Math.ceil(Math.log2(Math.max(entries.length, 2))));
 
-  // ★ 표준 토너먼트 시드 배치 알고리즘
+  // 표준 시드 배치
   function buildSeedOrder(n) {
     if (n === 1) return [0];
     const half = n / 2;
@@ -4407,21 +4407,22 @@ function tnBuildBracket(players, format) {
     prev = prev / 2;
     ri++;
   }
+  // 3·4위전은 준결승 있을 때만
   if (size >= 4) {
     rounds.push({ name: '3·4위전', games: [{ a: null, b: null, winner: null, scoreA: '', scoreB: '', is3rd: true }] });
   }
 
-  // 부전승 자동 처리
+  // 부전승 자동 처리 (1라운드에서만)
   r1games.forEach((game, gi) => {
-    if (game.a && !game.b) {
-      game.winner = 'a';
-      if (rounds[1] && rounds[1].games[Math.floor(gi/2)]) {
-        rounds[1].games[Math.floor(gi/2)][gi % 2 === 0 ? 'a' : 'b'] = game.a;
-      }
-    } else if (!game.a && game.b) {
-      game.winner = 'b';
-      if (rounds[1] && rounds[1].games[Math.floor(gi/2)]) {
-        rounds[1].games[Math.floor(gi/2)][gi % 2 === 0 ? 'a' : 'b'] = game.b;
+    const byeWinner = (game.a && !game.b) ? 'a' : (!game.a && game.b) ? 'b' : null;
+    if (byeWinner) {
+      game.winner = byeWinner;
+      const winName = byeWinner === 'a' ? game.a : game.b;
+      // 다음 라운드가 존재하고 3·4위전이 아닌 경우에만
+      if (rounds[1] && rounds[1].name !== '3·4위전') {
+        const nextGi = Math.floor(gi / 2);
+        const nextSlot = gi % 2 === 0 ? 'a' : 'b';
+        if (rounds[1].games[nextGi]) rounds[1].games[nextGi][nextSlot] = winName;
       }
     }
   });
@@ -4454,14 +4455,113 @@ function tnRefreshModal() {
   document.getElementById('tn-modal-content').innerHTML = tnBracketHTML(t);
 }
 
-function tnBracketHTML(t) {
-  // 결승/준결승/3위전 찾기
-  const finalRound = t.bracket.find(r => r.name === '결승');
-  const thirdRound = t.bracket.find(r => r.name === '3·4위전');
-  const semiFinal = t.bracket.find(r => r.name === '준결승');
-  const mainRounds = t.bracket.filter(r => r.name !== '3·4위전'); // 3위전 제외한 메인 브라켓
+// ── 점수/승자 입력 팝업 ──
+function tnOpenScoreModal(tid, ri, gi) {
+  const t = (state.tnTournaments || []).find(x => x.id === tid);
+  if (!t) return;
+  const game = t.bracket[ri].games[gi];
+  if (!game || game.winner !== null && game.winner !== undefined) {
+    // 이미 결과 있으면 초기화 확인
+    showConfirm('결과 초기화', '이 경기 결과를 초기화하시겠습니까?', '↩️', () => {
+      tnResetWinner(tid, ri, gi);
+    });
+    return;
+  }
+  const aName = game.a || '미정';
+  const bName = game.b || '미정';
 
-  // ── 시상대 (결과 요약) ──
+  const overlay = document.createElement('div');
+  overlay.id = 'tn-score-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = `
+    <div style="background:var(--surface);border-radius:20px;padding:24px;width:100%;max-width:340px;border:1px solid var(--border);">
+      <div style="text-align:center;font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:18px;letter-spacing:1px;">⚔️ 경기 결과 입력</div>
+
+      <!-- 선수 이름 -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+        <div style="flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--text);padding:10px 6px;background:var(--surface2);border-radius:10px;word-break:break-all;">${escHtml(aName)}</div>
+        <div style="font-size:18px;font-weight:900;color:var(--text-muted);">VS</div>
+        <div style="flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--text);padding:10px 6px;background:var(--surface2);border-radius:10px;word-break:break-all;">${escHtml(bName)}</div>
+      </div>
+
+      <!-- 점수 입력 -->
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:8px;font-weight:600;">점수 입력 (선택사항)</div>
+        <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
+          <div style="text-align:center;">
+            <div style="font-size:11px;color:var(--accent);margin-bottom:4px;">${escHtml(aName.length>6?aName.slice(0,6)+'…':aName)}</div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <button onclick="tnScoreAdj('sa',-1)" style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
+              <div id="tn-sa-val" style="width:44px;height:44px;line-height:44px;text-align:center;background:var(--surface2);border-radius:10px;font-size:22px;font-weight:900;color:var(--text);border:1.5px solid var(--border);">0</div>
+              <button onclick="tnScoreAdj('sa',1)" style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+            </div>
+          </div>
+          <div style="font-size:22px;font-weight:900;color:var(--text-muted);padding-top:18px;">:</div>
+          <div style="text-align:center;">
+            <div style="font-size:11px;color:var(--accent);margin-bottom:4px;">${escHtml(bName.length>6?bName.slice(0,6)+'…':bName)}</div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <button onclick="tnScoreAdj('sb',-1)" style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
+              <div id="tn-sb-val" style="width:44px;height:44px;line-height:44px;text-align:center;background:var(--surface2);border-radius:10px;font-size:22px;font-weight:900;color:var(--text);border:1.5px solid var(--border);">0</div>
+              <button onclick="tnScoreAdj('sb',1)" style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 승자 선택 버튼 -->
+      <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:8px;font-weight:600;">승자 선택</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button onclick="tnConfirmWinner(${tid},${ri},${gi},'a')" style="flex:1;padding:13px 6px;border-radius:12px;border:2px solid rgba(74,222,128,.5);background:rgba(74,222,128,.1);color:#4ade80;font-size:14px;font-weight:800;cursor:pointer;word-break:break-all;">🏆 ${escHtml(aName)}</button>
+        <button onclick="tnConfirmWinner(${tid},${ri},${gi},'b')" style="flex:1;padding:13px 6px;border-radius:12px;border:2px solid rgba(74,222,128,.5);background:rgba(74,222,128,.1);color:#4ade80;font-size:14px;font-weight:800;cursor:pointer;word-break:break-all;">🏆 ${escHtml(bName)}</button>
+      </div>
+
+      <button onclick="tnCloseScoreModal()" style="width:100%;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:14px;cursor:pointer;">취소</button>
+    </div>
+  `;
+  overlay.addEventListener('click', e => { if (e.target === overlay) tnCloseScoreModal(); });
+  document.body.appendChild(overlay);
+  window._tnScoreSA = 0;
+  window._tnScoreSB = 0;
+}
+
+function tnScoreAdj(which, delta) {
+  if (which === 'sa') {
+    window._tnScoreSA = Math.max(0, (window._tnScoreSA || 0) + delta);
+    const el = document.getElementById('tn-sa-val');
+    if (el) el.textContent = window._tnScoreSA;
+  } else {
+    window._tnScoreSB = Math.max(0, (window._tnScoreSB || 0) + delta);
+    const el = document.getElementById('tn-sb-val');
+    if (el) el.textContent = window._tnScoreSB;
+  }
+}
+
+function tnConfirmWinner(tid, ri, gi, side) {
+  const t = (state.tnTournaments || []).find(x => x.id === tid);
+  if (!t) return;
+  const game = t.bracket[ri].games[gi];
+  const sa = window._tnScoreSA || 0;
+  const sb = window._tnScoreSB || 0;
+  // 점수가 입력됐으면 저장
+  if (sa > 0 || sb > 0) {
+    game.scoreA = sa;
+    game.scoreB = sb;
+  }
+  tnCloseScoreModal();
+  tnSetWinner(tid, ri, gi, side);
+}
+
+function tnCloseScoreModal() {
+  const el = document.getElementById('tn-score-overlay');
+  if (el) el.remove();
+}
+
+function tnBracketHTML(t) {
+  const mainRounds = t.bracket.filter(r => r.name !== '3·4위전');
+  const thirdRound = t.bracket.find(r => r.name === '3·4위전');
+  const finalRound = t.bracket.find(r => r.name === '결승');
+
+  // 시상대
   let podiumHtml = '';
   const champion = finalRound && finalRound.games[0] && finalRound.games[0].winner
     ? (finalRound.games[0].winner === 'a' ? finalRound.games[0].a : finalRound.games[0].b) : null;
@@ -4471,91 +4571,83 @@ function tnBracketHTML(t) {
     ? (thirdRound.games[0].winner === 'a' ? thirdRound.games[0].a : thirdRound.games[0].b) : null;
 
   if (champion) {
-    podiumHtml = `<div style="background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(124,106,247,.15));border:2px solid rgba(251,191,36,.4);border-radius:16px;padding:16px;margin-bottom:18px;">
-      <div style="text-align:center;font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:1.5px;margin-bottom:12px;">🏆 대회 결과</div>
-      <div style="display:flex;align-items:flex-end;justify-content:center;gap:10px;">
-        ${runnerUp ? `<div style="text-align:center;flex:1;">
-          <div style="font-size:22px;">🥈</div>
-          <div style="font-size:12px;font-weight:700;color:#94a3b8;margin-top:4px;word-break:break-all;">${escHtml(runnerUp)}</div>
-          <div style="font-size:10px;color:var(--text-muted);">준우승</div>
-        </div>` : ''}
-        <div style="text-align:center;flex:1.2;">
-          <div style="font-size:36px;">🥇</div>
-          <div style="font-size:14px;font-weight:900;color:#fbbf24;margin-top:4px;word-break:break-all;">${escHtml(champion)}</div>
-          <div style="font-size:10px;color:#fbbf24;">우승</div>
-        </div>
-        ${third ? `<div style="text-align:center;flex:1;">
-          <div style="font-size:22px;">🥉</div>
-          <div style="font-size:12px;font-weight:700;color:#cd7f32;margin-top:4px;word-break:break-all;">${escHtml(third)}</div>
-          <div style="font-size:10px;color:var(--text-muted);">3위</div>
-        </div>` : ''}
+    podiumHtml = `<div style="background:linear-gradient(135deg,rgba(251,191,36,.13),rgba(124,106,247,.13));border:2px solid rgba(251,191,36,.4);border-radius:16px;padding:14px 16px;margin-bottom:16px;">
+      <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:1.5px;margin-bottom:12px;">🏆 대회 결과</div>
+      <div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;">
+        ${runnerUp?`<div style="text-align:center;flex:1;"><div style="font-size:20px;">🥈</div><div style="font-size:12px;font-weight:700;color:#94a3b8;margin-top:3px;word-break:break-all;">${escHtml(runnerUp)}</div><div style="font-size:10px;color:var(--text-muted);">준우승</div></div>`:''}
+        <div style="text-align:center;flex:1.3;"><div style="font-size:34px;">🥇</div><div style="font-size:14px;font-weight:900;color:#fbbf24;margin-top:3px;word-break:break-all;">${escHtml(champion)}</div><div style="font-size:10px;color:#fbbf24;">우승</div></div>
+        ${third?`<div style="text-align:center;flex:1;"><div style="font-size:20px;">🥉</div><div style="font-size:12px;font-weight:700;color:#cd7f32;margin-top:3px;word-break:break-all;">${escHtml(third)}</div><div style="font-size:10px;color:var(--text-muted);">3위</div></div>`:''}
       </div>
     </div>`;
   }
 
-  // ── 탭 버튼 ──
+  // 탭
   const tabHtml = `<div style="display:flex;gap:6px;margin-bottom:14px;">
-    <button id="tn-tab-ladder" onclick="tnSwitchTab('ladder')" style="flex:1;padding:9px 4px;border-radius:10px;border:1.5px solid var(--accent);background:rgba(124,106,247,.18);color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;">🪜 사다리</button>
-    <button id="tn-tab-list" onclick="tnSwitchTab('list')" style="flex:1;padding:9px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:13px;font-weight:700;cursor:pointer;">📋 목록</button>
+    <button id="tn-tab-ladder" onclick="tnSwitchTab('ladder')" style="flex:1;padding:9px 4px;border-radius:10px;border:1.5px solid var(--accent);background:rgba(124,106,247,.18);color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;">🪜 대진표</button>
+    <button id="tn-tab-list" onclick="tnSwitchTab('list')" style="flex:1;padding:9px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:13px;font-weight:700;cursor:pointer;">📋 경기 목록</button>
   </div>`;
 
   // ── 사다리 뷰 ──
-  function gameCard(game, ti, ri, gi, compact) {
-    if (!game) return '<div style="height:60px;"></div>';
+  function ladderGameCard(game, tid, ri, gi) {
     const aWin = game.winner === 'a', bWin = game.winner === 'b';
-    const aName = game.a || (game.winner ? '?' : '미정');
-    const bName = game.b || (game.winner ? '?' : '미정');
     const isBye = game.winner && ((game.a && !game.b) || (!game.a && game.b));
 
     if (isBye) {
-      const byeWinner = game.a || game.b;
-      return `<div style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3);border-radius:10px;padding:8px 10px;min-width:100px;max-width:140px;">
-        <div style="font-size:12px;font-weight:700;color:#4ade80;word-break:break-all;">${escHtml(byeWinner)}</div>
+      const w = game.a || game.b;
+      return `<div style="background:rgba(74,222,128,.08);border:1.5px solid rgba(74,222,128,.35);border-radius:10px;padding:8px 10px;min-width:108px;max-width:140px;box-sizing:border-box;">
+        <div style="font-size:11px;font-weight:700;color:#4ade80;word-break:break-all;">${escHtml(w)}</div>
         <div style="font-size:9px;color:var(--text-muted);margin-top:2px;">부전승</div>
       </div>`;
     }
 
-    return `<div style="background:${game.winner?'rgba(74,222,128,.05)':'var(--surface2)'};border:1.5px solid ${game.winner?'rgba(74,222,128,.35)':'var(--border)'};border-radius:10px;min-width:110px;max-width:150px;overflow:hidden;">
-      <div onclick="tnSwitchTab('list')" style="padding:7px 10px;border-bottom:1px solid var(--border);cursor:pointer;background:${aWin?'rgba(74,222,128,.12)':''};display:flex;align-items:center;gap:4px;">
-        ${aWin?'<span style="font-size:10px;">🏆</span>':''}
-        <span style="font-size:12px;font-weight:${aWin?700:400};color:${aWin?'#4ade80':bWin?'var(--text-muted)':'var(--text)'};word-break:break-all;flex:1;">${escHtml(aName)}</span>
-        ${game.scoreA!==''&&game.scoreA!==undefined?`<span style="font-size:12px;font-weight:700;color:${aWin?'#4ade80':'var(--text-muted)'};">${game.scoreA}</span>`:''}
+    const aN = game.a || '미정', bN = game.b || '미정';
+    const pending = !game.a || !game.b;
+    const clickable = !pending && !game.winner;
+    const doneClick = game.winner ? `onclick="tnOpenScoreModal(${tid},${ri},${gi})"` : '';
+    const todoClick = clickable ? `onclick="tnOpenScoreModal(${tid},${ri},${gi})"` : '';
+
+    return `<div ${todoClick||doneClick} style="background:${game.winner?'rgba(74,222,128,.05)':pending?'var(--surface)':'var(--surface2)'};border:1.5px solid ${game.winner?'rgba(74,222,128,.4)':pending?'var(--border)':'var(--border)'};border-radius:10px;min-width:108px;max-width:140px;overflow:hidden;cursor:${(clickable||game.winner)?'pointer':'default'};">
+      <div style="padding:7px 9px;border-bottom:1px solid var(--border);background:${aWin?'rgba(74,222,128,.13)':''};display:flex;align-items:center;gap:3px;">
+        ${aWin?'<span style="font-size:9px;flex-shrink:0;">🏆</span>':''}
+        <span style="font-size:11px;font-weight:${aWin?700:400};color:${aWin?'#4ade80':bWin?'var(--text-muted)':'var(--text)'};word-break:break-all;flex:1;line-height:1.3;">${escHtml(aN)}</span>
+        ${game.scoreA!==''&&game.scoreA!==undefined?`<span style="font-size:12px;font-weight:800;color:${aWin?'#4ade80':'var(--text-muted)'};flex-shrink:0;margin-left:2px;">${game.scoreA}</span>`:''}
       </div>
-      <div onclick="tnSwitchTab('list')" style="padding:7px 10px;cursor:pointer;background:${bWin?'rgba(74,222,128,.12)':''};display:flex;align-items:center;gap:4px;">
-        ${bWin?'<span style="font-size:10px;">🏆</span>':''}
-        <span style="font-size:12px;font-weight:${bWin?700:400};color:${bWin?'#4ade80':aWin?'var(--text-muted)':'var(--text)'};word-break:break-all;flex:1;">${escHtml(bName)}</span>
-        ${game.scoreB!==''&&game.scoreB!==undefined?`<span style="font-size:12px;font-weight:700;color:${bWin?'#4ade80':'var(--text-muted)'};">${game.scoreB}</span>`:''}
+      <div style="padding:7px 9px;background:${bWin?'rgba(74,222,128,.13)':''};display:flex;align-items:center;gap:3px;">
+        ${bWin?'<span style="font-size:9px;flex-shrink:0;">🏆</span>':''}
+        <span style="font-size:11px;font-weight:${bWin?700:400};color:${bWin?'#4ade80':aWin?'var(--text-muted)':'var(--text)'};word-break:break-all;flex:1;line-height:1.3;">${escHtml(bN)}</span>
+        ${game.scoreB!==''&&game.scoreB!==undefined?`<span style="font-size:12px;font-weight:800;color:${bWin?'#4ade80':'var(--text-muted)'};flex-shrink:0;margin-left:2px;">${game.scoreB}</span>`:''}
       </div>
+      ${pending?`<div style="padding:4px 9px;font-size:9px;color:var(--text-muted);border-top:1px solid var(--border);">⏳ 대기중</div>`:''}
+      ${clickable?`<div style="padding:4px 9px;font-size:9px;color:var(--accent);border-top:1px solid var(--border);">탭하여 결과 입력</div>`:''}
+      ${game.winner&&!isBye?`<div style="padding:3px 9px;font-size:9px;color:var(--text-muted);border-top:1px solid var(--border);">↩️ 탭하여 초기화</div>`:''}
     </div>`;
   }
 
-  // 메인 브라켓 사다리 생성
-  function buildLadder(rounds, ti) {
-    if (!rounds || rounds.length === 0) return '';
-    let html = `<div style="display:flex;flex-direction:row;align-items:stretch;gap:0;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;">`;
+  function buildLadder(rounds, tid) {
+    if (!rounds || !rounds.length) return '';
+    // 가장 많은 경기 수 = 첫 라운드
+    const maxGames = rounds[0].games.length;
+    const CARD_H = 90; // 카드 높이 추정
+    const GAP = 8;
+
+    let html = `<div style="display:flex;flex-direction:row;align-items:flex-start;gap:0;overflow-x:auto;padding-bottom:10px;-webkit-overflow-scrolling:touch;">`;
     rounds.forEach((round, ri) => {
-      const gameCount = round.games.length;
-      const totalHeight = Math.max(gameCount * 90, 90);
-      html += `<div style="display:flex;flex-direction:column;min-width:130px;flex-shrink:0;">`;
-      // 라운드 이름
-      html += `<div style="text-align:center;font-size:10px;font-weight:800;color:var(--accent);padding:6px 4px;letter-spacing:.5px;white-space:nowrap;">${escHtml(round.name)}</div>`;
-      // 경기 카드들
-      html += `<div style="display:flex;flex-direction:column;flex:1;gap:0;">`;
+      const gCount = round.games.length;
+      const slotH = Math.max(CARD_H + GAP, (maxGames * (CARD_H + GAP)) / gCount);
+      html += `<div style="display:flex;flex-direction:column;min-width:128px;flex-shrink:0;">`;
+      html += `<div style="text-align:center;font-size:10px;font-weight:800;color:var(--accent);padding:5px 4px 8px;white-space:nowrap;">`;
+      const rIcon = round.name==='결승'?'🏆':round.name==='준결승'?'⚔️':round.name==='3·4위전'?'🥉':'🎾';
+      html += `${rIcon} ${escHtml(round.name)}</div>`;
       round.games.forEach((game, gi) => {
-        const slotH = Math.max(90, totalHeight / gameCount);
-        html += `<div style="display:flex;flex-direction:row;align-items:center;height:${slotH}px;padding:4px 6px;position:relative;">`;
-        html += gameCard(game, ti, ri, gi, true);
-        // 오른쪽 연결선 (마지막 라운드 제외)
+        html += `<div style="display:flex;align-items:center;height:${slotH}px;padding:${GAP/2}px 4px;">`;
+        html += ladderGameCard(game, tid, ri, gi);
+        // 오른쪽 화살표 연결 (마지막 라운드 아닐 때)
         if (ri < rounds.length - 1) {
-          html += `<div style="position:absolute;right:0;top:50%;width:6px;height:1px;background:var(--border);transform:translateY(-50%);"></div>`;
+          html += `<div style="flex-shrink:0;width:8px;display:flex;align-items:center;margin-left:2px;"><div style="width:8px;height:2px;background:var(--border);"></div></div>`;
         }
         html += `</div>`;
       });
-      html += `</div></div>`;
-      // 라운드 사이 구분선
-      if (ri < rounds.length - 1) {
-        html += `<div style="width:6px;flex-shrink:0;display:flex;align-items:center;"><div style="width:100%;height:100%;border-right:1px dashed var(--border);"></div></div>`;
-      }
+      html += `</div>`;
     });
     html += `</div>`;
     return html;
@@ -4563,90 +4655,67 @@ function tnBracketHTML(t) {
 
   const ladderHtml = `<div id="tn-view-ladder">
     ${buildLadder(mainRounds, t.id)}
-    ${thirdRound ? `<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
-      <div style="font-size:11px;font-weight:800;color:var(--text-muted);margin-bottom:6px;">🥉 3·4위전</div>
+    ${thirdRound ? `<div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);">
+      <div style="font-size:10px;color:var(--text-muted);font-weight:700;margin-bottom:4px;">🥉 3·4위전</div>
       ${buildLadder([thirdRound], t.id)}
     </div>` : ''}
-    <div style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:8px;">카드 탭하면 목록 뷰에서 점수 입력 가능</div>
   </div>`;
 
-  // ── 목록 뷰 (기존 방식) ──
-  let listHtml = '<div id="tn-view-list" style="display:none;">';
+  // ── 목록 뷰 ──
+  let listHtml = `<div id="tn-view-list" style="display:none;">`;
   t.bracket.forEach((round, ri) => {
-    listHtml += `<div style="margin-bottom:24px;">
-      <div style="font-size:13px;font-weight:800;color:var(--accent);margin-bottom:10px;padding:7px 14px;background:rgba(124,106,247,.12);border-radius:10px;letter-spacing:.5px;">
-        ${round.name === '결승' ? '🏆 결승' : round.name === '3·4위전' ? '🥉 3·4위전' : round.name === '준결승' ? '⚔️ 준결승' : '🎾 ' + escHtml(round.name)}
-      </div>`;
+    const rIcon = round.name==='결승'?'🏆':round.name==='준결승'?'⚔️':round.name==='3·4위전'?'🥉':'🎾';
+    listHtml += `<div style="margin-bottom:20px;">
+      <div style="font-size:13px;font-weight:800;color:var(--accent);margin-bottom:10px;padding:7px 14px;background:rgba(124,106,247,.12);border-radius:10px;">${rIcon} ${escHtml(round.name)}</div>`;
+
     round.games.forEach((game, gi) => {
-      const aName = game.a || '미정';
-      const bName = game.b || '미정';
+      const aName = game.a || '미정', bName = game.b || '미정';
       const isBye = (game.a && !game.b) || (!game.a && game.b);
-      const aWin = game.winner === 'a';
-      const bWin = game.winner === 'b';
+      const aWin = game.winner === 'a', bWin = game.winner === 'b';
       const pending = !game.a || !game.b;
 
       if (isBye) {
-        const winner = game.a || game.b;
         listHtml += `<div style="background:rgba(74,222,128,.07);border-radius:12px;padding:12px 16px;margin-bottom:10px;border:1px solid rgba(74,222,128,.3);display:flex;align-items:center;gap:12px;">
-          <span style="font-size:20px;">🎾</span>
-          <div>
-            <div style="font-size:14px;font-weight:700;color:#4ade80;">${escHtml(winner)}</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">부전승 — 자동 진출</div>
-          </div>
+          <span style="font-size:18px;">🎾</span>
+          <div><div style="font-size:14px;font-weight:700;color:#4ade80;">${escHtml(game.a||game.b)}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">부전승 — 자동 진출</div></div>
         </div>`;
         return;
       }
 
-      const cardBorder = game.winner ? 'rgba(74,222,128,.35)' : 'var(--border)';
       const cardBg = game.winner ? 'rgba(74,222,128,.04)' : 'var(--surface2)';
+      const cardBorder = game.winner ? 'rgba(74,222,128,.35)' : 'var(--border)';
       listHtml += `<div style="background:${cardBg};border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid ${cardBorder};">`;
 
       if (pending) {
         listHtml += `<div style="display:flex;align-items:center;gap:0;">
-          <div style="flex:1;text-align:center;padding:10px 6px;border-radius:8px;background:var(--surface);border:1px solid var(--border);">
-            <div style="font-size:13px;color:var(--text-muted);">미정</div>
-          </div>
+          <div style="flex:1;text-align:center;padding:10px 6px;border-radius:8px;background:var(--surface);border:1px solid var(--border);"><div style="font-size:13px;color:var(--text-muted);">미정</div></div>
           <div style="padding:0 12px;font-size:18px;font-weight:900;color:var(--text-muted);">VS</div>
-          <div style="flex:1;text-align:center;padding:10px 6px;border-radius:8px;background:var(--surface);border:1px solid var(--border);">
-            <div style="font-size:13px;color:var(--text-muted);">미정</div>
-          </div>
+          <div style="flex:1;text-align:center;padding:10px 6px;border-radius:8px;background:var(--surface);border:1px solid var(--border);"><div style="font-size:13px;color:var(--text-muted);">미정</div></div>
         </div>
         <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--text-muted);">⏳ 이전 경기 대기중</div>`;
       } else {
-        listHtml += `<div style="display:flex;align-items:center;gap:6px;">
-          <div style="flex:1;padding:10px 8px;border-radius:8px;background:${aWin?'rgba(74,222,128,.15)':'var(--surface)'};border:1px solid ${aWin?'rgba(74,222,128,.5)':'var(--border)'};text-align:center;">
-            <div style="font-size:14px;font-weight:${aWin?800:500};color:${aWin?'#4ade80':bWin?'var(--text-muted)':'var(--text)'};">${escHtml(aName)}</div>
-            ${aWin?'<div style="font-size:10px;color:#4ade80;margin-top:2px;">🏆 승</div>':bWin?'<div style="font-size:10px;color:var(--text-muted);margin-top:2px;">패</div>':''}
+        // 선수 카드
+        listHtml += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <div style="flex:1;padding:12px 8px;border-radius:10px;background:${aWin?'rgba(74,222,128,.15)':'var(--surface)'};border:1.5px solid ${aWin?'rgba(74,222,128,.5)':'var(--border)'};text-align:center;">
+            ${aWin?'<div style="font-size:14px;margin-bottom:2px;">🏆</div>':''}
+            <div style="font-size:14px;font-weight:${aWin?800:500};color:${aWin?'#4ade80':bWin?'var(--text-muted)':'var(--text)'};word-break:break-all;">${escHtml(aName)}</div>
+            ${game.scoreA!==''&&game.scoreA!==undefined?`<div style="font-size:20px;font-weight:900;color:${aWin?'#4ade80':'var(--text-muted)'};margin-top:4px;">${game.scoreA}</div>`:''}
+            ${aWin?'<div style="font-size:10px;color:#4ade80;margin-top:2px;">승</div>':bWin?'<div style="font-size:10px;color:var(--text-muted);margin-top:2px;">패</div>':''}
           </div>
-          <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;">
-            <div style="display:flex;align-items:center;gap:4px;">
-              <input type="number" min="0" inputmode="numeric" pattern="[0-9]*" value="${game.scoreA !== undefined && game.scoreA !== '' ? game.scoreA : ''}"
-                placeholder="-"
-                onchange="tnScore(${t.id},${ri},${gi},'a',this.value)"
-                style="width:46px;padding:8px 2px;text-align:center;background:var(--surface);border:1.5px solid ${aWin?'#4ade80':'var(--border)'};border-radius:8px;color:var(--text);font-size:18px;font-weight:800;outline:none;"
-              >
-              <span style="font-size:16px;font-weight:900;color:var(--text-muted);">:</span>
-              <input type="number" min="0" inputmode="numeric" pattern="[0-9]*" value="${game.scoreB !== undefined && game.scoreB !== '' ? game.scoreB : ''}"
-                placeholder="-"
-                onchange="tnScore(${t.id},${ri},${gi},'b',this.value)"
-                style="width:46px;padding:8px 2px;text-align:center;background:var(--surface);border:1.5px solid ${bWin?'#4ade80':'var(--border)'};border-radius:8px;color:var(--text);font-size:18px;font-weight:800;outline:none;"
-              >
-            </div>
-            ${!game.winner ? '<div style="font-size:10px;color:var(--text-muted);text-align:center;">점수 입력</div>' : ''}
-          </div>
-          <div style="flex:1;padding:10px 8px;border-radius:8px;background:${bWin?'rgba(74,222,128,.15)':'var(--surface)'};border:1px solid ${bWin?'rgba(74,222,128,.5)':'var(--border)'};text-align:center;">
-            <div style="font-size:14px;font-weight:${bWin?800:500};color:${bWin?'#4ade80':aWin?'var(--text-muted)':'var(--text)'};">${escHtml(bName)}</div>
-            ${bWin?'<div style="font-size:10px;color:#4ade80;margin-top:2px;">🏆 승</div>':aWin?'<div style="font-size:10px;color:var(--text-muted);margin-top:2px;">패</div>':''}
+          <div style="font-size:16px;font-weight:900;color:var(--text-muted);flex-shrink:0;">VS</div>
+          <div style="flex:1;padding:12px 8px;border-radius:10px;background:${bWin?'rgba(74,222,128,.15)':'var(--surface)'};border:1.5px solid ${bWin?'rgba(74,222,128,.5)':'var(--border)'};text-align:center;">
+            ${bWin?'<div style="font-size:14px;margin-bottom:2px;">🏆</div>':''}
+            <div style="font-size:14px;font-weight:${bWin?800:500};color:${bWin?'#4ade80':aWin?'var(--text-muted)':'var(--text)'};word-break:break-all;">${escHtml(bName)}</div>
+            ${game.scoreB!==''&&game.scoreB!==undefined?`<div style="font-size:20px;font-weight:900;color:${bWin?'#4ade80':'var(--text-muted)'};margin-top:4px;">${game.scoreB}</div>`:''}
+            ${bWin?'<div style="font-size:10px;color:#4ade80;margin-top:2px;">승</div>':aWin?'<div style="font-size:10px;color:var(--text-muted);margin-top:2px;">패</div>':''}
           </div>
         </div>`;
 
         if (!game.winner) {
-          listHtml += `<div style="display:flex;gap:6px;margin-top:10px;">
-            <button onclick="tnSetWinner(${t.id},${ri},${gi},'a')" style="flex:1;padding:9px 4px;background:rgba(124,106,247,.12);border:1px solid rgba(124,106,247,.35);border-radius:8px;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;min-height:44px;">${escHtml(aName)} 승 ✓</button>
-            <button onclick="tnSetWinner(${t.id},${ri},${gi},'b')" style="flex:1;padding:9px 4px;background:rgba(124,106,247,.12);border:1px solid rgba(124,106,247,.35);border-radius:8px;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;min-height:44px;">${escHtml(bName)} 승 ✓</button>
-          </div>`;
+          listHtml += `<button onclick="tnOpenScoreModal(${t.id},${ri},${gi})" style="width:100%;padding:13px;border-radius:10px;border:2px solid rgba(124,106,247,.4);background:rgba(124,106,247,.1);color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;min-height:48px;">⚔️ 결과 입력</button>`;
         } else {
-          listHtml += `<button onclick="tnResetWinner(${t.id},${ri},${gi})" style="width:100%;margin-top:8px;padding:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text-muted);font-size:12px;cursor:pointer;min-height:40px;">↩️ 결과 초기화</button>`;
+          listHtml += `<button onclick="tnOpenScoreModal(${t.id},${ri},${gi})" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-size:12px;cursor:pointer;min-height:40px;">↩️ 결과 초기화</button>`;
         }
       }
       listHtml += '</div>';
@@ -4677,48 +4746,6 @@ function tnSwitchTab(tab) {
   }
 }
 
-
-function tnScore(tid, ri, gi, side, val) {
-  const t = (state.tnTournaments || []).find(x => x.id === tid);
-  if (!t) return;
-  const game = t.bracket[ri].games[gi];
-  const trimmed = String(val).trim();
-
-  // 빈 값 처리
-  if (trimmed === '') {
-    if (side === 'a') game.scoreA = '';
-    else game.scoreB = '';
-    // 점수 초기화 시 승자도 초기화
-    if (game.winner) tnResetWinner(tid, ri, gi);
-    else { save(); tnRefreshModal(); }
-    return;
-  }
-
-  const v = parseInt(trimmed);
-  if (isNaN(v) || v < 0) return;
-  if (side === 'a') game.scoreA = v;
-  else game.scoreB = v;
-
-  // 두 점수가 모두 입력됐고 다른 경우 → 자동으로 높은 점수가 승자
-  const sA = game.scoreA;
-  const sB = game.scoreB;
-  if (sA !== '' && sA !== undefined && sB !== '' && sB !== undefined) {
-    const nA = parseInt(sA);
-    const nB = parseInt(sB);
-    if (!isNaN(nA) && !isNaN(nB) && nA !== nB) {
-      // 이전 승자 초기화 후 새 승자 설정
-      game.winner = null;
-      const autoWinner = nA > nB ? 'a' : 'b';
-      save();
-      tnSetWinner(tid, ri, gi, autoWinner);
-      return;
-    }
-  }
-
-  save();
-  tnRefreshModal();
-}
-
 function tnSetWinner(tid, ri, gi, side) {
   const t = (state.tnTournaments || []).find(x => x.id === tid);
   if (!t) return;
@@ -4732,17 +4759,21 @@ function tnSetWinner(tid, ri, gi, side) {
     const thirdRound = t.bracket.find(r => r.name === '3·4위전');
     const isFinal = (ri === finalRoundIdx);
 
-    // 결승이 아닌 경우만 다음 라운드(결승 포함)에 승자 진출
     if (!isFinal) {
-      const nextRi = ri + 1;
-      const nextGi = Math.floor(gi / 2);
-      const nextSlot = gi % 2 === 0 ? 'a' : 'b';
-      // 다음 라운드가 3위전이면 건너뜀
-      if (t.bracket[nextRi] && t.bracket[nextRi].name !== '3·4위전' && t.bracket[nextRi].games[nextGi]) {
-        t.bracket[nextRi].games[nextGi][nextSlot] = winnerName;
+      // 다음 주 브라켓 라운드에 승자 진출 (3위전 방향은 절대 안 넣음)
+      let nextRi = ri + 1;
+      // 3위전 인덱스 건너뛰기
+      while (nextRi < t.bracket.length && t.bracket[nextRi].name === '3·4위전') nextRi++;
+      if (nextRi < t.bracket.length && t.bracket[nextRi].games) {
+        const nextGi = Math.floor(gi / 2);
+        const nextSlot = gi % 2 === 0 ? 'a' : 'b';
+        if (t.bracket[nextRi].games[nextGi]) {
+          t.bracket[nextRi].games[nextGi][nextSlot] = winnerName;
+        }
       }
     }
-    // 3/4위전에 패자 배치 (준결승에서만)
+
+    // 준결승 패자만 3위전에 배치
     if (thirdRound && finalRoundIdx > 0 && ri === finalRoundIdx - 1) {
       const thirdSlot = gi === 0 ? 'a' : 'b';
       thirdRound.games[0][thirdSlot] = loserName;
@@ -4751,7 +4782,6 @@ function tnSetWinner(tid, ri, gi, side) {
 
   save();
   tnRefreshModal();
-  // 경기 기록에도 자동 반영
   tnSyncToMatch(t, ri, gi);
 }
 
@@ -4763,26 +4793,33 @@ function tnResetWinner(tid, ri, gi) {
   const oldWinner = game.winner === 'a' ? game.a : game.b;
   const oldLoser  = game.winner === 'a' ? game.b : game.a;
   game.winner = null;
+  game.scoreA = '';
+  game.scoreB = '';
 
   if (!game.is3rd) {
-    // 다음 라운드에서 승자 제거
-    const nextRi = ri + 1;
-    const nextGi = Math.floor(gi / 2);
-    const nextSlot = gi % 2 === 0 ? 'a' : 'b';
-    if (t.bracket[nextRi] && t.bracket[nextRi].games[nextGi]) {
-      if (t.bracket[nextRi].games[nextGi][nextSlot] === oldWinner) {
+    const finalRoundIdx = t.bracket.findIndex(r => r.name === '결승');
+    const thirdRound = t.bracket.find(r => r.name === '3·4위전');
+
+    // 다음 메인 라운드에서 승자 제거 (3위전 방향 건너뜀)
+    let nextRi = ri + 1;
+    while (nextRi < t.bracket.length && t.bracket[nextRi].name === '3·4위전') nextRi++;
+    if (nextRi < t.bracket.length && t.bracket[nextRi] && t.bracket[nextRi].games) {
+      const nextGi = Math.floor(gi / 2);
+      const nextSlot = gi % 2 === 0 ? 'a' : 'b';
+      if (t.bracket[nextRi].games[nextGi] && t.bracket[nextRi].games[nextGi][nextSlot] === oldWinner) {
         t.bracket[nextRi].games[nextGi][nextSlot] = null;
         tnCascadeReset(t, nextRi, nextGi);
       }
     }
-    // 3위전에서 패자 제거
-    const finalRoundIdx = t.bracket.findIndex(r => r.name === '결승');
-    const thirdRound = t.bracket.find(r => r.name === '3·4위전');
+
+    // 준결승이었다면 3위전에서 패자도 제거
     if (thirdRound && finalRoundIdx > 0 && ri === finalRoundIdx - 1) {
       const thirdSlot = gi === 0 ? 'a' : 'b';
       if (thirdRound.games[0][thirdSlot] === oldLoser) {
         thirdRound.games[0][thirdSlot] = null;
         thirdRound.games[0].winner = null;
+        thirdRound.games[0].scoreA = '';
+        thirdRound.games[0].scoreB = '';
       }
     }
   }
@@ -4795,11 +4832,16 @@ function tnCascadeReset(t, ri, gi) {
   if (!game || !game.winner) return;
   const oldWinner = game.winner === 'a' ? game.a : game.b;
   game.winner = null;
-  const nextRi = ri + 1;
-  const nextGi = Math.floor(gi / 2);
-  const nextSlot = gi % 2 === 0 ? 'a' : 'b';
-  if (t.bracket[nextRi] && t.bracket[nextRi].games[nextGi]) {
-    if (t.bracket[nextRi].games[nextGi][nextSlot] === oldWinner) {
+  game.scoreA = '';
+  game.scoreB = '';
+
+  // 3위전 방향은 cascade 안 함
+  let nextRi = ri + 1;
+  while (nextRi < t.bracket.length && t.bracket[nextRi].name === '3·4위전') nextRi++;
+  if (nextRi < t.bracket.length && t.bracket[nextRi] && t.bracket[nextRi].games) {
+    const nextGi = Math.floor(gi / 2);
+    const nextSlot = gi % 2 === 0 ? 'a' : 'b';
+    if (t.bracket[nextRi].games[nextGi] && t.bracket[nextRi].games[nextGi][nextSlot] === oldWinner) {
       t.bracket[nextRi].games[nextGi][nextSlot] = null;
       tnCascadeReset(t, nextRi, nextGi);
     }
@@ -4826,13 +4868,12 @@ function tnSyncToMatch(t, ri, gi) {
     opponent,
     opponent2: '',
     result,
-    myScore: inA ? (game.scoreA || '') : (game.scoreB || ''),
-    oppScore: inA ? (game.scoreB || '') : (game.scoreA || ''),
+    myScore: inA ? (game.scoreA !== '' ? String(game.scoreA) : '') : (game.scoreB !== '' ? String(game.scoreB) : ''),
+    oppScore: inA ? (game.scoreB !== '' ? String(game.scoreB) : '') : (game.scoreA !== '' ? String(game.scoreA) : ''),
     myTiebreak: '',
     oppTiebreak: '',
     memo,
   };
-  // 중복 방지
   const existIdx = state.matches.findIndex(m => m.memo === memo);
   if (existIdx >= 0) state.matches[existIdx] = matchData;
   else state.matches.unshift(matchData);
