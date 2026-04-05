@@ -1223,6 +1223,13 @@
           <input class="form-input" id="newPlayerName" placeholder="이름 (필수)" onkeydown="if(event.key==='Enter')addPlayer()" style="font-size:16px;">
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <select class="form-select" id="newPlayerGender">
+            <option value="">성별</option>
+            <option>남자</option><option>여자</option>
+          </select>
+          <input class="form-input" id="newPlayerGrade" placeholder="등급 (예: 14)" inputmode="numeric" style="font-size:16px;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
           <select class="form-select" id="newPlayerAge">
             <option value="">나이대</option>
             <option>10대</option><option>20대</option><option>30대</option>
@@ -2019,6 +2026,8 @@ function _applyFirebaseData(parsed) {
 
     // 선수 필드 정규화
     state.players = state.players.map(function(p) {
+      if (!('gender' in p)) p.gender = '';
+      if (!('grade'  in p)) p.grade  = '';
       if (!p || typeof p !== 'object') return null;
       return {
         memo: '', clubs: [], age: '', career: '', hand: '', style: '',
@@ -3622,21 +3631,25 @@ function addPlayer() {
   const name = document.getElementById('newPlayerName').value.trim();
   if (!name) { showToast('⚠️ 이름을 입력하세요'); return; }
   if (state.players.find(p => p.name === name)) { showToast('⚠️ 이미 등록된 선수입니다'); return; }
-  const age   = document.getElementById('newPlayerAge').value;
-  const career= document.getElementById('newPlayerCareer').value;
-  const hand  = document.getElementById('newPlayerHand').value;
-  const style = document.getElementById('newPlayerStyle').value;
-  const club  = document.getElementById('newPlayerClub') ? document.getElementById('newPlayerClub').value : '';
-  const clubs = club ? [club] : [];
+  const age    = document.getElementById('newPlayerAge').value;
+  const career = document.getElementById('newPlayerCareer').value;
+  const hand   = document.getElementById('newPlayerHand').value;
+  const style  = document.getElementById('newPlayerStyle').value;
+  const gender = document.getElementById('newPlayerGender') ? document.getElementById('newPlayerGender').value : '';
+  const grade  = document.getElementById('newPlayerGrade') ? document.getElementById('newPlayerGrade').value.trim() : '';
+  const club   = document.getElementById('newPlayerClub') ? document.getElementById('newPlayerClub').value : '';
+  const clubs  = club ? [club] : [];
   state.players.push({ id: state.nextPlayerId++, name, memo: '', clubs,
-    age, career, hand, style });
+    age, career, hand, style, gender, grade });
   save();
   document.getElementById('newPlayerName').value = '';
   document.getElementById('newPlayerAge').value = '';
   document.getElementById('newPlayerCareer').value = '';
   document.getElementById('newPlayerHand').value = '';
   document.getElementById('newPlayerStyle').value = '';
-  if (document.getElementById('newPlayerClub')) document.getElementById('newPlayerClub').value = '';
+  if (document.getElementById('newPlayerGender')) document.getElementById('newPlayerGender').value = '';
+  if (document.getElementById('newPlayerGrade'))  document.getElementById('newPlayerGrade').value  = '';
+  if (document.getElementById('newPlayerClub'))   document.getElementById('newPlayerClub').value   = '';
   renderPlayers();
   showToast(`✅ ${name} 추가 완료!`);
 }
@@ -3724,6 +3737,9 @@ function renderPlayers() {
         <div class="player-avatar-sm" onclick="showPlayerDetail(${p.id})" style="cursor:pointer;">${initial}</div>
         <div class="player-info" onclick="showPlayerDetail(${p.id})" style="cursor:pointer;">
           <div class="player-name">${escHtml(p.name)}${clubDisplay}</div>
+          <div class="player-meta" style="margin-bottom:2px;">
+            ${p.gender||p.grade ? `<span style="color:var(--text-muted);font-size:11px;">${[p.gender, p.grade ? '등급 '+p.grade : ''].filter(Boolean).join(' · ')}</span>` : ''}
+          </div>
           <div class="player-meta" style="color:var(--accent);font-size:11px;">전적 보기 →</div>
           ${memoPreview}
         </div>
@@ -3841,19 +3857,34 @@ function showPlayerDetail(playerId) {
     : `<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0;">경기 기록이 없습니다</div>`;
 
   // 선수 프로필 항목
-  const pAge   = player.age   || '';
-  const pHand  = player.hand  || '';
-  const pCareer= player.career|| '';
-  const pStyle = player.style || '';
-  const pClubs = player.clubs || [];
+  const pAge    = player.age    || '';
+  const pHand   = player.hand   || '';
+  const pCareer = player.career || '';
+  const pStyle  = player.style  || '';
+  const pGender = player.gender || '';
+  const pGrade  = player.grade  || '';
+  const pClubs  = player.clubs  || [];
   const profileItems = [
+    { lbl:'성별',   val:pGender, key:'gender', type:'select', opts:['남자','여자'] },
+    { lbl:'등급',   val:pGrade,  key:'grade',  type:'input',  placeholder:'예) 14' },
     { lbl:'나이대', val:pAge,    key:'age',    type:'select', opts:['10대','20대','30대','40대','50대','60대 이상'] },
     { lbl:'손잡이', val:pHand,   key:'hand',   type:'select', opts:['오른손','왼손'] },
     { lbl:'구력',   val:pCareer, key:'career', type:'select', opts:['6개월 미만','6개월~1년','1~2년','2~5년','5~10년','10년 이상'] },
     { lbl:'스타일', val:pStyle,  key:'style',  type:'select', opts:['공격형','수비형','올라운드','네트플레이','베이스라인'] },
   ];
-  const profileGrid = profileItems.map(item => `
-    <div class="pd-profile-item">
+  const profileGrid = profileItems.map(item => {
+    if (item.type === 'input') {
+      return `<div class="pd-profile-item">
+        <div class="pd-profile-lbl">${item.lbl}</div>
+        <input class="pd-profile-select" type="text" inputmode="numeric"
+          placeholder="${item.placeholder||''}"
+          value="${escHtml(item.val)}"
+          data-pid="${player.id}" data-key="${item.key}"
+          onchange="savePlayerProfile(parseInt(this.dataset.pid),this.dataset.key,this.value.trim());showToast('저장됐어요 ✅')"
+          style="text-align:right;width:100%;background:transparent;border:none;outline:none;font-size:13px;font-weight:700;color:var(--text);font-family:inherit;">
+      </div>`;
+    }
+    return `<div class="pd-profile-item">
       <div class="pd-profile-lbl">${item.lbl}</div>
       <select class="pd-profile-select${item.val?'':' unset'}"
         data-pid="${player.id}" data-key="${item.key}"
@@ -3861,7 +3892,8 @@ function showPlayerDetail(playerId) {
         <option value="">미설정</option>
         ${item.opts.map(o=>`<option${item.val===o?' selected':''}>${o}</option>`).join('')}
       </select>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   // 클럽 수정 UI
   const clubOptions = (state.clubs || []).map(c =>
@@ -3882,6 +3914,10 @@ function showPlayerDetail(playerId) {
       <div class="pd-avatar">${player.name.charAt(0)}</div>
       <div class="pd-hero-info">
         <div class="pd-name">${escHtml(player.name)}</div>
+        ${(player.gender||player.grade) ? `<div style="display:flex;gap:6px;margin-bottom:4px;flex-wrap:wrap;">
+          ${player.gender ? `<span style="background:rgba(124,106,247,.18);color:var(--accent);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">${escHtml(player.gender)}</span>` : ''}
+          ${player.grade  ? `<span style="background:rgba(251,191,36,.18);color:#fbbf24;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">Lv.${escHtml(player.grade)}</span>` : ''}
+        </div>` : ''}
         <div class="pd-clubs">${clubTag}</div>
       </div>
     </div>
