@@ -2163,7 +2163,7 @@ function renderTournamentList() {
 function showTVCreate() {
   tvSelected = [];
   document.getElementById('tv-tname').value = '';
-  document.getElementById('tv-tdate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('tv-tdate').value = getTodayKST();
   document.getElementById('tv-tgames').value = '4';
 
   // 클럽별 그룹으로 선수 렌더
