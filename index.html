@@ -2163,7 +2163,7 @@ function renderTournamentList() {
 function showTVCreate() {
   tvSelected = [];
   document.getElementById('tv-tname').value = '';
-  document.getElementById('tv-tdate').value = getTodayKST();
+  document.getElementById('tv-tdate').value = getTodayStr();
   document.getElementById('tv-tgames').value = '4';
 
   // 클럽별 그룹으로 선수 렌더
@@ -4105,7 +4105,7 @@ function switchContestTab(tab) {
   const tourBtn  = document.getElementById('ctab-tour');
   const hanulEl  = document.getElementById('tv-root');
   const tourEl   = document.getElementById('tn-root');
-  if (!hanulBtn || !tourBtn) return;
+  if (!hanulBtn || !tourBtn || !hanulEl || !tourEl) return;
 
   if (tab === 'hanul') {
     hanulBtn.style.background = 'var(--accent)'; hanulBtn.style.color = '#fff';
@@ -4123,15 +4123,7 @@ function switchContestTab(tab) {
 }
 
 function renderTournamentSection() {
-  // 탭 진입 시 현재 선택된 탭 유지 + 버튼 상태 동기화
-  const hanulBtn = document.getElementById('ctab-hanul');
-  const tourBtn  = document.getElementById('ctab-tour');
-  if (hanulBtn && tourBtn) {
-    hanulBtn.style.background = _contestTab === 'hanul' ? 'var(--accent)' : 'var(--surface2)';
-    hanulBtn.style.color      = _contestTab === 'hanul' ? '#fff' : 'var(--text-muted)';
-    tourBtn.style.background  = _contestTab === 'tour'  ? 'var(--accent)' : 'var(--surface2)';
-    tourBtn.style.color       = _contestTab === 'tour'  ? '#fff' : 'var(--text-muted)';
-  }
+  // 탭 진입 시 현재 선택된 탭 기준으로 한 번만 렌더링 (이중 실행 방지)
   switchContestTab(_contestTab);
 }
 
@@ -4496,7 +4488,8 @@ function tnOpenScoreModal(tid, ri, gi) {
   const t = (state.tnTournaments || []).find(x => x.id === tid);
   if (!t) return;
   const game = t.bracket[ri].games[gi];
-  if (!game || game.winner !== null && game.winner !== undefined) {
+  if (!game) return;
+  if (game.winner !== null && game.winner !== undefined) {
     // 이미 결과 있으면 초기화 확인
     showConfirm('결과 초기화', '이 경기 결과를 초기화하시겠습니까?', '↩️', () => {
       tnResetWinner(tid, ri, gi);
