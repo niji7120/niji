@@ -1,4 +1,4 @@
-const CACHE_NAME = 'niji-string-v2';
+const CACHE_NAME = 'niji-string-v3';
 
 const urlsToCache = [
   './',
