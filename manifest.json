@@ -2,21 +2,19 @@
   "name": "NIJI STRING - 테니스·배드민턴 기록",
   "short_name": "NIJI STRING",
   "description": "테니스·배드민턴 개인 경기 기록, 통계, 선수 관리 앱",
-  "start_url": "/niji/index.html",
+  "start_url": ".",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0f0f13",
   "theme_color": "#7c6af7",
   "lang": "ko",
-  "categories": ["sports", "health & fitness"],
   "icons": [
-    { "src": "/niji/icon-48.png",  "sizes": "48x48",   "type": "image/png" },
-    { "src": "/niji/icon-72.png",  "sizes": "72x72",   "type": "image/png" },
-    { "src": "/niji/icon-96.png",  "sizes": "96x96",   "type": "image/png" },
-    { "src": "/niji/icon-144.png", "sizes": "144x144", "type": "image/png" },
-    { "src": "/niji/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/niji/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
-  ],
-  "screenshots": [],
-  "share_target": null
+    { "src": "icon-48.png",  "sizes": "48x48",   "type": "image/png" },
+    { "src": "icon-72.png",  "sizes": "72x72",   "type": "image/png" },
+    { "src": "icon-96.png",  "sizes": "96x96",   "type": "image/png" },
+    { "src": "icon-144.png", "sizes": "144x144", "type": "image/png" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
 }
