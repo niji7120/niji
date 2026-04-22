@@ -130,36 +130,74 @@ function load() {
   });
 }
 
-// 구글 로그인 화면 표시
+// 로그인 화면 표시 (구글 + 이메일)
 function _showLoginScreen() {
   var loadingScreen = document.getElementById('loadingScreen');
-  if (loadingScreen) {
-    loadingScreen.innerHTML = `
-      <div style="display:flex;flex-direction:column;align-items:center;gap:24px;padding:40px 20px;">
-        <div style="font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;
-          background:linear-gradient(135deg,#7c6af7,#f76ac8);
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px;">
-          NIJI STRING
-        </div>
-        <div style="font-size:14px;color:#7a7a95;text-align:center;line-height:1.6;">
-          테니스·배드민턴<br>경기 기록 & 스트링 관리
-        </div>
-        <button id="googleLoginBtn" onclick="signInWithGoogle()"
-          style="display:flex;align-items:center;gap:12px;padding:14px 28px;
-            background:#fff;color:#3c3c3c;border:none;border-radius:14px;
-            font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.25);
-            min-width:240px;justify-content:center;">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
-            style="width:22px;height:22px;" alt="Google">
-          Google로 로그인
-        </button>
-        <div id="loginMsg" style="font-size:12px;color:#7a7a95;min-height:20px;"></div>
+  if (!loadingScreen) return;
+  loadingScreen.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0;padding:40px 20px;width:100%;max-width:360px;margin:0 auto;">
+      <!-- 로고 -->
+      <div style="font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;
+        background:linear-gradient(135deg,#7c6af7,#f76ac8);
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px;margin-bottom:8px;">
+        NIJI STRING
       </div>
-    `;
-  }
+      <div style="font-size:13px;color:#7a7a95;text-align:center;margin-bottom:28px;">
+        테니스·배드민턴 경기기록 & 스트링 관리
+      </div>
+
+      <!-- 구글 로그인 버튼 -->
+      <button id="googleLoginBtn" onclick="signInWithGoogle()"
+        style="display:flex;align-items:center;justify-content:center;gap:10px;
+          width:100%;padding:14px;background:#fff;color:#3c3c3c;
+          border:none;border-radius:12px;font-size:15px;font-weight:700;
+          cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.2);margin-bottom:16px;">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+          style="width:20px;height:20px;" alt="Google">
+        Google로 로그인
+      </button>
+
+      <!-- 구분선 -->
+      <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:16px;">
+        <div style="flex:1;height:1px;background:#2e2e3e;"></div>
+        <div style="font-size:12px;color:#555570;">또는 이메일로</div>
+        <div style="flex:1;height:1px;background:#2e2e3e;"></div>
+      </div>
+
+      <!-- 이메일 입력 -->
+      <input id="loginEmail" type="email" placeholder="이메일 주소" inputmode="email"
+        style="width:100%;padding:13px;background:#1a1a24;border:1px solid #2e2e3e;
+          border-radius:12px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;outline:none;">
+      <input id="loginPassword" type="password" placeholder="비밀번호"
+        style="width:100%;padding:13px;background:#1a1a24;border:1px solid #2e2e3e;
+          border-radius:12px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:12px;outline:none;">
+
+      <!-- 로그인/회원가입 버튼 -->
+      <div style="display:flex;gap:8px;width:100%;margin-bottom:12px;">
+        <button onclick="signInWithEmail()"
+          style="flex:1;padding:13px;background:linear-gradient(135deg,#7c6af7,#6a5be0);
+            color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">
+          로그인
+        </button>
+        <button onclick="signUpWithEmail()"
+          style="flex:1;padding:13px;background:#1e1e2e;color:#7c6af7;
+            border:1px solid #7c6af7;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">
+          회원가입
+        </button>
+      </div>
+
+      <!-- 비밀번호 찾기 -->
+      <button onclick="resetPassword()"
+        style="background:none;border:none;color:#555570;font-size:12px;cursor:pointer;padding:4px;">
+        비밀번호를 잊으셨나요?
+      </button>
+
+      <div id="loginMsg" style="font-size:12px;color:#f87171;min-height:20px;margin-top:8px;text-align:center;"></div>
+    </div>
+  `;
 }
 
-// 구글 로그인 실행
+// 구글 로그인
 function signInWithGoogle() {
   var btn = document.getElementById('googleLoginBtn');
   var msgEl = document.getElementById('loginMsg');
@@ -169,14 +207,62 @@ function signInWithGoogle() {
   var provider = new firebase.auth.GoogleAuthProvider();
   window._firebaseAuth.signInWithPopup(provider)
     .catch(function(e) {
-      console.warn('팝업 실패, 리다이렉트 시도:', e.code);
-      // 팝업이 막힌 경우(앱 내 브라우저 등) → 리다이렉트 방식으로 전환
       if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
         window._firebaseAuth.signInWithRedirect(provider);
       } else {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:22px;height:22px;" alt="Google"> Google로 로그인'; }
-        if (msgEl) msgEl.textContent = '로그인 실패. 다시 시도해 주세요.';
+        if (btn) { btn.disabled = false; btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"> Google로 로그인'; }
+        if (msgEl) msgEl.textContent = '구글 로그인 실패. 다시 시도해 주세요.';
       }
+    });
+}
+
+// 이메일 로그인
+function signInWithEmail() {
+  var email = (document.getElementById('loginEmail') || {}).value || '';
+  var pw = (document.getElementById('loginPassword') || {}).value || '';
+  var msgEl = document.getElementById('loginMsg');
+  if (!email || !pw) { if (msgEl) msgEl.textContent = '이메일과 비밀번호를 입력해 주세요.'; return; }
+  if (msgEl) msgEl.textContent = '';
+  window._firebaseAuth.signInWithEmailAndPassword(email, pw)
+    .catch(function(e) {
+      var msg = '로그인 실패. ';
+      if (e.code === 'auth/user-not-found') msg = '등록되지 않은 이메일이에요.';
+      else if (e.code === 'auth/wrong-password') msg = '비밀번호가 틀렸어요.';
+      else if (e.code === 'auth/invalid-email') msg = '이메일 형식이 올바르지 않아요.';
+      else if (e.code === 'auth/too-many-requests') msg = '시도 횟수 초과. 잠시 후 다시 시도해 주세요.';
+      if (msgEl) msgEl.textContent = msg;
+    });
+}
+
+// 이메일 회원가입
+function signUpWithEmail() {
+  var email = (document.getElementById('loginEmail') || {}).value || '';
+  var pw = (document.getElementById('loginPassword') || {}).value || '';
+  var msgEl = document.getElementById('loginMsg');
+  if (!email || !pw) { if (msgEl) msgEl.textContent = '이메일과 비밀번호를 입력해 주세요.'; return; }
+  if (pw.length < 6) { if (msgEl) msgEl.textContent = '비밀번호는 6자 이상이어야 해요.'; return; }
+  if (msgEl) msgEl.textContent = '';
+  window._firebaseAuth.createUserWithEmailAndPassword(email, pw)
+    .catch(function(e) {
+      var msg = '회원가입 실패. ';
+      if (e.code === 'auth/email-already-in-use') msg = '이미 사용 중인 이메일이에요.';
+      else if (e.code === 'auth/invalid-email') msg = '이메일 형식이 올바르지 않아요.';
+      else if (e.code === 'auth/weak-password') msg = '비밀번호가 너무 짧아요 (6자 이상).';
+      if (msgEl) msgEl.textContent = msg;
+    });
+}
+
+// 비밀번호 재설정
+function resetPassword() {
+  var email = (document.getElementById('loginEmail') || {}).value || '';
+  var msgEl = document.getElementById('loginMsg');
+  if (!email) { if (msgEl) { msgEl.style.color='#7c6af7'; msgEl.textContent = '위에 이메일을 입력한 후 눌러주세요.'; } return; }
+  window._firebaseAuth.sendPasswordResetEmail(email)
+    .then(function() {
+      if (msgEl) { msgEl.style.color='#4ade80'; msgEl.textContent = '✅ ' + email + '로 재설정 메일을 보냈어요!'; }
+    })
+    .catch(function(e) {
+      if (msgEl) { msgEl.style.color='#f87171'; msgEl.textContent = '메일 발송 실패. 이메일을 확인해 주세요.'; }
     });
 }
 
