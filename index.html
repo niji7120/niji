@@ -1352,15 +1352,8 @@
         </div>
       </div>
 
-      <div class="section-title">내 기기 정보</div>
+      <div class="section-title">기기 관리</div>
       <div class="share-btn-group">
-        <div class="share-item" style="cursor:default;">
-          <div class="share-icon" style="background:rgba(124,106,247,.1);">🔑</div>
-          <div style="flex:1;min-width:0;">
-            <div class="share-text">내 고유 ID</div>
-            <div class="share-sub" id="myUidDisplay" style="font-size:10px;word-break:break-all;">로딩 중...</div>
-          </div>
-        </div>
         <div class="share-item" onclick="clearLocalStorageCache()">
           <div class="share-icon" style="background:rgba(248,113,113,.1);">🧹</div>
           <div>
@@ -1575,11 +1568,15 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>이름·클럽·나이대·손잡이·구력·스타일·라켓·스트링·텐션·<b>스트링교체일</b>을 저장하세요</span>
+            <span>이름·클럽·나이대·손잡이·구력·스타일을 입력하세요. 각 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>각 항목을 탭하면 바로 수정되고 자동 저장됩니다</span>
+            <span>라켓은 <b>2자루까지</b> 등록할 수 있어요. 라켓명·스트링·텐션을 각각 입력하세요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>스트링교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 표시돼요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -1602,19 +1599,19 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>상단 토글로 <b>단식 / 복식</b>을 선택하세요. 복식이면 파트너 입력란이 추가됩니다</span>
+            <span>단식 / 복식을 선택하세요. 복식이면 <b>파트너·상대2 입력란</b>이 추가됩니다</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>날짜 · 상대 이름 · 결과(승/패)는 필수 입력 항목이에요</span>
+            <span>날짜 · 상대 이름 · 결과(승/패)는 <b>필수</b>, 스코어·타이브레이크·메모는 선택 사항이에요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>스코어 · 타이브레이크 · 메모는 선택 사항입니다</span>
+            <span>오늘 경기는 상단에 바로 표시되고, 이전 경기는 <b>📋 이전 경기 기록</b>을 탭해서 확인하세요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>저장된 경기는 목록에서 ✏️ 수정 · 🗑️ 삭제 가능해요</span>
+            <span>저장된 경기는 ✏️ 수정 · 🗑️ 삭제가 가능해요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -1637,19 +1634,23 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>연승·연패 배너</b> — 현재 연속 기록이 자동 표시됩니다</span>
+            <span><b>연승·연패 배너</b> — 현재 연속 기록이 자동으로 표시됩니다</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>개인 요약</b> — 통산 승률, 단식·복식 별도 승률 확인</span>
+            <span><b>상세 요약</b> — 이번 달 성적, 단식·복식 승률, 가장 많이 이긴 상대·가장 어려운 상대</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>월별 승률 그래프</b> — 월별 성적 추이를 바 차트로 시각화</span>
+            <span><b>월별 승률 그래프</b> — 최근 6개월 성적 추이를 바 차트로 확인</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>상대 전적 · 파트너 궁합 · 상대팀 상성</b> 분석</span>
+            <span><b>상대 전적 · 파트너 궁합 · 상대팀 상성</b>을 각각 분석해줘요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>각 항목은 탭하면 펼쳐지는 <b>아코디언 방식</b>으로 필요한 것만 열어볼 수 있어요</span>
           </div>
         </div>
       </div>
@@ -1664,19 +1665,23 @@
         <div class="manual-items">
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>선수 등록 시 <b>이름·나이대·손잡이·구력·플레이스타일</b>을 함께 입력할 수 있어요</span>
+            <span>선수 등록 시 <b>성별·등급·나이대·손잡이·구력·플레이스타일</b>을 함께 입력할 수 있어요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>선수 목록에서 이름을 탭하면 <b>상세 전적 페이지</b>로 이동합니다</span>
+            <span><b>클럽 관리</b>에서 클럽을 만들고 선수에게 배정할 수 있어요. 한 선수가 여러 클럽에 속할 수도 있어요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>나와의 전적 (승·패·승률%), 최근 대전 기록을 확인하세요</span>
+            <span>선수 이름을 탭하면 <b>상세 전적 페이지</b>로 이동해요 — 나와의 전적·승률·최근 대전 기록 확인 가능</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>클럽 관리</b>에서 클럽을 만들고 선수에게 배정할 수 있어요</span>
+            <span>이름순·최근 대전순·전적 많은 순·승률 높은 순으로 <b>정렬</b>할 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>📝 메모 버튼으로 선수별 특징이나 스타일을 기록해두세요</span>
           </div>
         </div>
       </div>
@@ -1686,28 +1691,28 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">🏆</span>
-          <span class="manual-sec-title">5. 한울방식</span>
+          <span class="manual-sec-title">5. 대회</span>
         </div>
         <div class="manual-items">
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>파트너와 상대방이 매 게임 바뀌는 <b>순환 복식 대회</b>를 관리해요</span>
+            <span>대회 탭에는 <b>🔄 한울방식</b>과 <b>🏆 토너먼트</b> 두 가지 방식이 있어요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>+ 새 대회 만들기</b>를 탭해 대회명·날짜·게임수를 설정하세요</span>
+            <span><b>한울방식</b> — 파트너와 상대가 매 게임 바뀌는 순환 복식 대회예요. 게임 수를 설정하면 자동으로 대진이 짜여요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>선수 추가 후 <b>↑↓ 버튼</b>으로 순서를 조정하면 시드 배정이 가능해요</span>
+            <span><b>토너먼트</b> — 단식·복식 대진표를 자동 생성해요. 시드 순서를 직접 조정할 수 있고 결과 입력 시 다음 라운드가 자동으로 채워져요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>대진표에서 스코어를 입력하면 <b>경기기록에 자동 반영</b>됩니다</span>
+            <span>선수 탭에서 등록한 선수를 바로 불러오거나, 직접 이름을 입력할 수 있어요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>순위표에서 🥇🥈🥉 순위를 확인하세요</span>
+            <span>대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다</span>
           </div>
         </div>
       </div>
@@ -1722,7 +1727,7 @@
         <div class="manual-items">
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 그대로 유지돼요</span>
+            <span>데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 로그인만 하면 그대로 유지돼요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -1730,7 +1735,7 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>가져오기</b> — 백업 파일을 불러와 데이터를 복원할 수 있어요</span>
+            <span><b>가져오기</b> — 백업한 JSON 파일을 불러와 데이터를 복원할 수 있어요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -1753,7 +1758,7 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>스트링 교체, 라켓 수리 등 <b>니지스트링</b> 전문 서비스를 이용하세요</span>
+            <span>스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요</span>
           </div>
         </div>
       </div>
@@ -2217,13 +2222,6 @@ function _initApp() {
   renderProfile();
   renderMatchList();
   setTodayDate();
-
-  // 내 고유 ID 표시 (공유 탭)
-  var uidEl = document.getElementById('myUidDisplay');
-  if (uidEl) {
-    var uid = window._userId || '(오프라인)';
-    uidEl.textContent = uid;
-  }
 
   // 구글 계정 정보 표시
   var nameEl = document.getElementById('googleDisplayName');
