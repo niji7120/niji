@@ -2025,9 +2025,9 @@ function resetPassword() {
 
 // 로그아웃
 function signOut() {
-  showConfirm('로그아웃', '로그아웃 하시겠습니까?', '로그아웃', '취소', function() {
+  showConfirm('로그아웃', '로그아웃 하시겠습니까?', '🚪', function() {
     window._firebaseAuth.signOut().then(function() { location.reload(); });
-  }, '🚪', false);
+  }, '로그아웃');
 }
 
 function _migrateOfflineData() {
