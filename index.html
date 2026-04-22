@@ -380,6 +380,27 @@
         </div>
       </div>
 
+      <div class="section-title">내 계정</div>
+      <div class="share-btn-group">
+        <div class="share-item" style="cursor:default;">
+          <div class="share-icon" style="background:rgba(66,133,244,.12);">
+            <img id="googleProfileImg" src="" alt="" style="width:28px;height:28px;border-radius:50%;display:none;">
+            <span id="googleProfileEmoji" style="font-size:20px;">👤</span>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div class="share-text" id="googleDisplayName">로딩 중...</div>
+            <div class="share-sub" id="googleEmailDisplay" style="word-break:break-all;"></div>
+          </div>
+        </div>
+        <div class="share-item" onclick="signOut()">
+          <div class="share-icon" style="background:rgba(248,113,113,.1);">🚪</div>
+          <div>
+            <div class="share-text">로그아웃</div>
+            <div class="share-sub">다른 구글 계정으로 전환하거나 로그아웃</div>
+          </div>
+        </div>
+      </div>
+
       <div class="section-title">내 기기 정보</div>
       <div class="share-btn-group">
         <div class="share-item" style="cursor:default;">
