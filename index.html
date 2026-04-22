@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,19 +13,38 @@
 <meta name="apple-mobile-web-app-title" content="NIJI STRING">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-
-<!-- CSS -->
-<link rel="stylesheet" href="style.css">
-
-<!-- Firebase SDK 9.23.0 compat -->
+<!-- Firebase SDK 9.23.0 compat (안정 버전) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="firebase-init.js"></script>
+<script>
+  try {
+    const firebaseConfig = {
+      apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
+      authDomain: "niji-string-app.firebaseapp.com",
+      databaseURL: "https://niji-string-app-default-rtdb.firebaseio.com",
+      projectId: "niji-string-app",
+      storageBucket: "niji-string-app.firebasestorage.app",
+      messagingSenderId: "179605771373",
+      appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
+    };
+    firebase.initializeApp(firebaseConfig);
+    window._firebaseDB = firebase.database();
+    window._firebaseAuth = firebase.auth();
+    window._userId = null;
+  } catch(e) {
+    console.warn('Firebase 초기화 실패:', e);
+    window._firebaseDB = null;
+    window._firebaseAuth = null;
+    window._userId = null;
+  }
+</script>
+<!-- 외부 CSS 파일 -->
+<link rel="stylesheet" href="style.css">
+</head>
 </head>
 <body>
-
-<!-- 로딩 화면 -->
+<!-- 로딩 화면 (Firebase 연결 전 빈 화면 방지) -->
 <div id="loadingScreen" style="
   position:fixed; inset:0; z-index:9999;
   background:#0f0f13; display:flex;
@@ -42,7 +62,6 @@
 <style>
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
-
 <div id="app">
   <div class="topbar">
     <span class="topbar-logo">NIJI STRING</span>
@@ -53,9 +72,10 @@
   </div>
 
   <div class="content">
-
-    <!-- ===== 프로필 페이지 ===== -->
+    <!-- ===== PROFILE PAGE ===== -->
     <div class="page active profile-page" id="page-profile">
+
+      <!-- 전체화면 프로필 -->
       <div class="pf-wrap">
         <!-- 배경 사진 -->
         <div class="pf-bg" onclick="document.getElementById('photoUpload').click()">
@@ -64,23 +84,22 @@
           <div class="pf-bg-dim"></div>
           <div class="pf-camera-btn">📷</div>
         </div>
-        <!-- 하단 콘텐츠 -->
+
+        <!-- 하단 오버레이 콘텐츠 -->
         <div class="pf-content" onclick="event.stopPropagation()">
           <div class="pf-name-row" id="profileNameBig">
             <span class="pf-club-tag" id="profileClubBig"></span>
             <span class="pf-name-text">선수</span>
           </div>
           <div class="pf-divider"></div>
-          <!-- 스트링 배너 (라켓별 슬라이드) -->
           <div id="stringStatusBanner"></div>
-          <!-- 정보 그리드 -->
           <div class="pf-stat-row" id="profileInfoGrid"></div>
         </div>
       </div>
       <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
     </div>
 
-    <!-- ===== 경기기록 페이지 ===== -->
+    <!-- ===== MATCH PAGE ===== -->
     <div class="page" id="page-match">
       <div class="page-header">경기기록</div>
       <div class="page-sub">새 경기를 입력하세요</div>
@@ -115,6 +134,7 @@
           <label class="form-label">상대 2</label>
           <input class="form-input" id="matchOpponent2" placeholder="상대 2 이름">
         </div>
+
         <div class="form-group">
           <label class="form-label">결과</label>
           <div class="match-result-winner">
@@ -122,6 +142,7 @@
             <button class="winner-btn" id="loseBtn" onclick="setResult('lose')">😔 패배</button>
           </div>
         </div>
+
         <div class="form-group">
           <label class="form-label">스코어 (선택)</label>
           <div class="match-result">
@@ -136,36 +157,41 @@
             </div>
           </div>
         </div>
+
         <div class="form-group">
           <label class="form-label">타이브레이크 점수 (선택)</label>
           <div class="match-result">
             <div>
               <div class="match-result-label">나</div>
-              <input type="number" class="form-input match-score-input" id="myTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
+              <input type="number" class="form-input match-score-input" id="myTiebreak" placeholder="-" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
             </div>
-            <div class="vs-text">TB</div>
+            <div class="vs-text">VS</div>
             <div>
               <div class="match-result-label">상대</div>
-              <input type="number" class="form-input match-score-input" id="oppTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
+              <input type="number" class="form-input match-score-input" id="oppTiebreak" placeholder="-" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
             </div>
           </div>
         </div>
+
         <div class="form-group">
-          <label class="form-label">메모 (선택)</label>
-          <textarea class="form-input form-textarea" id="matchMemo" placeholder="경기 메모..."></textarea>
+          <label class="form-label">메모</label>
+          <textarea class="form-textarea" id="matchMemo" placeholder="경기 메모..."></textarea>
         </div>
         <button class="btn btn-primary" id="matchSaveBtn" onclick="saveMatch()">경기 저장</button>
       </div>
 
-      <!-- 오늘 경기 -->
-      <div class="section-title">오늘 경기</div>
+      <!-- 오늘 경기 (항상 표시) -->
+      <div class="section-title" style="margin-top:20px;">오늘 경기</div>
       <div id="matchListToday"></div>
 
-      <!-- 이전 경기 (아코디언) -->
-      <div class="acc-wrap" style="margin-top:8px;">
+      <!-- 이전 경기 드롭다운 -->
+      <div class="acc-wrap" style="margin-top:10px;">
         <button class="acc-header" onclick="toggleMatchHistory()">
-          <span>이전 경기 기록 <span id="matchHistoryCount" style="font-size:11px;color:var(--text-muted);font-weight:400;"></span></span>
-          <span class="acc-arrow" id="matchHistory-arrow">▼</span>
+          <span>📋 이전 경기 기록</span>
+          <span style="display:flex;align-items:center;gap:6px;">
+            <span id="matchHistoryCount" style="font-size:11px;color:var(--text-muted);font-weight:400;"></span>
+            <span class="acc-arrow" id="matchHistory-arrow">▼</span>
+          </span>
         </button>
         <div class="acc-body" id="matchHistoryBody">
           <div id="matchListPast"></div>
@@ -173,82 +199,117 @@
       </div>
     </div>
 
-    <!-- ===== 통계 페이지 ===== -->
+    <!-- ===== STATS PAGE ===== -->
     <div class="page" id="page-stats">
       <div class="page-header">통계</div>
-      <div class="page-sub" style="flex-wrap:wrap;gap:8px;">
-        내 경기 데이터를 분석합니다
-        <select id="sportType" class="form-select" style="width:auto;font-size:12px;padding:4px 10px;" onchange="updateSportType()">
-          <option value="badminton">🏸 배드민턴</option>
-          <option value="tennis">🎾 테니스</option>
+      <div class="page-sub">
+        나의
+        <select id="sportType" onchange="updateSportType()" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--accent);font-weight:700;padding:2px 8px;font-size:13px;outline:none;cursor:pointer;">
+          <option value="badminton">배드민턴</option>
+          <option value="tennis">테니스</option>
         </select>
+        기록
       </div>
 
+      <!-- 연승/연패 배너 -->
+      <div id="streakBanner"></div>
+
+      <!-- ① 내 기록 요약 (항상 표시) -->
       <div class="stat-grid">
-        <div class="stat-box"><div class="stat-num" id="st-total">0</div><div class="stat-lbl">총 경기</div></div>
-        <div class="stat-box"><div class="stat-num" id="st-win">0</div><div class="stat-lbl">승리</div></div>
-        <div class="stat-box"><div class="stat-num" id="st-lose">0</div><div class="stat-lbl">패배</div></div>
+        <div class="stat-box"><div class="stat-num" id="st-total">0</div><div class="stat-lbl">통산 경기</div></div>
+        <div class="stat-box"><div class="stat-num" id="st-win">0</div><div class="stat-lbl">승</div></div>
+        <div class="stat-box"><div class="stat-num" id="st-lose">0</div><div class="stat-lbl">패</div></div>
         <div class="stat-box"><div class="stat-num" id="st-rate">0%</div><div class="stat-lbl">승률</div></div>
       </div>
 
-      <!-- 연승/연패 -->
-      <div id="streakBanner"></div>
-
-      <!-- 개인 요약 -->
+      <!-- ② 상세 요약 드롭다운 -->
       <div class="acc-wrap">
-        <button class="acc-header" onclick="toggleAcc('accSummary','renderSummaryCard')">
-          <span>📊 개인 요약</span><span class="acc-arrow" id="accSummary-arrow">▼</span>
+        <button class="acc-header" onclick="toggleAcc('accSummary')">
+          <span>📊 상세 요약</span><span class="acc-arrow" id="accSummary-arrow">▼</span>
         </button>
-        <div class="acc-body" id="accSummary"><div id="summaryCard"></div></div>
+        <div class="acc-body" id="accSummary">
+          <div id="summaryCard"></div>
+        </div>
       </div>
 
-      <!-- 월별 그래프 -->
+      <!-- ③ 월별 승률 드롭다운 -->
       <div class="acc-wrap">
-        <button class="acc-header" onclick="toggleAcc('accMonthly','renderMonthlyGraph')">
-          <span>📅 월별 그래프</span><span class="acc-arrow" id="accMonthly-arrow">▼</span>
+        <button class="acc-header" onclick="toggleAcc('accMonthly')">
+          <span>📅 월별 승률</span><span class="acc-arrow" id="accMonthly-arrow">▼</span>
         </button>
-        <div class="acc-body" id="accMonthly"><div id="monthlyGraph"></div></div>
+        <div class="acc-body" id="accMonthly">
+          <div class="monthly-graph-wrap" id="monthlyGraph">
+            <div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0;">경기를 입력하면 그래프가 표시됩니다</div>
+          </div>
+        </div>
       </div>
 
-      <!-- 상대 전적 -->
+      <!-- ④ 상대 전적 드롭다운 -->
       <div class="acc-wrap">
-        <button class="acc-header" onclick="toggleAcc('accOpponent','renderOpponentStats')">
+        <button class="acc-header" onclick="toggleAcc('accOpponent')">
           <span>⚔️ 상대 전적</span><span class="acc-arrow" id="accOpponent-arrow">▼</span>
         </button>
         <div class="acc-body" id="accOpponent">
-          <div style="margin-bottom:10px;">
-            <select class="form-select" id="oppSort" onchange="renderOpponentStats()" style="font-size:13px;padding:6px 10px;">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+            <select onchange="renderOpponentStats()" id="oppSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
               <option value="games">경기 많은 순</option>
               <option value="winrate">승률 높은 순</option>
               <option value="name">이름순</option>
             </select>
           </div>
-          <div id="opponentCard"></div>
+          <div id="opponentCard">
+            <div class="empty-state"><div class="empty-icon">⚔️</div><div class="empty-text">경기를 입력하면<br>상대 데이터가 표시됩니다</div></div>
+          </div>
         </div>
       </div>
 
-      <!-- 파트너 궁합 -->
+      <!-- ⑤ 파트너 궁합 드롭다운 -->
       <div class="acc-wrap">
-        <button class="acc-header" onclick="toggleAcc('accPartner','renderPartnerStats')">
+        <button class="acc-header" onclick="toggleAcc('accPartner')">
           <span>🤝 파트너 궁합</span><span class="acc-arrow" id="accPartner-arrow">▼</span>
         </button>
-        <div class="acc-body" id="accPartner"><div id="partnerCard"></div></div>
+        <div class="acc-body" id="accPartner">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+            <select onchange="renderPartnerStats()" id="partnerSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
+              <option value="games">경기 많은 순</option>
+              <option value="winrate">승률 높은 순</option>
+              <option value="name">이름순</option>
+            </select>
+          </div>
+          <div id="partnerCard">
+            <div class="empty-state"><div class="empty-icon">🤝</div><div class="empty-text">복식 경기를 입력하면<br>파트너 데이터가 표시됩니다</div></div>
+          </div>
+        </div>
       </div>
 
-      <!-- 상대팀 상성 -->
+      <!-- ⑥ 상대팀 상성 드롭다운 -->
       <div class="acc-wrap">
-        <button class="acc-header" onclick="toggleAcc('accEnemy','renderEnemyTeamStats')">
-          <span>🆚 상대팀 상성</span><span class="acc-arrow" id="accEnemy-arrow">▼</span>
+        <button class="acc-header" onclick="toggleAcc('accEnemy')">
+          <span>🆚 상대팀 상성 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">(복식)</span></span>
+          <span class="acc-arrow" id="accEnemy-arrow">▼</span>
         </button>
-        <div class="acc-body" id="accEnemy"><div id="enemyTeamCard"></div></div>
+        <div class="acc-body" id="accEnemy">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+            <select onchange="renderEnemyTeamStats()" id="enemySort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
+              <option value="games">경기 많은 순</option>
+              <option value="winrate">승률 높은 순</option>
+              <option value="name">이름순</option>
+            </select>
+          </div>
+          <div id="enemyTeamCard">
+            <div class="empty-state"><div class="empty-icon">🆚</div><div class="empty-text">복식 경기를 입력하면<br>상대팀 데이터가 표시됩니다</div></div>
+          </div>
+        </div>
       </div>
+
     </div>
 
-    <!-- ===== 선수 관리 페이지 ===== -->
+    <!-- ===== PLAYERS PAGE ===== -->
     <div class="page" id="page-players">
-      <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
-        <span>선수 관리</span>
-        <select class="form-select" id="playerSort" style="width:auto;font-size:12px;padding:6px 10px;" onchange="state.playerSort=this.value;renderPlayers()">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+        <div class="page-header" style="margin-bottom:0;">선수 목록</div>
+        <select class="form-select" id="playerSortSelect" onchange="setPlayerSort(this.value)"
+          style="width:auto;font-size:12px;padding:5px 10px;background:var(--surface2);">
           <option value="name">이름순</option>
           <option value="recent">최근 대전순</option>
           <option value="matches">전적 많은 순</option>
@@ -313,10 +374,11 @@
 
       <!-- 클럽 필터 -->
       <div class="club-filter-wrap" id="playerClubFilter"></div>
+
       <ul class="player-list" id="playerList"></ul>
     </div>
 
-    <!-- ===== 선수 상세 페이지 ===== -->
+    <!-- ===== PLAYER DETAIL PAGE ===== -->
     <div class="page" id="page-player-detail">
       <div class="player-detail-back" onclick="showPage('players')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
@@ -325,17 +387,17 @@
       <div id="playerDetailContent"></div>
     </div>
 
-    <!-- ===== 스트링 관리 페이지 ===== -->
+    <!-- ===== STRINGING PAGE ===== -->
     <div class="page" id="page-stringing">
       <div class="page-header">🎾 스트링 관리</div>
-      <div class="page-sub">라켓별 교체 주기와 장비 히스토리를 관리하세요</div>
+      <div class="page-sub">교체 주기와 장비 히스토리를 관리하세요</div>
 
-      <!-- 라켓 탭 + 교체 알림 -->
+      <!-- 교체 알림 -->
       <div id="stringingAlert"></div>
 
       <!-- 마지막 교체일 설정 -->
       <div class="card" style="margin-bottom:12px;">
-        <div class="card-title" style="margin-bottom:10px;">📅 선택 라켓 교체일</div>
+        <div class="card-title" style="margin-bottom:10px;">📅 마지막 스트링 교체일</div>
         <div style="display:flex;gap:8px;align-items:center;">
           <input type="date" class="form-input" id="lastStringDate" style="flex:1;" onchange="saveLastStringDate(this.value)">
           <button class="btn btn-primary btn-sm" onclick="saveLastStringDate(document.getElementById('lastStringDate').value)" style="white-space:nowrap;padding:0 16px;">저장</button>
@@ -364,7 +426,7 @@
       </div>
     </div>
 
-    <!-- ===== 공유 & 백업 페이지 ===== -->
+    <!-- ===== SHARE PAGE ===== -->
     <div class="page" id="page-share">
       <div class="page-header">공유 & 백업</div>
       <div class="page-sub">데이터를 백업하거나 공유하세요</div>
@@ -376,27 +438,6 @@
           <div>
             <div class="share-text">카카오 오픈채팅 참여하기</div>
             <div class="share-sub">니지스트링 테니스·배드민턴 커뮤니티</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-title">내 계정</div>
-      <div class="share-btn-group">
-        <div class="share-item" style="cursor:default;">
-          <div class="share-icon" style="background:rgba(66,133,244,.12);">
-            <img id="googleProfileImg" src="" alt="" style="width:28px;height:28px;border-radius:50%;display:none;">
-            <span id="googleProfileEmoji" style="font-size:20px;">👤</span>
-          </div>
-          <div style="flex:1;min-width:0;">
-            <div class="share-text" id="googleDisplayName">로딩 중...</div>
-            <div class="share-sub" id="googleEmailDisplay" style="word-break:break-all;"></div>
-          </div>
-        </div>
-        <div class="share-item" onclick="signOut()">
-          <div class="share-icon" style="background:rgba(248,113,113,.1);">🚪</div>
-          <div>
-            <div class="share-text">로그아웃</div>
-            <div class="share-sub">다른 구글 계정으로 전환하거나 로그아웃</div>
           </div>
         </div>
       </div>
@@ -428,75 +469,84 @@
             <div class="share-sub">JSON 파일로 저장</div>
           </div>
         </div>
-        <div class="share-item" onclick="document.getElementById('importFile').click()">
+        <label class="share-item" style="cursor:pointer;">
           <div class="share-icon" style="background:rgba(124,106,247,.1);">📂</div>
           <div>
-            <div class="share-text">데이터 가져오기</div>
-            <div class="share-sub">JSON 백업 파일 복원</div>
+            <div class="share-text">가져오기</div>
+            <div class="share-sub">백업 파일에서 복원</div>
           </div>
-        </div>
-        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
+          <input type="file" accept=".json" style="display:none" onchange="importData(this)">
+        </label>
       </div>
 
-      <div class="section-title">설명서</div>
+      <div class="section-title">사용 방법</div>
       <div class="share-btn-group">
         <div class="share-item" onclick="showManual()">
           <div class="share-icon" style="background:rgba(251,191,36,.1);">📖</div>
           <div>
-            <div class="share-text">사용 설명서</div>
-            <div class="share-sub">앱 기능 가이드</div>
+            <div class="share-text">사용 설명서 보기</div>
+            <div class="share-sub">앱 사용법 안내</div>
           </div>
         </div>
       </div>
     </div>
-
     <!-- ===== 대회 페이지 ===== -->
     <div class="page" id="page-tournament">
+      <!-- 대회 타입 탭 -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;padding-top:4px;">
+        <button id="ctab-hanul" onclick="switchContestTab('hanul')"
+          style="flex:1;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;transition:all .2s;min-height:44px;">
+          🔄 한울방식
+        </button>
+        <button id="ctab-tour" onclick="switchContestTab('tour')"
+          style="flex:1;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);transition:all .2s;min-height:44px;">
+          🏆 토너먼트
+        </button>
+      </div>
+      <!-- 한울방식 섹션 -->
       <div id="tv-root"></div>
-      <div id="tn-root"></div>
+      <!-- 토너먼트 섹션 -->
+      <div id="tn-root" style="display:none;"></div>
+      <div style="height:60px;"></div>
     </div>
+  </div>
 
-  </div><!-- /content -->
-
-  <!-- 하단 네비게이션 -->
+  <!-- ===== BOTTOM NAV ===== -->
   <nav class="nav">
-    <button class="nav-btn active" id="nav-profile" onclick="showPage('profile')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <button class="nav-btn active" onclick="showPage('profile')" id="nav-profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       프로필
     </button>
-    <button class="nav-btn" id="nav-match" onclick="showPage('match')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <button class="nav-btn" onclick="showPage('match')" id="nav-match">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
       경기기록
     </button>
-    <button class="nav-btn" id="nav-stats" onclick="showPage('stats')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <button class="nav-btn" onclick="showPage('stats')" id="nav-stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l4-8 4 5 4-10 4 13"/></svg>
       통계
     </button>
-    <button class="nav-btn" id="nav-players" onclick="showPage('players')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <button class="nav-btn" onclick="showPage('players')" id="nav-players">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       선수
     </button>
-    <button class="nav-btn" id="nav-stringing" onclick="showPage('stringing')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="11" cy="9" rx="6" ry="8" transform="rotate(-45 11 9)"/><line x1="16" y1="16" x2="21" y2="21"/></svg>
-      스트링
-    </button>
-    <button class="nav-btn" id="nav-tournament" onclick="showPage('tournament')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+    <button class="nav-btn" onclick="showPage('tournament')" id="nav-tournament">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8M12 17v4M7 4h10l-1 7H8L7 4z"/><path d="M5 4H4M20 4h-1"/></svg>
       대회
     </button>
-    <button class="nav-btn" id="nav-share" onclick="showPage('share')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    <button class="nav-btn" onclick="showPage('share')" id="nav-share">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       공유
     </button>
   </nav>
-</div><!-- /app -->
+</div>
 
-<!-- ===== 한울방식 대회 만들기 모달 ===== -->
+<!-- ===== MANUAL MODAL ===== -->
+<!-- 대회 만들기 모달 -->
 <div class="modal-overlay" id="tvCreateModal">
-  <div class="modal" style="max-height:92vh;display:flex;flex-direction:column;padding:0;">
+  <div class="modal" style="display:flex;flex-direction:column;max-height:92vh;padding:0;">
     <div style="padding:20px 20px 0;flex-shrink:0;">
       <div class="modal-header">
-        <span class="modal-title">🏸 한울방식 대회 만들기</span>
+        <span class="modal-title">새 대회 만들기</span>
         <button class="modal-close" onclick="closeModal('tvCreateModal')">✕</button>
       </div>
     </div>
@@ -504,7 +554,6 @@
       <div class="section-title">대회 정보</div>
       <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;box-sizing:border-box;margin-bottom:10px;">
       <input id="tv-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;box-sizing:border-box;margin-bottom:10px;">
-      <div class="section-title">게임 수</div>
       <select id="tv-tgames" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;box-sizing:border-box;margin-bottom:16px;">
         <option value="1">1게임</option>
         <option value="2">2게임</option>
@@ -525,7 +574,7 @@
   </div>
 </div>
 
-<!-- 한울방식 대회 상세 모달 -->
+<!-- 대회 상세 모달 -->
 <div class="modal-overlay" id="tvDetailModal">
   <div class="modal" style="max-height:92vh;display:flex;flex-direction:column;padding:0;">
     <div style="padding:20px 20px 0;flex-shrink:0;">
@@ -542,6 +591,7 @@
   </div>
 </div>
 
+
 <!-- ===== 토너먼트 만들기 모달 ===== -->
 <div class="modal-overlay" id="tnCreateModal">
   <div class="modal" style="display:flex;flex-direction:column;max-height:92vh;padding:0;">
@@ -555,6 +605,7 @@
       <div class="section-title">대회 정보</div>
       <input id="tn-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;box-sizing:border-box;margin-bottom:10px;">
       <input id="tn-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;box-sizing:border-box;margin-bottom:10px;">
+
       <div class="section-title">형식 선택</div>
       <div style="display:flex;gap:8px;margin-bottom:8px;">
         <button id="tn-fmt-singles" onclick="tnSetFormat('singles')"
@@ -563,6 +614,7 @@
           style="flex:1;padding:10px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);">🤝 복식</button>
       </div>
       <div id="tn-fmt-note" style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">※ 단식은 2·4·8·16명 권장</div>
+
       <div class="section-title">참가 선수</div>
       <div id="tn-player-btns" style="margin-bottom:10px;"></div>
       <div style="display:flex;gap:8px;margin-bottom:10px;">
@@ -577,7 +629,7 @@
   </div>
 </div>
 
-<!-- 토너먼트 상세 모달 -->
+<!-- ===== 토너먼트 상세 모달 ===== -->
 <div class="modal-overlay" id="tnDetailModal">
   <div class="modal" style="max-height:92vh;display:flex;flex-direction:column;padding:0;">
     <div style="padding:20px 20px 0;flex-shrink:0;">
@@ -593,7 +645,6 @@
   </div>
 </div>
 
-<!-- 사용 설명서 모달 -->
 <div class="modal-overlay" id="manualModal">
   <div class="modal">
     <div class="modal-header">
@@ -601,61 +652,207 @@
       <button class="modal-close" onclick="closeModal('manualModal')">✕</button>
     </div>
     <div class="manual-wrap">
+
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">👤</span>
           <span class="manual-sec-title">1. 프로필</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item"><span class="manual-dot"></span><span>상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span>라켓을 <b>최대 4개까지</b> 등록할 수 있어요. 각 라켓마다 스트링·텐션·교체일을 따로 관리해요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span>스트링 교체일을 입력하면 <b>상단 배너</b>에 D+일수와 게임 수가 표시돼요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span>라켓이 2개 이상이면 배너를 <b>좌우로 스와이프</b>해서 각 라켓 상태를 확인할 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span>상단 🌙/☀️ 버튼으로 <b>다크/라이트 테마</b>를 전환할 수 있어요</span></div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>이름·클럽·나이대·손잡이·구력·스타일·라켓·스트링·텐션·<b>스트링교체일</b>을 저장하세요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>각 항목을 탭하면 바로 수정되고 자동 저장됩니다</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>상단 🌙/☀️ 버튼으로 <b>다크/라이트 테마</b>를 전환할 수 있어요</span>
+          </div>
         </div>
       </div>
+
       <div class="manual-divider"></div>
+
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">🏸</span>
           <span class="manual-sec-title">2. 경기 기록</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item"><span class="manual-dot"></span><span>앱을 열면 <b>날짜가 오늘로 자동 입력</b>됩니다</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span>상단 토글로 <b>단식 / 복식</b>을 선택하세요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span>날짜 · 상대 이름 · 결과(승/패)는 필수 입력 항목이에요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span>저장된 경기는 목록에서 ✏️ 수정 · 🗑️ 삭제 가능해요</span></div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>앱을 열면 <b>날짜가 오늘로 자동 입력</b>됩니다. 과거 날짜로 바꿀 수도 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>상단 토글로 <b>단식 / 복식</b>을 선택하세요. 복식이면 파트너 입력란이 추가됩니다</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>날짜 · 상대 이름 · 결과(승/패)는 필수 입력 항목이에요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>스코어 · 타이브레이크 · 메모는 선택 사항입니다</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>저장된 경기는 목록에서 ✏️ 수정 · 🗑️ 삭제 가능해요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>🏆 대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다</span>
+          </div>
         </div>
       </div>
+
       <div class="manual-divider"></div>
+
       <div class="manual-section">
         <div class="manual-sec-header">
-          <span class="manual-sec-icon">🎾</span>
-          <span class="manual-sec-title">3. 스트링 관리</span>
+          <span class="manual-sec-icon">📊</span>
+          <span class="manual-sec-title">3. 통계</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item"><span class="manual-dot"></span><span>상단 탭으로 <b>라켓을 선택</b>한 뒤 교체일을 입력하세요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span>교체 이력을 추가하면 <b>자동으로 최근 교체일이 갱신</b>돼요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span>교체 권장 주기가 지나면 🔴 빨간색 경고가 표시됩니다</span></div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>상단에서 <b>🏸 배드민턴 / 🎾 테니스</b> 종목을 전환할 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>연승·연패 배너</b> — 현재 연속 기록이 자동 표시됩니다</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>개인 요약</b> — 통산 승률, 단식·복식 별도 승률 확인</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>월별 승률 그래프</b> — 월별 성적 추이를 바 차트로 시각화</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>상대 전적 · 파트너 궁합 · 상대팀 상성</b> 분석</span>
+          </div>
         </div>
       </div>
+
       <div class="manual-divider"></div>
+
+      <div class="manual-section">
+        <div class="manual-sec-header">
+          <span class="manual-sec-icon">👥</span>
+          <span class="manual-sec-title">4. 선수 관리</span>
+        </div>
+        <div class="manual-items">
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>선수 등록 시 <b>이름·나이대·손잡이·구력·플레이스타일</b>을 함께 입력할 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>선수 목록에서 이름을 탭하면 <b>상세 전적 페이지</b>로 이동합니다</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>나와의 전적 (승·패·승률%), 최근 대전 기록을 확인하세요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>클럽 관리</b>에서 클럽을 만들고 선수에게 배정할 수 있어요</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="manual-divider"></div>
+
+      <div class="manual-section">
+        <div class="manual-sec-header">
+          <span class="manual-sec-icon">🏆</span>
+          <span class="manual-sec-title">5. 한울방식</span>
+        </div>
+        <div class="manual-items">
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>파트너와 상대방이 매 게임 바뀌는 <b>순환 복식 대회</b>를 관리해요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>+ 새 대회 만들기</b>를 탭해 대회명·날짜·게임수를 설정하세요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>선수 추가 후 <b>↑↓ 버튼</b>으로 순서를 조정하면 시드 배정이 가능해요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>대진표에서 스코어를 입력하면 <b>경기기록에 자동 반영</b>됩니다</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>순위표에서 🥇🥈🥉 순위를 확인하세요</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="manual-divider"></div>
+
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">💾</span>
-          <span class="manual-sec-title">4. 백업 & 복원</span>
+          <span class="manual-sec-title">6. 백업 & 복원</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item"><span class="manual-dot"></span><span>데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span><b>데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span>🧹 <b>저장공간 정리</b> — 폰 용량이 부족할 때 탭하세요</span></div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 그대로 유지돼요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>가져오기</b> — 백업 파일을 불러와 데이터를 복원할 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>🧹 <b>저장공간 정리</b> — 폰 용량이 부족할 때 탭하세요. 클라우드 데이터는 안전하게 유지됩니다</span>
+          </div>
         </div>
       </div>
+
+      <div class="manual-divider"></div>
+
+      <div class="manual-section">
+        <div class="manual-sec-header">
+          <span class="manual-sec-icon">💬</span>
+          <span class="manual-sec-title">7. 니지스트링 커뮤니티</span>
+        </div>
+        <div class="manual-items">
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>스트링 교체, 라켓 수리 등 <b>니지스트링</b> 전문 서비스를 이용하세요</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
-<!-- ===== Confirm Dialog ===== -->
+<!-- ===== CONFIRM DIALOG ===== -->
 <div class="confirm-overlay" id="confirmDialog">
   <div class="confirm-box">
     <div class="confirm-icon" id="confirmIcon">🗑️</div>
@@ -668,10 +865,11 @@
   </div>
 </div>
 
-<!-- Toast -->
+<!-- ===== TOAST ===== -->
 <div class="toast" id="toast"></div>
 
-<!-- JS -->
+
+<!-- 외부 JS 파일 -->
 <script src="app.js"></script>
 </body>
 </html>

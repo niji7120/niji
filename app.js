@@ -13,7 +13,6 @@ let state = {
   playerClubFilter: '전체',
   playerSort: 'name',
   lastStringDate: '',
-  rackets: [],  // [{ id, name, string, tension, stringDate }] - 라켓 최대 4개
   stringInterval: 3,
   stringingHistory: [], // { id, name, date }
   tnTournaments: [],  // 토너먼트 데이터
@@ -92,187 +91,28 @@ function _loadFromLocalStorage() {
 
 function load() {
   applyTheme();
+  var msgEl = document.getElementById('loadingMsg');
+  if (msgEl) msgEl.textContent = '로그인 중...';
 
-  if (!window._firebaseAuth || !window._firebaseDB) {
-    // Firebase 없으면 바로 오프라인 모드
-    var msgEl = document.getElementById('loadingMsg');
+  if (window._firebaseAuth && window._firebaseDB) {
+    window._firebaseAuth.signInAnonymously()
+      .then(function(result) {
+        window._userId = result.user.uid;
+        if (msgEl) msgEl.textContent = '데이터 불러오는 중...';
+        _migrateOfflineData();
+        return _loadFromFirebase();
+      })
+      .catch(function(e) {
+        console.warn('익명 로그인 실패, localStorage 사용:', e);
+        if (msgEl) msgEl.textContent = '오프라인 모드로 시작...';
+        _loadFromLocalStorage();
+        _initApp();
+      });
+  } else {
     if (msgEl) msgEl.textContent = '오프라인 모드...';
     _loadFromLocalStorage();
     _initApp();
-    return;
   }
-
-  // 타임아웃 안전장치: 5초 안에 응답 없으면 로그인 화면 강제 표시
-  var authTimeout = setTimeout(function() {
-    console.warn('Firebase Auth 응답 없음 → 로그인 화면 표시');
-    _showLoginScreen();
-  }, 5000);
-
-  // Firebase 인증 상태 감지 → 이미 로그인된 경우 자동 진입
-  window._firebaseAuth.onAuthStateChanged(function(user) {
-    clearTimeout(authTimeout); // 타임아웃 취소
-    if (user) {
-      // ✅ 이미 로그인됨 → 바로 데이터 로드
-      window._userId = user.uid;
-      window._userDisplayName = user.displayName || '';
-      window._userEmail = user.email || '';
-      window._userPhoto = user.photoURL || '';
-
-      var msgEl = document.getElementById('loadingMsg');
-      if (msgEl) msgEl.textContent = '데이터 불러오는 중...';
-
-      _migrateOfflineData();
-      _loadFromFirebase();
-    } else {
-      // ❌ 로그인 안 됨 → 로그인 화면 표시
-      _showLoginScreen();
-    }
-  });
-}
-
-// 로그인 화면 표시 (구글 + 이메일)
-function _showLoginScreen() {
-  var loadingScreen = document.getElementById('loadingScreen');
-  if (!loadingScreen) return;
-  loadingScreen.innerHTML = `
-    <div style="display:flex;flex-direction:column;align-items:center;gap:0;padding:40px 20px;width:100%;max-width:360px;margin:0 auto;">
-      <!-- 로고 -->
-      <div style="font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;
-        background:linear-gradient(135deg,#7c6af7,#f76ac8);
-        -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px;margin-bottom:8px;">
-        NIJI STRING
-      </div>
-      <div style="font-size:13px;color:#7a7a95;text-align:center;margin-bottom:28px;">
-        테니스·배드민턴 경기기록 & 스트링 관리
-      </div>
-
-      <!-- 구글 로그인 버튼 -->
-      <button id="googleLoginBtn" onclick="signInWithGoogle()"
-        style="display:flex;align-items:center;justify-content:center;gap:10px;
-          width:100%;padding:14px;background:#fff;color:#3c3c3c;
-          border:none;border-radius:12px;font-size:15px;font-weight:700;
-          cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.2);margin-bottom:16px;">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-          style="width:20px;height:20px;" alt="Google">
-        Google로 로그인
-      </button>
-
-      <!-- 구분선 -->
-      <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:16px;">
-        <div style="flex:1;height:1px;background:#2e2e3e;"></div>
-        <div style="font-size:12px;color:#555570;">또는 이메일로</div>
-        <div style="flex:1;height:1px;background:#2e2e3e;"></div>
-      </div>
-
-      <!-- 이메일 입력 -->
-      <input id="loginEmail" type="email" placeholder="이메일 주소" inputmode="email"
-        style="width:100%;padding:13px;background:#1a1a24;border:1px solid #2e2e3e;
-          border-radius:12px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:10px;outline:none;">
-      <input id="loginPassword" type="password" placeholder="비밀번호"
-        style="width:100%;padding:13px;background:#1a1a24;border:1px solid #2e2e3e;
-          border-radius:12px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:12px;outline:none;">
-
-      <!-- 로그인/회원가입 버튼 -->
-      <div style="display:flex;gap:8px;width:100%;margin-bottom:12px;">
-        <button onclick="signInWithEmail()"
-          style="flex:1;padding:13px;background:linear-gradient(135deg,#7c6af7,#6a5be0);
-            color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">
-          로그인
-        </button>
-        <button onclick="signUpWithEmail()"
-          style="flex:1;padding:13px;background:#1e1e2e;color:#7c6af7;
-            border:1px solid #7c6af7;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;">
-          회원가입
-        </button>
-      </div>
-
-      <!-- 비밀번호 찾기 -->
-      <button onclick="resetPassword()"
-        style="background:none;border:none;color:#555570;font-size:12px;cursor:pointer;padding:4px;">
-        비밀번호를 잊으셨나요?
-      </button>
-
-      <div id="loginMsg" style="font-size:12px;color:#f87171;min-height:20px;margin-top:8px;text-align:center;"></div>
-    </div>
-  `;
-}
-
-// 구글 로그인
-function signInWithGoogle() {
-  var btn = document.getElementById('googleLoginBtn');
-  var msgEl = document.getElementById('loginMsg');
-  if (btn) { btn.disabled = true; btn.textContent = '로그인 중...'; }
-  if (msgEl) msgEl.textContent = '';
-
-  var provider = new firebase.auth.GoogleAuthProvider();
-  window._firebaseAuth.signInWithPopup(provider)
-    .catch(function(e) {
-      if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
-        window._firebaseAuth.signInWithRedirect(provider);
-      } else {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"> Google로 로그인'; }
-        if (msgEl) msgEl.textContent = '구글 로그인 실패. 다시 시도해 주세요.';
-      }
-    });
-}
-
-// 이메일 로그인
-function signInWithEmail() {
-  var email = (document.getElementById('loginEmail') || {}).value || '';
-  var pw = (document.getElementById('loginPassword') || {}).value || '';
-  var msgEl = document.getElementById('loginMsg');
-  if (!email || !pw) { if (msgEl) msgEl.textContent = '이메일과 비밀번호를 입력해 주세요.'; return; }
-  if (msgEl) msgEl.textContent = '';
-  window._firebaseAuth.signInWithEmailAndPassword(email, pw)
-    .catch(function(e) {
-      var msg = '로그인 실패. ';
-      if (e.code === 'auth/user-not-found') msg = '등록되지 않은 이메일이에요.';
-      else if (e.code === 'auth/wrong-password') msg = '비밀번호가 틀렸어요.';
-      else if (e.code === 'auth/invalid-email') msg = '이메일 형식이 올바르지 않아요.';
-      else if (e.code === 'auth/too-many-requests') msg = '시도 횟수 초과. 잠시 후 다시 시도해 주세요.';
-      if (msgEl) msgEl.textContent = msg;
-    });
-}
-
-// 이메일 회원가입
-function signUpWithEmail() {
-  var email = (document.getElementById('loginEmail') || {}).value || '';
-  var pw = (document.getElementById('loginPassword') || {}).value || '';
-  var msgEl = document.getElementById('loginMsg');
-  if (!email || !pw) { if (msgEl) msgEl.textContent = '이메일과 비밀번호를 입력해 주세요.'; return; }
-  if (pw.length < 6) { if (msgEl) msgEl.textContent = '비밀번호는 6자 이상이어야 해요.'; return; }
-  if (msgEl) msgEl.textContent = '';
-  window._firebaseAuth.createUserWithEmailAndPassword(email, pw)
-    .catch(function(e) {
-      var msg = '회원가입 실패. ';
-      if (e.code === 'auth/email-already-in-use') msg = '이미 사용 중인 이메일이에요.';
-      else if (e.code === 'auth/invalid-email') msg = '이메일 형식이 올바르지 않아요.';
-      else if (e.code === 'auth/weak-password') msg = '비밀번호가 너무 짧아요 (6자 이상).';
-      if (msgEl) msgEl.textContent = msg;
-    });
-}
-
-// 비밀번호 재설정
-function resetPassword() {
-  var email = (document.getElementById('loginEmail') || {}).value || '';
-  var msgEl = document.getElementById('loginMsg');
-  if (!email) { if (msgEl) { msgEl.style.color='#7c6af7'; msgEl.textContent = '위에 이메일을 입력한 후 눌러주세요.'; } return; }
-  window._firebaseAuth.sendPasswordResetEmail(email)
-    .then(function() {
-      if (msgEl) { msgEl.style.color='#4ade80'; msgEl.textContent = '✅ ' + email + '로 재설정 메일을 보냈어요!'; }
-    })
-    .catch(function(e) {
-      if (msgEl) { msgEl.style.color='#f87171'; msgEl.textContent = '메일 발송 실패. 이메일을 확인해 주세요.'; }
-    });
-}
-
-// 로그아웃
-function signOut() {
-  showConfirm('로그아웃', '로그아웃 하시겠습니까?', '로그아웃', '취소', function() {
-    window._firebaseAuth.signOut().then(function() {
-      location.reload();
-    });
-  }, '🚪', false);
 }
 
 function _migrateOfflineData() {
@@ -396,8 +236,6 @@ function _applyFirebaseData(parsed) {
       return t;
     }).filter(Boolean);
     state.stringingHistory = _toArray(parsed.stringingHistory);
-    // 라켓 배열 로드 (다중 라켓 지원)
-    state.rackets = _toArray(parsed.rackets);
     // tnTournaments: bracket 내부 games 배열도 변환 필요
     state.tnTournaments = _toArray(parsed.tnTournaments).map(function(t) {
       if (!t) return null;
@@ -470,19 +308,6 @@ function _initApp() {
   if (uidEl) {
     var uid = window._userId || '(오프라인)';
     uidEl.textContent = uid;
-  }
-
-  // 구글 계정 정보 표시 (공유 탭)
-  var nameEl = document.getElementById('googleDisplayName');
-  var emailEl = document.getElementById('googleEmailDisplay');
-  var imgEl = document.getElementById('googleProfileImg');
-  var emojiEl = document.getElementById('googleProfileEmoji');
-  if (nameEl) nameEl.textContent = window._userDisplayName || '구글 계정';
-  if (emailEl) emailEl.textContent = window._userEmail || '';
-  if (imgEl && window._userPhoto) {
-    imgEl.src = window._userPhoto;
-    imgEl.style.display = 'block';
-    if (emojiEl) emojiEl.style.display = 'none';
   }
 }
 
@@ -1054,47 +879,32 @@ function doConfirm() {
 }
 
 // ===== PROFILE =====
-// ===== PROFILE 필드 정의 (기본 정보만 — 장비는 rackets 배열로 관리) =====
 const PROFILE_FIELDS = [
-  { key:'name',   lbl:'NAME',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>', type:'text', ph:'이름 / 닉네임', full:false, section:'기본 정보' },
-  { key:'club',   lbl:'CLUB',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>', type:'text', ph:'소속 클럽', full:false },
-  { key:'age',    lbl:'AGE',   icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>', type:'select', opts:['10대','20대','30대','40대','50대','60대 이상'], full:false },
-  { key:'hand',   lbl:'HAND',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8.5A6 6 0 0 0 18 14v-3a2 2 0 0 0-4 0"/></svg>', type:'select', opts:['오른손','왼손'], full:false },
-  { key:'career', lbl:'EXP',   icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>', type:'select', opts:['6개월 미만','6개월~1년','1~2년','2~5년','5~10년','10년 이상'], full:false },
-  { key:'style',  lbl:'STYLE', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>', type:'select', opts:['공격형','수비형','올라운드','네트플레이','베이스라인'], full:false },
+  // ── 기본 정보 ──
+  { key:'name',    lbl:'NAME',    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>',                                                type:'text',   ph:'이름 / 닉네임',        full:false, section:'기본 정보' },
+  { key:'club',    lbl:'CLUB',    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',         type:'text',   ph:'소속 클럽',             full:false },
+  { key:'age',     lbl:'AGE',     icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>',                                          type:'select', opts:['10대','20대','30대','40대','50대','60대 이상'], full:false },
+  { key:'hand',    lbl:'HAND',    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8.5A6 6 0 0 0 18 14v-3a2 2 0 0 0-4 0"/></svg>', type:'select', opts:['오른손','왼손'],        full:false },
+  { key:'career',  lbl:'EXP',     icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>',                                                       type:'select', opts:['6개월 미만','6개월~1년','1~2년','2~5년','5~10년','10년 이상'], full:false },
+  { key:'style',   lbl:'STYLE',   icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>', type:'select', opts:['공격형','수비형','올라운드','네트플레이','베이스라인'], full:false },
+  // ── 장비 정보 ──
+  { key:'racket',  lbl:'RACQUET', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><ellipse cx="11" cy="9" rx="6" ry="8" transform="rotate(-45 11 9)"/><line x1="16" y1="16" x2="21" y2="21"/><line x1="8" y1="11" x2="11" y2="8"/></svg>', type:'text',   ph:'예) 윌슨 블레이드 98',  full:true,  section:'장비 정보' },
+  { key:'string',  lbl:'STRING',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>',                                                                  type:'text',   ph:'예) 럭실론 4G 1.25',   full:false },
+  { key:'tension', lbl:'TENSION', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',                                                         type:'text',   ph:'예) 50/52 파운드',     full:false },
+  { key:'stringDate', lbl:'스트링교체일', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg>', type:'date', ph:'', full:true },
 ];
 
-// ===== 라켓 슬롯 기본 구조 =====
-function _defaultRacket(idx) {
-  return { id: Date.now() + idx, name: '', string: '', tension: '', stringDate: '' };
-}
-
-// rackets 배열 초기화 (기존 단일 필드 → 배열 마이그레이션)
-function _initRackets() {
-  if (!state.rackets || !Array.isArray(state.rackets) || state.rackets.length === 0) {
-    const p = state.profile || {};
-    // 기존 단일 필드가 있으면 첫 번째 슬롯으로 마이그레이션
-    state.rackets = [{
-      id: Date.now(),
-      name: p.racket || '',
-      string: p.string || '',
-      tension: p.tension || '',
-      stringDate: p.stringDate || state.lastStringDate || ''
-    }];
-  }
-}
-
-// ===== renderProfile =====
 function renderProfile() {
   if (!state.profile) state.profile = {};
-  _initRackets();
   const p = state.profile;
   const name = p.name || '선수';
   const initial = name.charAt(0).toUpperCase();
 
+  // 상단 아바타 버튼
   const avatarBtn = document.getElementById('avatarBtn');
   if (avatarBtn) avatarBtn.textContent = initial;
 
+  // 이름 + 클럽 오버레이
   const nameRow = document.getElementById('profileNameBig');
   if (nameRow) {
     nameRow.innerHTML = `
@@ -1102,6 +912,7 @@ function renderProfile() {
       <span class="pf-name-text">${escHtml(name)}</span>`;
   }
 
+  // 배경 사진 / 이니셜
   const avatarInitial = document.getElementById('avatarInitial');
   const avatarImage   = document.getElementById('avatarImage');
   if (avatarInitial && avatarImage) {
@@ -1116,24 +927,25 @@ function renderProfile() {
     }
   }
 
+  // 정보 항목 렌더링
   const grid = document.getElementById('profileInfoGrid');
   if (!grid) return;
 
-  const fieldMap = {};
-  PROFILE_FIELDS.forEach(f => fieldMap[f.key] = f);
-
-  // ── 기본 정보 그룹 렌더링 ──
   const groups = [
     ['name','club'],
     ['age','hand'],
     ['career','style'],
+    ['racket'],
+    ['string','tension'],
+    ['stringDate'],
   ];
+  const fieldMap = {};
+  PROFILE_FIELDS.forEach(f => fieldMap[f.key] = f);
 
   let html = '';
   groups.forEach(keys => {
-    html += '<div class="pf-row-2">';
-    keys.forEach(key => {
-      const f = fieldMap[key];
+    if (keys.length === 1) {
+      const f = fieldMap[keys[0]];
       if (!f) return;
       const val = p[f.key] || '';
       const inputEl = f.type === 'select'
@@ -1141,6 +953,11 @@ function renderProfile() {
              <option value="">미설정</option>
              ${f.opts.map(o=>`<option${val===o?' selected':''}>${o}</option>`).join('')}
            </select>`
+        : f.type === 'date'
+        ? `<input type="date" class="pf-item-input" value="${escHtml(val)}"
+             style="cursor:pointer;"
+             onclick="try{this.showPicker()}catch(e){}"
+             onchange="saveProfileField('${f.key}',this.value);renderStringBanner()">`
         : `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${f.ph||''}"
              oninput="pfDebounceSave('${f.key}',this.value)"
              onkeydown="if(event.key==='Enter')this.blur()">`;
@@ -1151,198 +968,81 @@ function renderProfile() {
           ${inputEl}
         </div>
       </div>`;
-    });
-    html += '</div>';
+    } else {
+      html += '<div class="pf-row-2">';
+      keys.forEach(key => {
+        const f = fieldMap[key];
+        if (!f) return;
+        const val = p[f.key] || '';
+        const inputEl = f.type === 'select'
+          ? `<select class="pf-item-select${val?'':' unset'}" onchange="this.classList.toggle('unset',!this.value);saveProfileField('${f.key}',this.value)">
+               <option value="">미설정</option>
+               ${f.opts.map(o=>`<option${val===o?' selected':''}>${o}</option>`).join('')}
+             </select>`
+          : `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${f.ph||''}"
+               oninput="pfDebounceSave('${f.key}',this.value)"
+               onkeydown="if(event.key==='Enter')this.blur()">`;
+        html += `<div class="pf-item">
+          <div class="pf-item-icon">${f.icon}</div>
+          <div class="pf-item-body">
+            <div class="pf-item-lbl">[${f.lbl}]</div>
+            ${inputEl}
+          </div>
+        </div>`;
+      });
+      html += '</div>';
+    }
   });
-
-  // ── 라켓 슬롯 렌더링 ──
-  const racketIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><ellipse cx="11" cy="9" rx="6" ry="8" transform="rotate(-45 11 9)"/><line x1="16" y1="16" x2="21" y2="21"/><line x1="8" y1="11" x2="11" y2="8"/></svg>';
-  const labels = ['🎾 라켓 1', '🎾 라켓 2', '🎾 라켓 3', '🎾 라켓 4'];
-
-  html += '<div class="racket-slot-wrap">';
-  state.rackets.forEach((r, i) => {
-    html += `
-    <div class="racket-slot" id="racket-slot-${i}">
-      <div class="racket-slot-header">
-        <span class="racket-slot-title">${racketIcon}&nbsp;${labels[i] || ('라켓 ' + (i+1))}</span>
-        ${i > 0 ? `<button class="racket-del-btn" onclick="deleteRacketSlot(${i})">✕ 삭제</button>` : ''}
-      </div>
-      <div class="racket-slot-body">
-        <div class="pf-item" style="border:none;padding:0;">
-          <div class="pf-item-body" style="width:100%;">
-            <div class="racket-slot-lbl">RACQUET</div>
-            <input class="pf-item-input" value="${escHtml(r.name)}" placeholder="예) 윌슨 블레이드 98"
-              oninput="updateRacketField(${i},'name',this.value)"
-              onkeydown="if(event.key==='Enter')this.blur()">
-          </div>
-        </div>
-        <div class="racket-slot-row">
-          <div class="racket-slot-field">
-            <div class="racket-slot-lbl">STRING</div>
-            <input class="pf-item-input" value="${escHtml(r.string)}" placeholder="예) 럭실론 4G"
-              oninput="updateRacketField(${i},'string',this.value)"
-              onkeydown="if(event.key==='Enter')this.blur()">
-          </div>
-          <div class="racket-slot-field">
-            <div class="racket-slot-lbl">TENSION</div>
-            <input class="pf-item-input" value="${escHtml(r.tension)}" placeholder="예) 50파운드"
-              oninput="updateRacketField(${i},'tension',this.value)"
-              onkeydown="if(event.key==='Enter')this.blur()">
-          </div>
-        </div>
-        <div class="pf-item" style="border:none;padding:0;">
-          <div class="pf-item-body" style="width:100%;">
-            <div class="racket-slot-lbl">스트링 교체일</div>
-            <input type="date" class="pf-item-input" value="${escHtml(r.stringDate)}"
-              style="cursor:pointer;"
-              onclick="try{this.showPicker()}catch(e){}"
-              onchange="updateRacketField(${i},'stringDate',this.value)">
-          </div>
-        </div>
-      </div>
-    </div>`;
-  });
-
-  if (state.rackets.length < 4) {
-    html += `<button class="racket-add-btn" onclick="addRacketSlot()">
-      + 라켓 추가 (최대 4개)
-    </button>`;
-  }
-  html += '</div>';
-
   grid.innerHTML = html;
+
+  // ===== 스트링 상태 배너 =====
   renderStringBanner();
 }
 
-// ===== 라켓 슬롯 관리 함수 =====
-let _racketDebounceTimers = {};
-
-function updateRacketField(idx, field, value) {
-  clearTimeout(_racketDebounceTimers[idx + '_' + field]);
-  _racketDebounceTimers[idx + '_' + field] = setTimeout(() => {
-    if (!state.rackets[idx]) return;
-    state.rackets[idx][field] = value.trim();
-    // 첫 번째 라켓의 교체일은 lastStringDate와 동기화
-    if (field === 'stringDate' && idx === 0) {
-      state.lastStringDate = value;
-      state.profile.stringDate = value;
-    }
-    save();
-    if (field === 'stringDate') renderStringBanner();
-  }, 500);
-}
-
-function addRacketSlot() {
-  if (state.rackets.length >= 4) { showToast('⚠️ 라켓은 최대 4개까지 추가할 수 있어요'); return; }
-  state.rackets.push(_defaultRacket(state.rackets.length));
-  save();
-  renderProfile();
-  showToast('🎾 라켓 슬롯이 추가됐어요!');
-}
-
-function deleteRacketSlot(idx) {
-  if (idx === 0) return;
-  showConfirm('라켓 삭제', `라켓 ${idx+1} 정보를 삭제하시겠습니까?`, '🗑️', () => {
-    state.rackets.splice(idx, 1);
-    save();
-    renderProfile();
-    showToast('🗑️ 삭제 완료');
-  }, '삭제');
-}
-
-// ===== 스트링 상태 배너 (라켓별 슬라이드) =====
 function renderStringBanner() {
   const banner = document.getElementById('stringStatusBanner');
   if (!banner) return;
-  _initRackets();
 
-  const rackets = state.rackets.filter(r => r.name || r.stringDate);
-  if (rackets.length === 0) {
-    // 아무 라켓도 입력 안 된 경우
+  const dateStr = state.lastStringDate || state.profile?.stringDate || '';
+  if (!dateStr) {
     banner.innerHTML = `
-      <div class="string-banner none" style="margin-bottom:10px;">
+      <div class="string-banner none">
         <div class="string-banner-icon">🎾</div>
         <div class="string-banner-body">
           <div class="string-banner-title">String Status</div>
           <div class="string-banner-main">
-            <div class="string-banner-day" style="font-size:13px;font-family:inherit;font-weight:700;">라켓 정보를 입력해주세요</div>
+            <div class="string-banner-day" style="font-size:13px;font-family:inherit;font-weight:700;">교체일을 입력해주세요</div>
           </div>
         </div>
       </div>`;
     return;
   }
 
+  // D+일수 계산 (KST 기준 - 날짜 문자열 직접 파싱으로 시간대 오류 방지)
+  const [ry, rm, rd] = dateStr.split('-').map(Number);
+  const replaced = new Date(ry, rm - 1, rd);
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diffDays = Math.floor((today - replaced) / 86400000);
 
-  function _oneBannerHTML(r, i) {
-    const label = r.name ? escHtml(r.name) : `라켓 ${i+1}`;
-    const dateStr = r.stringDate || '';
+  // 교체일 이후 게임 수 계산
+  const gamesAfter = (state.matches || []).filter(m => m.date >= dateStr).length;
 
-    if (!dateStr) {
-      return `
-        <div class="banner-slide">
-          <div class="string-banner none">
-            <div class="string-banner-icon">🎾</div>
-            <div class="string-banner-body">
-              <div class="string-banner-title">${label}</div>
-              <div class="string-banner-main">
-                <div class="string-banner-day" style="font-size:13px;font-family:inherit;font-weight:700;">교체일 미입력</div>
-              </div>
-            </div>
-          </div>
-        </div>`;
-    }
-
-    const [ry, rm, rd] = dateStr.split('-').map(Number);
-    const replaced = new Date(ry, rm - 1, rd);
-    const diffDays = Math.floor((today - replaced) / 86400000);
-    const gamesAfter = (state.matches || []).filter(m => m.date >= dateStr).length;
-    const colorClass = diffDays <= 30 ? 'green' : diffDays <= 90 ? 'yellow' : 'red';
-    const icon = diffDays <= 30 ? '🟢' : diffDays <= 90 ? '🟡' : '🔴';
-    const stringInfo = r.string ? `<span style="font-size:11px;color:var(--text-muted);margin-left:4px;">${escHtml(r.string)}${r.tension ? ' · ' + escHtml(r.tension) : ''}</span>` : '';
-
-    return `
-      <div class="banner-slide">
-        <div class="string-banner ${colorClass}">
-          <div class="string-banner-icon">${icon}</div>
-          <div class="string-banner-body">
-            <div class="string-banner-title">${label}${stringInfo}</div>
-            <div class="string-banner-main">
-              <div class="string-banner-day">D+${diffDays}</div>
-              <div class="string-banner-games"><span>${gamesAfter}</span> Games</div>
-            </div>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  const slidesHTML = rackets.map((r, i) => _oneBannerHTML(r, i)).join('');
-
-  // 라켓이 1개면 슬라이드/도트 불필요
-  if (rackets.length === 1) {
-    banner.innerHTML = `<div style="margin-bottom:10px;">${_oneBannerHTML(rackets[0], 0).replace('<div class="banner-slide">','').replace('</div>\n        </div>','</div>')}</div>`;
-    return;
-  }
-
-  const dotsHTML = rackets.map((_, i) =>
-    `<div class="banner-dot${i === 0 ? ' active' : ''}" id="bdot-${i}"></div>`
-  ).join('');
+  // 색상 결정
+  const colorClass = diffDays <= 30 ? 'green' : diffDays <= 90 ? 'yellow' : 'red';
+  const icon = diffDays <= 30 ? '🟢' : diffDays <= 90 ? '🟡' : '🔴';
 
   banner.innerHTML = `
-    <div class="banner-slides-wrap">
-      <div class="banner-slides" id="bannerSlides" onscroll="onBannerScroll(this)">
-        ${slidesHTML}
+    <div class="string-banner ${colorClass}">
+      <div class="string-banner-icon">${icon}</div>
+      <div class="string-banner-body">
+        <div class="string-banner-title">String Status</div>
+        <div class="string-banner-main">
+          <div class="string-banner-day">D+${diffDays}</div>
+          <div class="string-banner-games"><span>${gamesAfter}</span> Games</div>
+        </div>
       </div>
-      <div class="banner-dots">${dotsHTML}</div>
     </div>`;
-}
-
-function onBannerScroll(el) {
-  const idx = Math.round(el.scrollLeft / el.offsetWidth);
-  document.querySelectorAll('.banner-dot').forEach((d, i) => {
-    d.classList.toggle('active', i === idx);
-  });
 }
 
 // 프로필 입력 디바운스 (모바일에서 oninput 과도한 저장 방지)
@@ -1356,6 +1056,10 @@ function saveProfileField(key, value) {
   state.profile[key] = typeof value === 'string' ? value.trim() : value;
   if (!state.profile.name) state.profile.name = '선수';
   state.profile.photo = state.profile.photo || '';
+  // 스트링교체일 변경 시 lastStringDate도 동기화
+  if (key === 'stringDate') {
+    state.lastStringDate = state.profile[key];
+  }
   save();
   const p = state.profile; const name = p.name || '선수';
   const nameRow = document.getElementById('profileNameBig');
@@ -1366,8 +1070,9 @@ function saveProfileField(key, value) {
   if (avatarBtnEl) avatarBtnEl.textContent = name.charAt(0).toUpperCase();
   const avatarInitialEl = document.getElementById('avatarInitial');
   if (!p.photo && avatarInitialEl) avatarInitialEl.textContent = name.charAt(0).toUpperCase();
+  // 스트링교체일 변경 시 배너 즉시 갱신
+  if (key === 'stringDate') renderStringBanner();
 }
-
 
 function uploadPhoto(input) {
   const file = input.files[0]; if (!file) return;
@@ -2044,37 +1749,24 @@ function toggleAcc(id) {
 }
 
 
-
-// ===== 스트링 관리 (라켓별) =====
 function renderStringing() {
-  _initRackets();
-  const selectedIdx = state._stringingRacketIdx || 0;
-  const racket = state.rackets[selectedIdx] || state.rackets[0];
+  // 날짜/인터벌 폼 채우기
+  document.getElementById('lastStringDate').value = state.lastStringDate || '';
+  document.getElementById('stringInterval').value = state.stringInterval || 3;
+  // 새 교체 날짜 기본값
+  if (!document.getElementById('newStringDate').value) {
+    document.getElementById('newStringDate').value = getTodayStr();
+  }
 
-  // 라켓 선택 탭 렌더링
+  // 알림 렌더링
   const alertEl = document.getElementById('stringingAlert');
-  if (!alertEl) return;
-
-  // 라켓 탭 버튼
-  const tabHTML = state.rackets.map((r, i) => {
-    const label = r.name ? r.name : `라켓 ${i+1}`;
-    const active = i === selectedIdx;
-    return `<button onclick="stringingSelectRacket(${i})"
-      style="flex:1;padding:8px 4px;border:none;border-radius:10px;font-size:12px;font-weight:700;
-      cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-      background:${active?'var(--accent)':'var(--surface2)'};
-      color:${active?'#fff':'var(--text-muted)'};">${escHtml(label)}</button>`;
-  }).join('');
-
-  // 교체일/인터벌
-  const dateStr = racket.stringDate || '';
-  let alertHTML = '';
-  if (dateStr) {
-    const last = new Date(dateStr);
+  if (state.lastStringDate) {
+    const last = new Date(state.lastStringDate);
     const now = new Date();
     const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
     const intervalDays = (state.stringInterval || 3) * 30;
     const remaining = intervalDays - diffDays;
+
     let alertClass = 'ok', alertIcon = '✅', alertTitle = '', alertSub = '';
     if (remaining <= 0) {
       alertClass = 'danger'; alertIcon = '🔴';
@@ -2086,9 +1778,10 @@ function renderStringing() {
       alertSub = '슬슬 교체를 준비해보세요.';
     } else {
       alertTitle = `교체까지 ${remaining}일 남았어요`;
-      alertSub = `마지막 교체: ${dateStr} · ${diffDays}일 경과`;
+      alertSub = `마지막 교체: ${state.lastStringDate} · ${diffDays}일 경과`;
     }
-    alertHTML = `<div class="stringing-alert ${alertClass}" style="margin-bottom:12px;">
+
+    alertEl.innerHTML = `<div class="stringing-alert ${alertClass}" style="margin-bottom:12px;">
       <div class="stringing-alert-icon">${alertIcon}</div>
       <div class="stringing-alert-text">
         <div class="stringing-alert-title">${alertTitle}</div>
@@ -2096,7 +1789,7 @@ function renderStringing() {
       </div>
     </div>`;
   } else {
-    alertHTML = `<div class="stringing-alert" style="margin-bottom:12px;">
+    alertEl.innerHTML = `<div class="stringing-alert" style="margin-bottom:12px;">
       <div class="stringing-alert-icon">ℹ️</div>
       <div class="stringing-alert-text">
         <div class="stringing-alert-title">마지막 교체일을 입력해주세요</div>
@@ -2105,27 +1798,9 @@ function renderStringing() {
     </div>`;
   }
 
-  alertEl.innerHTML = `
-    <div style="display:flex;gap:6px;margin-bottom:12px;">${tabHTML}</div>
-    ${alertHTML}`;
-
-  // 날짜/인터벌 폼
-  const lastStringDateEl = document.getElementById('lastStringDate');
-  if (lastStringDateEl) lastStringDateEl.value = racket.stringDate || '';
-  const stringIntervalEl = document.getElementById('stringInterval');
-  if (stringIntervalEl) stringIntervalEl.value = state.stringInterval || 3;
-
-  // 새 교체 날짜 기본값
-  const newDateEl = document.getElementById('newStringDate');
-  if (newDateEl && !newDateEl.value) newDateEl.value = getTodayStr();
-
-  // 히스토리 (선택된 라켓 기준)
+  // 히스토리 렌더링
   const listEl = document.getElementById('stringingHistoryList');
-  if (!listEl) return;
-  const hist = [...(state.stringingHistory || [])]
-    .filter(h => (h.racketIdx === undefined ? true : h.racketIdx === selectedIdx))
-    .sort((a, b) => b.date.localeCompare(a.date));
-
+  const hist = [...(state.stringingHistory || [])].sort((a,b) => b.date.localeCompare(a.date));
   if (!hist.length) {
     listEl.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:12px 0 8px;">교체 이력이 없습니다</div>';
   } else {
@@ -2141,20 +1816,9 @@ function renderStringing() {
   }
 }
 
-function stringingSelectRacket(idx) {
-  state._stringingRacketIdx = idx;
-  renderStringing();
-}
-
 function saveLastStringDate(val) {
-  _initRackets();
-  const idx = state._stringingRacketIdx || 0;
-  if (state.rackets[idx]) state.rackets[idx].stringDate = val;
-  // 첫 번째 라켓이면 레거시 필드도 동기화
-  if (idx === 0) {
-    state.lastStringDate = val;
-    state.profile.stringDate = val;
-  }
+  state.lastStringDate = val;
+  state.profile.stringDate = val;
   save();
   renderStringing();
   renderStringBanner();
@@ -2173,21 +1837,12 @@ function addStringingHistory() {
   if (!name) { showToast('⚠️ 스트링명을 입력하세요'); return; }
   if (!date) { showToast('⚠️ 날짜를 선택하세요'); return; }
   if (!state.stringingHistory) state.stringingHistory = [];
-  _initRackets();
-  const idx = state._stringingRacketIdx || 0;
   const id = Date.now();
-  state.stringingHistory.push({ id, name, date, racketIdx: idx });
-  // 선택된 라켓의 교체일 자동 갱신
-  const latestForRacket = [...state.stringingHistory]
-    .filter(h => h.racketIdx === idx || (idx === 0 && h.racketIdx === undefined))
-    .sort((a, b) => b.date.localeCompare(a.date))[0];
-  if (latestForRacket && state.rackets[idx]) {
-    state.rackets[idx].stringDate = latestForRacket.date;
-    if (idx === 0) {
-      state.lastStringDate = latestForRacket.date;
-      state.profile.stringDate = latestForRacket.date;
-    }
-  }
+  state.stringingHistory.push({ id, name, date });
+  // 가장 최근 교체일 자동 갱신 (프로필 stringDate도 동기화)
+  const latest = [...state.stringingHistory].sort((a,b) => b.date.localeCompare(a.date))[0];
+  state.lastStringDate = latest.date;
+  state.profile.stringDate = latest.date;
   save();
   document.getElementById('newStringName').value = '';
   renderStringing();
@@ -2196,30 +1851,22 @@ function addStringingHistory() {
 }
 
 function deleteStringingHistory(id) {
-  _initRackets();
-  const idx = state._stringingRacketIdx || 0;
   state.stringingHistory = state.stringingHistory.filter(h => h.id !== id);
-  // 최근 교체일 재계산
-  const remaining = state.stringingHistory.filter(h => h.racketIdx === idx || (idx === 0 && h.racketIdx === undefined));
-  if (remaining.length) {
-    const latest = [...remaining].sort((a, b) => b.date.localeCompare(a.date))[0];
-    if (state.rackets[idx]) state.rackets[idx].stringDate = latest.date;
-    if (idx === 0) {
-      state.lastStringDate = latest.date;
-      state.profile.stringDate = latest.date;
-    }
+  // 최근 교체일 재계산 (프로필도 동기화)
+  if (state.stringingHistory.length) {
+    const latest = [...state.stringingHistory].sort((a,b) => b.date.localeCompare(a.date))[0];
+    state.lastStringDate = latest.date;
+    state.profile.stringDate = latest.date;
   } else {
-    if (state.rackets[idx]) state.rackets[idx].stringDate = '';
-    if (idx === 0) {
-      state.lastStringDate = '';
-      state.profile.stringDate = '';
-    }
+    state.lastStringDate = '';
+    state.profile.stringDate = '';
   }
   save();
   renderStringing();
   renderStringBanner();
   showToast('🗑️ 삭제 완료');
 }
+
 
 function addPlayer() {
   const name = document.getElementById('newPlayerName').value.trim();
