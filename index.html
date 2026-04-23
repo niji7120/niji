@@ -2932,85 +2932,77 @@ function renderProfile() {
   // 장비 섹션 타이틀
   html += `<div style="margin:12px 0 6px;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;">🎾 장비 정보</div>`;
 
-  // 라켓 1
-  html += `<div class="pf-item" style="flex-direction:column;align-items:stretch;gap:8px;">
-    <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:2px;">RACQUET 1</div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="pf-item-icon">${racketIcon}</div>
-      <div class="pf-item-body" style="flex:1;">
-        <div class="pf-item-lbl">[라켓명]</div>
-        <input class="pf-item-input" value="${escHtml(p.racket||'')}" placeholder="예) 윌슨 블레이드 98"
-          oninput="pfDebounceSave('racket',this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()">
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="pf-item-icon">${stringIcon}</div>
-      <div class="pf-item-body" style="flex:1;">
-        <div class="pf-item-lbl">[스트링]</div>
-        ${stringSelectInput('string', p.string||'')}
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="pf-item-icon">${tensionIcon}</div>
-      <div class="pf-item-body" style="flex:1;">
-        <div class="pf-item-lbl">[텐션]</div>
-        <input class="pf-item-input" value="${escHtml(p.tension||'')}" placeholder="예) 50/52 파운드"
-          oninput="pfDebounceSave('tension',this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()">
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="pf-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg></div>
-      <div class="pf-item-body" style="flex:1;">
-        <div class="pf-item-lbl">[스트링 교체일]</div>
-        <input type="date" class="pf-item-input" value="${escHtml(p.stringDate||'')}"
-          style="cursor:pointer;"
-          onclick="try{this.showPicker()}catch(e){}"
-          onchange="saveProfileField('stringDate',this.value);renderStringBanner()">
-      </div>
-    </div>
-  </div>`;
+  // 라켓 드롭다운 카드 생성 함수
+  function racketAccordion(num, rKey, sKey, tKey, dKey, rPh) {
+    const rVal  = p[rKey]  || '';
+    const sVal  = p[sKey]  || '';
+    const tVal  = p[tKey]  || '';
+    const dVal  = p[dKey]  || '';
+    const isOpen = !!(rVal || sVal || tVal || dVal); // 값 있으면 기본 열림
+    const summaryText = rVal
+      ? `<span style="font-size:12px;font-weight:700;color:var(--text);margin-left:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;">${escHtml(rVal)}</span>`
+      : `<span style="font-size:11px;color:var(--text-muted);margin-left:6px;">미입력</span>`;
 
-  // 라켓 2
-  html += `<div class="pf-item" style="flex-direction:column;align-items:stretch;gap:8px;margin-top:8px;">
-    <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:2px;">RACQUET 2</div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="pf-item-icon">${racketIcon}</div>
-      <div class="pf-item-body" style="flex:1;">
-        <div class="pf-item-lbl">[라켓명]</div>
-        <input class="pf-item-input" value="${escHtml(p.racket2||'')}" placeholder="예) 요넥스 VCORE 98"
-          oninput="pfDebounceSave('racket2',this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()">
+    return `
+    <div class="pf-item" style="flex-direction:column;align-items:stretch;padding:0;overflow:hidden;">
+      <!-- 헤더 (탭으로 열고 닫기) -->
+      <div onclick="pfToggleRacket(${num})"
+        style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;user-select:none;">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="color:var(--accent);">${racketIcon}</div>
+          <span style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--accent);text-transform:uppercase;">RACQUET ${num}</span>
+          ${summaryText}
+        </div>
+        <div id="pf-racket-arrow-${num}" style="color:var(--text-muted);font-size:12px;transition:transform .25s;transform:${isOpen?'rotate(180deg)':'rotate(0deg)'};">▼</div>
       </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="pf-item-icon">${stringIcon}</div>
-      <div class="pf-item-body" style="flex:1;">
-        <div class="pf-item-lbl">[스트링]</div>
-        ${stringSelectInput('string2', p.string2||'')}
+      <!-- 펼쳐지는 내용 -->
+      <div id="pf-racket-body-${num}" style="display:${isOpen?'flex':'none'};flex-direction:column;gap:0;border-top:1px solid var(--border);">
+        <!-- 라켓명 -->
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);">
+          <div class="pf-item-icon">${racketIcon}</div>
+          <div class="pf-item-body" style="flex:1;">
+            <div class="pf-item-lbl">[라켓명]</div>
+            <input class="pf-item-input" value="${escHtml(rVal)}" placeholder="${rPh}"
+              oninput="pfDebounceSave('${rKey}',this.value);pfUpdateRacketSummary(${num},'${rKey}')"
+              onkeydown="if(event.key==='Enter')this.blur()">
+          </div>
+        </div>
+        <!-- 스트링 -->
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);">
+          <div class="pf-item-icon">${stringIcon}</div>
+          <div class="pf-item-body" style="flex:1;">
+            <div class="pf-item-lbl">[스트링]</div>
+            ${stringSelectInput(sKey, sVal)}
+          </div>
+        </div>
+        <!-- 텐션 -->
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);">
+          <div class="pf-item-icon">${tensionIcon}</div>
+          <div class="pf-item-body" style="flex:1;">
+            <div class="pf-item-lbl">[텐션]</div>
+            <input class="pf-item-input" value="${escHtml(tVal)}" placeholder="예) 50/52 파운드"
+              oninput="pfDebounceSave('${tKey}',this.value)"
+              onkeydown="if(event.key==='Enter')this.blur()">
+          </div>
+        </div>
+        <!-- 교체일 -->
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;">
+          <div class="pf-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg></div>
+          <div class="pf-item-body" style="flex:1;">
+            <div class="pf-item-lbl">[스트링 교체일]</div>
+            <input type="date" class="pf-item-input" value="${escHtml(dVal)}"
+              style="cursor:pointer;"
+              onclick="try{this.showPicker()}catch(e){}"
+              onchange="saveProfileField('${dKey}',this.value);renderStringBanner()">
+          </div>
+        </div>
       </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="pf-item-icon">${tensionIcon}</div>
-      <div class="pf-item-body" style="flex:1;">
-        <div class="pf-item-lbl">[텐션]</div>
-        <input class="pf-item-input" value="${escHtml(p.tension2||'')}" placeholder="예) 52/54 파운드"
-          oninput="pfDebounceSave('tension2',this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()">
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="pf-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg></div>
-      <div class="pf-item-body" style="flex:1;">
-        <div class="pf-item-lbl">[스트링 교체일]</div>
-        <input type="date" class="pf-item-input" value="${escHtml(p.stringDate2||'')}"
-          style="cursor:pointer;"
-          onclick="try{this.showPicker()}catch(e){}"
-          onchange="saveProfileField('stringDate2',this.value);renderStringBanner()">
-      </div>
-    </div>
-  </div>`;
+    </div>`;
+  }
+
+  html += racketAccordion(1, 'racket','string','tension','stringDate', '예) 윌슨 블레이드 98');
+  html += `<div style="height:8px;"></div>`;
+  html += racketAccordion(2, 'racket2','string2','tension2','stringDate2', '예) 요넥스 VCORE 98');
 
   grid.innerHTML = html;
 
@@ -3052,75 +3044,37 @@ function renderStringBanner() {
   const string2 = p.string2  || '';
   const tension2 = p.tension2 || '';
 
-  // 라켓 카드 생성 (교체일 포함)
-  function racketCard(num, racket, string, tension, diff, dateStr) {
-    const hasData = racket || string;
-    if (!hasData && diff === null) return '';
-    const racketName = racket || '라켓 미입력';
-    const stringInfo = [string, tension].filter(Boolean).join(' / ');
-    const cls = diff !== null ? colorClass(diff) : 'none';
-    const borderColor = cls === 'green' ? 'rgba(74,222,128,.35)'
-                      : cls === 'yellow' ? 'rgba(251,191,36,.35)'
-                      : cls === 'red'    ? 'rgba(248,113,113,.45)'
-                      : 'rgba(255,255,255,.1)';
-    const bgColor = cls === 'green' ? 'rgba(74,222,128,.07)'
-                  : cls === 'yellow' ? 'rgba(251,191,36,.07)'
-                  : cls === 'red'    ? 'rgba(248,113,113,.09)'
-                  : 'rgba(255,255,255,.05)';
+  // 라켓 한 줄 생성: 라켓명 + D+일수만 간결하게
+  function racketRow(num, racket, diff) {
+    const hasData = racket || diff !== null;
+    if (!hasData) return '';
+    const name = racket || `라켓 ${num}`;
+    const cls  = diff !== null ? colorClass(diff) : 'none';
     const dColor = diff !== null ? dayColor(cls) : 'var(--text-muted)';
-    const diffText = diff !== null
-      ? `<span style="font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:${dColor};">D+${diff}</span>`
-      : `<span style="font-size:11px;color:var(--text-muted);">교체일 미입력</span>`;
-
-    return `<div style="flex:1;min-width:0;background:${bgColor};border-radius:10px;padding:9px 11px;border:1px solid ${borderColor};">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-        <div style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:1px;">🎾 RACQUET ${num}</div>
-        ${diffText}
-      </div>
-      ${hasData ? `<div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(racketName)}</div>` : ''}
-      ${stringInfo ? `<div style="font-size:10px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(stringInfo)}</div>` : ''}
+    const dot = cls === 'green' ? '#4ade80' : cls === 'yellow' ? '#fbbf24' : cls === 'red' ? '#f87171' : 'var(--text-muted)';
+    const diffLabel = diff !== null
+      ? `<span style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:${dColor};">D+${diff}</span>`
+      : `<span style="font-size:10px;color:var(--text-muted);">미입력</span>`;
+    return `<div style="display:flex;align-items:center;gap:6px;padding:4px 0;">
+      <span style="width:6px;height:6px;border-radius:50%;background:${dot};flex-shrink:0;"></span>
+      <span style="font-size:11px;font-weight:700;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">R${num} ${escHtml(name)}</span>
+      ${diffLabel}
     </div>`;
   }
 
-  const card1 = racketCard(1, racket1, string1, tension1, diff1, date1);
-  const card2 = racketCard(2, racket2, string2, tension2, diff2, date2);
-  const hasAny = card1 || card2;
+  const row1 = racketRow(1, racket1, diff1);
+  const row2 = racketRow(2, racket2, diff2);
+  const hasAny = row1 || row2;
 
-  // 둘 다 입력 없으면 안내 메시지
   if (!hasAny) {
-    banner.innerHTML = `
-      <div class="string-banner none">
-        <div class="string-banner-icon">🎾</div>
-        <div class="string-banner-body">
-          <div class="string-banner-title">String Status</div>
-          <div class="string-banner-main">
-            <div class="string-banner-day" style="font-size:13px;font-family:inherit;font-weight:700;">라켓 정보를 입력해주세요</div>
-          </div>
-        </div>
-      </div>`;
+    banner.innerHTML = `<div style="font-size:12px;color:var(--text-muted);padding:8px 2px;">라켓 정보를 입력해주세요</div>`;
     return;
   }
 
-  // 전체 배너 색상: 라켓1 기준 (있으면), 없으면 라켓2 기준
-  const mainDiff = diff1 !== null ? diff1 : diff2;
-  const mainCls  = mainDiff !== null ? colorClass(mainDiff) : 'none';
-  const mainIcon = mainDiff !== null ? colorIcon(mainDiff) : '🎾';
-
-  // 교체일 이후 게임 수 (라켓1 기준)
-  const gamesAfter = date1
-    ? (state.matches || []).filter(m => m.date >= date1).length
-    : null;
-
   banner.innerHTML = `
-    <div class="string-banner ${mainCls}">
-      <div class="string-banner-icon">${mainIcon}</div>
-      <div class="string-banner-body">
-        <div class="string-banner-title">String Status</div>
-        ${gamesAfter !== null ? `<div class="string-banner-main" style="margin-bottom:6px;">
-          <div class="string-banner-games"><span>${gamesAfter}</span> Games (R1 기준)</div>
-        </div>` : ''}
-        <div style="display:flex;gap:7px;width:100%;">${card1}${card2}</div>
-      </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:1px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">🎾 String Status</div>
+      ${row1}${row2 ? (row1 ? `<div style="height:1px;background:var(--border);margin:3px 0;"></div>` : '') + row2 : ''}
     </div>`;
 
   // lastStringDate 동기화 (라켓1 교체일 기준 유지)
@@ -3129,6 +3083,22 @@ function renderStringBanner() {
 
 // 프로필 입력 디바운스 (모바일에서 oninput 과도한 저장 방지)
 let _pfDebounceTimer = null;
+// 라켓 드롭다운 열고 닫기
+function pfToggleRacket(num) {
+  const body  = document.getElementById('pf-racket-body-' + num);
+  const arrow = document.getElementById('pf-racket-arrow-' + num);
+  if (!body) return;
+  const isOpen = body.style.display !== 'none';
+  body.style.display  = isOpen ? 'none' : 'flex';
+  if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+// 라켓명 입력 시 헤더 요약 실시간 갱신
+function pfUpdateRacketSummary(num, key) {
+  // 디바운스 후 saveProfileField 에서 re-render 되므로 별도 처리 불필요
+  // (헤더는 renderProfile 호출 시 갱신됨)
+}
+
 function pfDebounceSave(key, value) {
   clearTimeout(_pfDebounceTimer);
   _pfDebounceTimer = setTimeout(() => saveProfileField(key, value), 600);
