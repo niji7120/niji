@@ -2,7 +2,7 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "com.niji7120.nijistring2",
-    "sha256_cert_fingerprints": ["BB:97:D1:89:05:EC:16:5D:45:9C:23:7F:F3:C1:FF:5B:42:F7:28:50:A0:07:5F:60:84:DC:8F:5C:3F:4F:45:6B"]
+    "package_name": "com.nijistring.app",
+    "sha256_cert_fingerprints": ["97:0A:5A:25:06:90:61:AC:C2:21:58:0B:B7:F1:FE:15:DF:2D:E7:52:02:5A:4A:F7:56:AE:CD:FF:EF:04:E2:C0"]
   }
 }]
