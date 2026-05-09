@@ -1026,88 +1026,112 @@
           <span class="acc-arrow" id="matchForm-arrow" style="color:rgba(255,255,255,0.85);">▼</span>
         </button>
         <div class="acc-body" id="matchFormBody" style="display:none;">
-          <div class="card" style="margin-top:0;border-radius:0 0 12px 12px;">
+          <div class="card" style="margin-top:0;border-radius:0 0 12px 12px;padding:12px 14px;">
             <div class="match-edit-mode-banner" id="matchEditBanner">
               ✏️ 경기 수정 중
               <button class="match-edit-cancel-btn" onclick="cancelEditMatch()">✕ 취소</button>
             </div>
-            <div class="card-title" id="matchFormTitle">새 경기</div>
-            <div class="form-group">
-              <label class="form-label">날짜</label>
-              <input type="date" class="form-input" id="matchDate">
-            </div>
-            <div class="form-group">
-              <label class="form-label">형식</label>
-              <div class="format-toggle">
-                <button class="format-btn" id="btnSingles" onclick="selectFormat('singles')">🏸 단식</button>
-                <button class="format-btn" id="btnDoubles" onclick="selectFormat('doubles')">🤝 복식</button>
+
+            <!-- 줄 1: 날짜 + 형식 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+              <div>
+                <div class="form-label" style="margin-bottom:4px;">📅 날짜</div>
+                <input type="date" class="form-input" id="matchDate" style="padding:9px 10px;font-size:14px;">
               </div>
-              <input type="hidden" id="matchFormat">
-            </div>
-            <div class="form-group" id="partnerGroup" style="display:none">
-              <label class="form-label">파트너</label>
-              <div style="position:relative;">
-                <input class="form-input" id="matchPartner" placeholder="이름 또는 초성 입력" autocomplete="off" oninput="showPlayerAC(this,'ac-partner')">
-                <div class="player-ac-list" id="ac-partner" style="display:none;"></div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">상대</label>
-              <div style="position:relative;">
-                <input class="form-input" id="matchOpponent" placeholder="이름 또는 초성 입력" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent')">
-                <div class="player-ac-list" id="ac-opponent" style="display:none;"></div>
-              </div>
-            </div>
-            <div class="form-group" id="opponent2Group" style="display:none">
-              <label class="form-label">상대 2</label>
-              <div style="position:relative;">
-                <input class="form-input" id="matchOpponent2" placeholder="이름 또는 초성 입력" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent2')">
-                <div class="player-ac-list" id="ac-opponent2" style="display:none;"></div>
+              <div>
+                <div class="form-label" style="margin-bottom:4px;">형식</div>
+                <div class="format-toggle" style="height:42px;">
+                  <button class="format-btn" id="btnSingles" onclick="selectFormat('singles')" style="font-size:13px;">단식</button>
+                  <button class="format-btn" id="btnDoubles" onclick="selectFormat('doubles')" style="font-size:13px;">복식</button>
+                </div>
+                <input type="hidden" id="matchFormat">
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">결과</label>
+            <!-- 줄 2: 단식 - 상대 1명 / 복식 - 파트너 표시 후 상대1+2 -->
+            <!-- 단식용 상대 입력 -->
+            <div id="singlesOpponentRow" style="margin-bottom:8px;">
+              <div class="form-label" style="margin-bottom:4px;">🆚 상대</div>
+              <div style="position:relative;">
+                <input class="form-input" id="matchOpponent" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent')" style="padding:9px 12px;font-size:14px;">
+                <div class="player-ac-list" id="ac-opponent" style="display:none;"></div>
+              </div>
+            </div>
+
+            <!-- 복식용 파트너 + 상대1 + 상대2 -->
+            <div id="doublesRow" style="display:none;">
+              <!-- 파트너 -->
+              <div id="partnerGroup" style="margin-bottom:8px;">
+                <div class="form-label" style="margin-bottom:4px;">🤝 파트너</div>
+                <div style="position:relative;">
+                  <input class="form-input" id="matchPartner" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-partner')" style="padding:9px 12px;font-size:14px;">
+                  <div class="player-ac-list" id="ac-partner" style="display:none;"></div>
+                </div>
+              </div>
+              <!-- 상대 1 + 상대 2 나란히 -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                <div>
+                  <div class="form-label" style="margin-bottom:4px;">🆚 상대 1</div>
+                  <div style="position:relative;">
+                    <input class="form-input" id="matchOpponent" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent')" style="padding:9px 10px;font-size:14px;">
+                    <div class="player-ac-list" id="ac-opponent" style="display:none;"></div>
+                  </div>
+                </div>
+                <div id="opponent2Group">
+                  <div class="form-label" style="margin-bottom:4px;">🆚 상대 2</div>
+                  <div style="position:relative;">
+                    <input class="form-input" id="matchOpponent2" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent2')" style="padding:9px 10px;font-size:14px;">
+                    <div class="player-ac-list" id="ac-opponent2" style="display:none;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 줄 4: 승/패 버튼 -->
+            <div style="margin-bottom:8px;">
+              <div class="form-label" style="margin-bottom:4px;">결과</div>
               <div class="match-result-winner">
                 <button class="winner-btn" id="winBtn" onclick="setResult('win')">🏆 승리</button>
                 <button class="winner-btn" id="loseBtn" onclick="setResult('lose')">😔 패배</button>
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">스코어 (선택)</label>
-              <div class="match-result">
-                <div>
-                  <div class="match-result-label">나</div>
-                  <input type="number" class="form-input match-score-input" id="myScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
+            <!-- 줄 5: 스코어 + 타이브레이크 한 줄 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+              <div>
+                <div class="form-label" style="margin-bottom:4px;">스코어 (선택)</div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="number" class="form-input" id="myScore" placeholder="나" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;flex:1;">
+                  <span style="font-size:11px;color:var(--text-muted);font-weight:700;">:</span>
+                  <input type="number" class="form-input" id="oppScore" placeholder="상대" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;flex:1;">
                 </div>
-                <div class="vs-text">VS</div>
-                <div>
-                  <div class="match-result-label">상대</div>
-                  <input type="number" class="form-input match-score-input" id="oppScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
+              </div>
+              <div>
+                <div class="form-label" style="margin-bottom:4px;">타이브레이크 (선택)</div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <input type="number" class="form-input" id="myTiebreak" placeholder="나" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;flex:1;">
+                  <span style="font-size:11px;color:var(--text-muted);font-weight:700;">:</span>
+                  <input type="number" class="form-input" id="oppTiebreak" placeholder="상대" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;flex:1;">
                 </div>
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">타이브레이크 점수 (선택)</label>
-              <div class="match-result">
-                <div>
-                  <div class="match-result-label">나</div>
-                  <input type="number" class="form-input match-score-input" id="myTiebreak" placeholder="-" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
-                </div>
-                <div class="vs-text">VS</div>
-                <div>
-                  <div class="match-result-label">상대</div>
-                  <input type="number" class="form-input match-score-input" id="oppTiebreak" placeholder="-" min="0" max="99" inputmode="numeric" pattern="[0-9]*">
-                </div>
-              </div>
+            <!-- 줄 6: 라켓 선택 -->
+            <div style="margin-bottom:8px;" id="racketSelectGroup">
+              <div class="form-label" style="margin-bottom:4px;">🎾 사용 라켓 (선택)</div>
+              <select class="form-select" id="matchRacket" style="padding:9px 12px;font-size:14px;">
+                <option value="">선택 안 함</option>
+                <option value="racket1">라켓 1</option>
+                <option value="racket2">라켓 2</option>
+              </select>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">메모</label>
-              <textarea class="form-textarea" id="matchMemo" placeholder="경기 메모..."></textarea>
+            <!-- 줄 7: 메모 -->
+            <div style="margin-bottom:10px;">
+              <div class="form-label" style="margin-bottom:4px;">📝 메모 (선택)</div>
+              <textarea class="form-textarea" id="matchMemo" placeholder="경기 메모..." style="min-height:54px;padding:9px 12px;font-size:14px;"></textarea>
             </div>
+
             <button class="btn btn-primary" id="matchSaveBtn" onclick="saveMatch()">경기 저장</button>
           </div>
         </div>
@@ -2440,7 +2464,7 @@ function showPage(name) {
   if (content) content.scrollTop = 0;
   if (name === 'stats') { renderStats(); syncSportTab(); }
   if (name === 'players') renderPlayers();
-  if (name === 'match') { renderMatchList(); if (!state.editingMatchId) setTodayDate(); updateMatchSportBadge(); }
+  if (name === 'match') { renderMatchList(); if (!state.editingMatchId) setTodayDate(); updateMatchSportBadge(); updateMatchRacketOptions(); }
   if (name === 'stringing') renderStringing();
   if (name === 'tournament') {
     // 탭 진입 시 현재 선택된 탭 기준으로 렌더링 (setTimeout으로 DOM이 먼저 표시되게 보장)
@@ -3209,13 +3233,18 @@ function renderStringBanner() {
   const string2 = p.string2  || '';
   const tension2 = p.tension2 || '';
 
-  // 교체일 이후 게임(매치) 수 계산
-  function countGamesAfter(dateStr) {
+  // 교체일 이후 게임(매치) 수 계산 (라켓별)
+  function countGamesAfter(dateStr, racketKey) {
     if (!dateStr) return 0;
-    return (state.matches || []).filter(m => m.date && m.date >= dateStr).length;
+    return (state.matches || []).filter(m => {
+      if (!m.date || m.date < dateStr) return false;
+      // racketUsed가 없거나 미선택이면 두 라켓 모두에 포함
+      if (!m.racketUsed) return true;
+      return m.racketUsed === racketKey;
+    }).length;
   }
-  const games1 = date1 ? countGamesAfter(date1) : 0;
-  const games2 = date2 ? countGamesAfter(date2) : 0;
+  const games1 = date1 ? countGamesAfter(date1, 'racket1') : 0;
+  const games2 = date2 ? countGamesAfter(date2, 'racket2') : 0;
 
   // 라켓 한 줄 생성: 라켓명 + D+일수 + 게임수
   function racketRow(num, racket, diff, games) {
@@ -3347,8 +3376,10 @@ function selectFormat(fmt) {
 }
 function togglePartner() {
   const fmt = document.getElementById('matchFormat').value;
-  document.getElementById('partnerGroup').style.display = fmt === 'doubles' ? 'block' : 'none';
-  document.getElementById('opponent2Group').style.display = fmt === 'doubles' ? 'block' : 'none';
+  const singlesRow = document.getElementById('singlesOpponentRow');
+  const doublesRow = document.getElementById('doublesRow');
+  if (singlesRow) singlesRow.style.display = fmt === 'doubles' ? 'none' : 'block';
+  if (doublesRow) doublesRow.style.display = fmt === 'doubles' ? 'block' : 'none';
 }
 function setResult(r) {
   state.currentResult = r;
@@ -3378,6 +3409,7 @@ function saveMatch() {
     myTiebreak: document.getElementById('myTiebreak').value,
     oppTiebreak: document.getElementById('oppTiebreak').value,
     memo: document.getElementById('matchMemo').value.trim(),
+    racketUsed: document.getElementById('matchRacket').value || '',
   };
 
   if (state.editingMatchId) {
@@ -3424,6 +3456,7 @@ function saveMatch() {
   document.getElementById('myTiebreak').value = '';
   document.getElementById('oppTiebreak').value = '';
   document.getElementById('matchMemo').value = '';
+  document.getElementById('matchRacket').value = '';
   // 피클볼 점수 방식 초기화 불필요 (UI 제거됨)
   togglePartner();
   closeMatchForm();
@@ -3467,6 +3500,12 @@ function _matchCardHTML(m) {
     ${m.memo ? `<div style="margin-top:8px;font-size:11px;border-top:1px solid var(--border);padding-top:8px;">
       ${m.memo.startsWith('[') ? `<span style="background:rgba(124,106,247,.15);color:var(--accent);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;">🏆 ${m.memo}</span>` : `<span style="color:var(--text-muted);">📝 ${escHtml(m.memo)}</span>`}
     </div>` : ''}
+    ${m.racketUsed ? (function(){
+      const p = state.profile || {};
+      const rName = m.racketUsed === 'racket1' ? (p.racket || 'R1') : (p.racket2 || 'R2');
+      const rNum  = m.racketUsed === 'racket1' ? 1 : 2;
+      return `<div style="margin-top:6px;font-size:10px;color:var(--text-muted);border-top:1px solid var(--border);padding-top:6px;">🎾 R${rNum} ${escHtml(rName)}</div>`;
+    })() : ''}
   </div>`;
 }
 
@@ -3573,6 +3612,20 @@ function toggleMatchForm() {
   if (arrow) arrow.textContent = isOpen ? '▼' : '▲';
   if (header) header.querySelector('span:first-child').textContent = isOpen ? '➕ 새 경기 입력' : '✖ 닫기';
 }
+
+// 라켓 선택 드롭다운 옵션을 실제 라켓명으로 업데이트
+function updateMatchRacketOptions() {
+  const sel = document.getElementById('matchRacket');
+  if (!sel) return;
+  const p = state.profile || {};
+  const r1 = p.racket  ? `라켓 1 (${p.racket})`  : '라켓 1';
+  const r2 = p.racket2 ? `라켓 2 (${p.racket2})` : '라켓 2';
+  sel.innerHTML = `
+    <option value="">선택 안 함</option>
+    <option value="racket1">${r1}</option>
+    <option value="racket2">${r2}</option>
+  `;
+}
 function openMatchForm() {
   const body  = document.getElementById('matchFormBody');
   const arrow = document.getElementById('matchForm-arrow');
@@ -3616,6 +3669,7 @@ function editMatch(id) {
   document.getElementById('myTiebreak').value = m.myTiebreak || '';
   document.getElementById('oppTiebreak').value = m.oppTiebreak || '';
   document.getElementById('matchMemo').value = m.memo || '';
+  document.getElementById('matchRacket').value = m.racketUsed || '';
 
   // UI 수정 모드
   document.getElementById('matchEditBanner').classList.add('active');
@@ -3651,6 +3705,7 @@ function cancelEditMatch() {
   document.getElementById('myTiebreak').value = '';
   document.getElementById('oppTiebreak').value = '';
   document.getElementById('matchMemo').value = '';
+  document.getElementById('matchRacket').value = '';
   togglePartner();
   closeMatchForm();
   setTodayDate();
