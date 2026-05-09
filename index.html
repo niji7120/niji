@@ -245,7 +245,7 @@
   /* ===== MATCH RESULT ===== */
   .match-result { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 14px; }
   .match-result-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; text-align: center; }
-  .match-score-input { width: 64px; text-align: center; font-size: 20px; font-weight: 700; }
+  .match-score-input { width: 80px; text-align: center; font-size: 20px; font-weight: 700; padding-left: 6px; padding-right: 6px; }
   .vs-text { font-size: 12px; color: var(--text-muted); font-weight: 700; }
   .match-result-winner { display: flex; gap: 8px; justify-content: center; }
   .winner-btn {
@@ -1029,6 +1029,7 @@
               <label class="form-label">날짜</label>
               <input type="date" class="form-input" id="matchDate">
             </div>
+            <input type="hidden" id="pickleballScoreType" value="rally">
             <div class="form-group">
               <label class="form-label">형식</label>
               <div class="format-toggle">
@@ -1128,14 +1129,88 @@
     <!-- ===== STATS PAGE ===== -->
     <div class="page" id="page-stats">
       <div class="page-header">통계</div>
-      <div class="page-sub">
-        나의
-        <select id="sportType" onchange="updateSportType()" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--accent);font-weight:700;padding:2px 8px;font-size:13px;outline:none;cursor:pointer;">
-          <option value="badminton">배드민턴</option>
-          <option value="tennis">테니스</option>
-        </select>
-        기록
+      <div class="page-sub" style="margin-bottom:0;">나의 경기 기록</div>
+
+      <!-- 종목 선택 탭 (SVG 라켓 아이콘) -->
+      <div id="sportTabWrap" style="display:flex;gap:8px;justify-content:center;margin:12px 0 4px;">
+        <!-- 배드민턴 -->
+        <button id="tab-badminton" onclick="selectSportTab('badminton')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 배드민턴 라켓 헤드 -->
+            <ellipse cx="13" cy="13" rx="10" ry="10" stroke="currentColor" stroke-width="2.2" fill="none"/>
+            <!-- 라켓 줄 (가로) -->
+            <line x1="4" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="4" y1="13" x2="22" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="4" y1="16" x2="22" y2="16" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <!-- 라켓 줄 (세로) -->
+            <line x1="9"  y1="3" x2="9"  y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="13" y1="3" x2="13" y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="17" y1="3" x2="17" y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <!-- 손잡이 -->
+            <line x1="20" y1="20" x2="32" y2="33" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            <!-- 셔틀콕 -->
+            <circle cx="5" cy="30" r="2.2" fill="currentColor" opacity="0.7"/>
+            <line x1="5" y1="27.8" x2="3"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <line x1="5" y1="27.8" x2="5"  y2="21" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <line x1="5" y1="27.8" x2="7"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+          </svg>
+          <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">배드민턴</span>
+        </button>
+
+        <!-- 테니스 -->
+        <button id="tab-tennis" onclick="selectSportTab('tennis')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 테니스 라켓 헤드 (더 둥근 원형) -->
+            <ellipse cx="14" cy="13" rx="11" ry="12" stroke="currentColor" stroke-width="2.2" fill="none"/>
+            <!-- 라켓 줄 (가로) -->
+            <line x1="4"  y1="9"  x2="24" y2="9"  stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="3"  y1="12" x2="25" y2="12" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="3"  y1="15" x2="25" y2="15" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="4"  y1="18" x2="24" y2="18" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <!-- 라켓 줄 (세로) -->
+            <line x1="9"  y1="2" x2="9"  y2="24" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="13" y1="1" x2="13" y2="25" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="17" y1="1" x2="17" y2="25" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="21" y1="2" x2="21" y2="24" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <!-- 손잡이 -->
+            <line x1="21" y1="22" x2="32" y2="34" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+            <!-- 테니스 공 -->
+            <circle cx="5" cy="31" r="3" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.8"/>
+            <path d="M3 29.5 Q5 31 7 29.5" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/>
+          </svg>
+          <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">테니스</span>
+        </button>
+
+        <!-- 피클볼 -->
+        <button id="tab-pickleball" onclick="selectSportTab('pickleball')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 피클볼 패들 (넓고 납작한 사각형 헤드) -->
+            <rect x="4" y="4" width="22" height="18" rx="5" stroke="currentColor" stroke-width="2.2" fill="none"/>
+            <!-- 패들 줄 (가로 3개) -->
+            <line x1="4"  y1="9"  x2="26" y2="9"  stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+            <line x1="4"  y1="13" x2="26" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+            <line x1="4"  y1="17" x2="26" y2="17" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+            <!-- 패들 줄 (세로 4개) -->
+            <line x1="10" y1="4" x2="10" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+            <line x1="15" y1="4" x2="15" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+            <line x1="20" y1="4" x2="20" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+            <!-- 손잡이 -->
+            <rect x="11" y="21" width="8" height="12" rx="3" stroke="currentColor" stroke-width="2.2" fill="none"/>
+            <!-- 피클볼 공 (구멍 뚫린) -->
+            <circle cx="30" cy="10" r="4" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.85"/>
+            <circle cx="29" cy="9"  r="0.8" fill="currentColor" opacity="0.6"/>
+            <circle cx="31" cy="11" r="0.8" fill="currentColor" opacity="0.6"/>
+            <circle cx="30" cy="12" r="0.8" fill="currentColor" opacity="0.6"/>
+          </svg>
+          <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">피클볼</span>
+        </button>
       </div>
+      <!-- 숨겨진 select (JS 호환용) -->
+      <select id="sportType" onchange="updateSportType()" style="display:none;">
+        <option value="badminton">배드민턴</option>
+        <option value="tennis">테니스</option>
+        <option value="pickleball">피클볼</option>
+      </select>
 
       <!-- 연승/연패 배너 -->
       <div id="streakBanner"></div>
@@ -1178,8 +1253,8 @@
         <div class="acc-body" id="accOpponent">
           <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
             <select onchange="renderOpponentStats()" id="oppSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
+              <option value="winrate" selected>승률 높은 순</option>
               <option value="games">경기 많은 순</option>
-              <option value="winrate">승률 높은 순</option>
               <option value="name">이름순</option>
             </select>
           </div>
@@ -1197,8 +1272,8 @@
         <div class="acc-body" id="accPartner">
           <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
             <select onchange="renderPartnerStats()" id="partnerSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
+              <option value="winrate" selected>승률 높은 순</option>
               <option value="games">경기 많은 순</option>
-              <option value="winrate">승률 높은 순</option>
               <option value="name">이름순</option>
             </select>
           </div>
@@ -1217,8 +1292,8 @@
         <div class="acc-body" id="accEnemy">
           <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
             <select onchange="renderEnemyTeamStats()" id="enemySort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
+              <option value="winrate" selected>승률 높은 순</option>
               <option value="games">경기 많은 순</option>
-              <option value="winrate">승률 높은 순</option>
               <option value="name">이름순</option>
             </select>
           </div>
@@ -1674,7 +1749,7 @@
         <div class="manual-items">
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>상단에서 <b>🏸 배드민턴 / 🎾 테니스</b> 종목을 전환할 수 있어요</span>
+            <span>상단에서 <b>🏸 배드민턴 / 🎾 테니스 / 🥒 피클볼</b> 종목을 전환할 수 있어요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -1965,7 +2040,7 @@ function _showLoginScreen() {
         NIJI STRING
       </div>
       <div style="font-size:13px;color:#7a7a95;text-align:center;margin-bottom:28px;">
-        테니스·배드민턴 경기기록 & 스트링 관리
+        테니스·배드민턴·피클볼 경기기록 & 스트링 관리
       </div>
       <button id="googleLoginBtn" onclick="signInWithGoogle()"
         style="display:flex;align-items:center;justify-content:center;gap:10px;
@@ -2231,9 +2306,9 @@ function _applyFirebaseData(parsed) {
 
     // 선수 필드 정규화
     state.players = state.players.map(function(p) {
+      if (!p || typeof p !== 'object') return null;
       if (!('gender' in p)) p.gender = '';
       if (!('grade'  in p)) p.grade  = '';
-      if (!p || typeof p !== 'object') return null;
       return {
         memo: '', clubs: [], age: '', career: '', hand: '', style: '',
         ...p,
@@ -2317,7 +2392,7 @@ function showPage(name) {
   // 스크롤 맨 위로 초기화
   const content = document.querySelector('.content');
   if (content) content.scrollTop = 0;
-  if (name === 'stats') renderStats();
+  if (name === 'stats') { renderStats(); syncSportTab(); }
   if (name === 'players') renderPlayers();
   if (name === 'match') { renderMatchList(); if (!state.editingMatchId) setTodayDate(); }
   if (name === 'stringing') renderStringing();
@@ -2621,10 +2696,10 @@ function tvBracketHTML(t) {
     html += `<div style="margin-bottom:20px;">
       <div style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:10px;">${round.gameNum}게임</div>`;
     round.games.forEach((game, gi) => {
-      const sA = game.scoreA !== null ? game.scoreA : '';
-      const sB = game.scoreB !== null ? game.scoreB : '';
-      const aW = game.scoreA !== null && game.scoreA > game.scoreB;
-      const bW = game.scoreB !== null && game.scoreB > game.scoreA;
+      const sA = game.scoreA !== null && game.scoreA !== undefined && game.scoreA !== '' ? game.scoreA : '';
+      const sB = game.scoreB !== null && game.scoreB !== undefined && game.scoreB !== '' ? game.scoreB : '';
+      const aW = game.scoreA !== null && game.scoreA !== undefined && game.scoreA !== '' && game.scoreB !== null && game.scoreB !== undefined && game.scoreB !== '' && game.scoreA > game.scoreB;
+      const bW = game.scoreB !== null && game.scoreB !== undefined && game.scoreB !== '' && game.scoreA !== null && game.scoreA !== undefined && game.scoreA !== '' && game.scoreB > game.scoreA;
       html += `<div style="background:var(--surface2);border-radius:12px;padding:14px;margin-bottom:8px;">
         <div style="display:flex;align-items:center;gap:8px;">
           <div style="flex:1;text-align:center;">
@@ -3246,6 +3321,8 @@ function saveMatch() {
   const matchData = {
     date,
     format,
+    sport: state.sportType || 'badminton',
+    pickleballScoreType: state.sportType === 'pickleball' ? (document.getElementById('pickleballScoreType').value || 'rally') : '',
     partner: format === 'doubles' ? document.getElementById('matchPartner').value.trim() : '',
     opponent,
     opponent2: format === 'doubles' ? document.getElementById('matchOpponent2').value.trim() : '',
@@ -3258,10 +3335,11 @@ function saveMatch() {
   };
 
   if (state.editingMatchId) {
-    // 수정 모드
+    // 수정 모드 - sport는 원래 값 유지 (종목 변경 불가)
     const idx = state.matches.findIndex(m => m.id === state.editingMatchId);
     if (idx !== -1) {
-      state.matches[idx] = { ...state.matches[idx], ...matchData };
+      const originalSport = state.matches[idx].sport;
+      state.matches[idx] = { ...state.matches[idx], ...matchData, sport: originalSport || matchData.sport };
     }
     state.editingMatchId = null;
     document.getElementById('matchEditBanner').classList.remove('active');
@@ -3310,14 +3388,17 @@ function _matchCardHTML(m) {
   const win = m.result === 'win';
   const scoreStr = (m.myScore !== '' && m.oppScore !== '') ? `${m.myScore} : ${m.oppScore}` : '';
   const tiebreakStr = (m.myTiebreak && m.myTiebreak !== '' && m.oppTiebreak && m.oppTiebreak !== '') ? ` (${m.myTiebreak}-${m.oppTiebreak})` : '';
-  const opps = [m.opponent, m.opponent2].filter(Boolean).join(', ');
+  const opps = [m.opponent, m.opponent2].filter(Boolean).map(escHtml).join(', ');
   const fmtLabel = m.format === 'doubles' ? '복식' : '단식';
+  // 종목 아이콘
+  const sportIcon = m.sport === 'pickleball' ? '🥒' : m.sport === 'tennis' ? '🎾' : '🏸';
+  const pickleLabel = (m.sport === 'pickleball' && m.pickleballScoreType === 'tennis') ? ' (테니스식)' : (m.sport === 'pickleball') ? ' (랠리)' : '';
   return `<div class="match-item">
     <div class="match-item-top">
       <span class="match-badge ${win ? 'badge-win' : 'badge-lose'}">${win ? '승리' : '패배'}</span>
       <div class="match-date">
         <span>${m.date}</span>
-        <span class="format-badge">${fmtLabel}</span>
+        <span class="format-badge">${sportIcon} ${fmtLabel}${pickleLabel}</span>
       </div>
       <div class="match-item-actions">
         <button class="match-edit-btn" onclick="editMatch(${m.id})" title="수정">
@@ -3403,7 +3484,7 @@ function showPlayerAC(inputEl, listId) {
   });
   if (!players.length) { list.style.display = 'none'; return; }
   list.innerHTML = players.map(p =>
-    `<div class="player-ac-item" onclick="selectPlayerAC('${inputEl.id}','${listId}','${p.name.replace(/'/g,"\'")}')">${p.name}</div>`
+    `<div class="player-ac-item" onclick="selectPlayerAC('${inputEl.id}','${listId}',this.dataset.name)" data-name="${p.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}">${escHtml(p.name)}</div>`
   ).join('');
   list.style.display = 'block';
 }
@@ -3536,15 +3617,47 @@ function deleteMatch(id) {
 }
 
 // ===== STATS =====
-function updateSportType() {
-  state.sportType = document.getElementById('sportType').value;
+function selectSportTab(sport) {
+  // 숨겨진 select 값도 동기화
+  const sel = document.getElementById('sportType');
+  if (sel) sel.value = sport;
+  state.sportType = sport;
+
+  // 탭 버튼 스타일 업데이트
+  ['badminton','tennis','pickleball'].forEach(s => {
+    const btn = document.getElementById('tab-' + s);
+    if (!btn) return;
+    if (s === sport) {
+      btn.style.borderColor = 'var(--accent)';
+      btn.style.background  = 'rgba(124,106,247,0.15)';
+      btn.style.color       = 'var(--accent)';
+    } else {
+      btn.style.borderColor = 'var(--border)';
+      btn.style.background  = 'var(--surface2)';
+      btn.style.color       = 'var(--text-muted)';
+    }
+  });
+
   save();
   renderStats();
-  showToast(`📊 ${state.sportType === 'badminton' ? '배드민턴' : '테니스'} 통계로 변경`);
+  const sportLabel = sport === 'badminton' ? '배드민턴' : sport === 'tennis' ? '테니스' : '🥒 피클볼';
+  showToast(`📊 ${sportLabel} 통계로 변경`);
+}
+
+function syncSportTab() {
+  // 통계 탭 열릴 때 현재 sportType에 맞게 탭 버튼 강조
+  selectSportTab(state.sportType || 'badminton');
+}
+
+function updateSportType() {
+  const sport = document.getElementById('sportType').value;
+  selectSportTab(sport);
 }
 
 function renderStats() {
-  const ms = state.matches;
+  // 현재 선택된 종목으로 필터링
+  const sport = state.sportType || 'badminton';
+  const ms = state.matches.filter(m => (m.sport || 'badminton') === sport);
   const total = ms.length;
   const wins = ms.filter(m => m.result === 'win').length;
   const loses = total - wins;
@@ -3556,22 +3669,23 @@ function renderStats() {
 
   renderStreak();
   // 열려있는 아코디언만 다시 렌더링
-  if (document.getElementById('accSummary').classList.contains('open')) renderSummaryCard();
-  if (document.getElementById('accMonthly').classList.contains('open')) renderMonthlyGraph();
-  if (document.getElementById('accOpponent').classList.contains('open')) renderOpponentStats();
-  if (document.getElementById('accPartner').classList.contains('open')) renderPartnerStats();
-  if (document.getElementById('accEnemy').classList.contains('open')) renderEnemyTeamStats();
+  if (document.getElementById('accSummary').classList.contains('open')) renderSummaryCard(ms);
+  if (document.getElementById('accMonthly').classList.contains('open')) renderMonthlyGraph(ms);
+  if (document.getElementById('accOpponent').classList.contains('open')) renderOpponentStats(ms);
+  if (document.getElementById('accPartner').classList.contains('open')) renderPartnerStats(ms);
+  if (document.getElementById('accEnemy').classList.contains('open')) renderEnemyTeamStats(ms);
 }
 
-function renderSummaryCard() {
+function renderSummaryCard(ms) {
   const el = document.getElementById('summaryCard');
   if (!el) return;
-  const ms = state.matches;
+  if (!ms) { const sport = state.sportType||'badminton'; ms = state.matches.filter(m=>(m.sport||'badminton')===sport); }
   if (!ms.length) { el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:8px 0;text-align:center;">경기를 입력하면 요약이 표시됩니다</div>'; return; }
 
-  // 이번달
+  // 이번달 (KST 기준)
   const now = new Date();
-  const thisYM = now.toISOString().slice(0, 7);
+  const kstNow = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+  const thisYM = kstNow.toISOString().slice(0, 7);
   const thisMonth = ms.filter(m => m.date.slice(0, 7) === thisYM);
   const tmW = thisMonth.filter(m => m.result === 'win').length;
   const tmRate = thisMonth.length ? Math.round(tmW / thisMonth.length * 100) : 0;
@@ -3606,9 +3720,10 @@ function renderSummaryCard() {
   ].join('');
 }
 
-function renderOpponentStats() {
+function renderOpponentStats(ms) {
+  if (!ms) { const sport = state.sportType||'badminton'; ms = state.matches.filter(m=>(m.sport||'badminton')===sport); }
   const om = {};
-  state.matches.forEach(m => {
+  ms.forEach(m => {
     [m.opponent, m.opponent2].filter(Boolean).forEach(name => {
       if (!om[name]) om[name] = { w: 0, l: 0 };
       if (m.result === 'win') om[name].w++; else om[name].l++;
@@ -3619,16 +3734,21 @@ function renderOpponentStats() {
     return;
   }
   const sortEl = document.getElementById('oppSort');
-  const sortBy = sortEl ? sortEl.value : 'games';
+  const sortBy = sortEl ? sortEl.value : 'winrate';
   const sorted = Object.entries(om).sort((a,b) => {
     if (sortBy === 'winrate') {
       const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
       const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      return rb - ra;
+      if (rb !== ra) return rb - ra;
+      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
+      if (tb !== ta) return tb - ta;
+      return a[0].localeCompare(b[0], 'ko');
     } else if (sortBy === 'name') {
       return a[0].localeCompare(b[0], 'ko');
     }
-    return (b[1].w+b[1].l) - (a[1].w+a[1].l);
+    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
+    if (diff !== 0) return diff;
+    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
   });
   document.getElementById('opponentCard').innerHTML = sorted.map(([name, d]) => {
     const total = d.w + d.l;
@@ -3649,8 +3769,9 @@ function renderOpponentStats() {
   }).join('');
 }
 
-function renderPartnerStats() {
-  const doubles = state.matches.filter(m => m.format === 'doubles' && m.partner);
+function renderPartnerStats(ms) {
+  if (!ms) { const sport = state.sportType||'badminton'; ms = state.matches.filter(m=>(m.sport||'badminton')===sport); }
+  const doubles = ms.filter(m => m.format === 'doubles' && m.partner);
   const pm = {};
   doubles.forEach(m => {
     if (!pm[m.partner]) pm[m.partner] = { w: 0, l: 0 };
@@ -3661,16 +3782,21 @@ function renderPartnerStats() {
     return;
   }
   const partnerSortEl = document.getElementById('partnerSort');
-  const partnerSortBy = partnerSortEl ? partnerSortEl.value : 'games';
+  const partnerSortBy = partnerSortEl ? partnerSortEl.value : 'winrate';
   const sorted = Object.entries(pm).sort((a,b) => {
     if (partnerSortBy === 'winrate') {
       const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
       const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      return rb - ra;
+      if (rb !== ra) return rb - ra;
+      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
+      if (tb !== ta) return tb - ta;
+      return a[0].localeCompare(b[0], 'ko');
     } else if (partnerSortBy === 'name') {
       return a[0].localeCompare(b[0], 'ko');
     }
-    return (b[1].w+b[1].l) - (a[1].w+a[1].l);
+    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
+    if (diff !== 0) return diff;
+    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
   });
   document.getElementById('partnerCard').innerHTML = sorted.map(([name, d]) => {
     const total = d.w + d.l;
@@ -3691,9 +3817,10 @@ function renderPartnerStats() {
   }).join('');
 }
 
-function renderEnemyTeamStats() {
+function renderEnemyTeamStats(ms) {
   // 복식 경기에서 상대팀 조합별 전적
-  const doubles = state.matches.filter(m => m.format === 'doubles' && m.opponent);
+  if (!ms) { const sport = state.sportType||'badminton'; ms = state.matches.filter(m=>(m.sport||'badminton')===sport); }
+  const doubles = ms.filter(m => m.format === 'doubles' && m.opponent);
   const tm = {};
   doubles.forEach(m => {
     const key = [m.opponent, m.opponent2].filter(Boolean).sort().join(' & ');
@@ -3705,16 +3832,21 @@ function renderEnemyTeamStats() {
     return;
   }
   const enemySortEl = document.getElementById('enemySort');
-  const enemySortBy = enemySortEl ? enemySortEl.value : 'games';
+  const enemySortBy = enemySortEl ? enemySortEl.value : 'winrate';
   const sorted = Object.entries(tm).sort((a,b) => {
     if (enemySortBy === 'winrate') {
       const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
       const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      return rb - ra;
+      if (rb !== ra) return rb - ra;
+      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
+      if (tb !== ta) return tb - ta;
+      return a[0].localeCompare(b[0], 'ko');
     } else if (enemySortBy === 'name') {
       return a[0].localeCompare(b[0], 'ko');
     }
-    return (b[1].w+b[1].l) - (a[1].w+a[1].l);
+    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
+    if (diff !== 0) return diff;
+    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
   });
   document.getElementById('enemyTeamCard').innerHTML = sorted.map(([team, d]) => {
     const total = d.w + d.l;
@@ -3847,7 +3979,10 @@ function togglePlayerClub(playerId, club) {
 function renderStreak() {
   const el = document.getElementById('streakBanner');
   if (!el) return;
-  const ms = [...state.matches].sort((a,b) => b.date.localeCompare(a.date));
+  const sport = state.sportType || 'badminton';
+  const ms = [...state.matches]
+    .filter(m => (m.sport || 'badminton') === sport)
+    .sort((a,b) => b.date.localeCompare(a.date));
   if (!ms.length) { el.innerHTML = ''; return; }
 
   let streak = 1, type = ms[0].result;
@@ -3877,17 +4012,18 @@ function renderStreak() {
   </div>`;
 }
 
-function renderMonthlyGraph() {
+function renderMonthlyGraph(ms) {
   const el = document.getElementById('monthlyGraph');
   if (!el) return;
-  if (!state.matches.length) {
+  if (!ms) { const sport = state.sportType||'badminton'; ms = state.matches.filter(m=>(m.sport||'badminton')===sport); }
+  if (!ms.length) {
     el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0;">경기를 입력하면 그래프가 표시됩니다</div>';
     return;
   }
 
   // 최근 6개월 데이터
   const monthMap = {};
-  state.matches.forEach(m => {
+  ms.forEach(m => {
     const ym = m.date.slice(0, 7); // "2025-03"
     if (!monthMap[ym]) monthMap[ym] = { w: 0, l: 0 };
     if (m.result === 'win') monthMap[ym].w++; else monthMap[ym].l++;
@@ -3929,11 +4065,13 @@ function toggleAcc(id) {
 
   // 열릴 때 해당 섹션 렌더링 (처음 열 때만 데이터 로드)
   if (!isOpen) {
-    if (id === 'accSummary') renderSummaryCard();
-    if (id === 'accMonthly') renderMonthlyGraph();
-    if (id === 'accOpponent') renderOpponentStats();
-    if (id === 'accPartner') renderPartnerStats();
-    if (id === 'accEnemy') renderEnemyTeamStats();
+    const sport = state.sportType || 'badminton';
+    const ms = state.matches.filter(m => (m.sport || 'badminton') === sport);
+    if (id === 'accSummary') renderSummaryCard(ms);
+    if (id === 'accMonthly') renderMonthlyGraph(ms);
+    if (id === 'accOpponent') renderOpponentStats(ms);
+    if (id === 'accPartner') renderPartnerStats(ms);
+    if (id === 'accEnemy') renderEnemyTeamStats(ms);
   }
 }
 
@@ -3950,9 +4088,12 @@ function renderStringing() {
   // 알림 렌더링
   const alertEl = document.getElementById('stringingAlert');
   if (state.lastStringDate) {
-    const last = new Date(state.lastStringDate);
+    // 날짜 파싱을 KST 기준으로 정확히
+    const [ly, lm, ld] = state.lastStringDate.split('-').map(Number);
+    const last = new Date(ly, lm - 1, ld);
     const now = new Date();
-    const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24));
     const intervalDays = (state.stringInterval || 3) * 30;
     const remaining = intervalDays - diffDays;
 
@@ -3989,7 +4130,7 @@ function renderStringing() {
 
   // 히스토리 렌더링
   const listEl = document.getElementById('stringingHistoryList');
-  const hist = [...(state.stringingHistory || [])].sort((a,b) => b.date.localeCompare(a.date));
+  const hist = [...(state.stringingHistory || [])].filter(h => h && h.date).sort((a,b) => b.date.localeCompare(a.date));
   if (!hist.length) {
     listEl.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:12px 0 8px;">교체 이력이 없습니다</div>';
   } else {
@@ -4491,7 +4632,12 @@ function deletePlayer(id) {
 
 // ===== BACKUP =====
 function exportData() {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  var exportState = JSON.parse(JSON.stringify(state));
+  delete exportState.currentResult;
+  delete exportState._matchPage;
+  delete exportState.editingMatchId;
+  if (exportState.profile) exportState.profile.photo = ''; // 사진은 용량이 커서 제외
+  const blob = new Blob([JSON.stringify(exportState, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `niji-backup-${getTodayStr()}.json`;
@@ -4589,7 +4735,7 @@ function renderTnList() {
       const fmtLabel = t.format === 'doubles' ? '복식' : '단식';
       const fmtColor = t.format === 'doubles' ? 'rgba(124,106,247,.15)' : 'rgba(247,106,200,.15)';
       const fmtTextColor = t.format === 'doubles' ? 'var(--accent)' : 'var(--accent2)';
-      const done = (t.bracket || []).every(r => r.games.every(g => g.winner));
+      const done = (t.bracket || []).filter(r => r.name !== '3·4위전').every(r => r.games.every(g => g.winner));
       return `<div style="background:var(--surface);border-radius:12px;padding:16px;margin-bottom:12px;">
         <div onclick="tnOpen(${t.id})" style="cursor:pointer;margin-bottom:10px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -5042,10 +5188,14 @@ function tnConfirmWinner(tid, ri, gi, side) {
   const game = t.bracket[ri].games[gi];
   const sa = window._tnScoreSA || 0;
   const sb = window._tnScoreSB || 0;
-  // 점수가 입력됐으면 저장
+  // 점수가 하나라도 입력됐으면(0이어도 기록으로 봄, 하지만 둘 다 0이면 미입력으로 간주)
   if (sa > 0 || sb > 0) {
     game.scoreA = sa;
     game.scoreB = sb;
+  } else {
+    // 둘 다 0이면 점수 없음으로 처리
+    game.scoreA = '';
+    game.scoreB = '';
   }
   tnCloseScoreModal();
   tnSetWinner(tid, ri, gi, side);
