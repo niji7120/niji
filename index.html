@@ -499,10 +499,11 @@
   /* ===== FORMAT TOGGLE BUTTONS ===== */
   .format-toggle { display: flex; gap: 8px; }
   .format-btn {
-    flex: 1; padding: 11px 14px; border-radius: 10px;
+    flex: 1; padding: 9px 10px; border-radius: 10px;
     border: 1.5px solid var(--border); background: var(--surface2);
     color: var(--text-muted); font-family: inherit; font-size: 14px;
     font-weight: 600; cursor: pointer; transition: all .2s; text-align: center;
+    white-space: nowrap; overflow: hidden;
   }
   .format-btn.selected {
     border-color: var(--accent); background: rgba(124,106,247,.15); color: var(--accent);
@@ -1040,9 +1041,9 @@
               </div>
               <div>
                 <div class="form-label" style="margin-bottom:4px;">형식</div>
-                <div class="format-toggle" style="height:42px;">
-                  <button class="format-btn" id="btnSingles" onclick="selectFormat('singles')" style="font-size:13px;">단식</button>
-                  <button class="format-btn" id="btnDoubles" onclick="selectFormat('doubles')" style="font-size:13px;">복식</button>
+                <div class="format-toggle">
+                  <button class="format-btn" id="btnSingles" onclick="selectFormat('singles')">단식</button>
+                  <button class="format-btn" id="btnDoubles" onclick="selectFormat('doubles')">복식</button>
                 </div>
                 <input type="hidden" id="matchFormat">
               </div>
