@@ -1010,6 +1010,13 @@
     <!-- ===== MATCH PAGE ===== -->
     <div class="page" id="page-match">
       <div class="page-header">경기기록</div>
+      <!-- 현재 등록 종목 표시 배지 -->
+      <div id="matchSportBadge" style="display:flex;align-items:center;justify-content:center;gap:8px;margin:4px 0 10px;padding:10px 16px;background:rgba(124,106,247,0.13);border:1.5px solid var(--accent);border-radius:12px;">
+        <span id="matchSportIcon" style="font-size:22px;"></span>
+        <span style="font-size:13px;color:var(--accent);font-weight:700;" id="matchSportLabel"></span>
+        <span style="font-size:12px;color:var(--text-muted);">종목으로 저장됩니다</span>
+        <button onclick="showPage('stats')" style="margin-left:auto;font-size:11px;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:8px;padding:3px 8px;cursor:pointer;">변경 →</button>
+      </div>
       <div class="page-sub">새 경기를 입력하세요</div>
 
       <!-- 경기 입력 폼 아코디언 -->
@@ -1029,7 +1036,6 @@
               <label class="form-label">날짜</label>
               <input type="date" class="form-input" id="matchDate">
             </div>
-            <input type="hidden" id="pickleballScoreType" value="rally">
             <div class="form-group">
               <label class="form-label">형식</label>
               <div class="format-toggle">
@@ -1133,30 +1139,6 @@
 
       <!-- 종목 선택 탭 (SVG 라켓 아이콘) -->
       <div id="sportTabWrap" style="display:flex;gap:8px;justify-content:center;margin:12px 0 4px;">
-        <!-- 배드민턴 -->
-        <button id="tab-badminton" onclick="selectSportTab('badminton')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;">
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- 배드민턴 라켓 헤드 -->
-            <ellipse cx="13" cy="13" rx="10" ry="10" stroke="currentColor" stroke-width="2.2" fill="none"/>
-            <!-- 라켓 줄 (가로) -->
-            <line x1="4" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="4" y1="13" x2="22" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="4" y1="16" x2="22" y2="16" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <!-- 라켓 줄 (세로) -->
-            <line x1="9"  y1="3" x2="9"  y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="13" y1="3" x2="13" y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="17" y1="3" x2="17" y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <!-- 손잡이 -->
-            <line x1="20" y1="20" x2="32" y2="33" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-            <!-- 셔틀콕 -->
-            <circle cx="5" cy="30" r="2.2" fill="currentColor" opacity="0.7"/>
-            <line x1="5" y1="27.8" x2="3"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-            <line x1="5" y1="27.8" x2="5"  y2="21" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-            <line x1="5" y1="27.8" x2="7"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-          </svg>
-          <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">배드민턴</span>
-        </button>
-
         <!-- 테니스 -->
         <button id="tab-tennis" onclick="selectSportTab('tennis')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;">
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1179,6 +1161,30 @@
             <path d="M3 29.5 Q5 31 7 29.5" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/>
           </svg>
           <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">테니스</span>
+        </button>
+
+        <!-- 배드민턴 -->
+        <button id="tab-badminton" onclick="selectSportTab('badminton')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 배드민턴 라켓 헤드 -->
+            <ellipse cx="13" cy="13" rx="10" ry="10" stroke="currentColor" stroke-width="2.2" fill="none"/>
+            <!-- 라켓 줄 (가로) -->
+            <line x1="4" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="4" y1="13" x2="22" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="4" y1="16" x2="22" y2="16" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <!-- 라켓 줄 (세로) -->
+            <line x1="9"  y1="3" x2="9"  y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="13" y1="3" x2="13" y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <line x1="17" y1="3" x2="17" y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+            <!-- 손잡이 -->
+            <line x1="20" y1="20" x2="32" y2="33" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            <!-- 셔틀콕 -->
+            <circle cx="5" cy="30" r="2.2" fill="currentColor" opacity="0.7"/>
+            <line x1="5" y1="27.8" x2="3"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <line x1="5" y1="27.8" x2="5"  y2="21" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <line x1="5" y1="27.8" x2="7"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+          </svg>
+          <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">배드민턴</span>
         </button>
 
         <!-- 피클볼 -->
@@ -1207,8 +1213,8 @@
       </div>
       <!-- 숨겨진 select (JS 호환용) -->
       <select id="sportType" onchange="updateSportType()" style="display:none;">
-        <option value="badminton">배드민턴</option>
         <option value="tennis">테니스</option>
+        <option value="badminton">배드민턴</option>
         <option value="pickleball">피클볼</option>
       </select>
 
@@ -1749,7 +1755,7 @@
         <div class="manual-items">
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>상단에서 <b>🏸 배드민턴 / 🎾 테니스 / 🥒 피클볼</b> 종목을 전환할 수 있어요</span>
+            <span>상단에서 <b>🏸 배드민턴 / 🎾 테니스 / 🏓 피클볼</b> 종목을 전환할 수 있어요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -2341,6 +2347,7 @@ function _initApp() {
   renderProfile();
   renderMatchList();
   setTodayDate();
+  updateMatchSportBadge();
 
   // 구글 계정 정보 표시
   var nameEl = document.getElementById('googleDisplayName');
@@ -2394,7 +2401,7 @@ function showPage(name) {
   if (content) content.scrollTop = 0;
   if (name === 'stats') { renderStats(); syncSportTab(); }
   if (name === 'players') renderPlayers();
-  if (name === 'match') { renderMatchList(); if (!state.editingMatchId) setTodayDate(); }
+  if (name === 'match') { renderMatchList(); if (!state.editingMatchId) setTodayDate(); updateMatchSportBadge(); }
   if (name === 'stringing') renderStringing();
   if (name === 'tournament') {
     // 탭 진입 시 현재 선택된 탭 기준으로 렌더링 (setTimeout으로 DOM이 먼저 표시되게 보장)
@@ -3322,7 +3329,7 @@ function saveMatch() {
     date,
     format,
     sport: state.sportType || 'badminton',
-    pickleballScoreType: state.sportType === 'pickleball' ? (document.getElementById('pickleballScoreType').value || 'rally') : '',
+    pickleballScoreType: '',
     partner: format === 'doubles' ? document.getElementById('matchPartner').value.trim() : '',
     opponent,
     opponent2: format === 'doubles' ? document.getElementById('matchOpponent2').value.trim() : '',
@@ -3356,7 +3363,8 @@ function saveMatch() {
         state.players.push({ id: state.nextPlayerId++, name: n, memo: '', clubs: [], age: '', career: '', hand: '', style: '' });
       }
     });
-    showToast('🏸 경기 저장 완료!');
+    const _sportIcon = state.sportType === 'tennis' ? '🎾' : state.sportType === 'pickleball' ? '🏓' : '🏸';
+    showToast(_sportIcon + ' 경기 저장 완료!');
   }
 
   save();
@@ -3377,6 +3385,7 @@ function saveMatch() {
   document.getElementById('myTiebreak').value = '';
   document.getElementById('oppTiebreak').value = '';
   document.getElementById('matchMemo').value = '';
+  // 피클볼 점수 방식 초기화 불필요 (UI 제거됨)
   togglePartner();
   closeMatchForm();
   renderMatchList();
@@ -3391,8 +3400,8 @@ function _matchCardHTML(m) {
   const opps = [m.opponent, m.opponent2].filter(Boolean).map(escHtml).join(', ');
   const fmtLabel = m.format === 'doubles' ? '복식' : '단식';
   // 종목 아이콘
-  const sportIcon = m.sport === 'pickleball' ? '🥒' : m.sport === 'tennis' ? '🎾' : '🏸';
-  const pickleLabel = (m.sport === 'pickleball' && m.pickleballScoreType === 'tennis') ? ' (테니스식)' : (m.sport === 'pickleball') ? ' (랠리)' : '';
+  const sportIcon = m.sport === 'pickleball' ? sportIconHTML('pickleball', 14) : (m.sport === 'tennis' ? '🎾' : '🏸');
+  const pickleLabel = '';
   return `<div class="match-item">
     <div class="match-item-top">
       <span class="match-badge ${win ? 'badge-win' : 'badge-lose'}">${win ? '승리' : '패배'}</span>
@@ -3430,7 +3439,8 @@ function renderMatchList() {
   if (!todayEl || !pastEl) return;
 
   if (!state.matches || !state.matches.length) {
-    todayEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🏸</div><div class="empty-text">아직 경기 기록이 없어요</div></div>';
+    const _emptyIcon = state.sportType === 'pickleball' ? sportIconHTML('pickleball', 40) : (state.sportType === 'tennis' ? '🎾' : '🏸');
+    todayEl.innerHTML = `<div class="empty-state"><div class="empty-icon">${_emptyIcon}</div><div class="empty-text">아직 경기 기록이 없어요</div></div>`;
     pastEl.innerHTML = '';
     if (countEl) countEl.textContent = '';
     return;
@@ -3443,7 +3453,8 @@ function renderMatchList() {
   if (todayMatches.length) {
     todayEl.innerHTML = todayMatches.map(_matchCardHTML).join('');
   } else {
-    todayEl.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:10px 0 4px;">오늘 경기 기록이 없어요</div>';
+    const _emptyIcon2 = state.sportType === 'pickleball' ? sportIconHTML('pickleball', 16) : (state.sportType === 'tennis' ? '🎾' : '🏸');
+    todayEl.innerHTML = `<div style="color:var(--text-muted);font-size:13px;padding:10px 0 4px;">${_emptyIcon2} 오늘 경기 기록이 없어요</div>`;
   }
 
   // 이전 경기 (드롭다운 내부)
@@ -3640,8 +3651,71 @@ function selectSportTab(sport) {
 
   save();
   renderStats();
-  const sportLabel = sport === 'badminton' ? '배드민턴' : sport === 'tennis' ? '테니스' : '🥒 피클볼';
+  updateMatchSportBadge();
+  const sportLabel = sport === 'badminton' ? '배드민턴' : sport === 'tennis' ? '테니스' : '피클볼';
   showToast(`📊 ${sportLabel} 통계로 변경`);
+}
+
+// 피클볼 패들 SVG (이모지 대체용)
+const PICKLEBALL_SVG = `<svg width="22" height="22" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;display:inline-block;">
+  <rect x="4" y="4" width="22" height="18" rx="5" stroke="currentColor" stroke-width="2.2" fill="none"/>
+  <line x1="4" y1="9" x2="26" y2="9" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <line x1="4" y1="13" x2="26" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <line x1="4" y1="17" x2="26" y2="17" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <line x1="10" y1="4" x2="10" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <line x1="15" y1="4" x2="15" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <line x1="20" y1="4" x2="20" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <rect x="11" y="21" width="8" height="12" rx="3" stroke="currentColor" stroke-width="2.2" fill="none"/>
+  <circle cx="30" cy="10" r="4" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.85"/>
+  <circle cx="29" cy="9" r="0.8" fill="currentColor" opacity="0.6"/>
+  <circle cx="31" cy="11" r="0.8" fill="currentColor" opacity="0.6"/>
+  <circle cx="30" cy="12" r="0.8" fill="currentColor" opacity="0.6"/>
+</svg>`;
+
+// 종목별 아이콘 HTML 반환 (피클볼은 SVG, 나머지는 이모지)
+function sportIconHTML(sport, size) {
+  if (sport === 'pickleball') {
+    const s = size || 22;
+    return `<svg width="${s}" height="${s}" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;display:inline-block;">
+  <rect x="4" y="4" width="22" height="18" rx="5" stroke="currentColor" stroke-width="2.2" fill="none"/>
+  <line x1="4" y1="9" x2="26" y2="9" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <line x1="4" y1="13" x2="26" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <line x1="4" y1="17" x2="26" y2="17" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <line x1="10" y1="4" x2="10" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <line x1="15" y1="4" x2="15" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <line x1="20" y1="4" x2="20" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+  <rect x="11" y="21" width="8" height="12" rx="3" stroke="currentColor" stroke-width="2.2" fill="none"/>
+  <circle cx="30" cy="10" r="4" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.85"/>
+  <circle cx="29" cy="9" r="0.8" fill="currentColor" opacity="0.6"/>
+  <circle cx="31" cy="11" r="0.8" fill="currentColor" opacity="0.6"/>
+  <circle cx="30" cy="12" r="0.8" fill="currentColor" opacity="0.6"/>
+</svg>`;
+  }
+  return sport === 'tennis' ? '🎾' : '🏸';
+}
+
+function updateMatchSportBadge() {
+  const sport = state.sportType || 'badminton';
+  const labelMap = { tennis: '테니스', badminton: '배드민턴', pickleball: '피클볼' };
+  const iconEl  = document.getElementById('matchSportIcon');
+  const labelEl = document.getElementById('matchSportLabel');
+  if (iconEl) {
+    if (sport === 'pickleball') {
+      iconEl.textContent = '';
+      iconEl.innerHTML = sportIconHTML('pickleball', 26);
+    } else {
+      iconEl.textContent = sport === 'tennis' ? '🎾' : '🏸';
+    }
+  }
+  if (labelEl) labelEl.textContent = labelMap[sport] || '배드민턴';
+  // 단식/복식 버튼 아이콘도 종목에 맞게 업데이트
+  const btnS = document.getElementById('btnSingles');
+  const btnD = document.getElementById('btnDoubles');
+  if (btnS) {
+    if (sport === 'pickleball') btnS.innerHTML = sportIconHTML('pickleball', 16) + ' 단식';
+    else btnS.innerHTML = (sport === 'tennis' ? '🎾' : '🏸') + ' 단식';
+  }
+  if (btnD) btnD.innerHTML = '🤝 복식';
 }
 
 function syncSportTab() {
