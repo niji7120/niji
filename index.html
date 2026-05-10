@@ -1669,6 +1669,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       공유
     </button>
+    <button class="nav-btn" onclick="showPage('stringing')" id="nav-stringing">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>
+      스트링
+    </button>
   </nav>
 </div>
 
@@ -2492,6 +2496,8 @@ function _initApp() {
   renderMatchList();
   setTodayDate();
   updateMatchSportBadge();
+  renderPlayers();
+  renderStringing();
 
   // 구글 계정 정보 표시
   var nameEl = document.getElementById('googleDisplayName');
@@ -2849,8 +2855,8 @@ function tvBracketHTML(t) {
     round.games.forEach((game, gi) => {
       const sA = game.scoreA !== null && game.scoreA !== undefined && game.scoreA !== '' ? game.scoreA : '';
       const sB = game.scoreB !== null && game.scoreB !== undefined && game.scoreB !== '' ? game.scoreB : '';
-      const aW = game.scoreA !== null && game.scoreA !== undefined && game.scoreA !== '' && game.scoreB !== null && game.scoreB !== undefined && game.scoreB !== '' && game.scoreA > game.scoreB;
-      const bW = game.scoreB !== null && game.scoreB !== undefined && game.scoreB !== '' && game.scoreA !== null && game.scoreA !== undefined && game.scoreA !== '' && game.scoreB > game.scoreA;
+      const aW = game.scoreA !== null && game.scoreA !== undefined && game.scoreA !== '' && game.scoreB !== null && game.scoreB !== undefined && game.scoreB !== '' && Number(game.scoreA) > Number(game.scoreB);
+      const bW = game.scoreB !== null && game.scoreB !== undefined && game.scoreB !== '' && game.scoreA !== null && game.scoreA !== undefined && game.scoreA !== '' && Number(game.scoreB) > Number(game.scoreA);
       html += `<div style="background:var(--surface2);border-radius:12px;padding:14px;margin-bottom:8px;">
         <div style="display:flex;align-items:center;gap:8px;">
           <div style="flex:1;text-align:center;">
@@ -2935,6 +2941,7 @@ function tvSyncToMatch(t, ri, gi) {
     id: existIdx >= 0 ? state.matches[existIdx].id : state.nextMatchId++,
     date: t.date,
     format: 'doubles',
+    sport: state.sportType || 'tennis',
     partner,
     opponent,
     opponent2,
@@ -2963,8 +2970,8 @@ function tvRankingHTML(t) {
       stats[p].gf+=gf; stats[p].ga+=ga;
       if(win) stats[p].w++; else if(lose) stats[p].l++; else stats[p].d++;
     });
-    add(g.teamA,g.scoreA,g.scoreB,g.scoreA>g.scoreB,g.scoreA<g.scoreB);
-    add(g.teamB,g.scoreB,g.scoreA,g.scoreB>g.scoreA,g.scoreB<g.scoreA);
+    add(g.teamA,g.scoreA,g.scoreB,Number(g.scoreA)>Number(g.scoreB),Number(g.scoreA)<Number(g.scoreB));
+    add(g.teamB,g.scoreB,g.scoreA,Number(g.scoreB)>Number(g.scoreA),Number(g.scoreB)<Number(g.scoreA));
   }));
   const ranked = Object.entries(stats)
     .map(([name,s])=>({name,...s,pt:s.w*2+s.d,diff:s.gf-s.ga}))
@@ -3663,7 +3670,7 @@ function showPlayerAC(inputEl, listId) {
   });
   if (!players.length) { list.style.display = 'none'; return; }
   list.innerHTML = players.map(p =>
-    `<div class="player-ac-item" onclick="selectPlayerAC('${inputEl.id}','${listId}',this.dataset.name)" data-name="${p.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}">${escHtml(p.name)}</div>`
+    `<div class="player-ac-item" onclick="selectPlayerAC('${inputEl.id}','${listId}',this.dataset.name)" data-name="${p.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}">${escHtml(p.name)}</div>`
   ).join('');
   list.style.display = 'block';
 }
@@ -3923,8 +3930,8 @@ function updateMatchSportBadge() {
   const btnD = document.getElementById('btnDoubles');
   const _singleIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="12" cy="7" r="4"/><path d="M12 13c-5 0-8 2.5-8 4v1h16v-1c0-1.5-3-4-8-4z"/></svg>';
   const _doubleIcon = '<svg width="22" height="16" viewBox="0 0 32 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="10" cy="7" r="4"/><path d="M10 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/><circle cx="22" cy="7" r="4"/><path d="M22 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/></svg>';
-  if (btnS) { btnS.style.display='inline-flex'; btnS.style.alignItems='center'; btnS.style.justifyContent='center'; btnS.style.gap='6px'; btnS.innerHTML = _singleIcon + ' 단식'; }
-  if (btnD) { btnD.style.display='inline-flex'; btnD.style.alignItems='center'; btnD.style.justifyContent='center'; btnD.style.gap='6px'; btnD.innerHTML = _doubleIcon + ' 복식'; }
+  if (btnS) { const _wasSelectedS = btnS.classList.contains('selected'); btnS.style.display='inline-flex'; btnS.style.alignItems='center'; btnS.style.justifyContent='center'; btnS.style.gap='6px'; btnS.innerHTML = _singleIcon + ' 단식'; if (_wasSelectedS) btnS.classList.add('selected'); }
+  if (btnD) { const _wasSelectedD = btnD.classList.contains('selected'); btnD.style.display='inline-flex'; btnD.style.alignItems='center'; btnD.style.justifyContent='center'; btnD.style.gap='6px'; btnD.innerHTML = _doubleIcon + ' 복식'; if (_wasSelectedD) btnD.classList.add('selected'); }
 }
 
 function syncSportTab() {
@@ -4437,8 +4444,8 @@ function renderStringing() {
   const nsdEl = document.getElementById('newStringDate');
   if (lsdEl) lsdEl.value = state.lastStringDate || '';
   if (siEl)  siEl.value  = state.stringInterval || 3;
-  // 새 교체 날짜 기본값
-  if (nsdEl && !nsdEl.value) {
+  // 새 교체 날짜 기본값 (항상 오늘로 설정)
+  if (nsdEl) {
     nsdEl.value = getTodayStr();
   }
 
@@ -4845,7 +4852,7 @@ function showPlayerDetail(playerId) {
       <div class="pd-section-title">🏠 클럽</div>
       <div class="club-assign-btns" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
         <button class="club-assign-btn none-btn${pClubs.length===0?' selected':''}" onclick="clearPlayerClubs(${player.id});showPlayerDetail(${player.id})" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:${pClubs.length===0?'rgba(124,106,247,.18)':'var(--surface2)'};color:${pClubs.length===0?'var(--accent)':'var(--text-muted)'};cursor:pointer;">없음</button>
-        ${state.clubs.map(c => `<button class="club-assign-btn${pClubs.includes(c)?' selected':''}" onclick="togglePlayerClub(${player.id},'${escHtml(c)}');showPlayerDetail(${player.id})" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid ${pClubs.includes(c)?'var(--accent)':'var(--border)'};background:${pClubs.includes(c)?'rgba(124,106,247,.18)':'var(--surface2)'};color:${pClubs.includes(c)?'var(--accent)':'var(--text-muted)'};cursor:pointer;">${escHtml(c)}</button>`).join('')}
+        ${state.clubs.map(c => `<button class="club-assign-btn${pClubs.includes(c)?' selected':''}" data-pid="${player.id}" data-club="${escHtml(c).replace(/'/g,'&#39;')}" onclick="togglePlayerClub(parseInt(this.dataset.pid),this.dataset.club);showPlayerDetail(parseInt(this.dataset.pid))" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid ${pClubs.includes(c)?'var(--accent)':'var(--border)'};background:${pClubs.includes(c)?'rgba(124,106,247,.18)':'var(--surface2)'};color:${pClubs.includes(c)?'var(--accent)':'var(--text-muted)'};cursor:pointer;">${escHtml(c)}</button>`).join('')}
       </div>
     </div>` : '';
 
@@ -5896,9 +5903,10 @@ function tnSyncToMatch(t, ri, gi) {
   const opponent = inA ? bName : aName;
   const memo = `[${t.name}] ${t.bracket[ri].name} #${gi+1}`;
   const matchData = {
-    id: state.nextMatchId++,
+    id: 0,
     date: t.date,
     format: t.format,
+    sport: state.sportType || 'tennis',
     partner: '',
     opponent,
     opponent2: '',
@@ -5910,8 +5918,13 @@ function tnSyncToMatch(t, ri, gi) {
     memo,
   };
   const existIdx = state.matches.findIndex(m => m.memo === memo);
-  if (existIdx >= 0) state.matches[existIdx] = matchData;
-  else state.matches.unshift(matchData);
+  if (existIdx >= 0) {
+    matchData.id = state.matches[existIdx].id; // 기존 ID 유지
+    state.matches[existIdx] = matchData;
+  } else {
+    matchData.id = state.nextMatchId++;
+    state.matches.unshift(matchData);
+  }
   save();
 }
 
