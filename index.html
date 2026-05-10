@@ -2925,7 +2925,7 @@ function tvSyncToMatch(t, ri, gi) {
   const opponent = oppTeam[0] || '';
   const opponent2 = oppTeam[1] || '';
 
-  const result = myScore > oppScore ? 'win' : myScore < oppScore ? 'lose' : 'win';
+  const result = Number(myScore) > Number(oppScore) ? 'win' : Number(myScore) < Number(oppScore) ? 'lose' : 'win';
 
   // 기존 대회 기록 찾기 (같은 대회+라운드+게임)
   const matchMemo = `[${t.name}] ${t.rounds[ri].gameNum}게임`;
@@ -3580,7 +3580,7 @@ function _matchCardHTML(m) {
       <div class="match-team" style="font-size:12px;">${opps}</div>
     </div>
     ${m.memo ? `<div style="margin-top:8px;font-size:11px;border-top:1px solid var(--border);padding-top:8px;">
-      ${m.memo.startsWith('[') ? `<span style="background:rgba(124,106,247,.15);color:var(--accent);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;">🏆 ${m.memo}</span>` : `<span style="color:var(--text-muted);">📝 ${escHtml(m.memo)}</span>`}
+      ${m.memo.startsWith('[') ? `<span style="background:rgba(124,106,247,.15);color:var(--accent);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;">🏆 ${escHtml(m.memo)}</span>` : `<span style="color:var(--text-muted);">📝 ${escHtml(m.memo)}</span>`}
     </div>` : ''}
     ${m.racketUsed ? (function(){
       const p = state.profile || {};
@@ -3743,8 +3743,13 @@ function editMatch(id) {
   document.getElementById('matchDate').value = m.date;
   selectFormat(m.format);
   document.getElementById('matchPartner').value = m.partner || '';
-  document.getElementById('matchOpponent').value = m.opponent || '';
-  document.getElementById('matchOpponent1').value = m.opponent || '';
+  if (m.format === 'doubles') {
+    document.getElementById('matchOpponent').value = '';
+    document.getElementById('matchOpponent1').value = m.opponent || '';
+  } else {
+    document.getElementById('matchOpponent').value = m.opponent || '';
+    document.getElementById('matchOpponent1').value = '';
+  }
   document.getElementById('matchOpponent2').value = m.opponent2 || '';
   setResult(m.result);
   document.getElementById('myScore').value = m.myScore || '';
@@ -4726,10 +4731,10 @@ function showPlayerDetail(playerId) {
   const clubEditHtml = state.clubs && state.clubs.length > 0 ? `
     <div class="card" style="margin-bottom:12px;">
       <div class="pd-section-title">🏠 클럽</div>
-      <select class="form-select" onchange="savePlayerClub(${player.id}, this.value)">
-        <option value="">클럽 없음</option>
-        ${clubOptions}
-      </select>
+      <div class="club-assign-btns" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
+        <button class="club-assign-btn none-btn${pClubs.length===0?' selected':''}" onclick="clearPlayerClubs(${player.id});showPlayerDetail(${player.id})" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:${pClubs.length===0?'rgba(124,106,247,.18)':'var(--surface2)'};color:${pClubs.length===0?'var(--accent)':'var(--text-muted)'};cursor:pointer;">없음</button>
+        ${state.clubs.map(c => `<button class="club-assign-btn${pClubs.includes(c)?' selected':''}" onclick="togglePlayerClub(${player.id},'${escHtml(c)}');showPlayerDetail(${player.id})" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid ${pClubs.includes(c)?'var(--accent)':'var(--border)'};background:${pClubs.includes(c)?'rgba(124,106,247,.18)':'var(--surface2)'};color:${pClubs.includes(c)?'var(--accent)':'var(--text-muted)'};cursor:pointer;">${escHtml(c)}</button>`).join('')}
+      </div>
     </div>` : '';
 
   document.getElementById('playerDetailContent').innerHTML = `
