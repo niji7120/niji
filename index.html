@@ -3564,11 +3564,11 @@ function _matchCardHTML(m) {
         <span class="format-badge">${sportIcon} ${fmtLabel}${pickleLabel}</span>
       </div>
       <div class="match-item-actions">
-        <button class="match-edit-btn" onclick="editMatch(${m.id})" title="수정">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        <button class="match-edit-btn" onclick="editMatch(${m.id})" title="수정" style="min-width:36px;min-height:36px;padding:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
-        <button class="match-delete-btn" onclick="deleteMatch(${m.id})" title="삭제">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        <button class="match-delete-btn" onclick="deleteMatch(${m.id})" title="삭제" style="min-width:36px;min-height:36px;padding:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
         </button>
       </div>
     </div>
@@ -3739,6 +3739,9 @@ function editMatch(id) {
   if (!m) return;
   state.editingMatchId = id;
 
+  // 먼저 경기 탭으로 이동 (editingMatchId 설정 후라 폼 초기화 안됨)
+  showPage('match');
+
   // 폼에 값 채우기
   document.getElementById('matchDate').value = m.date;
   selectFormat(m.format);
@@ -3759,17 +3762,19 @@ function editMatch(id) {
   document.getElementById('matchMemo').value = m.memo || '';
   document.getElementById('matchRacket').value = m.racketUsed || '';
 
-  // UI 수정 모드
+  // UI 수정 모드 배너
   document.getElementById('matchEditBanner').classList.add('active');
-  document.getElementById('matchFormTitle').textContent = '경기 수정';
-  document.getElementById('matchSaveBtn').textContent = '수정 저장';
+  const titleEl = document.getElementById('matchFormTitle');
+  const saveBtn = document.getElementById('matchSaveBtn');
+  if (titleEl) titleEl.textContent = '경기 수정';
+  if (saveBtn) saveBtn.textContent = '수정 저장';
 
-  // 폼 열기
+  // 폼 열고 스크롤 맨 위로 (약간 딜레이 줘서 DOM 안정화 후 실행)
   openMatchForm();
-  // 폼 상단으로 스크롤
-  const contentEl = document.querySelector('.content');
-  if (contentEl) contentEl.scrollTo({ top: 0, behavior: 'smooth' });
-  showPage('match');
+  setTimeout(function() {
+    const contentEl = document.querySelector('.content');
+    if (contentEl) contentEl.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 50);
 }
 
 function cancelEditMatch() {
@@ -3981,10 +3986,21 @@ function renderSummaryCard(ms) {
 function renderOpponentStats(ms) {
   if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
   const om = {};
+  // 각 상대별 전체 전적 + 복식 팀 조합별 세부 전적
   ms.forEach(m => {
     [m.opponent, m.opponent2].filter(Boolean).forEach(name => {
-      if (!om[name]) om[name] = { w: 0, l: 0 };
+      if (!om[name]) om[name] = { w: 0, l: 0, combos: {} };
       if (m.result === 'win') om[name].w++; else om[name].l++;
+      // 복식이면 팀 조합 기록
+      if (m.format === 'doubles') {
+        // 상대팀 조합
+        const oppTeam = [m.opponent, m.opponent2].filter(Boolean).sort().join(' & ');
+        // 내 파트너
+        const myPartner = m.partner || '';
+        const comboKey = oppTeam + '||' + myPartner;
+        if (!om[name].combos[comboKey]) om[name].combos[comboKey] = { w: 0, l: 0, oppTeam, myPartner };
+        if (m.result === 'win') om[name].combos[comboKey].w++; else om[name].combos[comboKey].l++;
+      }
     });
   });
   if (!Object.keys(om).length) {
@@ -4008,21 +4024,41 @@ function renderOpponentStats(ms) {
     if (diff !== 0) return diff;
     return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
   });
-  document.getElementById('opponentCard').innerHTML = sorted.map(([name, d]) => {
+  const myName = state.profile.name || '나';
+  document.getElementById('opponentCard').innerHTML = sorted.map(([name, d], idx) => {
     const total = d.w + d.l;
     const rate = Math.round(d.w / total * 100);
     const fillCls = rate >= 60 ? 'good' : rate < 40 ? 'bad' : '';
     const badge = rate >= 60 ? '<span class="enemy-badge weak">우세</span>' : rate < 40 ? '<span class="enemy-badge strong">열세</span>' : '';
-    return `<div class="matchup-row">
-      <div class="matchup-avatar">${name.charAt(0)}</div>
-      <div class="matchup-info">
-        <div class="matchup-name">${escHtml(name)}${badge}</div>
-        <div class="matchup-bar-wrap"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
-        <div class="matchup-sub">${total}전 · 내 승률 ${rate}%</div>
+    const hasCombos = Object.keys(d.combos).length > 0;
+    const comboId = 'opp-combo-' + idx;
+    // 팀 조합 세부 전적 HTML
+    const comboHtml = hasCombos ? Object.values(d.combos).sort((a,b) => (b.w+b.l)-(a.w+a.l)).map(c => {
+      const cTotal = c.w + c.l;
+      const cRate = Math.round(c.w / cTotal * 100);
+      const partnerStr = c.myPartner ? `${escHtml(myName)} & ${escHtml(c.myPartner)}` : escHtml(myName);
+      return `<div style="display:flex;align-items:flex-start;gap:6px;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span style="color:var(--text-muted);font-size:13px;flex-shrink:0;">└</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:1px;">상대: <span style="color:var(--text);font-weight:600;">${escHtml(c.oppTeam)}</span></div>
+          <div style="font-size:11px;color:var(--text-muted);">내팀: <span style="color:var(--accent);font-weight:600;">${partnerStr}</span></div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:${c.w>=c.l?'var(--success)':'var(--danger)'};flex-shrink:0;">${cTotal}전 ${c.w}승 ${c.l}패</div>
+      </div>`;
+    }).join('') : '';
+    return `<div class="matchup-row" style="flex-direction:column;align-items:stretch;cursor:${hasCombos?'pointer':'default'};" ${hasCombos?`onclick="document.getElementById('${comboId}').style.display=document.getElementById('${comboId}').style.display==='none'?'block':'none';this.querySelector('.opp-toggle-arrow').textContent=document.getElementById('${comboId}').style.display==='none'?'▼':'▲'"`:''}>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="matchup-avatar">${name.charAt(0)}</div>
+        <div class="matchup-info" style="flex:1;">
+          <div class="matchup-name">${escHtml(name)}${badge}${hasCombos?'<span class="opp-toggle-arrow" style="font-size:10px;color:var(--text-muted);margin-left:6px;">▼</span>':''}</div>
+          <div class="matchup-bar-wrap"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
+          <div class="matchup-sub">${total}전 · 내 승률 ${rate}%</div>
+        </div>
+        <div class="matchup-score">
+          <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}승 ${d.l}패</div>
+        </div>
       </div>
-      <div class="matchup-score">
-        <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}승 ${d.l}패</div>
-      </div>
+      ${hasCombos ? `<div id="${comboId}" style="display:none;margin-top:8px;padding:4px 8px 0;background:rgba(124,106,247,.05);border-radius:8px;border:1px solid var(--border);">${comboHtml}</div>` : ''}
     </div>`;
   }).join('');
 }
@@ -4076,14 +4112,18 @@ function renderPartnerStats(ms) {
 }
 
 function renderEnemyTeamStats(ms) {
-  // 복식 경기에서 상대팀 조합별 전적
+  // 복식 경기에서 상대팀 조합별 전적 (내 파트너 정보 포함)
   if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
   const doubles = ms.filter(m => m.format === 'doubles' && m.opponent);
   const tm = {};
   doubles.forEach(m => {
-    const key = [m.opponent, m.opponent2].filter(Boolean).sort().join(' & ');
-    if (!tm[key]) tm[key] = { w: 0, l: 0 };
-    if (m.result === 'win') tm[key].w++; else tm[key].l++;
+    const oppTeamKey = [m.opponent, m.opponent2].filter(Boolean).sort().join(' & ');
+    if (!tm[oppTeamKey]) tm[oppTeamKey] = { w: 0, l: 0, partners: {} };
+    if (m.result === 'win') tm[oppTeamKey].w++; else tm[oppTeamKey].l++;
+    // 내 파트너별 세부 카운트
+    const partnerKey = m.partner || '__none__';
+    if (!tm[oppTeamKey].partners[partnerKey]) tm[oppTeamKey].partners[partnerKey] = { w: 0, l: 0 };
+    if (m.result === 'win') tm[oppTeamKey].partners[partnerKey].w++; else tm[oppTeamKey].partners[partnerKey].l++;
   });
   if (!Object.keys(tm).length) {
     document.getElementById('enemyTeamCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🆚</div><div class="empty-text">복식 경기를 입력하면<br>상대팀 데이터가 표시됩니다</div></div>';
@@ -4106,21 +4146,30 @@ function renderEnemyTeamStats(ms) {
     if (diff !== 0) return diff;
     return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
   });
+  const myName = state.profile.name || '나';
   document.getElementById('enemyTeamCard').innerHTML = sorted.map(([team, d]) => {
     const total = d.w + d.l;
     const rate = Math.round(d.w / total * 100);
     const fillCls = rate >= 60 ? 'good' : rate < 40 ? 'bad' : '';
     const badge = rate >= 60 ? '<span class="enemy-badge weak">우세</span>' : rate < 40 ? '<span class="enemy-badge strong">약점</span>' : '';
     const names = team.split(' & ');
+    // 내 파트너 요약: 가장 많이 함께한 파트너 표시
+    const partnerEntries = Object.entries(d.partners).sort((a,b) => (b[1].w+b[1].l)-(a[1].w+a[1].l));
+    const mainPartner = partnerEntries[0];
+    const partnerLabel = mainPartner && mainPartner[0] !== '__none__'
+      ? `내 파트너: <span style="color:var(--accent);font-weight:700;">${escHtml(mainPartner[0])}</span>와 주로 (${mainPartner[1].w+mainPartner[1].l}전)`
+      : `내 파트너: <span style="color:var(--text-muted);">단독 출전</span>`;
     return `<div class="enemy-team-row">
       <div style="display:flex;gap:4px;flex-shrink:0;">
         <div class="matchup-avatar" style="width:28px;height:28px;font-size:12px;">${names[0].charAt(0)}</div>
         ${names[1] ? `<div class="matchup-avatar" style="width:28px;height:28px;font-size:12px;">${names[1].charAt(0)}</div>` : ''}
       </div>
       <div class="enemy-team-names" style="flex:1;min-width:0;margin:0 8px;">
+        <div style="font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;">상대팀</div>
         <div class="enemy-team-main">${escHtml(team)}${badge}</div>
         <div class="matchup-bar-wrap" style="margin-top:4px;"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
         <div class="enemy-team-sub">${total}전 · 내 승률 ${rate}%</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">🤝 ${partnerLabel}</div>
       </div>
       <div class="matchup-score">
         <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}승 ${d.l}패</div>
@@ -4675,11 +4724,22 @@ function showPlayerDetail(playerId) {
         const isWin = m.result === 'win';
         const score = m.myScore != null ? `${m.myScore} : ${m.oppScore}` : '';
         const fmt = m.format === 'doubles' ? '복식' : '단식';
+        const isDoubles = m.format === 'doubles';
+        // 복식이면 파트너 & 상대팀 정보 추가
+        let doublesInfo = '';
+        if (isDoubles) {
+          const partnerStr = m.partner ? `파트너: <span style="color:var(--accent);font-weight:700;">${escHtml(m.partner)}</span>` : '';
+          const oppTeam = [m.opponent, m.opponent2].filter(Boolean).map(escHtml).join(' & ');
+          const oppStr = oppTeam ? `상대팀: <span style="color:var(--danger);font-weight:600;">${oppTeam}</span>` : '';
+          const parts = [partnerStr, oppStr].filter(Boolean).join(' · ');
+          if (parts) doublesInfo = `<div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${parts}</div>`;
+        }
         return `<div class="player-match-row">
           <div class="player-match-badge ${isWin ? 'W' : 'L'}">${isWin ? 'W' : 'L'}</div>
           <div class="player-match-info">
             <div class="player-match-date">${m.date} · ${fmt}</div>
             <div class="player-match-score">${score ? score + ' ' : ''}vs ${escHtml(player.name)}</div>
+            ${doublesInfo}
           </div>
         </div>`;
       }).join('')
