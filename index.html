@@ -1006,6 +1006,74 @@
         </div>
       </div>
       <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
+
+      <!-- 종목 선택 카드 -->
+      <div style="padding:14px 16px 0;">
+        <div class="card" style="padding:14px 16px;">
+          <div class="card-title" style="margin-bottom:10px;">🎮 종목 선택</div>
+          <div style="display:flex;gap:8px;">
+
+            <!-- 테니스 -->
+            <button id="pf-tab-tennis" onclick="selectSportTab('tennis')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;color:var(--text-muted);">
+              <svg width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="14" cy="13" rx="11" ry="12" stroke="currentColor" stroke-width="2.2" fill="none"/>
+                <line x1="4"  y1="9"  x2="24" y2="9"  stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="3"  y1="12" x2="25" y2="12" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="3"  y1="15" x2="25" y2="15" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="4"  y1="18" x2="24" y2="18" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="9"  y1="2" x2="9"  y2="24" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="13" y1="1" x2="13" y2="25" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="17" y1="1" x2="17" y2="25" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="21" y1="2" x2="21" y2="24" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="21" y1="22" x2="32" y2="34" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+                <circle cx="5" cy="31" r="3" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.8"/>
+                <path d="M3 29.5 Q5 31 7 29.5" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/>
+              </svg>
+              <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">테니스</span>
+            </button>
+
+            <!-- 배드민턴 -->
+            <button id="pf-tab-badminton" onclick="selectSportTab('badminton')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;color:var(--text-muted);">
+              <svg width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="13" cy="13" rx="10" ry="10" stroke="currentColor" stroke-width="2.2" fill="none"/>
+                <line x1="4" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="4" y1="13" x2="22" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="4" y1="16" x2="22" y2="16" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="9"  y1="3" x2="9"  y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="13" y1="3" x2="13" y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="17" y1="3" x2="17" y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
+                <line x1="20" y1="20" x2="32" y2="33" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="5" cy="30" r="2.2" fill="currentColor" opacity="0.7"/>
+                <line x1="5" y1="27.8" x2="3"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                <line x1="5" y1="27.8" x2="5"  y2="21" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                <line x1="5" y1="27.8" x2="7"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+              </svg>
+              <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">배드민턴</span>
+            </button>
+
+            <!-- 피클볼 -->
+            <button id="pf-tab-pickleball" onclick="selectSportTab('pickleball')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;color:var(--text-muted);">
+              <svg width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="22" height="18" rx="5" stroke="currentColor" stroke-width="2.2" fill="none"/>
+                <line x1="4"  y1="9"  x2="26" y2="9"  stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+                <line x1="4"  y1="13" x2="26" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+                <line x1="4"  y1="17" x2="26" y2="17" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+                <line x1="10" y1="4" x2="10" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+                <line x1="15" y1="4" x2="15" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+                <line x1="20" y1="4" x2="20" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+                <rect x="11" y="21" width="8" height="12" rx="3" stroke="currentColor" stroke-width="2.2" fill="none"/>
+                <circle cx="30" cy="10" r="4" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.85"/>
+                <circle cx="29" cy="9"  r="0.8" fill="currentColor" opacity="0.6"/>
+                <circle cx="31" cy="11" r="0.8" fill="currentColor" opacity="0.6"/>
+                <circle cx="30" cy="12" r="0.8" fill="currentColor" opacity="0.6"/>
+              </svg>
+              <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">피클볼</span>
+            </button>
+
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ===== MATCH PAGE ===== -->
@@ -1033,20 +1101,19 @@
               <button class="match-edit-cancel-btn" onclick="cancelEditMatch()">✕ 취소</button>
             </div>
 
-            <!-- 줄 1: 날짜 + 형식 -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-              <div>
-                <div class="form-label" style="margin-bottom:4px;">📅 날짜</div>
-                <input type="date" class="form-input" id="matchDate" style="padding:9px 10px;font-size:14px;">
+            <!-- 줄 1: 날짜 -->
+            <div style="margin-bottom:8px;">
+              <div class="form-label" style="margin-bottom:4px;">📅 날짜</div>
+              <input type="date" class="form-input" id="matchDate" style="padding:9px 10px;font-size:14px;">
+            </div>
+            <!-- 줄 1b: 형식 -->
+            <div style="margin-bottom:8px;">
+              <div class="form-label" style="margin-bottom:4px;">형식</div>
+              <div class="format-toggle" style="display:flex;gap:8px;">
+                <button class="format-btn" id="btnSingles" onclick="selectFormat('singles')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="12" cy="7" r="4"/><path d="M12 13c-5 0-8 2.5-8 4v1h16v-1c0-1.5-3-4-8-4z"/></svg> 단식</button>
+                <button class="format-btn" id="btnDoubles" onclick="selectFormat('doubles')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="22" height="16" viewBox="0 0 32 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="10" cy="7" r="4"/><path d="M10 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/><circle cx="22" cy="7" r="4"/><path d="M22 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/></svg> 복식</button>
               </div>
-              <div>
-                <div class="form-label" style="margin-bottom:4px;">형식</div>
-                <div class="format-toggle">
-                  <button class="format-btn" id="btnSingles" onclick="selectFormat('singles')">단식</button>
-                  <button class="format-btn" id="btnDoubles" onclick="selectFormat('doubles')">복식</button>
-                </div>
-                <input type="hidden" id="matchFormat">
-              </div>
+              <input type="hidden" id="matchFormat">
             </div>
 
             <!-- 줄 2: 단식 - 상대 1명 / 복식 - 파트너 표시 후 상대1+2 -->
@@ -1074,8 +1141,8 @@
                 <div>
                   <div class="form-label" style="margin-bottom:4px;">🆚 상대 1</div>
                   <div style="position:relative;">
-                    <input class="form-input" id="matchOpponent" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent')" style="padding:9px 10px;font-size:14px;">
-                    <div class="player-ac-list" id="ac-opponent" style="display:none;"></div>
+                    <input class="form-input" id="matchOpponent1" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent1')" style="padding:9px 10px;font-size:14px;">
+                    <div class="player-ac-list" id="ac-opponent1" style="display:none;"></div>
                   </div>
                 </div>
                 <div id="opponent2Group">
@@ -1102,17 +1169,29 @@
               <div>
                 <div class="form-label" style="margin-bottom:4px;">스코어 (선택)</div>
                 <div style="display:flex;align-items:center;gap:4px;">
-                  <input type="number" class="form-input" id="myScore" placeholder="나" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;flex:1;">
+                  <div style="display:flex;align-items:center;gap:3px;flex:1;">
+                    <input type="number" class="form-input" id="myScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;">
+                    <span style="font-size:10px;color:var(--text-muted);font-weight:700;white-space:nowrap;">나</span>
+                  </div>
                   <span style="font-size:11px;color:var(--text-muted);font-weight:700;">:</span>
-                  <input type="number" class="form-input" id="oppScore" placeholder="상대" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;flex:1;">
+                  <div style="display:flex;align-items:center;gap:3px;flex:1;">
+                    <input type="number" class="form-input" id="oppScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;">
+                    <span style="font-size:10px;color:var(--text-muted);font-weight:700;white-space:nowrap;">상대</span>
+                  </div>
                 </div>
               </div>
               <div>
                 <div class="form-label" style="margin-bottom:4px;">타이브레이크 (선택)</div>
                 <div style="display:flex;align-items:center;gap:4px;">
-                  <input type="number" class="form-input" id="myTiebreak" placeholder="나" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;flex:1;">
+                  <div style="display:flex;align-items:center;gap:3px;flex:1;">
+                    <input type="number" class="form-input" id="myTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;">
+                    <span style="font-size:10px;color:var(--text-muted);font-weight:700;white-space:nowrap;">나</span>
+                  </div>
                   <span style="font-size:11px;color:var(--text-muted);font-weight:700;">:</span>
-                  <input type="number" class="form-input" id="oppTiebreak" placeholder="상대" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;flex:1;">
+                  <div style="display:flex;align-items:center;gap:3px;flex:1;">
+                    <input type="number" class="form-input" id="oppTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:15px;font-weight:700;">
+                    <span style="font-size:10px;color:var(--text-muted);font-weight:700;white-space:nowrap;">상대</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2409,6 +2488,7 @@ function _initApp() {
     document.getElementById('sportType').value = state.sportType || 'tennis';
   }
   renderProfile();
+  syncSportTab();
   renderMatchList();
   setTodayDate();
   updateMatchSportBadge();
@@ -3390,7 +3470,7 @@ function setResult(r) {
 function saveMatch() {
   const date = document.getElementById('matchDate').value;
   const format = document.getElementById('matchFormat').value;
-  const opponent = document.getElementById('matchOpponent').value.trim();
+  const opponent = format === 'doubles' ? document.getElementById('matchOpponent1').value.trim() : document.getElementById('matchOpponent').value.trim();
   if (!date) { showToast('⚠️ 날짜를 입력하세요'); return; }
   if (!format) { showToast('⚠️ 형식을 선택하세요'); return; }
   if (!opponent) { showToast('⚠️ 상대를 입력하세요'); return; }
@@ -3450,6 +3530,7 @@ function saveMatch() {
   document.getElementById('btnSingles').classList.remove('selected');
   document.getElementById('btnDoubles').classList.remove('selected');
   document.getElementById('matchOpponent').value = '';
+  document.getElementById('matchOpponent1').value = '';
   document.getElementById('matchOpponent2').value = '';
   document.getElementById('matchPartner').value = '';
   document.getElementById('myScore').value = '';
@@ -3585,7 +3666,7 @@ function selectPlayerAC(inputId, listId, name) {
   if (list) list.style.display = 'none';
 }
 document.addEventListener('click', function(e) {
-  ['ac-partner','ac-opponent','ac-opponent2'].forEach(id => {
+  ['ac-partner','ac-opponent','ac-opponent1','ac-opponent2'].forEach(id => {
     const el = document.getElementById(id);
     if (el && !el.contains(e.target)) el.style.display = 'none';
   });
@@ -3663,6 +3744,7 @@ function editMatch(id) {
   selectFormat(m.format);
   document.getElementById('matchPartner').value = m.partner || '';
   document.getElementById('matchOpponent').value = m.opponent || '';
+  document.getElementById('matchOpponent1').value = m.opponent || '';
   document.getElementById('matchOpponent2').value = m.opponent2 || '';
   setResult(m.result);
   document.getElementById('myScore').value = m.myScore || '';
@@ -3699,6 +3781,7 @@ function cancelEditMatch() {
   document.getElementById('btnSingles').classList.remove('selected');
   document.getElementById('btnDoubles').classList.remove('selected');
   document.getElementById('matchOpponent').value = '';
+  document.getElementById('matchOpponent1').value = '';
   document.getElementById('matchOpponent2').value = '';
   document.getElementById('matchPartner').value = '';
   document.getElementById('myScore').value = '';
@@ -3729,19 +3812,21 @@ function selectSportTab(sport) {
   if (sel) sel.value = sport;
   state.sportType = sport;
 
-  // 탭 버튼 스타일 업데이트
+  // 탭 버튼 스타일 업데이트 (통계 탭 + 프로필 탭 모두)
   ['badminton','tennis','pickleball'].forEach(s => {
-    const btn = document.getElementById('tab-' + s);
-    if (!btn) return;
-    if (s === sport) {
-      btn.style.borderColor = 'var(--accent)';
-      btn.style.background  = 'rgba(124,106,247,0.15)';
-      btn.style.color       = 'var(--accent)';
-    } else {
-      btn.style.borderColor = 'var(--border)';
-      btn.style.background  = 'var(--surface2)';
-      btn.style.color       = 'var(--text-muted)';
-    }
+    ['tab-' + s, 'pf-tab-' + s].forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      if (s === sport) {
+        btn.style.borderColor = 'var(--accent)';
+        btn.style.background  = 'rgba(124,106,247,0.15)';
+        btn.style.color       = 'var(--accent)';
+      } else {
+        btn.style.borderColor = 'var(--border)';
+        btn.style.background  = 'var(--surface2)';
+        btn.style.color       = 'var(--text-muted)';
+      }
+    });
   });
 
   save();
@@ -3806,11 +3891,10 @@ function updateMatchSportBadge() {
   // 단식/복식 버튼 아이콘도 종목에 맞게 업데이트
   const btnS = document.getElementById('btnSingles');
   const btnD = document.getElementById('btnDoubles');
-  if (btnS) {
-    if (sport === 'pickleball') btnS.innerHTML = sportIconHTML('pickleball', 16) + ' 단식';
-    else btnS.innerHTML = (sport === 'tennis' ? '🎾' : '🏸') + ' 단식';
-  }
-  if (btnD) btnD.innerHTML = '🤝 복식';
+  const _singleIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="12" cy="7" r="4"/><path d="M12 13c-5 0-8 2.5-8 4v1h16v-1c0-1.5-3-4-8-4z"/></svg>';
+  const _doubleIcon = '<svg width="22" height="16" viewBox="0 0 32 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="10" cy="7" r="4"/><path d="M10 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/><circle cx="22" cy="7" r="4"/><path d="M22 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/></svg>';
+  if (btnS) { btnS.style.display='inline-flex'; btnS.style.alignItems='center'; btnS.style.justifyContent='center'; btnS.style.gap='6px'; btnS.innerHTML = _singleIcon + ' 단식'; }
+  if (btnD) { btnD.style.display='inline-flex'; btnD.style.alignItems='center'; btnD.style.justifyContent='center'; btnD.style.gap='6px'; btnD.innerHTML = _doubleIcon + ' 복식'; }
 }
 
 function syncSportTab() {
