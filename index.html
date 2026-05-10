@@ -2925,7 +2925,7 @@ function tvSyncToMatch(t, ri, gi) {
   const opponent = oppTeam[0] || '';
   const opponent2 = oppTeam[1] || '';
 
-  const result = Number(myScore) > Number(oppScore) ? 'win' : Number(myScore) < Number(oppScore) ? 'lose' : 'win';
+  const result = Number(myScore) > Number(oppScore) ? 'win' : Number(myScore) < Number(oppScore) ? 'lose' : 'win'; // 동점은 승으로 처리(변경 불가시 현행유지)
 
   // 기존 대회 기록 찾기 (같은 대회+라운드+게임)
   const matchMemo = `[${t.name}] ${t.rounds[ri].gameNum}게임`;
@@ -3037,6 +3037,7 @@ function genHanul(players, numGames) {
 
 function showToast(msg) {
   const t = document.getElementById('toast');
+  if (!t) return;
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
@@ -3100,7 +3101,7 @@ const PROFILE_FIELDS = [
 function renderProfile() {
   if (!state.profile) state.profile = {};
   const p = state.profile;
-  const name = p.name || '선수';
+  const name = (p.name && p.name.trim()) ? p.name.trim() : '선수';
   const initial = name.charAt(0).toUpperCase();
 
   // 상단 아바타 버튼
@@ -3392,14 +3393,13 @@ function pfDebounceSave(key, value) {
 
 function saveProfileField(key, value) {
   state.profile[key] = typeof value === 'string' ? value.trim() : value;
-  if (!state.profile.name) state.profile.name = '선수';
   state.profile.photo = state.profile.photo || '';
   // 스트링교체일 변경 시 lastStringDate도 동기화
   if (key === 'stringDate') {
     state.lastStringDate = state.profile[key];
   }
   save();
-  const p = state.profile; const name = p.name || '선수';
+  const p = state.profile; const name = (p.name && p.name.trim()) ? p.name.trim() : '선수';
   const nameRow = document.getElementById('profileNameBig');
   if (nameRow) nameRow.innerHTML = `
     <span class="pf-club-tag">${p.club ? escHtml(p.club.toUpperCase()) : ''}</span>
@@ -3495,14 +3495,21 @@ function saveMatch() {
 
   if (state.editingMatchId) {
     // 수정 모드 - sport는 원래 값 유지 (종목 변경 불가)
-    const idx = state.matches.findIndex(m => m.id === state.editingMatchId);
+    const editId = state.editingMatchId;
+    const idx = state.matches.findIndex(m => m.id === editId);
     if (idx !== -1) {
+      const originalId = state.matches[idx].id;
       const originalSport = state.matches[idx].sport;
-      state.matches[idx] = { ...state.matches[idx], ...matchData, sport: originalSport || matchData.sport };
+      state.matches[idx] = { ...state.matches[idx], ...matchData, id: originalId, sport: originalSport || matchData.sport };
+    } else {
+      showToast('❌ 수정할 경기를 찾지 못했어요');
+      state.editingMatchId = null;
+      return;
     }
     state.editingMatchId = null;
     document.getElementById('matchEditBanner').classList.remove('active');
-    document.getElementById('matchFormTitle').textContent = '새 경기';
+    const _titleEl = document.getElementById('matchFormTitle');
+    if (_titleEl) _titleEl.textContent = '새 경기';
     document.getElementById('matchSaveBtn').textContent = '경기 저장';
     showToast('✅ 경기 수정 완료!');
   } else {
@@ -3521,6 +3528,8 @@ function saveMatch() {
 
   save();
   state._matchPage = 0; // 저장 후 목록 첫 페이지로
+  // 폼 먼저 닫기
+  closeMatchForm();
   // 폼 초기화
   state.currentResult = null;
   document.getElementById('winBtn').className = 'winner-btn';
@@ -3541,7 +3550,6 @@ function saveMatch() {
   document.getElementById('matchRacket').value = '';
   // 피클볼 점수 방식 초기화 불필요 (UI 제거됨)
   togglePartner();
-  closeMatchForm();
   renderMatchList();
   setTodayDate();
   renderStringBanner();
@@ -3693,6 +3701,16 @@ function toggleMatchForm() {
   body.style.display = isOpen ? 'none' : 'block';
   if (arrow) arrow.textContent = isOpen ? '▼' : '▲';
   if (header) header.querySelector('span:first-child').textContent = isOpen ? '➕ 새 경기 입력' : '✖ 닫기';
+  // 폼 닫을 때 수정 모드 자동 해제
+  if (isOpen && state.editingMatchId) {
+    state.editingMatchId = null;
+    const banner = document.getElementById('matchEditBanner');
+    const titleEl = document.getElementById('matchFormTitle');
+    const saveBtn = document.getElementById('matchSaveBtn');
+    if (banner) banner.classList.remove('active');
+    if (titleEl) titleEl.textContent = '새 경기';
+    if (saveBtn) saveBtn.textContent = '경기 저장';
+  }
 }
 
 // 라켓 선택 드롭다운 옵션을 실제 라켓명으로 업데이트
@@ -3723,6 +3741,7 @@ function closeMatchForm() {
   const header = document.getElementById('matchFormAccHeader');
   if (!body) return;
   body.style.display = 'none';
+  body.classList.remove('open');
   if (arrow) arrow.textContent = '▼';
   if (header) header.querySelector('span:first-child').textContent = '➕ 새 경기 입력';
 }
@@ -3780,7 +3799,8 @@ function editMatch(id) {
 function cancelEditMatch() {
   state.editingMatchId = null;
   document.getElementById('matchEditBanner').classList.remove('active');
-  document.getElementById('matchFormTitle').textContent = '새 경기';
+  const _cancelTitleEl = document.getElementById('matchFormTitle');
+  if (_cancelTitleEl) _cancelTitleEl.textContent = '새 경기';
   document.getElementById('matchSaveBtn').textContent = '경기 저장';
   // 폼 초기화
   state.currentResult = null;
@@ -3908,8 +3928,26 @@ function updateMatchSportBadge() {
 }
 
 function syncSportTab() {
-  // 통계 탭 열릴 때 현재 sportType에 맞게 탭 버튼 강조
-  selectSportTab(state.sportType || 'tennis');
+  // 통계 탭 열릴 때 현재 sportType에 맞게 탭 버튼 강조 (저장/토스트 없이)
+  const sport = state.sportType || 'tennis';
+  const sel = document.getElementById('sportType');
+  if (sel) sel.value = sport;
+  ['badminton','tennis','pickleball'].forEach(s => {
+    ['tab-' + s, 'pf-tab-' + s].forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      if (s === sport) {
+        btn.style.borderColor = 'var(--accent)';
+        btn.style.background  = 'rgba(124,106,247,0.15)';
+        btn.style.color       = 'var(--accent)';
+      } else {
+        btn.style.borderColor = 'var(--border)';
+        btn.style.background  = 'var(--surface2)';
+        btn.style.color       = 'var(--text-muted)';
+      }
+    });
+  });
+  updateMatchSportBadge();
 }
 
 function updateSportType() {
@@ -3925,18 +3963,27 @@ function renderStats() {
   const wins = ms.filter(m => m.result === 'win').length;
   const loses = total - wins;
   const rate = total ? Math.round(wins / total * 100) : 0;
-  document.getElementById('st-total').textContent = total;
-  document.getElementById('st-win').textContent = wins;
-  document.getElementById('st-lose').textContent = loses;
-  document.getElementById('st-rate').textContent = rate + '%';
+  const stTotal = document.getElementById('st-total');
+  const stWin = document.getElementById('st-win');
+  const stLose = document.getElementById('st-lose');
+  const stRate = document.getElementById('st-rate');
+  if (stTotal) stTotal.textContent = total;
+  if (stWin) stWin.textContent = wins;
+  if (stLose) stLose.textContent = loses;
+  if (stRate) stRate.textContent = rate + '%';
 
   renderStreak();
   // 열려있는 아코디언만 다시 렌더링
-  if (document.getElementById('accSummary').classList.contains('open')) renderSummaryCard(ms);
-  if (document.getElementById('accMonthly').classList.contains('open')) renderMonthlyGraph(ms);
-  if (document.getElementById('accOpponent').classList.contains('open')) renderOpponentStats(ms);
-  if (document.getElementById('accPartner').classList.contains('open')) renderPartnerStats(ms);
-  if (document.getElementById('accEnemy').classList.contains('open')) renderEnemyTeamStats(ms);
+  const accSummary = document.getElementById('accSummary');
+  const accMonthly = document.getElementById('accMonthly');
+  const accOpponent = document.getElementById('accOpponent');
+  const accPartner = document.getElementById('accPartner');
+  const accEnemy = document.getElementById('accEnemy');
+  if (accSummary && accSummary.classList.contains('open')) renderSummaryCard(ms);
+  if (accMonthly && accMonthly.classList.contains('open')) renderMonthlyGraph(ms);
+  if (accOpponent && accOpponent.classList.contains('open')) renderOpponentStats(ms);
+  if (accPartner && accPartner.classList.contains('open')) renderPartnerStats(ms);
+  if (accEnemy && accEnemy.classList.contains('open')) renderEnemyTeamStats(ms);
 }
 
 function renderSummaryCard(ms) {
@@ -4385,15 +4432,19 @@ function toggleAcc(id) {
 
 function renderStringing() {
   // 날짜/인터벌 폼 채우기
-  document.getElementById('lastStringDate').value = state.lastStringDate || '';
-  document.getElementById('stringInterval').value = state.stringInterval || 3;
+  const lsdEl = document.getElementById('lastStringDate');
+  const siEl  = document.getElementById('stringInterval');
+  const nsdEl = document.getElementById('newStringDate');
+  if (lsdEl) lsdEl.value = state.lastStringDate || '';
+  if (siEl)  siEl.value  = state.stringInterval || 3;
   // 새 교체 날짜 기본값
-  if (!document.getElementById('newStringDate').value) {
-    document.getElementById('newStringDate').value = getTodayStr();
+  if (nsdEl && !nsdEl.value) {
+    nsdEl.value = getTodayStr();
   }
 
   // 알림 렌더링
   const alertEl = document.getElementById('stringingAlert');
+  if (!alertEl) return;
   if (state.lastStringDate) {
     // 날짜 파싱을 KST 기준으로 정확히
     const [ly, lm, ld] = state.lastStringDate.split('-').map(Number);
@@ -4437,6 +4488,7 @@ function renderStringing() {
 
   // 히스토리 렌더링
   const listEl = document.getElementById('stringingHistoryList');
+  if (!listEl) return;
   const hist = [...(state.stringingHistory || [])].filter(h => h && h.date).sort((a,b) => b.date.localeCompare(a.date));
   if (!hist.length) {
     listEl.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:12px 0 8px;">교체 이력이 없습니다</div>';
@@ -4876,6 +4928,7 @@ function showPlayerDetail(playerId) {
   document.getElementById('nav-players').classList.add('active');
 }
 function escHtml(s) {
+  if (s === null || s === undefined) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
@@ -4910,6 +4963,20 @@ function confirmEdit(id) {
     if (m.opponent === oldName) m.opponent = newName;
     if (m.opponent2 === oldName) m.opponent2 = newName;
     if (m.partner === oldName) m.partner = newName;
+  });
+  // 토너먼트 선수명도 업데이트
+  (state.tnTournaments || []).forEach(t => {
+    t.players = (t.players || []).map(n => n === oldName ? newName : n);
+    (t.bracket || []).forEach(r => {
+      (r.games || []).forEach(g => {
+        if (g.a === oldName) g.a = newName;
+        if (g.b === oldName) g.b = newName;
+        if (g.winner === 'a' && g.a === newName) {} // already updated
+      });
+    });
+  });
+  (state.tournaments || []).forEach(t => {
+    t.players = (t.players || []).map(n => n === oldName ? newName : n);
   });
   save();
   renderPlayers();
@@ -5053,7 +5120,7 @@ function renderTnList() {
       const fmtLabel = t.format === 'doubles' ? '복식' : '단식';
       const fmtColor = t.format === 'doubles' ? 'rgba(124,106,247,.15)' : 'rgba(247,106,200,.15)';
       const fmtTextColor = t.format === 'doubles' ? 'var(--accent)' : 'var(--accent2)';
-      const done = (t.bracket || []).filter(r => r.name !== '3·4위전').every(r => r.games.every(g => g.winner));
+      const done = (t.bracket || []).filter(r => r && r.name !== '3·4위전').every(r => r.games && r.games.every(g => g && g.winner));
       return `<div style="background:var(--surface);border-radius:12px;padding:16px;margin-bottom:12px;">
         <div onclick="tnOpen(${t.id})" style="cursor:pointer;margin-bottom:10px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
