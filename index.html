@@ -1221,18 +1221,15 @@
       <div class="section-title" style="margin-top:20px;">오늘 경기</div>
       <div id="matchListToday"></div>
 
-      <!-- 이전 경기 드롭다운 -->
-      <div class="acc-wrap" style="margin-top:10px;">
-        <button class="acc-header" onclick="toggleMatchHistory()">
-          <span>📋 이전 경기 기록</span>
-          <span style="display:flex;align-items:center;gap:6px;">
-            <span id="matchHistoryCount" style="font-size:11px;color:var(--text-muted);font-weight:400;"></span>
-            <span class="acc-arrow" id="matchHistory-arrow">▼</span>
-          </span>
-        </button>
-        <div class="acc-body" id="matchHistoryBody">
-          <div id="matchListPast"></div>
+      <!-- 이전 경기 월별 선택 -->
+      <div style="margin-top:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:13px;font-weight:700;color:var(--text);">📋 이전 경기 기록</span>
+          <span id="matchHistoryCount" style="font-size:11px;color:var(--text-muted);"></span>
         </div>
+        <select id="matchMonthSelect" onchange="onMatchMonthChange()" style="width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;margin-bottom:10px;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22/></svg>');background-repeat:no-repeat;background-position:right 12px center;">
+        </select>
+        <div id="matchListPast"></div>
       </div>
     </div>
 
@@ -1326,8 +1323,9 @@
       <div id="streakBanner"></div>
 
       <!-- ① 내 기록 요약 (항상 표시) -->
+      <div id="statsRangeNotice" style="text-align:center;font-size:11px;color:var(--accent);background:rgba(124,106,247,0.1);border-radius:8px;padding:5px 10px;margin-bottom:8px;">🏆 ATP 방식 · 최근 12개월 기준</div>
       <div class="stat-grid">
-        <div class="stat-box"><div class="stat-num" id="st-total">0</div><div class="stat-lbl">통산 경기</div></div>
+        <div class="stat-box"><div class="stat-num" id="st-total">0</div><div class="stat-lbl">경기수</div></div>
         <div class="stat-box"><div class="stat-num" id="st-win">0</div><div class="stat-lbl">승</div></div>
         <div class="stat-box"><div class="stat-num" id="st-lose">0</div><div class="stat-lbl">패</div></div>
         <div class="stat-box"><div class="stat-num" id="st-rate">0%</div><div class="stat-lbl">승률</div></div>
@@ -1346,7 +1344,7 @@
       <!-- ③ 월별 승률 드롭다운 -->
       <div class="acc-wrap">
         <button class="acc-header" onclick="toggleAcc('accMonthly')">
-          <span>📅 월별 승률</span><span class="acc-arrow" id="accMonthly-arrow">▼</span>
+          <span>📅 월별 승률 (12개월)</span><span class="acc-arrow" id="accMonthly-arrow">▼</span>
         </button>
         <div class="acc-body" id="accMonthly">
           <div class="monthly-graph-wrap" id="monthlyGraph">
@@ -1361,8 +1359,10 @@
           <span>⚔️ 상대 전적</span><span class="acc-arrow" id="accOpponent-arrow">▼</span>
         </button>
         <div class="acc-body" id="accOpponent">
-          <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
-            <select onchange="renderOpponentStats()" id="oppSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+            <input id="oppSearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderOpponentStats()"
+              style="flex:1;font-size:12px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+            <select onchange="window._oppShowAll=false;renderOpponentStats();" id="oppSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
               <option value="winrate" selected>승률 높은 순</option>
               <option value="games">경기 많은 순</option>
               <option value="name">이름순</option>
@@ -1380,8 +1380,10 @@
           <span>🤝 파트너 궁합</span><span class="acc-arrow" id="accPartner-arrow">▼</span>
         </button>
         <div class="acc-body" id="accPartner">
-          <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
-            <select onchange="renderPartnerStats()" id="partnerSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+            <input id="partnerSearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderPartnerStats()"
+              style="flex:1;font-size:12px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+            <select onchange="window._partnerShowAll=false;renderPartnerStats();" id="partnerSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
               <option value="winrate" selected>승률 높은 순</option>
               <option value="games">경기 많은 순</option>
               <option value="name">이름순</option>
@@ -1400,8 +1402,10 @@
           <span class="acc-arrow" id="accEnemy-arrow">▼</span>
         </button>
         <div class="acc-body" id="accEnemy">
-          <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
-            <select onchange="renderEnemyTeamStats()" id="enemySort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+            <input id="enemySearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderEnemyTeamStats()"
+              style="flex:1;font-size:12px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+            <select onchange="window._enemyShowAll=false;renderEnemyTeamStats();" id="enemySort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
               <option value="winrate" selected>승률 높은 순</option>
               <option value="games">경기 많은 순</option>
               <option value="name">이름순</option>
@@ -1802,11 +1806,11 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>라켓은 <b>2자루까지</b> 등록할 수 있어요. 라켓명·스트링·텐션을 각각 입력하세요</span>
+            <span>라켓은 <b>2자루까지</b> 등록할 수 있어요. 라켓명·스트링·텐션·교체일을 각각 입력하세요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>스트링교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 표시돼요</span>
+            <span>라켓별로 <b>스트링 교체일</b>을 입력하면 프로필 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요. 색상으로 교체 시기를 알 수 있어요 🟢 양호 / 🟡 주의 / 🔴 교체 권장</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -1880,7 +1884,11 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>상대 전적 · 파트너 궁합 · 상대팀 상성</b>을 각각 분석해줘요</span>
+            <span><b>상대 전적 · 파트너 궁합 · 상대팀 상성</b>을 각각 분석해줘요. 기본 상위 5명만 표시되고, <b>[더보기]</b> 버튼으로 전체를 볼 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>각 섹션 상단 <b>🔍 검색창</b>에서 이름 또는 초성으로 바로 찾을 수 있어요. 예: 'ㄱㄷㅎ' 입력 → '김동현' 필터</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -1963,8 +1971,31 @@
 
       <div class="manual-section">
         <div class="manual-sec-header">
+          <span class="manual-sec-icon">🎾</span>
+          <span class="manual-sec-title">6. 스트링 관리</span>
+        </div>
+        <div class="manual-items">
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>프로필 탭에서 라켓별 <b>스트링 교체일</b>을 입력하면 스트링 상태 배너가 표시돼요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>배너 색상으로 교체 시기를 한눈에 확인할 수 있어요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>경기 입력 시 어떤 라켓으로 했는지 선택하면 <b>라켓별 게임 수</b>를 따로 카운트해줘요</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="manual-divider"></div>
+
+      <div class="manual-section">
+        <div class="manual-sec-header">
           <span class="manual-sec-icon">💾</span>
-          <span class="manual-sec-title">6. 백업 & 복원</span>
+          <span class="manual-sec-title">7. 백업 & 복원</span>
         </div>
         <div class="manual-items">
           <div class="manual-item">
@@ -1991,7 +2022,7 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">⚠️</span>
-          <span class="manual-sec-title">7. 자주 묻는 질문</span>
+          <span class="manual-sec-title">8. 자주 묻는 질문</span>
         </div>
         <div class="manual-items">
           <div class="manual-item">
@@ -2018,7 +2049,7 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">💬</span>
-          <span class="manual-sec-title">8. 니지스트링 커뮤니티</span>
+          <span class="manual-sec-title">9. 니지스트링 커뮤니티</span>
         </div>
         <div class="manual-items">
           <div class="manual-item">
@@ -2091,6 +2122,7 @@ function save() {
     if (saveState.profile) saveState.profile.photo = '';
     delete saveState.currentResult;
     delete saveState._matchPage;
+    delete saveState._matchSelectedMonth;
     delete saveState.editingMatchId;
 
     var dbRef = _getDbRef();
@@ -3603,6 +3635,63 @@ function _matchCardHTML(m) {
   </div>`;
 }
 
+// 최근 6개월 YYYY-MM 배열 반환
+function getLast6Months() {
+  const months = [];
+  const now = new Date(new Date().getTime() + 9*60*60*1000); // KST
+  for (let i = 0; i < 6; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const ym = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    months.push(ym);
+  }
+  return months; // 최신순 [이번달, 지난달, ...]
+}
+
+function buildMatchMonthSelect() {
+  const sel = document.getElementById('matchMonthSelect');
+  if (!sel) return;
+  const months = getLast6Months();
+  const today = getTodayStr();
+  // 현재 선택값 유지
+  const cur = state._matchSelectedMonth || months[1] || months[0]; // 기본: 지난달
+  sel.innerHTML = months.map(ym => {
+    const [y, m] = ym.split('-');
+    const label = `${y}년 ${parseInt(m)}월`;
+    const cnt = (state.matches||[]).filter(mm => mm.date !== today && mm.date.slice(0,7) === ym).length;
+    return `<option value="${ym}"${ym===cur?' selected':''}>${label}  (${cnt}경기)</option>`;
+  }).join('');
+  // 6개월 이전 데이터 있으면 안내 문구
+  const cutoff = months[months.length-1]; // 6개월 전
+  const oldCount = (state.matches||[]).filter(mm => mm.date !== today && mm.date.slice(0,7) < cutoff).length;
+  if (oldCount > 0) {
+    sel.innerHTML += `<option disabled style="color:var(--text-muted);">── 6개월 이전 ${oldCount}개 기록 (통계에는 반영됨)</option>`;
+  }
+  if (!state._matchSelectedMonth) state._matchSelectedMonth = cur;
+}
+
+function onMatchMonthChange() {
+  const sel = document.getElementById('matchMonthSelect');
+  if (sel) state._matchSelectedMonth = sel.value;
+  renderMatchListPast();
+}
+
+function renderMatchListPast() {
+  const pastEl = document.getElementById('matchListPast');
+  const countEl = document.getElementById('matchHistoryCount');
+  if (!pastEl) return;
+  const today = getTodayStr();
+  const ym = state._matchSelectedMonth || getLast6Months()[1] || getLast6Months()[0];
+  const filtered = (state.matches||[])
+    .filter(m => m.date !== today && m.date.slice(0,7) === ym)
+    .sort((a,b) => b.date.localeCompare(a.date));
+  if (countEl) countEl.textContent = filtered.length ? `${filtered.length}경기` : '';
+  if (!filtered.length) {
+    pastEl.innerHTML = `<div style="color:var(--text-muted);font-size:13px;padding:16px 0;text-align:center;">이 달에 경기 기록이 없어요</div>`;
+    return;
+  }
+  pastEl.innerHTML = filtered.map(_matchCardHTML).join('');
+}
+
 function renderMatchList() {
   const today = getTodayStr();
   const todayEl = document.getElementById('matchListToday');
@@ -3619,7 +3708,6 @@ function renderMatchList() {
   }
 
   const todayMatches = state.matches.filter(m => m.date === today);
-  const pastMatches  = state.matches.filter(m => m.date !== today);
 
   // 오늘 경기
   if (todayMatches.length) {
@@ -3629,22 +3717,9 @@ function renderMatchList() {
     todayEl.innerHTML = `<div style="color:var(--text-muted);font-size:13px;padding:10px 0 4px;">${_emptyIcon2} 오늘 경기 기록이 없어요</div>`;
   }
 
-  // 이전 경기 (드롭다운 내부)
-  if (countEl) countEl.textContent = pastMatches.length ? `${pastMatches.length}개` : '';
-  const matchPage = state._matchPage || 0;
-  const pageSize = 20;
-  const paginated = pastMatches.slice(0, (matchPage + 1) * pageSize);
-  const hasMore = pastMatches.length > paginated.length;
-  pastEl.innerHTML = paginated.map(_matchCardHTML).join('');
-  if (hasMore) {
-    pastEl.innerHTML += `<button class="load-more-btn" onclick="loadMoreMatches()">
-      ⬇️ 더보기 (${pastMatches.length - paginated.length}개 남음)
-    </button>`;
-  }
-}
-function loadMoreMatches() {
-  state._matchPage = (state._matchPage || 0) + 1;
-  renderMatchList();
+  // 월별 드롭다운 + 이전 경기
+  buildMatchMonthSelect();
+  renderMatchListPast();
 }
 // ===== 초성 자동완성 =====
 const CHOSUNG = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
@@ -3749,14 +3824,7 @@ function closeMatchForm() {
   if (arrow) arrow.textContent = '▼';
   if (header) header.querySelector('span:first-child').textContent = '➕ 새 경기 입력';
 }
-function toggleMatchHistory() {
-  const body  = document.getElementById('matchHistoryBody');
-  const arrow = document.getElementById('matchHistory-arrow');
-  if (!body) return;
-  const isOpen = body.classList.contains('open');
-  body.classList.toggle('open', !isOpen);
-  if (arrow) arrow.classList.toggle('open', !isOpen);
-}
+
 function editMatch(id) {
   const m = state.matches.find(x => x.id === id);
   if (!m) return;
@@ -3959,10 +4027,30 @@ function updateSportType() {
   selectSportTab(sport);
 }
 
+function getRolling12MonthsCutoff() {
+  const now = new Date(new Date().getTime() + 9*60*60*1000); // KST
+  const y = now.getFullYear();
+  const m = now.getMonth(); // 0-based
+  // 12개월 전 같은 날
+  const cutoff = new Date(y - 1, m, now.getDate());
+  return cutoff.toISOString().slice(0,10); // YYYY-MM-DD
+}
+
 function renderStats() {
   // 현재 선택된 종목으로 필터링
   const sport = state.sportType || 'tennis';
-  const ms = state.matches.filter(m => (m.sport || 'tennis') === sport);
+  // ATP 방식: 최근 12개월(rolling 1년) 기준
+  const cutoff = getRolling12MonthsCutoff();
+  const ms = state.matches.filter(m => (m.sport || 'tennis') === sport && m.date >= cutoff);
+
+  // 안내 배너 날짜 업데이트
+  const noticeEl = document.getElementById('statsRangeNotice');
+  if (noticeEl) {
+    const [cy, cm, cd] = cutoff.split('-');
+    const today = getTodayStr();
+    const [ty, tm, td] = today.split('-');
+    noticeEl.textContent = `🏆 ATP 방식 · ${cy}.${cm}.${cd} ~ ${ty}.${tm}.${td} (최근 12개월)`;
+  }
   const total = ms.length;
   const wins = ms.filter(m => m.result === 'win').length;
   const loses = total - wins;
@@ -4034,19 +4122,18 @@ function renderSummaryCard(ms) {
   ].join('');
 }
 
+const OPP_PAGE_SIZE = 5;
+window._oppShowAll = false;
+
 function renderOpponentStats(ms) {
   if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
   const om = {};
-  // 각 상대별 전체 전적 + 복식 팀 조합별 세부 전적
   ms.forEach(m => {
     [m.opponent, m.opponent2].filter(Boolean).forEach(name => {
       if (!om[name]) om[name] = { w: 0, l: 0, combos: {} };
       if (m.result === 'win') om[name].w++; else om[name].l++;
-      // 복식이면 팀 조합 기록
       if (m.format === 'doubles') {
-        // 상대팀 조합
         const oppTeam = [m.opponent, m.opponent2].filter(Boolean).sort().join(' & ');
-        // 내 파트너
         const myPartner = m.partner || '';
         const comboKey = oppTeam + '||' + myPartner;
         if (!om[name].combos[comboKey]) om[name].combos[comboKey] = { w: 0, l: 0, oppTeam, myPartner };
@@ -4060,7 +4147,8 @@ function renderOpponentStats(ms) {
   }
   const sortEl = document.getElementById('oppSort');
   const sortBy = sortEl ? sortEl.value : 'winrate';
-  const sorted = Object.entries(om).sort((a,b) => {
+  const searchQ = (document.getElementById('oppSearch')||{}).value||'';
+  let sorted = Object.entries(om).sort((a,b) => {
     if (sortBy === 'winrate') {
       const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
       const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
@@ -4075,18 +4163,31 @@ function renderOpponentStats(ms) {
     if (diff !== 0) return diff;
     return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
   });
+  // 검색 필터 (초성 포함)
+  if (searchQ) {
+    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
+    sorted = sorted.filter(([name]) =>
+      isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
+    );
+    window._oppShowAll = true;
+  }
+  if (!sorted.length) {
+    document.getElementById('opponentCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">검색 결과가 없습니다</div></div>';
+    return;
+  }
+  const total = sorted.length;
+  const showAll = window._oppShowAll || searchQ;
+  const visible = showAll ? sorted : sorted.slice(0, OPP_PAGE_SIZE);
   const myName = state.profile.name || '나';
-  document.getElementById('opponentCard').innerHTML = sorted.map(([name, d], idx) => {
-    const total = d.w + d.l;
-    const rate = Math.round(d.w / total * 100);
+  const cards = visible.map(([name, d], idx) => {
+    const tot = d.w + d.l;
+    const rate = Math.round(d.w / tot * 100);
     const fillCls = rate >= 60 ? 'good' : rate < 40 ? 'bad' : '';
     const badge = rate >= 60 ? '<span class="enemy-badge weak">우세</span>' : rate < 40 ? '<span class="enemy-badge strong">열세</span>' : '';
     const hasCombos = Object.keys(d.combos).length > 0;
     const comboId = 'opp-combo-' + idx;
-    // 팀 조합 세부 전적 HTML
     const comboHtml = hasCombos ? Object.values(d.combos).sort((a,b) => (b.w+b.l)-(a.w+a.l)).map(c => {
       const cTotal = c.w + c.l;
-      const cRate = Math.round(c.w / cTotal * 100);
       const partnerStr = c.myPartner ? `${escHtml(myName)} & ${escHtml(c.myPartner)}` : escHtml(myName);
       return `<div style="display:flex;align-items:flex-start;gap:6px;padding:6px 0;border-bottom:1px solid var(--border);">
         <span style="color:var(--text-muted);font-size:13px;flex-shrink:0;">└</span>
@@ -4103,7 +4204,7 @@ function renderOpponentStats(ms) {
         <div class="matchup-info" style="flex:1;">
           <div class="matchup-name">${escHtml(name)}${badge}${hasCombos?'<span class="opp-toggle-arrow" style="font-size:10px;color:var(--text-muted);margin-left:6px;">▼</span>':''}</div>
           <div class="matchup-bar-wrap"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
-          <div class="matchup-sub">${total}전 · 내 승률 ${rate}%</div>
+          <div class="matchup-sub">${tot}전 · 내 승률 ${rate}%</div>
         </div>
         <div class="matchup-score">
           <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}승 ${d.l}패</div>
@@ -4112,7 +4213,15 @@ function renderOpponentStats(ms) {
       ${hasCombos ? `<div id="${comboId}" style="display:none;margin-top:8px;padding:4px 8px 0;background:rgba(124,106,247,.05);border-radius:8px;border:1px solid var(--border);">${comboHtml}</div>` : ''}
     </div>`;
   }).join('');
+  const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
+    ? `<button onclick="window._oppShowAll=true;renderOpponentStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}명 더 보기</button>`
+    : (showAll && total > OPP_PAGE_SIZE && !searchQ)
+    ? `<button onclick="window._oppShowAll=false;renderOpponentStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size:13px;cursor:pointer;">접기 ▲</button>`
+    : '';
+  document.getElementById('opponentCard').innerHTML = cards + moreBtn;
 }
+
+window._partnerShowAll = false;
 
 function renderPartnerStats(ms) {
   if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
@@ -4128,7 +4237,8 @@ function renderPartnerStats(ms) {
   }
   const partnerSortEl = document.getElementById('partnerSort');
   const partnerSortBy = partnerSortEl ? partnerSortEl.value : 'winrate';
-  const sorted = Object.entries(pm).sort((a,b) => {
+  const searchQ = (document.getElementById('partnerSearch')||{}).value||'';
+  let sorted = Object.entries(pm).sort((a,b) => {
     if (partnerSortBy === 'winrate') {
       const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
       const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
@@ -4143,9 +4253,23 @@ function renderPartnerStats(ms) {
     if (diff !== 0) return diff;
     return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
   });
-  document.getElementById('partnerCard').innerHTML = sorted.map(([name, d]) => {
-    const total = d.w + d.l;
-    const rate = Math.round(d.w / total * 100);
+  if (searchQ) {
+    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
+    sorted = sorted.filter(([name]) =>
+      isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
+    );
+    window._partnerShowAll = true;
+  }
+  if (!sorted.length) {
+    document.getElementById('partnerCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">검색 결과가 없습니다</div></div>';
+    return;
+  }
+  const total = sorted.length;
+  const showAll = window._partnerShowAll || searchQ;
+  const visible = showAll ? sorted : sorted.slice(0, OPP_PAGE_SIZE);
+  const cards = visible.map(([name, d]) => {
+    const tot = d.w + d.l;
+    const rate = Math.round(d.w / tot * 100);
     const fillCls = rate >= 60 ? 'good' : rate < 40 ? 'bad' : '';
     const emoji = rate >= 70 ? '🔥' : rate >= 50 ? '👍' : '😅';
     return `<div class="matchup-row">
@@ -4153,17 +4277,24 @@ function renderPartnerStats(ms) {
       <div class="matchup-info">
         <div class="matchup-name">${escHtml(name)} ${emoji}</div>
         <div class="matchup-bar-wrap"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
-        <div class="matchup-sub">${total}경기 함께 · 궁합 ${rate}%</div>
+        <div class="matchup-sub">${tot}경기 함께 · 궁합 ${rate}%</div>
       </div>
       <div class="matchup-score">
         <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}승 ${d.l}패</div>
       </div>
     </div>`;
   }).join('');
+  const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
+    ? `<button onclick="window._partnerShowAll=true;renderPartnerStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}명 더 보기</button>`
+    : (showAll && total > OPP_PAGE_SIZE && !searchQ)
+    ? `<button onclick="window._partnerShowAll=false;renderPartnerStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size:13px;cursor:pointer;">접기 ▲</button>`
+    : '';
+  document.getElementById('partnerCard').innerHTML = cards + moreBtn;
 }
 
+window._enemyShowAll = false;
+
 function renderEnemyTeamStats(ms) {
-  // 복식 경기에서 상대팀 조합별 전적 (내 파트너 정보 포함)
   if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
   const doubles = ms.filter(m => m.format === 'doubles' && m.opponent);
   const tm = {};
@@ -4171,7 +4302,6 @@ function renderEnemyTeamStats(ms) {
     const oppTeamKey = [m.opponent, m.opponent2].filter(Boolean).sort().join(' & ');
     if (!tm[oppTeamKey]) tm[oppTeamKey] = { w: 0, l: 0, partners: {} };
     if (m.result === 'win') tm[oppTeamKey].w++; else tm[oppTeamKey].l++;
-    // 내 파트너별 세부 카운트
     const partnerKey = m.partner || '__none__';
     if (!tm[oppTeamKey].partners[partnerKey]) tm[oppTeamKey].partners[partnerKey] = { w: 0, l: 0 };
     if (m.result === 'win') tm[oppTeamKey].partners[partnerKey].w++; else tm[oppTeamKey].partners[partnerKey].l++;
@@ -4182,7 +4312,8 @@ function renderEnemyTeamStats(ms) {
   }
   const enemySortEl = document.getElementById('enemySort');
   const enemySortBy = enemySortEl ? enemySortEl.value : 'winrate';
-  const sorted = Object.entries(tm).sort((a,b) => {
+  const searchQ = (document.getElementById('enemySearch')||{}).value||'';
+  let sorted = Object.entries(tm).sort((a,b) => {
     if (enemySortBy === 'winrate') {
       const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
       const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
@@ -4197,14 +4328,27 @@ function renderEnemyTeamStats(ms) {
     if (diff !== 0) return diff;
     return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
   });
+  if (searchQ) {
+    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
+    sorted = sorted.filter(([team]) =>
+      isChosung ? getChosung(team).startsWith(searchQ) : team.includes(searchQ)
+    );
+    window._enemyShowAll = true;
+  }
+  if (!sorted.length) {
+    document.getElementById('enemyTeamCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">검색 결과가 없습니다</div></div>';
+    return;
+  }
+  const total = sorted.length;
+  const showAll = window._enemyShowAll || searchQ;
+  const visible = showAll ? sorted : sorted.slice(0, OPP_PAGE_SIZE);
   const myName = state.profile.name || '나';
-  document.getElementById('enemyTeamCard').innerHTML = sorted.map(([team, d]) => {
-    const total = d.w + d.l;
-    const rate = Math.round(d.w / total * 100);
+  const cards = visible.map(([team, d]) => {
+    const tot = d.w + d.l;
+    const rate = Math.round(d.w / tot * 100);
     const fillCls = rate >= 60 ? 'good' : rate < 40 ? 'bad' : '';
     const badge = rate >= 60 ? '<span class="enemy-badge weak">우세</span>' : rate < 40 ? '<span class="enemy-badge strong">약점</span>' : '';
     const names = team.split(' & ');
-    // 내 파트너 요약: 가장 많이 함께한 파트너 표시
     const partnerEntries = Object.entries(d.partners).sort((a,b) => (b[1].w+b[1].l)-(a[1].w+a[1].l));
     const mainPartner = partnerEntries[0];
     const partnerLabel = mainPartner && mainPartner[0] !== '__none__'
@@ -4219,7 +4363,7 @@ function renderEnemyTeamStats(ms) {
         <div style="font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;">상대팀</div>
         <div class="enemy-team-main">${escHtml(team)}${badge}</div>
         <div class="matchup-bar-wrap" style="margin-top:4px;"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
-        <div class="enemy-team-sub">${total}전 · 내 승률 ${rate}%</div>
+        <div class="enemy-team-sub">${tot}전 · 내 승률 ${rate}%</div>
         <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">🤝 ${partnerLabel}</div>
       </div>
       <div class="matchup-score">
@@ -4227,6 +4371,12 @@ function renderEnemyTeamStats(ms) {
       </div>
     </div>`;
   }).join('');
+  const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
+    ? `<button onclick="window._enemyShowAll=true;renderEnemyTeamStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}팀 더 보기</button>`
+    : (showAll && total > OPP_PAGE_SIZE && !searchQ)
+    ? `<button onclick="window._enemyShowAll=false;renderEnemyTeamStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size:13px;cursor:pointer;">접기 ▲</button>`
+    : '';
+  document.getElementById('enemyTeamCard').innerHTML = cards + moreBtn;
 }
 
 function toggleRankingClubFilter(club) {
@@ -4387,7 +4537,7 @@ function renderMonthlyGraph(ms) {
     if (m.result === 'win') monthMap[ym].w++; else monthMap[ym].l++;
   });
 
-  const sorted = Object.keys(monthMap).sort().slice(-6);
+  const sorted = Object.keys(monthMap).sort().slice(-12);
   if (!sorted.length) return;
 
   const maxTotal = Math.max(...sorted.map(ym => monthMap[ym].w + monthMap[ym].l));
@@ -5024,6 +5174,7 @@ function exportData() {
   var exportState = JSON.parse(JSON.stringify(state));
   delete exportState.currentResult;
   delete exportState._matchPage;
+  delete exportState._matchSelectedMonth;
   delete exportState.editingMatchId;
   if (exportState.profile) exportState.profile.photo = ''; // 사진은 용량이 커서 제외
   const blob = new Blob([JSON.stringify(exportState, null, 2)], { type: 'application/json' });
