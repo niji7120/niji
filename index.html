@@ -3233,7 +3233,7 @@ function renderProfile() {
             <input type="date" class="pf-item-input" value="${escHtml(dVal)}"
               style="cursor:pointer;"
               onclick="try{this.showPicker()}catch(e){}"
-              onchange="saveProfileField('${dKey}',this.value);renderStringBanner()">
+              onchange="saveProfileField('${dKey}',this.value);saveProfileField('${dKey}Time',new Date().toISOString());renderStringBanner()">
           </div>
         </div>
       </div>
@@ -3285,17 +3285,30 @@ function renderStringBanner() {
   const tension2 = p.tension2 || '';
 
   // 교체일 이후 게임(매치) 수 계산 (라켓별)
-  function countGamesAfter(dateStr, racketKey) {
+  function countGamesAfter(dateStr, dateTimeStr, racketKey) {
     if (!dateStr) return 0;
     return (state.matches || []).filter(m => {
-      if (!m.date || m.date < dateStr) return false;
-      // racketUsed가 없거나 미선택이면 두 라켓 모두에 포함
+      if (!m.date) return false;
+      // 날짜가 교체일보다 이전이면 제외
+      if (m.date < dateStr) return false;
+      // 날짜가 교체일과 같은 날이면 → 시각 비교
+      if (m.date === dateStr) {
+        // 교체 시각이 있고, 경기 저장 시각이 있으면 시각 비교
+        if (dateTimeStr && m.savedAt) {
+          // 경기 저장 시각이 교체 시각보다 이전이면 제외 (교체 전 경기)
+          if (m.savedAt <= dateTimeStr) return false;
+        } else if (dateTimeStr && !m.savedAt) {
+          // 경기에 시각 정보 없으면(구버전 데이터) → 같은 날 경기는 제외 (안전하게)
+          return false;
+        }
+      }
+      // 라켓 필터
       if (!m.racketUsed) return true;
       return m.racketUsed === racketKey;
     }).length;
   }
-  const games1 = date1 ? countGamesAfter(date1, 'racket1') : 0;
-  const games2 = date2 ? countGamesAfter(date2, 'racket2') : 0;
+  const games1 = date1 ? countGamesAfter(date1, p.stringDateTime  || '', 'racket1') : 0;
+  const games2 = date2 ? countGamesAfter(date2, p.stringDate2Time || '', 'racket2') : 0;
 
   // 라켓 한 줄 생성: 라켓명 + D+일수 + 게임수
   function racketRow(num, racket, diff, games) {
@@ -3487,6 +3500,7 @@ function saveMatch() {
 
   const matchData = {
     date,
+    savedAt: new Date().toISOString(),
     format,
     sport: state.sportType || 'tennis',
     pickleballScoreType: '',
