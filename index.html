@@ -3662,7 +3662,7 @@ function buildMatchMonthSelect() {
   const months = getLast6Months();
   const today = getTodayStr();
   // 현재 선택값 유지
-  const cur = state._matchSelectedMonth || months[1] || months[0]; // 기본: 지난달
+  const cur = state._matchSelectedMonth || months[0]; // 기본: 이번달
   sel.innerHTML = months.map(ym => {
     const [y, m] = ym.split('-');
     const label = `${y}년 ${parseInt(m)}월`;
