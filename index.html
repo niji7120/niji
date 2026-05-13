@@ -1084,7 +1084,7 @@
         <span id="matchSportIcon" style="font-size:22px;"></span>
         <span style="font-size:13px;color:var(--accent);font-weight:700;" id="matchSportLabel"></span>
         <span style="font-size:12px;color:var(--text-muted);">종목으로 저장됩니다</span>
-        <button onclick="showPage('stats')" style="margin-left:auto;font-size:11px;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:8px;padding:3px 8px;cursor:pointer;">변경 →</button>
+        <button onclick="showPage('profile')" style="margin-left:auto;font-size:11px;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:8px;padding:3px 8px;cursor:pointer;">종목 변경 →</button>
       </div>
       <div class="page-sub">새 경기를 입력하세요</div>
 
@@ -1201,9 +1201,11 @@
               <div class="form-label" style="margin-bottom:4px;">🎾 사용 라켓 (선택)</div>
               <select class="form-select" id="matchRacket" style="padding:9px 12px;font-size:14px;">
                 <option value="">선택 안 함</option>
-                <option value="racket1">라켓 1</option>
-                <option value="racket2">라켓 2</option>
               </select>
+              <div id="racketNoRegMsg" style="display:none;margin-top:6px;font-size:11px;color:var(--text-muted);">
+                ⚠️ 라켓이 등록되지 않았어요.
+                <span onclick="showPage('profile')" style="color:var(--accent);font-weight:700;cursor:pointer;text-decoration:underline;">프로필에서 등록하기 →</span>
+              </div>
             </div>
 
             <!-- 줄 7: 메모 -->
@@ -1236,81 +1238,12 @@
     <!-- ===== STATS PAGE ===== -->
     <div class="page" id="page-stats">
       <div class="page-header">통계</div>
-      <div class="page-sub" style="margin-bottom:0;">나의 경기 기록</div>
-
-      <!-- 종목 선택 탭 (SVG 라켓 아이콘) -->
-      <div id="sportTabWrap" style="display:flex;gap:8px;justify-content:center;margin:12px 0 4px;">
-        <!-- 테니스 -->
-        <button id="tab-tennis" onclick="selectSportTab('tennis')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;">
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- 테니스 라켓 헤드 (더 둥근 원형) -->
-            <ellipse cx="14" cy="13" rx="11" ry="12" stroke="currentColor" stroke-width="2.2" fill="none"/>
-            <!-- 라켓 줄 (가로) -->
-            <line x1="4"  y1="9"  x2="24" y2="9"  stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="3"  y1="12" x2="25" y2="12" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="3"  y1="15" x2="25" y2="15" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="4"  y1="18" x2="24" y2="18" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <!-- 라켓 줄 (세로) -->
-            <line x1="9"  y1="2" x2="9"  y2="24" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="13" y1="1" x2="13" y2="25" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="17" y1="1" x2="17" y2="25" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="21" y1="2" x2="21" y2="24" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <!-- 손잡이 -->
-            <line x1="21" y1="22" x2="32" y2="34" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
-            <!-- 테니스 공 -->
-            <circle cx="5" cy="31" r="3" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.8"/>
-            <path d="M3 29.5 Q5 31 7 29.5" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/>
-          </svg>
-          <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">테니스</span>
-        </button>
-
-        <!-- 배드민턴 -->
-        <button id="tab-badminton" onclick="selectSportTab('badminton')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;">
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- 배드민턴 라켓 헤드 -->
-            <ellipse cx="13" cy="13" rx="10" ry="10" stroke="currentColor" stroke-width="2.2" fill="none"/>
-            <!-- 라켓 줄 (가로) -->
-            <line x1="4" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="4" y1="13" x2="22" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="4" y1="16" x2="22" y2="16" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <!-- 라켓 줄 (세로) -->
-            <line x1="9"  y1="3" x2="9"  y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="13" y1="3" x2="13" y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <line x1="17" y1="3" x2="17" y2="23" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
-            <!-- 손잡이 -->
-            <line x1="20" y1="20" x2="32" y2="33" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-            <!-- 셔틀콕 -->
-            <circle cx="5" cy="30" r="2.2" fill="currentColor" opacity="0.7"/>
-            <line x1="5" y1="27.8" x2="3"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-            <line x1="5" y1="27.8" x2="5"  y2="21" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-            <line x1="5" y1="27.8" x2="7"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-          </svg>
-          <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">배드민턴</span>
-        </button>
-
-        <!-- 피클볼 -->
-        <button id="tab-pickleball" onclick="selectSportTab('pickleball')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;">
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- 피클볼 패들 (넓고 납작한 사각형 헤드) -->
-            <rect x="4" y="4" width="22" height="18" rx="5" stroke="currentColor" stroke-width="2.2" fill="none"/>
-            <!-- 패들 줄 (가로 3개) -->
-            <line x1="4"  y1="9"  x2="26" y2="9"  stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
-            <line x1="4"  y1="13" x2="26" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
-            <line x1="4"  y1="17" x2="26" y2="17" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
-            <!-- 패들 줄 (세로 4개) -->
-            <line x1="10" y1="4" x2="10" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
-            <line x1="15" y1="4" x2="15" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
-            <line x1="20" y1="4" x2="20" y2="22" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
-            <!-- 손잡이 -->
-            <rect x="11" y="21" width="8" height="12" rx="3" stroke="currentColor" stroke-width="2.2" fill="none"/>
-            <!-- 피클볼 공 (구멍 뚫린) -->
-            <circle cx="30" cy="10" r="4" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.85"/>
-            <circle cx="29" cy="9"  r="0.8" fill="currentColor" opacity="0.6"/>
-            <circle cx="31" cy="11" r="0.8" fill="currentColor" opacity="0.6"/>
-            <circle cx="30" cy="12" r="0.8" fill="currentColor" opacity="0.6"/>
-          </svg>
-          <span style="font-size:11px;font-weight:700;letter-spacing:.3px;">피클볼</span>
-        </button>
+      <!-- 현재 종목 표시 + 프로필로 이동 안내 -->
+      <div id="statsCurrentSportBadge" style="display:flex;align-items:center;justify-content:center;gap:8px;margin:4px 0 10px;padding:10px 16px;background:rgba(124,106,247,0.13);border:1.5px solid var(--accent);border-radius:12px;">
+        <span id="statsSportIcon" style="font-size:22px;"></span>
+        <span style="font-size:13px;color:var(--accent);font-weight:700;" id="statsSportLabel"></span>
+        <span style="font-size:12px;color:var(--text-muted);">기준 통계</span>
+        <button onclick="showPage('profile')" style="margin-left:auto;font-size:11px;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:8px;padding:3px 8px;cursor:pointer;">종목 변경 →</button>
       </div>
       <!-- 숨겨진 select (JS 호환용) -->
       <select id="sportType" onchange="updateSportType()" style="display:none;">
@@ -1833,7 +1766,7 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>상단 종목 아이콘으로 <b>🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼</b>을 선택하고 경기를 기록하세요</span>
+            <span>종목은 <b>프로필 탭 하단</b>에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼을 선택해 설정해요. 경기기록·통계 탭 상단의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동할 수 있어요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -1868,7 +1801,7 @@
         <div class="manual-items">
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>상단에서 <b>🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼</b> 종목 탭을 선택하면 해당 종목 통계만 표시돼요</span>
+            <span>통계 탭 상단에 현재 선택된 종목이 표시됩니다. <b>[종목 변경 →]</b> 버튼을 누르면 프로필 탭에서 종목을 바꿀 수 있어요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -1985,7 +1918,7 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span>경기 입력 시 어떤 라켓으로 했는지 선택하면 <b>라켓별 게임 수</b>를 따로 카운트해줘요</span>
+            <span>경기 입력 시 <b>사용 라켓</b>을 선택할 수 있어요. 프로필에 라켓 이름을 등록하면 선택 목록에 라켓 이름이 표시됩니다. 라켓별로 <b>게임 수</b>를 따로 카운트해줘요</span>
           </div>
         </div>
       </div>
@@ -2027,7 +1960,7 @@
         <div class="manual-items">
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>경기가 통계에 안 보여요</b> — 통계 탭 상단에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요</span>
+            <span><b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르게 설정되어 있으면 통계에 안 나올 수 있어요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -3418,8 +3351,48 @@ function pfToggleRacket(num) {
 
 // 라켓명 입력 시 헤더 요약 실시간 갱신
 function pfUpdateRacketSummary(num, key) {
-  // 디바운스 후 saveProfileField 에서 re-render 되므로 별도 처리 불필요
-  // (헤더는 renderProfile 호출 시 갱신됨)
+  // 입력 필드에서 현재 값 읽기
+  const body = document.getElementById('pf-racket-body-' + num);
+  if (!body) return;
+  const input = body.querySelector('input.pf-item-input');
+  if (!input) return;
+  const val = input.value.trim();
+
+  // state.profile 즉시 반영 (배너가 최신 값 참조하도록)
+  if (state.profile) state.profile[key] = val;
+
+  // 헤더 안의 요약 텍스트 찾기 (RACQUET 텍스트 다음 span)
+  const header = body.previousElementSibling;
+  if (!header) return;
+  const spans = header.querySelectorAll('span');
+  // 마지막 span이 요약(라켓명 or 미입력)
+  const summarySpan = spans[spans.length - 1];
+  if (!summarySpan) return;
+
+  if (val) {
+    summarySpan.style.fontSize = '12px';
+    summarySpan.style.fontWeight = '700';
+    summarySpan.style.color = 'var(--text)';
+    summarySpan.style.marginLeft = '6px';
+    summarySpan.style.overflow = 'hidden';
+    summarySpan.style.textOverflow = 'ellipsis';
+    summarySpan.style.whiteSpace = 'nowrap';
+    summarySpan.style.maxWidth = '160px';
+    summarySpan.textContent = val;
+  } else {
+    summarySpan.style.fontSize = '11px';
+    summarySpan.style.fontWeight = '';
+    summarySpan.style.color = 'var(--text-muted)';
+    summarySpan.style.marginLeft = '6px';
+    summarySpan.style.overflow = '';
+    summarySpan.style.textOverflow = '';
+    summarySpan.style.whiteSpace = '';
+    summarySpan.style.maxWidth = '';
+    summarySpan.textContent = '미입력';
+  }
+
+  // 배너도 즉시 갱신
+  renderStringBanner();
 }
 
 function pfDebounceSave(key, value) {
@@ -3444,8 +3417,8 @@ function saveProfileField(key, value) {
   if (avatarBtnEl) avatarBtnEl.textContent = name.charAt(0).toUpperCase();
   const avatarInitialEl = document.getElementById('avatarInitial');
   if (!p.photo && avatarInitialEl) avatarInitialEl.textContent = name.charAt(0).toUpperCase();
-  // 스트링교체일 변경 시 배너 즉시 갱신
-  if (key === 'stringDate' || key === 'stringDate2') renderStringBanner();
+  // 스트링교체일 또는 라켓명 변경 시 배너 즉시 갱신
+  if (key === 'stringDate' || key === 'stringDate2' || key === 'racket' || key === 'racket2') renderStringBanner();
 }
 
 function uploadPhoto(input) {
@@ -3795,15 +3768,24 @@ function toggleMatchForm() {
 // 라켓 선택 드롭다운 옵션을 실제 라켓명으로 업데이트
 function updateMatchRacketOptions() {
   const sel = document.getElementById('matchRacket');
+  const noRegMsg = document.getElementById('racketNoRegMsg');
   if (!sel) return;
   const p = state.profile || {};
-  const r1 = p.racket  ? `라켓 1 (${p.racket})`  : '라켓 1';
-  const r2 = p.racket2 ? `라켓 2 (${p.racket2})` : '라켓 2';
-  sel.innerHTML = `
-    <option value="">선택 안 함</option>
-    <option value="racket1">${r1}</option>
-    <option value="racket2">${r2}</option>
-  `;
+  const r1 = p.racket  || '';
+  const r2 = p.racket2 || '';
+  const hasR1 = r1.trim() !== '';
+  const hasR2 = r2.trim() !== '';
+
+  let options = `<option value="">선택 안 함</option>`;
+  if (hasR1) options += `<option value="racket1">🎾 R1 · ${escHtml(r1)}</option>`;
+  if (hasR2) options += `<option value="racket2">🎾 R2 · ${escHtml(r2)}</option>`;
+
+  sel.innerHTML = options;
+
+  // 라켓이 하나도 없으면 안내 메시지 표시
+  if (noRegMsg) {
+    noRegMsg.style.display = (!hasR1 && !hasR2) ? 'block' : 'none';
+  }
 }
 function openMatchForm() {
   const body  = document.getElementById('matchFormBody');
@@ -3934,6 +3916,7 @@ function selectSportTab(sport) {
   save();
   renderStats();
   updateMatchSportBadge();
+  updateStatsSportBadge();
   const sportLabel = sport === 'badminton' ? '배드민턴' : sport === 'tennis' ? '테니스' : '피클볼';
   showToast(`📊 ${sportLabel} 통계로 변경`);
 }
@@ -3999,6 +3982,22 @@ function updateMatchSportBadge() {
   if (btnD) { const _wasSelectedD = btnD.classList.contains('selected'); btnD.style.display='inline-flex'; btnD.style.alignItems='center'; btnD.style.justifyContent='center'; btnD.style.gap='6px'; btnD.innerHTML = _doubleIcon + ' 복식'; if (_wasSelectedD) btnD.classList.add('selected'); }
 }
 
+// 통계 탭 상단 종목 배지 업데이트
+function updateStatsSportBadge() {
+  const sport = state.sportType || 'tennis';
+  const labelMap = { tennis: '테니스', badminton: '배드민턴', pickleball: '피클볼' };
+  const iconEl  = document.getElementById('statsSportIcon');
+  const labelEl = document.getElementById('statsSportLabel');
+  if (iconEl) {
+    if (sport === 'pickleball') {
+      iconEl.innerHTML = sportIconHTML('pickleball', 26);
+    } else {
+      iconEl.textContent = sport === 'tennis' ? '🎾' : '🏸';
+    }
+  }
+  if (labelEl) labelEl.textContent = labelMap[sport] || '테니스';
+}
+
 function syncSportTab() {
   // 통계 탭 열릴 때 현재 sportType에 맞게 탭 버튼 강조 (저장/토스트 없이)
   const sport = state.sportType || 'tennis';
@@ -4020,6 +4019,7 @@ function syncSportTab() {
     });
   });
   updateMatchSportBadge();
+  updateStatsSportBadge();
 }
 
 function updateSportType() {
