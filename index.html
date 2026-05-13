@@ -1328,7 +1328,29 @@
         </div>
       </div>
 
-      <!-- ⑥ 상대팀 상성 드롭다운 -->
+      <!-- ⑥ 단식 상성 드롭다운 -->
+      <div class="acc-wrap">
+        <button class="acc-header" onclick="toggleAcc('accSingles')">
+          <span>🎯 단식 상성 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">(1:1)</span></span>
+          <span class="acc-arrow" id="accSingles-arrow">▼</span>
+        </button>
+        <div class="acc-body" id="accSingles">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+            <input id="singlesSearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderSinglesStats()"
+              style="flex:1;font-size:12px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+            <select onchange="window._singlesShowAll=false;renderSinglesStats();" id="singlesSort" style="font-size:12px;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
+              <option value="winrate" selected>승률 높은 순</option>
+              <option value="games">경기 많은 순</option>
+              <option value="name">이름순</option>
+            </select>
+          </div>
+          <div id="singlesCard">
+            <div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-text">단식 경기를 입력하면<br>상성 데이터가 표시됩니다</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑦ 상대팀 상성 드롭다운 -->
       <div class="acc-wrap">
         <button class="acc-header" onclick="toggleAcc('accEnemy')">
           <span>🆚 상대팀 상성 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">(복식)</span></span>
@@ -4090,6 +4112,8 @@ function renderStats() {
   if (accOpponent && accOpponent.classList.contains('open')) renderOpponentStats(ms);
   if (accPartner && accPartner.classList.contains('open')) renderPartnerStats(ms);
   if (accEnemy && accEnemy.classList.contains('open')) renderEnemyTeamStats(ms);
+  const accSingles = document.getElementById('accSingles');
+  if (accSingles && accSingles.classList.contains('open')) renderSinglesStats(ms);
 }
 
 function renderSummaryCard(ms) {
@@ -4307,6 +4331,80 @@ function renderPartnerStats(ms) {
 }
 
 window._enemyShowAll = false;
+
+function renderSinglesStats(ms) {
+  if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
+  const singles = ms.filter(m => m.format === 'singles' && m.opponent);
+  const tm = {};
+  singles.forEach(m => {
+    const opp = m.opponent.trim();
+    if (!opp) return;
+    if (!tm[opp]) tm[opp] = { w: 0, l: 0 };
+    if (m.result === 'win') tm[opp].w++; else tm[opp].l++;
+  });
+  if (!Object.keys(tm).length) {
+    document.getElementById('singlesCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-text">단식 경기를 입력하면<br>상성 데이터가 표시됩니다</div></div>';
+    return;
+  }
+  const singlesSortEl = document.getElementById('singlesSort');
+  const singlesSortBy = singlesSortEl ? singlesSortEl.value : 'winrate';
+  const searchQ = (document.getElementById('singlesSearch')||{}).value||'';
+  let sorted = Object.entries(tm).sort((a,b) => {
+    if (singlesSortBy === 'winrate') {
+      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
+      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
+      if (rb !== ra) return rb - ra;
+      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
+      if (tb !== ta) return tb - ta;
+      return a[0].localeCompare(b[0], 'ko');
+    } else if (singlesSortBy === 'name') {
+      return a[0].localeCompare(b[0], 'ko');
+    }
+    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
+    if (diff !== 0) return diff;
+    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
+  });
+  if (searchQ) {
+    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
+    sorted = sorted.filter(([name]) =>
+      isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
+    );
+    window._singlesShowAll = true;
+  }
+  if (!sorted.length) {
+    document.getElementById('singlesCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">검색 결과가 없습니다</div></div>';
+    return;
+  }
+  const total = sorted.length;
+  const showAll = window._singlesShowAll || searchQ;
+  const visible = showAll ? sorted : sorted.slice(0, OPP_PAGE_SIZE);
+  const cards = visible.map(([opp, d]) => {
+    const tot = d.w + d.l;
+    const rate = Math.round(d.w / tot * 100);
+    const fillCls = rate >= 60 ? 'good' : rate < 40 ? 'bad' : '';
+    const badge = rate >= 60 ? '<span class="enemy-badge weak">우세</span>' : rate < 40 ? '<span class="enemy-badge strong">약점</span>' : '';
+    return `<div class="enemy-team-row">
+      <div style="display:flex;gap:4px;flex-shrink:0;">
+        <div class="matchup-avatar" style="width:28px;height:28px;font-size:12px;">${opp.charAt(0)}</div>
+      </div>
+      <div class="enemy-team-names" style="flex:1;min-width:0;margin:0 8px;">
+        <div style="font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;">단식 상대</div>
+        <div class="enemy-team-main">${escHtml(opp)}${badge}</div>
+        <div class="matchup-bar-wrap" style="margin-top:4px;"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
+        <div class="enemy-team-sub">${tot}전 · 내 승률 ${rate}%</div>
+      </div>
+      <div class="matchup-score">
+        <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}승 ${d.l}패</div>
+      </div>
+    </div>`;
+  }).join('');
+  const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
+    ? `<button onclick="window._singlesShowAll=true;renderSinglesStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}명 더 보기</button>`
+    : (showAll && total > OPP_PAGE_SIZE && !searchQ)
+    ? `<button onclick="window._singlesShowAll=false;renderSinglesStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size:13px;cursor:pointer;">접기 ▲</button>`
+    : '';
+  document.getElementById('singlesCard').innerHTML = cards + moreBtn;
+}
 
 function renderEnemyTeamStats(ms) {
   if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
@@ -4594,6 +4692,7 @@ function toggleAcc(id) {
     if (id === 'accOpponent') renderOpponentStats(ms);
     if (id === 'accPartner') renderPartnerStats(ms);
     if (id === 'accEnemy') renderEnemyTeamStats(ms);
+    if (id === 'accSingles') renderSinglesStats(ms);
   }
 }
 
