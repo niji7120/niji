@@ -1629,6 +1629,11 @@
       공유
     </button>
 
+    <button class="nav-btn" onclick="showTacticsBoard()" id="nav-tactics">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="2" y1="12" x2="22" y2="12"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/><circle cx="17" cy="17" r="1.5" fill="currentColor"/></svg>
+      전술판
+    </button>
+
   </nav>
 </div>
 
@@ -2001,10 +2006,71 @@
 
       <div class="manual-divider"></div>
 
+      <div class="manual-divider"></div>
+
+      <div class="manual-section">
+        <div class="manual-sec-header">
+          <span class="manual-sec-icon">🎯</span>
+          <span class="manual-sec-title">9. 전술판</span>
+        </div>
+        <div class="manual-items">
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>하단 네비게이션 <b>전술판</b> 탭을 탭하면 전용 화면이 열려요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>코트에서 <b>선수(원형 아이콘)를 드래그</b>해서 위치를 자유롭게 움직일 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>선수를 <b>한 번 탭</b>하면 타구각 표시, <b>두 번 탭</b>하면 이름·번호·포지션·색상을 편집할 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>상단 버튼으로 <b>기본·양쪽전위·양쪽후위·I포메이션·호주</b> 5가지 대형을 바로 적용할 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>☰ 버튼(화면 오른쪽 가운데)을 탭하면 조작 버튼이 나타나요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>➡️ 화살표</b> — 선수 탭 후 드래그: 이동 화살표 / 빈 곳 드래그: 자유 화살표</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>✏️ 그리기</b> — 손가락으로 코트 위에 자유롭게 선을 그을 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>⭕ 커버존 / 🎾 공 / 📐 타구각</b> — 각각 탭해서 표시/숨기기 전환</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>🎨 보드설정</b> — 코트 색상(그린·클레이·하드·다크·잔디), 선수 크기, 그리기 색상 변경</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>💾 저장 / 📂 불러오기</b> — 전술판 배치를 이름 붙여 저장하고 나중에 다시 불러올 수 있어요 (최대 20개)</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>🔗 공유</b> — 현재 전술판을 URL 링크로 만들어 카카오톡 등으로 공유할 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>🗑️ 삭제</b>는 화살표·그리기만 지워요. <b>🔄 초기화</b>는 선수 위치까지 원래대로 돌아가요</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="manual-divider"></div>
+
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">💬</span>
-          <span class="manual-sec-title">9. 니지스트링 커뮤니티</span>
+          <span class="manual-sec-title">10. 니지스트링 커뮤니티</span>
         </div>
         <div class="manual-items">
           <div class="manual-item">
@@ -6239,6 +6305,547 @@ window.addEventListener('popstate', function() {
 });
 // 히스토리 초기 상태 push
 history.pushState(null, '', location.href);
+</script>
+
+<!-- ===== TACTICS BOARD MODAL ===== -->
+<div id="tacticsModal" style="display:none;position:fixed;inset:0;z-index:9999;background:#05111f;flex-direction:column;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(5,17,31,0.97);border-bottom:1px solid rgba(56,217,245,0.15);flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button onclick="closeTacticsBoard()" style="background:rgba(255,255,255,0.08);border:none;color:#7aacbf;font-size:13px;font-weight:700;padding:7px 14px;border-radius:18px;cursor:pointer;">← 돌아가기</button>
+      <span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:1px;">🎾 복식 전술판</span>
+    </div>
+    <button id="tc-toggleHint" onclick="tcToggleUI()" style="background:rgba(56,217,245,0.18);border:none;color:#38d9f5;font-size:14px;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;">☰</button>
+  </div>
+
+  <!-- 프리셋 및 설명 -->
+  <div id="tc-topUI" style="padding:8px 10px;background:rgba(5,17,31,0.95);flex-shrink:0;display:none;">
+    <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:6px;" id="tc-presets">
+      <button class="tc-preset-btn tc-active" data-preset="basic">기본</button>
+      <button class="tc-preset-btn" data-preset="bothUp">양쪽전위</button>
+      <button class="tc-preset-btn" data-preset="bothBack">양쪽후위</button>
+      <button class="tc-preset-btn" data-preset="iForm">I포메이션</button>
+      <button class="tc-preset-btn" data-preset="aus">호주</button>
+    </div>
+    <div id="tc-descBox" style="background:rgba(56,217,245,0.07);border:1px solid rgba(56,217,245,0.14);border-radius:8px;padding:4px 12px;text-align:center;font-size:11px;color:#7fc8de;">💡 전위/후위 기본 대형</div>
+  </div>
+
+  <!-- 캔버스 -->
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+    <canvas id="tc-court" style="display:block;touch-action:none;"></canvas>
+  </div>
+
+  <!-- 컨트롤 패널 -->
+  <div id="tc-bottomUI" style="padding:8px 8px 12px;background:rgba(5,17,31,0.97);border-top:1px solid rgba(56,217,245,0.15);flex-shrink:0;display:none;">
+    <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:4px;">
+      <button class="tc-ctrl-btn" id="tc-btnArrow" onclick="tcSetMode('arrow')">➡️ 화살표</button>
+      <button class="tc-ctrl-btn" id="tc-btnDraw" onclick="tcSetMode('draw')">✏️ 그리기</button>
+      <button class="tc-ctrl-btn tc-cover-on" id="tc-btnCover" onclick="tcToggleCover()">⭕ 커버존</button>
+      <button class="tc-ctrl-btn tc-ball-on" id="tc-btnBall" onclick="tcToggleBall()">🎾 공</button>
+      <button class="tc-ctrl-btn tc-angle-on" id="tc-btnAngle" onclick="tcToggleAngle()">📐 타구각</button>
+      <button class="tc-ctrl-btn tc-del" onclick="tcDelDrawings()">🗑️ 삭제</button>
+      <button class="tc-ctrl-btn tc-reset" onclick="tcReset()">🔄 초기화</button>
+    </div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:4px;">
+      <button class="tc-ctrl-btn" onclick="tcOpenBoardStyle()">🎨 보드설정</button>
+      <button class="tc-ctrl-btn" onclick="tcSave()">💾 저장</button>
+      <button class="tc-ctrl-btn" onclick="tcLoad()">📂 불러오기</button>
+      <button class="tc-ctrl-btn" onclick="tcShare()">🔗 공유</button>
+    </div>
+    <div id="tc-guide" style="font-size:10px;color:#3e5f70;text-align:center;line-height:1.5;">선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동</div>
+  </div>
+</div>
+
+<!-- 전술판 선수 편집 모달 -->
+<div id="tc-modalPlayer" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
+    <div style="font-size:15px;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;">✏️ 선수 편집</div>
+    <div style="margin-bottom:12px;"><div style="font-size:11px;color:#7aacbf;margin-bottom:4px;">이름</div><input id="tc-editName" maxlength="6" placeholder="이름 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size:13px;outline:none;"></div>
+    <div style="margin-bottom:12px;"><div style="font-size:11px;color:#7aacbf;margin-bottom:4px;">등번호</div><input id="tc-editNumber" type="number" min="0" max="99" placeholder="번호" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size:13px;outline:none;"></div>
+    <div style="margin-bottom:12px;"><div style="font-size:11px;color:#7aacbf;margin-bottom:4px;">포지션</div><input id="tc-editPosition" maxlength="6" placeholder="포지션 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size:13px;outline:none;"></div>
+    <div style="margin-bottom:12px;"><div style="font-size:11px;color:#7aacbf;margin-bottom:4px;">선수 색상</div><div id="tc-colorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button onclick="document.getElementById('tc-modalPlayer').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;">취소</button>
+      <button onclick="tcEditOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 보드 설정 모달 -->
+<div id="tc-modalBoard" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;">
+    <div style="font-size:15px;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;">🎨 보드 설정</div>
+    <div style="margin-bottom:12px;"><div style="font-size:11px;color:#7aacbf;margin-bottom:4px;">코트 테마</div>
+      <div id="tc-themeRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+        <button class="tc-theme-chip tc-theme-sel" data-theme="green">🟩 그린</button>
+        <button class="tc-theme-chip" data-theme="clay">🧱 클레이</button>
+        <button class="tc-theme-chip" data-theme="hard">🔵 하드</button>
+        <button class="tc-theme-chip" data-theme="dark">⚫ 다크</button>
+        <button class="tc-theme-chip" data-theme="grass">🌿 잔디</button>
+      </div>
+    </div>
+    <div style="margin-bottom:12px;"><div style="font-size:11px;color:#7aacbf;margin-bottom:4px;">그리기 색상</div><div id="tc-drawColorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button onclick="document.getElementById('tc-modalBoard').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;">닫기</button>
+      <button onclick="tcBoardOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;">적용</button>
+    </div>
+  </div>
+</div>
+
+<!-- 저장 이름 모달 -->
+<div id="tc-modalSave" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;">
+    <div style="font-size:15px;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;">💾 전술판 저장</div>
+    <div style="font-size:11px;color:#7aacbf;margin-bottom:4px;">저장 이름</div>
+    <input id="tc-saveNameInput" placeholder="예: 서브 후 전술" maxlength="20" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size:13px;outline:none;">
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button onclick="document.getElementById('tc-modalSave').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;">취소</button>
+      <button onclick="tcSaveOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 불러오기 모달 -->
+<div id="tc-modalLoad" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:320px;max-width:92vw;">
+    <div style="font-size:15px;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;">📂 저장된 전술판</div>
+    <div id="tc-slotList" style="max-height:260px;overflow-y:auto;"></div>
+    <button onclick="document.getElementById('tc-modalLoad').style.display='none'" style="width:100%;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;margin-top:14px;">닫기</button>
+  </div>
+</div>
+
+<!-- 공유 모달 -->
+<div id="tc-modalShare" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;">
+    <div style="font-size:15px;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;">🔗 보드 공유</div>
+    <div style="font-size:11px;color:#7aacbf;margin-bottom:6px;line-height:1.6;">현재 전술판이 URL에 담겼어요.<br>복사해서 카카오톡으로 보내세요!</div>
+    <div id="tc-shareLinkBox" style="background:rgba(255,255,255,0.05);border:1px solid rgba(56,217,245,0.2);border-radius:8px;padding:8px 10px;font-size:11px;color:#7aacbf;word-break:break-all;margin-bottom:8px;max-height:80px;overflow-y:auto;">—</div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="document.getElementById('tc-modalShare').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;">닫기</button>
+      <button onclick="tcCopyShare()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;">📋 링크 복사</button>
+    </div>
+  </div>
+</div>
+
+<!-- 전술판 토스트 -->
+<div id="tc-toast" style="position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(56,217,245,0.92);color:#060e1a;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:700;opacity:0;pointer-events:none;transition:opacity 0.3s;z-index:10002;white-space:nowrap;"></div>
+
+<style>
+.tc-preset-btn{padding:5px 12px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:rgba(255,255,255,0.07);color:#7aacbf;transition:all .15s;}
+.tc-preset-btn.tc-active{background:#38d9f5;color:#060e1a;}
+.tc-ctrl-btn{padding:7px 13px;border-radius:18px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:rgba(255,255,255,0.09);color:#7aacbf;transition:all .15s;}
+.tc-ctrl-btn.tc-arrow-on{background:#FFD93D;color:#060e1a;}
+.tc-ctrl-btn.tc-draw-on{background:#ff6bcb;color:#fff;}
+.tc-ctrl-btn.tc-cover-on{background:rgba(56,217,245,0.18);color:#38d9f5;}
+.tc-ctrl-btn.tc-ball-on{background:rgba(200,244,0,0.15);color:#b8e800;}
+.tc-ctrl-btn.tc-angle-on{background:rgba(255,180,0,0.22);color:#ffb800;}
+.tc-ctrl-btn.tc-del{color:#f87171;}
+.tc-ctrl-btn.tc-reset{color:#4ade80;}
+.tc-theme-chip{padding:6px 12px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:rgba(255,255,255,0.07);color:#7aacbf;transition:all .15s;}
+.tc-theme-chip.tc-theme-sel{background:#38d9f5;color:#060e1a;}
+.tc-color-swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0;}
+.tc-color-swatch.tc-sel{border-color:#fff;transform:scale(1.2);}
+</style>
+
+<script>
+// ===== 전술판 모듈 =====
+(function(){
+  // 논리 좌표
+  const LW=520,LH=820,MARGIN_X=80,MARGIN_T=60,MARGIN_B=60;
+  const CL=MARGIN_X,CR=LW-MARGIN_X,CT=MARGIN_T,CB=LH-MARGIN_B;
+  const CW=CR-CL,CH=CB-CT;
+  const NET_Y=(CT+CB)/2;
+  const ALLY_W=CW*0.107,ALLY_L=CL+ALLY_W,ALLY_R=CR-ALLY_W;
+  const SVC_GAP=CH*0.228,SVC_T=CT+SVC_GAP,SVC_B=CB-SVC_GAP;
+  const CX_L=(CL+CR)/2;
+
+  const COLOR_PALETTE=["#38d9f5","#4ade80","#f87171","#fb923c","#c084fc","#f472b6","#facc15","#60a5fa","#34d399","#ff6b6b","#a78bfa","#fbbf24"];
+  const DRAW_COLORS=["#ff6bcb","#FFD93D","#4ade80","#f87171","#38d9f5","#ffffff","#000000"];
+
+  const THEMES={
+    green:{bg:"#1a3d25",courtGrad:["#1c7840","#186535","#155d2e","#125228"],ally:"rgba(0,0,0,0.07)",net:"rgba(0,0,0,0.18)",l1:"rgba(56,217,245,0.3)",l2:"rgba(248,113,113,0.3)"},
+    clay:{bg:"#3d2010",courtGrad:["#c4622d","#b5561f","#a84e18","#9a4712"],ally:"rgba(0,0,0,0.09)",net:"rgba(0,0,0,0.2)",l1:"rgba(255,220,150,0.4)",l2:"rgba(255,180,100,0.4)"},
+    hard:{bg:"#0d1f3d",courtGrad:["#1a3a7c","#163272","#122b68","#0e245e"],ally:"rgba(255,255,255,0.05)",net:"rgba(0,0,0,0.2)",l1:"rgba(100,200,255,0.35)",l2:"rgba(255,150,100,0.35)"},
+    dark:{bg:"#0a0a0a",courtGrad:["#1a1a2e","#16213e","#0f3460","#1a1a2e"],ally:"rgba(255,255,255,0.04)",net:"rgba(0,0,0,0.3)",l1:"rgba(130,130,255,0.35)",l2:"rgba(255,100,130,0.35)"},
+    grass:{bg:"#0d2e10",courtGrad:["#2d6a30","#255e28","#1e5222","#174618"],ally:"rgba(0,0,0,0.06)",net:"rgba(0,0,0,0.18)",l1:"rgba(180,255,140,0.35)",l2:"rgba(255,200,100,0.35)"},
+  };
+
+  let TC={
+    PINFO:{
+      M1:{main:"#38d9f5",dark:"#0ea5c9",shadow:"rgba(56,217,245,0.6)",label:"우1",team:"mine",name:"",number:"",position:"",size:1},
+      M2:{main:"#4ade80",dark:"#16a34a",shadow:"rgba(74,222,128,0.6)",label:"우2",team:"mine",name:"",number:"",position:"",size:1},
+      O1:{main:"#f87171",dark:"#dc2626",shadow:"rgba(248,113,113,0.6)",label:"상1",team:"opp",name:"",number:"",position:"",size:1},
+      O2:{main:"#fb923c",dark:"#ea580c",shadow:"rgba(251,146,60,0.6)",label:"상2",team:"opp",name:"",number:"",position:"",size:1},
+    },
+    KEYS:["M1","M2","O1","O2"],
+    players:{}, ball:{x:CX_L,y:NET_Y+60},
+    arrows:[], arrowDraw:null, mousePos:{x:0,y:0},
+    mode:"drag",
+    showCover:true, showBall:true, showAngle:true,
+    dragging:null, dragMoved:false,
+    activePreset:"basic",
+    selectedKeys:new Set(),
+    drawPaths:[], currentPath:null, isDrawing:false,
+    lastTap:{key:null,time:0},
+    tapStartPos:null,
+    currentTheme:"green",
+    drawColor:"#ff6bcb",
+    uiVisible:false,
+    editingKey:null,
+    initialized:false,
+  };
+
+  const PRESETS={
+    basic:{desc:"💡 전위/후위 기본 대형",M1:{x:CX_L-50,y:CB-60},M2:{x:CX_L+50,y:SVC_B+30},O1:{x:CX_L+50,y:CT+60},O2:{x:CX_L-50,y:SVC_T-30}},
+    bothUp:{desc:"💡 둘 다 네트 앞으로",M1:{x:CX_L-55,y:SVC_B+40},M2:{x:CX_L+55,y:SVC_B+40},O1:{x:CX_L+55,y:SVC_T-40},O2:{x:CX_L-55,y:SVC_T-40}},
+    bothBack:{desc:"💡 둘 다 베이스라인 수비",M1:{x:CX_L-60,y:CB-40},M2:{x:CX_L+60,y:CB-40},O1:{x:CX_L+60,y:CT+40},O2:{x:CX_L-60,y:CT+40}},
+    iForm:{desc:"💡 서버+전위 센터에 겹치기",M1:{x:CX_L,y:CB-50},M2:{x:CX_L,y:SVC_B+30},O1:{x:CX_L+60,y:CT+50},O2:{x:CX_L-50,y:SVC_T-30}},
+    aus:{desc:"💡 서버+전위 같은 사이드",M1:{x:CX_L-60,y:CB-50},M2:{x:CX_L-60,y:SVC_B+30},O1:{x:CX_L+60,y:CT+50},O2:{x:CX_L+60,y:SVC_T-30}},
+  };
+
+  function shadeHex(hex,amt){let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);r=Math.max(0,Math.min(255,r+amt));g=Math.max(0,Math.min(255,g+amt));b=Math.max(0,Math.min(255,b+amt));return"#"+[r,g,b].map(x=>x.toString(16).padStart(2,"0")).join("");}
+  function hexToRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}
+  function updateDarkTC(key){TC.PINFO[key].dark=shadeHex(TC.PINFO[key].main,-40);TC.PINFO[key].shadow=hexToRgba(TC.PINFO[key].main,0.6);}
+
+  const canvas=document.getElementById("tc-court");
+  const ctx=canvas.getContext("2d");
+
+  function px(v){return v*canvas.width/LW;}
+  function py(v){return v*canvas.height/LH;}
+  function line(x1,y1,x2,y2){ctx.beginPath();ctx.moveTo(px(x1),py(y1));ctx.lineTo(px(x2),py(y2));ctx.stroke();}
+
+  function tcLayoutCanvas(){
+    const modal=document.getElementById("tacticsModal");
+    const header=modal.querySelector("div:first-child");
+    const headerH=header?header.offsetHeight:56;
+    const topH=TC.uiVisible?(document.getElementById("tc-topUI").offsetHeight||70):0;
+    const botH=TC.uiVisible?(document.getElementById("tc-bottomUI").offsetHeight||120):0;
+    const avW=window.innerWidth;
+    const avH=window.innerHeight-headerH-topH-botH;
+    const ratio=LW/LH;let cw,ch;
+    if(avW/avH<ratio){cw=avW;ch=avW/ratio;}else{ch=avH;cw=avH*ratio;}
+    cw=Math.floor(cw);ch=Math.floor(ch);
+    const dpr=window.devicePixelRatio||1;
+    canvas.width=cw*dpr;canvas.height=ch*dpr;
+    canvas.style.width=cw+"px";canvas.style.height=ch+"px";
+    tcDraw();
+  }
+
+  function tcApplyPreset(key){
+    TC.activePreset=key;TC.selectedKeys.clear();
+    const p=PRESETS[key];
+    TC.KEYS.forEach(k=>{TC.players[k]={x:p[k].x,y:p[k].y};});
+    TC.arrows=[];TC.arrowDraw=null;TC.drawPaths=[];
+    document.getElementById("tc-descBox").textContent=p.desc;
+    document.querySelectorAll(".tc-preset-btn").forEach(b=>b.classList.toggle("tc-active",b.dataset.preset===key));
+    tcDraw();
+  }
+
+  function isNearNetTC(key,pos){const m=key.startsWith("M");return(m?pos.y<NET_Y-30:pos.y>NET_Y+30);}
+  function getLabelTC(key){return TC.PINFO[key].number||TC.PINFO[key].label;}
+
+  function drawPersonTC(key,pos){
+    const c=TC.PINFO[key];
+    const S=py(28)*(c.size||1);
+    const isSel=TC.selectedKeys.has(key);
+    const cx=px(pos.x),cy=py(pos.y);
+    const volley=isNearNetTC(key,pos);
+    ctx.save();
+    if(isSel){ctx.shadowBlur=28;ctx.shadowColor=c.shadow;ctx.strokeStyle=c.main;ctx.lineWidth=px(3.5);ctx.beginPath();ctx.ellipse(cx,cy-S*0.6,S*0.78,S*1.18,0,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;}
+    ctx.fillStyle="rgba(0,0,0,0.25)";ctx.beginPath();ctx.ellipse(cx+px(2),cy+py(2),S*0.5,S*0.18,0,0,Math.PI*2);ctx.fill();
+    // 몸통
+    ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=px(1.5);ctx.shadowBlur=10;ctx.shadowColor=c.shadow;
+    if(volley){
+      ctx.beginPath();ctx.moveTo(cx-S*0.40,cy-S*0.62);ctx.lineTo(cx+S*0.30,cy-S*0.68);ctx.lineTo(cx+S*0.20,cy-S*0.20);ctx.lineTo(cx-S*0.20,cy-S*0.18);ctx.closePath();ctx.fill();ctx.stroke();
+    }else{
+      ctx.beginPath();ctx.moveTo(cx-S*0.40,cy-S*0.68);ctx.lineTo(cx+S*0.36,cy-S*0.65);ctx.lineTo(cx+S*0.24,cy-S*0.22);ctx.lineTo(cx-S*0.24,cy-S*0.22);ctx.closePath();ctx.fill();ctx.stroke();
+    }
+    ctx.shadowBlur=0;
+    // 머리
+    ctx.shadowBlur=8;ctx.shadowColor=c.shadow;ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=px(2);
+    const hcy=volley?cy-S*0.95:cy-S*0.92;
+    const hcx=volley?cx-S*0.05:cx;
+    ctx.beginPath();ctx.arc(hcx,hcy,S*0.28,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;
+    // 번호
+    const lw=py(20),lh=py(12);
+    ctx.fillStyle="rgba(0,0,0,0.5)";ctx.beginPath();ctx.roundRect(hcx-lw/2,hcy-lh/2,lw,lh,3);ctx.fill();
+    ctx.fillStyle=c.main;ctx.font=`900 ${py(11)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.fillText(getLabelTC(key),hcx,hcy);
+    // 이름
+    const name=c.name||"",pos2=c.position||"";
+    if(name||pos2){
+      const iy=hcy+S*0.42;const iw=py(name?46:32),ih=py(name&&pos2?22:13);
+      ctx.fillStyle="rgba(0,0,0,0.55)";ctx.beginPath();ctx.roundRect(hcx-iw/2,iy-ih/2,iw,ih,4);ctx.fill();
+      ctx.fillStyle=c.main;
+      if(name&&pos2){ctx.font=`700 ${py(9)}px sans-serif`;ctx.fillText(name,hcx,iy-py(5));ctx.fillStyle="rgba(255,255,255,0.6)";ctx.font=`${py(8)}px sans-serif`;ctx.fillText(pos2,hcx,iy+py(5));}
+      else if(name){ctx.font=`700 ${py(9)}px sans-serif`;ctx.fillText(name,hcx,iy);}
+      else{ctx.fillStyle="rgba(255,255,255,0.7)";ctx.font=`${py(8)}px sans-serif`;ctx.fillText(pos2,hcx,iy);}
+    }
+    ctx.restore();
+  }
+
+  function drawCoverZoneTC(key,pos){
+    const r=(key.startsWith("M")?pos.y>NET_Y+60:pos.y<NET_Y-60)?90:60;
+    const c=TC.PINFO[key];
+    ctx.save();ctx.fillStyle=hexToRgba(c.main,0.13);ctx.beginPath();ctx.arc(px(pos.x),py(pos.y),px(r),0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle=hexToRgba(c.main,0.5);ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.beginPath();ctx.arc(px(pos.x),py(pos.y),px(r),0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.restore();
+  }
+
+  function drawShotAnglesTC(key,pos){
+    const c=TC.PINFO[key];const bx=pos.x,by=pos.y;
+    const isMy=key.startsWith("M");
+    const tYf=isMy?CT:CB,tYn=isMy?NET_Y+8:NET_Y-8;
+    const corners=[{x:CL,y:tYf},{x:CR,y:tYf},{x:CL,y:tYn},{x:CR,y:tYn}];
+    const angs=corners.map(co=>Math.atan2(co.y-by,co.x-bx));
+    let mn=Math.min(...angs),mx=Math.max(...angs);
+    if(mx-mn>Math.PI)[mn,mx]=[mx,mn+Math.PI*2];
+    const fanR=LH*0.52;
+    ctx.save();ctx.globalAlpha=0.13;ctx.fillStyle=c.main;
+    ctx.beginPath();ctx.moveTo(px(bx),py(by));ctx.arc(px(bx),py(by),px(fanR),mn,mx,false);ctx.closePath();ctx.fill();
+    ctx.globalAlpha=0.7;ctx.strokeStyle=c.main;ctx.lineWidth=1.8;ctx.setLineDash([7,4]);
+    ctx.beginPath();ctx.moveTo(px(bx),py(by));ctx.lineTo(px(bx+fanR*Math.cos(mn)),py(by+fanR*Math.sin(mn)));ctx.stroke();
+    ctx.beginPath();ctx.moveTo(px(bx),py(by));ctx.lineTo(px(bx+fanR*Math.cos(mx)),py(by+fanR*Math.sin(mx)));ctx.stroke();
+    ctx.globalAlpha=0.45;ctx.beginPath();ctx.arc(px(bx),py(by),px(fanR*0.32),mn,mx,false);ctx.stroke();ctx.setLineDash([]);
+    const deg=Math.round(Math.abs(mx-mn)*180/Math.PI);const mid=(mn+mx)/2,lr=fanR*0.38;
+    const lx=bx+lr*Math.cos(mid),ly=by+lr*Math.sin(mid);
+    ctx.globalAlpha=1;const tw=py(32),th=py(18);ctx.fillStyle="rgba(0,0,0,0.55)";ctx.beginPath();ctx.roundRect(px(lx)-tw/2,py(ly)-th/2,tw,th,4);ctx.fill();
+    ctx.fillStyle=c.main;ctx.font=`bold ${py(12)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(deg+"°",px(lx),py(ly));ctx.restore();
+  }
+
+  function drawArrowTC(x1,y1,x2,y2,color,dashed){
+    const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);if(len<12)return;
+    const ang=Math.atan2(dy,dx),ex=x2-13*Math.cos(ang),ey=y2-13*Math.sin(ang);
+    ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=2.5;ctx.globalAlpha=0.9;ctx.lineCap="round";
+    if(dashed)ctx.setLineDash([7,4]);
+    ctx.beginPath();ctx.moveTo(px(x1),py(y1));ctx.lineTo(px(ex),py(ey));ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(px(x2),py(y2));ctx.lineTo(px(ex-7*Math.sin(ang)),py(ey+7*Math.cos(ang)));ctx.lineTo(px(ex+7*Math.sin(ang)),py(ey-7*Math.cos(ang)));ctx.closePath();ctx.fill();ctx.restore();
+  }
+
+  function drawBallTC(x,y){
+    ctx.save();ctx.fillStyle="rgba(0,0,0,0.28)";ctx.beginPath();ctx.arc(px(x+2),py(y+3),px(11),0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#c8f400";ctx.beginPath();ctx.arc(px(x),py(y),px(11),0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="#8faa00";ctx.lineWidth=1.8;ctx.beginPath();ctx.arc(px(x),py(y),px(11),0,Math.PI*2);ctx.stroke();ctx.restore();
+  }
+
+  function drawFreeLinesTC(){
+    [...TC.drawPaths,(TC.currentPath||null)].filter(Boolean).forEach(path=>{
+      if(path.points.length<2)return;
+      ctx.save();ctx.strokeStyle=path.color;ctx.lineWidth=path.width*(canvas.width/LW);ctx.lineCap="round";ctx.lineJoin="round";ctx.globalAlpha=0.85;
+      ctx.beginPath();ctx.moveTo(px(path.points[0].x),py(path.points[0].y));
+      for(let i=1;i<path.points.length;i++)ctx.lineTo(px(path.points[i].x),py(path.points[i].y));
+      ctx.stroke();ctx.restore();
+    });
+  }
+
+  function tcDraw(){
+    if(!canvas.width)return;
+    const W=canvas.width,H=canvas.height,T=THEMES[TC.currentTheme];
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle=T.bg;ctx.beginPath();ctx.roundRect(0,0,W,H,0);ctx.fill();
+    const cg=ctx.createLinearGradient(0,0,0,H);
+    cg.addColorStop(0,T.courtGrad[0]);cg.addColorStop(0.49,T.courtGrad[1]);cg.addColorStop(0.51,T.courtGrad[2]);cg.addColorStop(1,T.courtGrad[3]);
+    ctx.fillStyle=cg;ctx.fillRect(px(CL),py(CT),px(CR-CL),py(CB-CT));
+    ctx.fillStyle=T.ally;ctx.fillRect(px(CL),py(CT),px(ALLY_W),py(CB-CT));ctx.fillRect(px(ALLY_R),py(CT),px(ALLY_W),py(CB-CT));
+    if(TC.showCover)TC.KEYS.forEach(k=>drawCoverZoneTC(k,TC.players[k]));
+    if(TC.showAngle&&TC.selectedKeys.size>0)TC.selectedKeys.forEach(k=>drawShotAnglesTC(k,TC.players[k]));
+    ctx.strokeStyle="rgba(255,255,255,0.85)";ctx.lineWidth=2.5;ctx.strokeRect(px(CL),py(CT),px(CR-CL),py(CB-CT));
+    ctx.strokeStyle="rgba(255,255,255,0.7)";ctx.lineWidth=1.8;
+    line(ALLY_L,CT,ALLY_L,CB);line(ALLY_R,CT,ALLY_R,CB);
+    ctx.strokeStyle="rgba(255,255,255,0.65)";line(ALLY_L,SVC_T,ALLY_R,SVC_T);line(ALLY_L,SVC_B,ALLY_R,SVC_B);
+    ctx.strokeStyle="rgba(255,255,255,0.5)";ctx.lineWidth=1.5;line(CX_L,SVC_T,CX_L,SVC_B);
+    ctx.fillStyle=T.net;ctx.fillRect(0,py(NET_Y-5),W,py(10));
+    ctx.shadowBlur=10;ctx.shadowColor="rgba(255,255,255,0.7)";ctx.strokeStyle="white";ctx.lineWidth=3;line(0,NET_Y,LW,NET_Y);ctx.shadowBlur=0;
+    ctx.fillStyle="#c8a05a";ctx.fillRect(px(CL-8),py(NET_Y-14),px(10),py(28));ctx.fillRect(px(CR-2),py(NET_Y-14),px(10),py(28));
+    ctx.fillStyle="rgba(255,255,255,0.3)";ctx.font=`${py(8)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="alphabetic";ctx.fillText("NET",px(CX_L),py(NET_Y-8));
+    ctx.font=`bold ${py(9)}px sans-serif`;ctx.fillStyle=T.l1;ctx.fillText("우리팀 코트",px(CX_L),py(CB-10));ctx.fillStyle=T.l2;ctx.fillText("상대팀 코트",px(CX_L),py(CT+20));
+    drawFreeLinesTC();
+    TC.arrows.forEach(a=>drawArrowTC(a.x1,a.y1,a.x2,a.y2,a.color,!a.fromKey));
+    if(TC.arrowDraw)drawArrowTC(TC.arrowDraw.x1,TC.arrowDraw.y1,TC.mousePos.x,TC.mousePos.y,TC.arrowDraw.color,!TC.arrowDraw.fromKey);
+    if(TC.showBall)drawBallTC(TC.ball.x,TC.ball.y);
+    TC.KEYS.forEach(k=>drawPersonTC(k,TC.players[k]));
+  }
+
+  function getLogPos(e){
+    const rect=canvas.getBoundingClientRect();const t=e.touches?(e.touches[0]||e.changedTouches[0]):e;
+    return{x:Math.max(0,Math.min(LW,(t.clientX-rect.left)/rect.width*LW)),y:Math.max(0,Math.min(LH,(t.clientY-rect.top)/rect.height*LH))};
+  }
+  function hitPlayerTC(pos){for(let i=TC.KEYS.length-1;i>=0;i--){const k=TC.KEYS[i],p=TC.players[k];const dx=pos.x-p.x,dy=pos.y-p.y;if(Math.abs(dx)<35&&dy>-65&&dy<18)return k;}return null;}
+  function hitBallTC(pos){const dx=pos.x-TC.ball.x,dy=pos.y-TC.ball.y;return Math.sqrt(dx*dx+dy*dy)<18;}
+
+  canvas.addEventListener("mousedown",tcDown);canvas.addEventListener("touchstart",tcDown,{passive:false});
+  canvas.addEventListener("mousemove",tcMove);canvas.addEventListener("touchmove",tcMove,{passive:false});
+  canvas.addEventListener("mouseup",tcUp);canvas.addEventListener("touchend",tcUp);
+
+  function tcDown(e){
+    e.preventDefault();const pos=getLogPos(e);TC.dragMoved=false;TC.tapStartPos={x:pos.x,y:pos.y};
+    if(TC.mode==="draw"){TC.currentPath={color:TC.drawColor,width:3,points:[pos]};TC.isDrawing=true;return;}
+    const pk=hitPlayerTC(pos);
+    if(TC.mode==="arrow"){
+      if(pk)TC.arrowDraw={x1:TC.players[pk].x,y1:TC.players[pk].y,color:TC.PINFO[pk].main,fromKey:pk};
+      else TC.arrowDraw={x1:pos.x,y1:pos.y,color:"rgba(255,255,255,0.75)",fromKey:null};
+      TC.mousePos=pos;return;
+    }
+    if(pk)TC.dragging=pk;else if(TC.showBall&&hitBallTC(pos))TC.dragging="ball";
+  }
+  function tcMove(e){
+    e.preventDefault();const pos=getLogPos(e);TC.mousePos=pos;
+    if(TC.mode==="draw"&&TC.isDrawing&&TC.currentPath){TC.currentPath.points.push(pos);tcDraw();return;}
+    if(TC.dragging&&TC.tapStartPos){const dx=pos.x-TC.tapStartPos.x,dy=pos.y-TC.tapStartPos.y;if(Math.sqrt(dx*dx+dy*dy)>15)TC.dragMoved=true;}
+    if(TC.dragMoved){
+      if(TC.dragging==="ball"){TC.ball.x=pos.x;TC.ball.y=pos.y;}
+      else if(TC.dragging){TC.players[TC.dragging].x=pos.x;TC.players[TC.dragging].y=pos.y;}
+      tcDraw();
+    }
+    if(TC.mode==="arrow"&&TC.arrowDraw)tcDraw();
+  }
+  function tcUp(e){
+    if(TC.mode==="draw"&&TC.isDrawing&&TC.currentPath){
+      if(TC.currentPath.points.length>1)TC.drawPaths.push({...TC.currentPath});
+      TC.currentPath=null;TC.isDrawing=false;tcDraw();return;
+    }
+    if(TC.mode==="arrow"&&TC.arrowDraw){
+      const pos=getLogPos(e);const dx=pos.x-TC.arrowDraw.x1,dy=pos.y-TC.arrowDraw.y1;
+      if(Math.sqrt(dx*dx+dy*dy)>20)TC.arrows.push({...TC.arrowDraw,x2:pos.x,y2:pos.y});
+      TC.arrowDraw=null;
+    } else if(!TC.dragMoved&&TC.dragging&&TC.dragging!=="ball"){
+      const now=Date.now();
+      if(TC.lastTap.key===TC.dragging&&now-TC.lastTap.time<400){tcOpenPlayerEdit(TC.dragging);TC.lastTap={key:null,time:0};}
+      else{TC.lastTap={key:TC.dragging,time:now};if(TC.selectedKeys.has(TC.dragging))TC.selectedKeys.delete(TC.dragging);else TC.selectedKeys.add(TC.dragging);}
+    } else if(!TC.dragMoved&&!TC.dragging){
+      const pos=getLogPos(e);if(!hitPlayerTC(pos)&&!(TC.showBall&&hitBallTC(pos)))TC.selectedKeys.clear();
+    }
+    TC.dragging=null;TC.dragMoved=false;TC.tapStartPos=null;tcDraw();
+  }
+
+  // 공개 함수들
+  window.showTacticsBoard=function(){
+    const modal=document.getElementById("tacticsModal");
+    modal.style.display="flex";
+    if(!TC.initialized){
+      tcApplyPreset("basic");
+      document.querySelectorAll(".tc-preset-btn").forEach(b=>b.addEventListener("click",()=>tcApplyPreset(b.dataset.preset)));
+      TC.initialized=true;
+    }
+    setTimeout(()=>{tcLayoutCanvas();},50);
+    // URL에서 공유 데이터 체크
+    const p=new URLSearchParams(location.search),s=p.get("tc");
+    if(s){try{tcLoadState(JSON.parse(decodeURIComponent(escape(atob(s)))));tcShowToast("공유된 전술판을 불러왔어요! 🔗");}catch(e){}}
+  };
+  window.closeTacticsBoard=function(){
+    document.getElementById("tacticsModal").style.display="none";
+  };
+  window.tcToggleUI=function(){
+    TC.uiVisible=!TC.uiVisible;
+    document.getElementById("tc-topUI").style.display=TC.uiVisible?"block":"none";
+    document.getElementById("tc-bottomUI").style.display=TC.uiVisible?"flex":"none";
+    document.getElementById("tc-bottomUI").style.flexDirection="column";
+    setTimeout(tcLayoutCanvas,50);
+  };
+  window.tcSetMode=function(m){
+    if(TC.mode===m)TC.mode="drag"; else TC.mode=m;
+    TC.arrowDraw=null;
+    const ba=document.getElementById("tc-btnArrow"),bd=document.getElementById("tc-btnDraw");
+    ba.classList.toggle("tc-arrow-on",TC.mode==="arrow");bd.classList.toggle("tc-draw-on",TC.mode==="draw");
+    ba.textContent=TC.mode==="arrow"?"✏️ 화살표 ON":"➡️ 화살표";
+    bd.textContent=TC.mode==="draw"?"✏️ 그리기 ON":"✏️ 그리기";
+    const g=document.getElementById("tc-guide");
+    if(TC.mode==="arrow")g.innerHTML="선수 탭→드래그: 이동 화살표 &nbsp;·&nbsp; 빈 곳 드래그: 자유 화살표";
+    else if(TC.mode==="draw")g.innerHTML="손가락으로 자유롭게 그리세요 &nbsp;·&nbsp; 삭제 버튼으로 지우기";
+    else g.innerHTML="선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동";
+  };
+  window.tcToggleCover=function(){TC.showCover=!TC.showCover;const b=document.getElementById("tc-btnCover");b.textContent=TC.showCover?"⭕ 커버존 ON":"⭕ 커버존 OFF";b.classList.toggle("tc-cover-on",TC.showCover);tcDraw();};
+  window.tcToggleBall=function(){TC.showBall=!TC.showBall;const b=document.getElementById("tc-btnBall");b.textContent=TC.showBall?"🎾 공 ON":"🎾 공 OFF";b.classList.toggle("tc-ball-on",TC.showBall);tcDraw();};
+  window.tcToggleAngle=function(){TC.showAngle=!TC.showAngle;const b=document.getElementById("tc-btnAngle");b.textContent=TC.showAngle?"📐 타구각 ON":"📐 타구각 OFF";b.classList.toggle("tc-angle-on",TC.showAngle);tcDraw();};
+  window.tcDelDrawings=function(){TC.arrows=[];TC.arrowDraw=null;TC.drawPaths=[];tcDraw();tcShowToast("화살표·그리기 삭제됨");};
+  window.tcReset=function(){TC.selectedKeys.clear();tcApplyPreset(TC.activePreset);TC.ball={x:CX_L,y:NET_Y+60};TC.arrows=[];TC.drawPaths=[];tcDraw();tcShowToast("초기화 완료");};
+
+  function tcOpenPlayerEdit(key){
+    TC.editingKey=key;const p=TC.PINFO[key];
+    document.getElementById("tc-editName").value=p.name||"";
+    document.getElementById("tc-editNumber").value=p.number||"";
+    document.getElementById("tc-editPosition").value=p.position||"";
+    const sw=document.getElementById("tc-colorSwatches");sw.innerHTML="";
+    COLOR_PALETTE.forEach(col=>{
+      const d=document.createElement("div");d.className="tc-color-swatch"+(col===p.main?" tc-sel":"");d.style.background=col;
+      d.onclick=()=>{sw.querySelectorAll(".tc-color-swatch").forEach(x=>x.classList.remove("tc-sel"));d.classList.add("tc-sel");};sw.appendChild(d);
+    });
+    document.getElementById("tc-modalPlayer").style.display="flex";
+  }
+  window.tcEditOk=function(){
+    const key=TC.editingKey,p=TC.PINFO[key];
+    p.name=document.getElementById("tc-editName").value.trim();
+    p.number=document.getElementById("tc-editNumber").value.trim();
+    p.position=document.getElementById("tc-editPosition").value.trim();
+    const sel=document.querySelector("#tc-colorSwatches .tc-color-swatch.tc-sel");
+    if(sel){p.main=sel.style.background;updateDarkTC(key);}
+    document.getElementById("tc-modalPlayer").style.display="none";
+    tcDraw();tcShowToast("선수 정보 저장됨 ✓");
+  };
+
+  window.tcOpenBoardStyle=function(){
+    document.querySelectorAll(".tc-theme-chip").forEach(b=>b.classList.toggle("tc-theme-sel",b.dataset.theme===TC.currentTheme));
+    const ds=document.getElementById("tc-drawColorSwatches");ds.innerHTML="";
+    DRAW_COLORS.forEach(col=>{
+      const d=document.createElement("div");d.className="tc-color-swatch"+(col===TC.drawColor?" tc-sel":"");d.style.background=col;
+      if(col==="#ffffff")d.style.border="2px solid rgba(255,255,255,0.4)";
+      d.onclick=()=>{ds.querySelectorAll(".tc-color-swatch").forEach(x=>x.classList.remove("tc-sel"));d.classList.add("tc-sel");};ds.appendChild(d);
+    });
+    document.getElementById("tc-themeRow").onclick=function(e){const btn=e.target.closest(".tc-theme-chip");if(!btn)return;document.querySelectorAll(".tc-theme-chip").forEach(b=>b.classList.remove("tc-theme-sel"));btn.classList.add("tc-theme-sel");};
+    document.getElementById("tc-modalBoard").style.display="flex";
+  };
+  window.tcBoardOk=function(){
+    const sel=document.querySelector(".tc-theme-chip.tc-theme-sel");if(sel)TC.currentTheme=sel.dataset.theme;
+    const dc=document.querySelector("#tc-drawColorSwatches .tc-color-swatch.tc-sel");if(dc)TC.drawColor=dc.style.background;
+    document.getElementById("tc-modalBoard").style.display="none";tcDraw();tcShowToast("보드 설정 적용됨 ✓");
+  };
+
+  function tcGetState(){return{players:JSON.parse(JSON.stringify(TC.players)),ball:{...TC.ball},arrows:JSON.parse(JSON.stringify(TC.arrows)),drawPaths:JSON.parse(JSON.stringify(TC.drawPaths)),PINFO:JSON.parse(JSON.stringify(TC.PINFO)),currentTheme:TC.currentTheme,activePreset:TC.activePreset,showCover:TC.showCover,showBall:TC.showBall,showAngle:TC.showAngle,drawColor:TC.drawColor};}
+  function tcLoadState(s){if(!s)return;if(s.players)TC.players=s.players;if(s.ball)TC.ball=s.ball;if(s.arrows)TC.arrows=s.arrows;if(s.drawPaths)TC.drawPaths=s.drawPaths;if(s.PINFO)TC.PINFO=s.PINFO;if(s.currentTheme)TC.currentTheme=s.currentTheme;if(s.activePreset)TC.activePreset=s.activePreset;if(s.showCover!==undefined)TC.showCover=s.showCover;if(s.showBall!==undefined)TC.showBall=s.showBall;if(s.showAngle!==undefined)TC.showAngle=s.showAngle;if(s.drawColor)TC.drawColor=s.drawColor;tcDraw();}
+
+  window.tcSave=function(){document.getElementById("tc-saveNameInput").value="";document.getElementById("tc-modalSave").style.display="flex";setTimeout(()=>document.getElementById("tc-saveNameInput").focus(),100);};
+  window.tcSaveOk=function(){
+    const name=document.getElementById("tc-saveNameInput").value.trim()||"전술판";
+    const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+    saves.unshift({name,date:new Date().toLocaleString("ko-KR"),state:tcGetState()});
+    if(saves.length>20)saves.pop();
+    localStorage.setItem("niji_tactics_saves",JSON.stringify(saves));
+    document.getElementById("tc-modalSave").style.display="none";
+    tcShowToast(`"${name}" 저장 완료! 💾`);
+  };
+
+  window.tcLoad=function(){
+    const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+    const list=document.getElementById("tc-slotList");list.innerHTML="";
+    if(saves.length===0){list.innerHTML="<div style='text-align:center;color:#3e5f70;font-size:12px;padding:20px;'>저장된 전술판이 없어요</div>";}
+    else{
+      saves.forEach((s,i)=>{
+        const row=document.createElement("div");
+        row.style.cssText="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.05);margin-bottom:6px;cursor:pointer;";
+        row.innerHTML=`<div style="flex:1;"><div style="font-size:13px;color:#ddf0f8;">${s.name}</div><div style="font-size:10px;color:#4e7a8a;">${s.date}</div></div><button style="padding:2px 8px;border-radius:8px;border:none;background:rgba(248,113,113,0.15);color:#f87171;font-size:11px;cursor:pointer;" data-i="${i}">삭제</button>`;
+        row.addEventListener("click",e=>{
+          if(e.target.dataset.i!==undefined){saves.splice(parseInt(e.target.dataset.i),1);localStorage.setItem("niji_tactics_saves",JSON.stringify(saves));window.tcLoad();return;}
+          tcLoadState(s.state);document.getElementById("tc-modalLoad").style.display="none";tcShowToast(`"${s.name}" 불러오기 완료! 📂`);
+        });list.appendChild(row);
+      });
+    }
+    document.getElementById("tc-modalLoad").style.display="flex";
+  };
+
+  window.tcShare=function(){
+    const json=JSON.stringify(tcGetState());const b64=btoa(unescape(encodeURIComponent(json)));
+    const url=location.href.split("?")[0]+"?tc="+b64;
+    document.getElementById("tc-shareLinkBox").textContent=url;document.getElementById("tc-modalShare").style.display="flex";
+  };
+  window.tcCopyShare=function(){
+    const link=document.getElementById("tc-shareLinkBox").textContent;
+    navigator.clipboard.writeText(link).then(()=>tcShowToast("링크 복사됨! 카카오톡에 붙여넣기 🔗")).catch(()=>{const ta=document.createElement("textarea");ta.value=link;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);tcShowToast("링크 복사됨! 📋");});
+    document.getElementById("tc-modalShare").style.display="none";
+  };
+
+  let tcToastTimer=null;
+  window.tcShowToast=function(msg){const t=document.getElementById("tc-toast");t.textContent=msg;t.style.opacity="1";clearTimeout(tcToastTimer);tcToastTimer=setTimeout(()=>t.style.opacity="0",2200);};
+
+  window.addEventListener("resize",()=>{if(document.getElementById("tacticsModal").style.display!=="none")tcLayoutCanvas();});
+})();
 </script>
 </body>
 </html>
