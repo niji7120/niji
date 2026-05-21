@@ -1198,7 +1198,7 @@
 
             <!-- 줄 6: 라켓 선택 -->
             <div style="margin-bottom:8px;" id="racketSelectGroup">
-              <div class="form-label" style="margin-bottom:4px;">🎾 사용 라켓 (선택)</div>
+              <div class="form-label" id="racketSelectLabel" style="margin-bottom:4px;">🎾 사용 라켓 (선택)</div>
               <select class="form-select" id="matchRacket" style="padding:9px 12px;font-size:14px;">
                 <option value="">선택 안 함</option>
               </select>
@@ -3391,8 +3391,8 @@ function renderStringBanner() {
           return false;
         }
       }
-      // 라켓 필터
-      if (!m.racketUsed) return true;
+      // 라켓 필터: 라켓을 선택하지 않은 경기는 카운트에서 제외
+      if (!m.racketUsed) return false;
       return m.racketUsed === racketKey;
     }).length;
   }
@@ -3586,6 +3586,11 @@ function saveMatch() {
   if (!format) { showToast('⚠️ 형식을 선택하세요'); return; }
   if (!opponent) { showToast('⚠️ 상대를 입력하세요'); return; }
   if (!state.currentResult) { showToast('⚠️ 결과를 선택하세요'); return; }
+  // 라켓이 등록된 경우에만 선택 필수
+  const _racketVal = document.getElementById('matchRacket').value;
+  const _p = state.profile || {};
+  const _hasRacket = (_p.racket || '').trim() !== '' || (_p.racket2 || '').trim() !== '';
+  if (_hasRacket && !_racketVal) { showToast('⚠️ 사용한 라켓을 선택하세요'); return; }
 
   const matchData = {
     date,
@@ -3693,7 +3698,7 @@ function _matchCardHTML(m) {
       </div>
     </div>
     <div class="match-item-main">
-      <div class="match-team" style="font-size:12px;">${state.profile.name || '나'}${m.partner ? '<br><span style="color:var(--text-muted);font-size:11px;">+'+m.partner+'</span>' : ''}</div>
+      <div class="match-team" style="font-size:12px;">${escHtml(state.profile.name || '나')}${m.partner ? '<br><span style="color:var(--text-muted);font-size:11px;">+'+escHtml(m.partner)+'</span>' : ''}</div>
       <div>
         ${scoreStr ? `<div class="match-score-big ${win ? 'match-score-win' : 'match-score-lose'}">${scoreStr}${tiebreakStr}</div>` : `<div style="color:var(--text-muted);font-size:12px;">VS</div>`}
       </div>
@@ -3872,18 +3877,26 @@ function toggleMatchForm() {
 function updateMatchRacketOptions() {
   const sel = document.getElementById('matchRacket');
   const noRegMsg = document.getElementById('racketNoRegMsg');
+  const racketLabel = document.getElementById('racketSelectLabel');
   if (!sel) return;
   const p = state.profile || {};
   const r1 = p.racket  || '';
   const r2 = p.racket2 || '';
   const hasR1 = r1.trim() !== '';
   const hasR2 = r2.trim() !== '';
+  const hasAny = hasR1 || hasR2;
 
-  let options = `<option value="">선택 안 함</option>`;
+  // 라켓 등록된 경우: 필수 선택 / 미등록: 선택 안 함 허용
+  let options = hasAny ? `<option value="">-- 라켓 선택 (필수) --</option>` : `<option value="">선택 안 함</option>`;
   if (hasR1) options += `<option value="racket1">🎾 R1 · ${escHtml(r1)}</option>`;
   if (hasR2) options += `<option value="racket2">🎾 R2 · ${escHtml(r2)}</option>`;
 
   sel.innerHTML = options;
+
+  // 라벨 텍스트 변경 (라켓 등록 여부에 따라)
+  if (racketLabel) {
+    racketLabel.textContent = hasAny ? '🎾 사용 라켓 (필수)' : '🎾 사용 라켓 (선택)';
+  }
 
   // 라켓이 하나도 없으면 안내 메시지 표시
   if (noRegMsg) {
