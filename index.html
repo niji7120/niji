@@ -171,6 +171,9 @@
   .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
   /* 프로필 페이지는 패딩 제거 */
   .content:has(#page-profile.active) { padding: 0; }
+  /* 대회 탭 스코어 모드: score-root 보일 때 패딩 없앰 */
+  .content:has(#score-root[style*="display: block"]) { padding: 0 !important; overflow-x: hidden; }
+  .content:has(#score-root:not([style*="display: none"])) #page-tournament { padding: 0; }
 
   /* ===== BOTTOM NAV ===== */
   .nav {
@@ -2652,6 +2655,12 @@ function showPage(name) {
   // 스크롤 맨 위로 초기화
   const content = document.querySelector('.content');
   if (content) content.scrollTop = 0;
+  // 스코어 탭이 아닌 다른 페이지로 이동 시 레이아웃 원상복구
+  if (name !== 'tournament') {
+    if (content) { content.style.padding = '16px'; content.style.overflowX = 'auto'; }
+    var appEl = document.getElementById('app');
+    if (appEl) appEl.style.maxWidth = '480px';
+  }
   if (name === 'stats') { renderStats(); syncSportTab(); }
   if (name === 'players') renderPlayers();
   if (name === 'match') { renderMatchList(); if (!state.editingMatchId) setTodayDate(); updateMatchSportBadge(); updateMatchRacketOptions(); }
@@ -5490,6 +5499,13 @@ function switchContestTab(tab) {
     b.style.background = 'var(--surface2)'; b.style.color = 'var(--text-muted)';
   });
   [hanulEl, tourEl, scoreEl].forEach(function(e) { e.style.display = 'none'; });
+  // 스코어 탭이 아닐 때 레이아웃 원상복구
+  if (tab !== 'score') {
+    var contentEl = document.querySelector('.content');
+    if (contentEl) { contentEl.style.padding = '16px'; contentEl.style.overflowX = 'auto'; }
+    var appEl = document.getElementById('app');
+    if (appEl) appEl.style.maxWidth = '480px';
+  }
   if (tab === 'hanul') {
     hanulBtn.style.background = 'var(--accent)'; hanulBtn.style.color = '#fff';
     hanulEl.style.display = 'block';
@@ -5499,12 +5515,9 @@ function switchContestTab(tab) {
     tourEl.style.display  = 'block';
     renderTnList();
   } else if (tab === 'score') {
-    // 스코어보드는 전체화면 오버레이로 열기
-    openScoreboardOverlay();
-    // 탭 버튼 상태 되돌림
-    setTimeout(function() {
-      scoreBtn.style.background = 'var(--surface2)'; scoreBtn.style.color = 'var(--text-muted)';
-    }, 300);
+    scoreBtn.style.background = 'var(--accent)'; scoreBtn.style.color = '#fff';
+    scoreEl.style.display = 'block';
+    renderScoreboardInline();
   }
 }
 
@@ -5634,6 +5647,22 @@ var _sb = {
 var _sbPTXT = ['0','15','30','40'];
 var _sbStatusTimer = null;
 
+// 인라인(탭 안) 렌더링 함수
+function renderScoreboardInline() {
+  var el = document.getElementById('score-root');
+  if (!el) return;
+  // content 영역을 가로로 꽉 차게 확장
+  var contentEl = document.querySelector('.content');
+  if (contentEl) {
+    contentEl.style.padding = '0';
+    contentEl.style.overflowX = 'hidden';
+  }
+  // #app 최대 너비 제한 해제
+  var appEl = document.getElementById('app');
+  if (appEl) appEl.style.maxWidth = '100%';
+  renderScoreboard();
+}
+
 function renderScoreboard() {
   // 오버레이 안의 score-root 우선, 없으면 일반 페이지 score-root
   var el = document.querySelector('#sb-overlay #score-root') || document.getElementById('score-root');
@@ -5641,44 +5670,47 @@ function renderScoreboard() {
   var n1 = _sb.names[0], n2 = _sb.names[1];
   el.innerHTML = `
 <style>
-  #sb-main-wrap { display:block !important; width:100%; height:100%; }
-  #sb-rotate-msg { display:none !important; }
+  /* ===== 스코어보드 가로 전체화면 레이아웃 ===== */
+  #score-root { background:#050810; width:100vw; margin-left:calc(-20px); overflow:hidden; }
+  #sb-main-wrap { display:flex !important; flex-direction:row; width:100%; min-height:0; }
 
-  #sb-wrap { background:#050810; border-radius:0; overflow:hidden; position:relative; user-select:none; width:100%; height:100%; display:flex; flex-direction:column; }
-  #sb-topbar { display:flex; align-items:center; justify-content:center; height:44px; border-bottom:1px solid #0d1020; position:relative; background:#050810; }
-  #sb-match-title { font-family:'Orbitron',sans-serif; font-size:12px; color:#ffd84d; letter-spacing:3px; font-weight:700; }
-  #sb-set-disp { position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:11px; color:#7a7aaa; letter-spacing:1px; font-family:'Orbitron',sans-serif; }
+  /* 왼쪽: 점수판 (세로 가득) */
+  #sb-scorepanel { flex:1; display:flex; flex-direction:column; background:#050810; min-width:0; }
+  #sb-topbar { display:flex; align-items:center; justify-content:center; height:42px; border-bottom:1px solid #0d1020; position:relative; background:#050810; flex-shrink:0; }
+  #sb-match-title { font-family:'Orbitron',sans-serif; font-size:11px; color:#ffd84d; letter-spacing:2px; font-weight:700; }
+  #sb-set-disp { position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:10px; color:#7a7aaa; letter-spacing:1px; font-family:'Orbitron',sans-serif; }
   #sb-set-disp span { color:#fff; font-weight:700; }
-  #sb-score-area { display:grid; grid-template-columns:1fr 3px 1fr; flex:1; min-height:0; }
-  .sb-pb { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px 8px; background:#050810; position:relative; cursor:pointer; }
+
+  #sb-score-area { display:grid; grid-template-columns:1fr 3px 1fr; flex:1; min-height:160px; }
+  .sb-pb { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px 6px; background:#050810; position:relative; cursor:pointer; }
   .sb-pb.serving { background:rgba(173,255,47,0.03); }
-  .sb-serve-dot { width:10px; height:10px; border-radius:50%; background:transparent; border:2px solid #7a7aaa; position:absolute; top:10px; transition:all .3s; }
+  .sb-serve-dot { width:9px; height:9px; border-radius:50%; background:transparent; border:2px solid #7a7aaa; position:absolute; top:8px; transition:all .3s; }
   .sb-serve-dot.on { background:radial-gradient(circle at 35% 35%,#ccff00,#88cc00); border-color:transparent; box-shadow:0 0 10px rgba(180,255,0,.7); animation:sbServePulse 1.4s ease-in-out infinite; }
   @keyframes sbServePulse { 0%,100%{box-shadow:0 0 8px rgba(180,255,0,.5);}50%{box-shadow:0 0 18px rgba(180,255,0,.9);} }
-  .sb-pname { font-family:'Orbitron',sans-serif; font-size:clamp(12px,3vw,16px); color:#fff; letter-spacing:2px; font-weight:700; text-align:center; margin-bottom:4px; }
-  .sb-pts { font-family:'Bebas Neue',sans-serif; font-size:clamp(70px,18vw,140px); line-height:.9; color:#fff; font-weight:900; -webkit-text-stroke:2px #ffd84d; text-shadow:0 0 20px rgba(255,255,255,.8),0 0 40px rgba(255,216,77,.4); letter-spacing:-1px; }
+  .sb-pname { font-family:'Orbitron',sans-serif; font-size:clamp(10px,2.5vw,14px); color:#fff; letter-spacing:2px; font-weight:700; text-align:center; margin-bottom:2px; }
+  .sb-pts { font-family:'Bebas Neue',sans-serif; font-size:clamp(60px,13vw,110px); line-height:.9; color:#fff; font-weight:900; -webkit-text-stroke:2px #ffd84d; text-shadow:0 0 20px rgba(255,255,255,.8),0 0 40px rgba(255,216,77,.4); letter-spacing:-1px; }
   .sb-pts.deuce-ad { color:#ccff00; -webkit-text-stroke:2px rgba(180,255,0,.4); text-shadow:0 0 20px rgba(180,255,0,.8),0 0 50px rgba(180,255,0,.4); }
   #sb-divider { width:3px; background:linear-gradient(to bottom,transparent,#ffd84d 20%,#ffd84d 80%,transparent); opacity:.5; }
-  #sb-game-row { display:flex; align-items:center; justify-content:center; height:40px; gap:24px; background:#050810; border-top:1px solid #0d1020; }
-  .sb-gscore { font-family:'Bebas Neue',sans-serif; font-size:clamp(22px,5vw,36px); color:#fff; letter-spacing:2px; }
+  #sb-game-row { display:flex; align-items:center; justify-content:center; height:38px; gap:20px; background:#050810; border-top:1px solid #0d1020; flex-shrink:0; }
+  .sb-gscore { font-family:'Bebas Neue',sans-serif; font-size:clamp(20px,4vw,32px); color:#fff; letter-spacing:2px; }
   .sb-glabel { font-family:'Orbitron',sans-serif; font-size:9px; color:#7a7aaa; letter-spacing:2px; }
-  #sb-status { position:absolute; top:50px; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:11px; color:#ffd84d; letter-spacing:3px; white-space:nowrap; opacity:0; transition:opacity .3s; pointer-events:none; z-index:5; text-shadow:0 0 8px rgba(255,216,77,.6); }
+  #sb-status { position:absolute; top:46px; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:11px; color:#ffd84d; letter-spacing:3px; white-space:nowrap; opacity:0; transition:opacity .3s; pointer-events:none; z-index:5; text-shadow:0 0 8px rgba(255,216,77,.6); }
   #sb-status.show { opacity:1; }
-  #sb-tap-hint { text-align:center; padding:6px 0 10px; font-family:'Orbitron',sans-serif; font-size:10px; color:#7a7aaa; letter-spacing:2px; background:#050810; animation:sbBlink 2.5s ease-in-out infinite; }
-  @keyframes sbBlink { 0%,100%{opacity:.4;}50%{opacity:.9;} }
-  /* 컨트롤 패널 */
-  #sb-ctrl { background:#0d0f1e; border-top:2px solid #1a6bff; border-radius:0 0 16px 16px; padding:12px 12px 16px; }
-  .sb-tab-row { display:flex; gap:6px; margin-bottom:10px; }
-  .sb-tab-btn { flex:1; font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:1px; padding:8px 4px; background:#050810; border:1px solid #1a1a2e; color:#7a7aaa; border-radius:4px; cursor:pointer; transition:all .2s; }
+  #sb-tap-hint { display:none; }
+
+  /* 오른쪽: 컨트롤 패널 */
+  #sb-ctrl { width:200px; min-width:180px; max-width:220px; background:#0d0f1e; border-left:2px solid #1a6bff; padding:10px 10px 14px; display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto; }
+  .sb-tab-row { display:flex; gap:4px; margin-bottom:8px; }
+  .sb-tab-btn { flex:1; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:.5px; padding:7px 2px; background:#050810; border:1px solid #1a1a2e; color:#7a7aaa; border-radius:4px; cursor:pointer; transition:all .2s; }
   .sb-tab-btn.active { background:#1a6bff; border-color:#1a6bff; color:#fff; }
   .sb-tab-content { display:none; }
-  .sb-tab-content.active { display:block; }
-  .sb-score-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-  .sb-pctrl { background:#050810; border:1px solid #1a1a2e; border-radius:6px; padding:10px; }
-  .sb-pctrl-name { font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:1px; color:#ffd84d; margin-bottom:6px; }
+  .sb-tab-content.active { display:flex; flex-direction:column; gap:6px; }
+  .sb-score-grid { display:flex; flex-direction:column; gap:8px; }
+  .sb-pctrl { background:#050810; border:1px solid #1a1a2e; border-radius:6px; padding:8px; }
+  .sb-pctrl-name { font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:1px; color:#ffd84d; margin-bottom:5px; }
   .sb-pctrl-name.b { color:#5599ff; }
-  .sb-btn-group { display:flex; gap:5px; margin-bottom:5px; }
-  .sb-btn { font-family:'Orbitron',sans-serif; letter-spacing:.5px; border:none; border-radius:4px; cursor:pointer; transition:all .15s; font-size:11px; padding:8px 6px; flex:1; font-weight:700; }
+  .sb-btn-group { display:flex; gap:4px; margin-bottom:4px; }
+  .sb-btn { font-family:'Orbitron',sans-serif; letter-spacing:.5px; border:none; border-radius:4px; cursor:pointer; transition:all .15s; font-size:10px; padding:7px 4px; flex:1; font-weight:700; }
   .sb-btn:active { transform:scale(.93); }
   .sb-btn-pt { background:#1a6bff; color:#fff; }
   .sb-btn-ace { background:rgba(0,166,81,.15); color:#00a651; border:1px solid #00a651; }
@@ -5687,59 +5719,67 @@ function renderScoreboard() {
   .sb-btn-rst { background:rgba(255,79,79,.07); color:#ff4f4f; border:1px solid rgba(255,79,79,.3); }
   .sb-btn-tb { background:rgba(201,168,76,.12); color:#ffd84d; border:1px solid rgba(201,168,76,.4); }
   /* 폴트 탭 */
-  .sb-fault-info { font-family:'Orbitron',sans-serif; font-size:11px; color:#7a7aaa; letter-spacing:1px; margin-bottom:8px; }
+  .sb-fault-info { font-family:'Orbitron',sans-serif; font-size:10px; color:#7a7aaa; letter-spacing:1px; margin-bottom:6px; }
   .sb-fd { display:flex; gap:6px; margin-top:4px; }
-  .sb-fd-dot { width:16px; height:16px; border-radius:50%; background:#1a1a2e; transition:background .2s; }
+  .sb-fd-dot { width:14px; height:14px; border-radius:50%; background:#1a1a2e; transition:background .2s; }
   .sb-fd-dot.on { background:#ff4f4f; box-shadow:0 0 8px #ff4f4f; }
   /* 설정 탭 */
-  .sb-setup-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .sb-setup-grid { display:flex; flex-direction:column; gap:6px; }
   .sb-setup-item { display:flex; flex-direction:column; gap:3px; }
   .sb-setup-item label { font-family:'Orbitron',sans-serif; font-size:9px; color:#7a7aaa; letter-spacing:1px; }
-  .sb-setup-item input { background:#050810; border:1px solid #1a1a2e; color:#fff; font-family:'Orbitron',sans-serif; font-size:13px; padding:8px; border-radius:4px; outline:none; width:100%; box-sizing:border-box; }
+  .sb-setup-item input { background:#050810; border:1px solid #1a1a2e; color:#fff; font-family:'Orbitron',sans-serif; font-size:12px; padding:7px 8px; border-radius:4px; outline:none; width:100%; box-sizing:border-box; }
   .sb-setup-item input:focus { border-color:#1a6bff; }
-  .sb-btn-apply { width:100%; padding:11px; background:var(--accent); color:#fff; border:none; border-radius:6px; font-family:'Orbitron',sans-serif; font-size:12px; letter-spacing:1px; font-weight:700; cursor:pointer; margin-top:8px; }
+  .sb-btn-apply { width:100%; padding:10px; background:var(--accent); color:#fff; border:none; border-radius:6px; font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:1px; font-weight:700; cursor:pointer; margin-top:6px; }
   /* 위너 */
-  #sb-winner { display:none; background:linear-gradient(135deg,#0d0022,#1a0040); border-radius:16px; padding:32px 20px; text-align:center; }
-  #sb-winner.show { display:block; }
-  .sbw-title { font-family:'Orbitron',sans-serif; font-size:13px; color:#ffd84d; letter-spacing:3px; margin-bottom:8px; }
-  .sbw-name { font-family:'Orbitron',sans-serif; font-size:clamp(20px,5vw,32px); color:#fff; font-weight:900; letter-spacing:2px; margin-bottom:4px; }
-  .sbw-score { font-family:'Bebas Neue',sans-serif; font-size:28px; color:#ffd84d; letter-spacing:3px; margin-bottom:16px; }
-  .sbw-new { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:12px 28px; font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; cursor:pointer; }
+  #sb-winner { display:none; position:absolute; inset:0; background:linear-gradient(135deg,rgba(13,0,34,.97),rgba(26,0,64,.97)); z-index:10; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:20px; }
+  #sb-winner.show { display:flex; }
+  .sbw-title { font-family:'Orbitron',sans-serif; font-size:12px; color:#ffd84d; letter-spacing:3px; margin-bottom:8px; }
+  .sbw-name { font-family:'Orbitron',sans-serif; font-size:clamp(18px,4vw,28px); color:#fff; font-weight:900; letter-spacing:2px; margin-bottom:4px; }
+  .sbw-score { font-family:'Bebas Neue',sans-serif; font-size:26px; color:#ffd84d; letter-spacing:3px; margin-bottom:16px; }
+  .sbw-new { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:11px 26px; font-family:'Orbitron',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; cursor:pointer; }
 </style>
-<div id="sb-main-wrap" style="display:block !important;">
-<div id="sb-wrap">
-  <div id="sb-topbar">
-    <div id="sb-match-title">🎾 ${_sb.title}</div>
-    <div id="sb-set-disp">GAMES <span id="sb-top-g1">0</span> - <span id="sb-top-g2">0</span></div>
-  </div>
-  <div style="position:relative;">
-    <div id="sb-status"></div>
-    <div id="sb-score-area">
-      <div class="sb-pb" id="sb-pb1">
-        <div class="sb-serve-dot" id="sb-sdot1"></div>
-        <div class="sb-pname" id="sb-name1-d">${n1}</div>
-        <div class="sb-pts" id="sb-pts1-d">0</div>
+<div id="sb-main-wrap" style="display:flex !important;">
+  <!-- 왼쪽: 점수판 -->
+  <div id="sb-scorepanel" style="position:relative;">
+    <div id="sb-topbar">
+      <div id="sb-match-title">🎾 ${_sb.title}</div>
+      <div id="sb-set-disp">GAMES <span id="sb-top-g1">0</span> - <span id="sb-top-g2">0</span></div>
+    </div>
+    <div style="position:relative;flex:1;display:flex;flex-direction:column;">
+      <div id="sb-status"></div>
+      <div id="sb-score-area">
+        <div class="sb-pb" id="sb-pb1">
+          <div class="sb-serve-dot" id="sb-sdot1"></div>
+          <div class="sb-pname" id="sb-name1-d">${n1}</div>
+          <div class="sb-pts" id="sb-pts1-d">0</div>
+        </div>
+        <div id="sb-divider"></div>
+        <div class="sb-pb" id="sb-pb2">
+          <div class="sb-serve-dot" id="sb-sdot2"></div>
+          <div class="sb-pname" id="sb-name2-d">${n2}</div>
+          <div class="sb-pts" id="sb-pts2-d">0</div>
+        </div>
       </div>
-      <div id="sb-divider"></div>
-      <div class="sb-pb" id="sb-pb2">
-        <div class="sb-serve-dot" id="sb-sdot2"></div>
-        <div class="sb-pname" id="sb-name2-d">${n2}</div>
-        <div class="sb-pts" id="sb-pts2-d">0</div>
+      <div id="sb-game-row">
+        <div style="text-align:center;">
+          <div class="sb-gscore" id="sb-gsc1">0</div>
+          <div class="sb-glabel">GAMES</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="sb-gscore" id="sb-gsc2">0</div>
+          <div class="sb-glabel">GAMES</div>
+        </div>
       </div>
     </div>
-    <div id="sb-game-row">
-      <div style="text-align:center;">
-        <div class="sb-gscore" id="sb-gsc1">0</div>
-        <div class="sb-glabel">GAMES</div>
-      </div>
-      <div style="text-align:center;">
-        <div class="sb-gscore" id="sb-gsc2">0</div>
-        <div class="sb-glabel">GAMES</div>
-      </div>
+    <!-- 위너 오버레이 -->
+    <div id="sb-winner">
+      <div class="sbw-title">🏆 경기 승자</div>
+      <div class="sbw-name" id="sbw-name">-</div>
+      <div class="sbw-score" id="sbw-score"></div>
+      <button class="sbw-new" onclick="sbResetMatch()">↺ 새 경기</button>
     </div>
   </div>
-  <div id="sb-tap-hint">▲ 아래에서 점수 입력</div>
-  <!-- 컨트롤 패널 -->
+  <!-- 오른쪽: 컨트롤 패널 -->
   <div id="sb-ctrl">
     <div class="sb-tab-row">
       <button class="sb-tab-btn active" onclick="sbSwitchTab('score')">SCORE</button>
@@ -5758,7 +5798,7 @@ function renderScoreboard() {
             <button class="sb-btn sb-btn-ace" onclick="sbAddAce(0)">ACE</button>
             <button class="sb-btn sb-btn-flt" onclick="sbAddFault(0)">FAULT</button>
           </div>
-          <div id="sb-srv-btns-1" class="sb-btn-group" style="display:flex;">
+          <div class="sb-btn-group">
             <button class="sb-btn sb-btn-undo" onclick="sbUndoPoint()">↩ UNDO</button>
           </div>
         </div>
@@ -5771,14 +5811,12 @@ function renderScoreboard() {
             <button class="sb-btn sb-btn-ace" onclick="sbAddAce(1)">ACE</button>
             <button class="sb-btn sb-btn-flt" onclick="sbAddFault(1)">FAULT</button>
           </div>
-          <div id="sb-srv-btns-2" class="sb-btn-group" style="display:flex;">
+          <div class="sb-btn-group">
             <button class="sb-btn sb-btn-rst" onclick="sbResetMatch()">RESET</button>
           </div>
         </div>
       </div>
-      <div style="display:flex;gap:6px;margin-top:8px;">
-        <button class="sb-btn sb-btn-tb" style="flex:1;padding:10px;" onclick="sbSetTiebreak()">🔀 타이브레이크 시작</button>
-      </div>
+      <button class="sb-btn sb-btn-tb" style="padding:9px;margin-top:4px;" onclick="sbSetTiebreak()">🔀 타이브레이크</button>
     </div>
     <!-- 폴트 탭 -->
     <div class="sb-tab-content" id="sb-tab-fault">
@@ -5789,10 +5827,8 @@ function renderScoreboard() {
           <div class="sb-fd-dot" id="sb-fd2"></div>
         </div>
       </div>
-      <div style="display:flex;gap:8px;margin-top:8px;">
-        <button class="sb-btn sb-btn-flt" style="flex:1;padding:10px;" onclick="sbResetFaults()">폴트 초기화</button>
-      </div>
-      <div style="margin-top:10px;font-family:'Orbitron',sans-serif;font-size:10px;color:#7a7aaa;letter-spacing:1px;">
+      <button class="sb-btn sb-btn-flt" style="padding:9px;margin-top:4px;" onclick="sbResetFaults()">폴트 초기화</button>
+      <div style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:10px;color:#7a7aaa;letter-spacing:1px;">
         더블폴트: <span id="sb-df-cnt">0</span>회
       </div>
     </div>
@@ -5807,22 +5843,14 @@ function renderScoreboard() {
           <label>선수 2 이름</label>
           <input id="sb-in-name2" value="${n2}" placeholder="선수 2">
         </div>
-        <div class="sb-setup-item" style="grid-column:1/-1;">
+        <div class="sb-setup-item">
           <label>경기 제목</label>
           <input id="sb-in-title" value="${_sb.title}" placeholder="경기 제목">
         </div>
       </div>
-      <button class="sb-btn-apply" onclick="sbApplySetup()">✔ 적용하기</button>
+      <button class="sb-btn-apply" onclick="sbApplySetup()">✔ 적용</button>
     </div>
   </div>
-  <!-- 위너 화면 -->
-  <div id="sb-winner">
-    <div class="sbw-title">🏆 경기 승자</div>
-    <div class="sbw-name" id="sbw-name">-</div>
-    <div class="sbw-score" id="sbw-score"></div>
-    <button class="sbw-new" onclick="sbResetMatch()">↺ 새 경기</button>
-  </div>
-</div>
 </div>
   `;
   sbRender();
