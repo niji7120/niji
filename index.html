@@ -5633,8 +5633,8 @@ function renderScoreboard() {
   var n1 = _sb.names[0], n2 = _sb.names[1];
   el.innerHTML = `
 <style>
-  #sb-main-wrap { display:block; width:100%; }
-  #sb-rotate-msg { display:none; }   /* 오버레이에서 항상 가로 → 안내 불필요 */
+  #sb-main-wrap { display:block !important; width:100%; }
+  #sb-rotate-msg { display:none !important; }
 
   #sb-wrap { background:#050810; border-radius:16px; overflow:hidden; position:relative; user-select:none; }
   #sb-topbar { display:flex; align-items:center; justify-content:center; height:44px; border-bottom:1px solid #0d1020; position:relative; background:#050810; }
@@ -5698,8 +5698,7 @@ function renderScoreboard() {
   .sbw-score { font-family:'Bebas Neue',sans-serif; font-size:28px; color:#ffd84d; letter-spacing:3px; margin-bottom:16px; }
   .sbw-new { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:12px 28px; font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; cursor:pointer; }
 </style>
-<!-- 스코어보드 본문 -->
-<div id="sb-main-wrap">
+<div id="sb-main-wrap" style="display:block !important;">
 <div id="sb-wrap">
   <div id="sb-topbar">
     <div id="sb-match-title">🎾 ${_sb.title}</div>
@@ -5820,6 +5819,9 @@ function renderScoreboard() {
   `;
   sbRender();
   sbUpdateFaultDots();
+  // 혹시라도 숨겨진 경우 강제 표시
+  var mw = document.getElementById('sb-main-wrap');
+  if (mw) mw.style.display = 'block';
 }
 
 function sbSwitchTab(name) {
