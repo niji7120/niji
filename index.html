@@ -5499,11 +5499,12 @@ function switchContestTab(tab) {
     tourEl.style.display  = 'block';
     renderTnList();
   } else if (tab === 'score') {
-    scoreBtn.style.background = 'var(--accent)'; scoreBtn.style.color = '#fff';
-    scoreEl.style.display = 'block';
-    renderScoreboard();
-    // 렌더 후 JS로 가로/세로 판별하여 표시 전환
-    setTimeout(sbCheckOrientation, 50);
+    // 스코어보드는 전체화면 오버레이로 열기
+    openScoreboardOverlay();
+    // 탭 버튼 상태 되돌림
+    setTimeout(function() {
+      scoreBtn.style.background = 'var(--surface2)'; scoreBtn.style.color = 'var(--text-muted)';
+    }, 300);
   }
 }
 
@@ -5518,26 +5519,93 @@ function renderTournamentSection() {
   switchContestTab(_contestTab);
 }
 
-// ===== 스코어보드 가로/세로 감지 (JS 기반) =====
-function sbCheckOrientation() {
-  var rotMsg  = document.getElementById('sb-rotate-msg');
-  var mainWrap = document.getElementById('sb-main-wrap');
-  if (!rotMsg || !mainWrap) return;
-  // 앱 컨테이너 실제 너비/높이로 판별 (CSS orientation은 앱 내에서 불안정)
-  var isLandscape = window.innerWidth > window.innerHeight;
-  rotMsg.style.display  = isLandscape ? 'none'  : 'flex';
-  mainWrap.style.display = isLandscape ? 'block' : 'none';
-}
-// 화면 회전/크기 변경 시 자동 갱신
-window.addEventListener('resize', function() {
-  if (document.getElementById('score-root') &&
-      document.getElementById('score-root').style.display !== 'none') {
-    sbCheckOrientation();
+// ===== 스코어보드 전체화면 오버레이 =====
+function openScoreboardOverlay() {
+  // 기존 오버레이 있으면 제거
+  var old = document.getElementById('sb-overlay');
+  if (old) old.remove();
+
+  // 오버레이 컨테이너 생성
+  var overlay = document.createElement('div');
+  overlay.id = 'sb-overlay';
+  overlay.style.cssText = [
+    'position:fixed',
+    'top:0', 'left:0',
+    'width:100vw', 'height:100vh',
+    'background:#050810',
+    'z-index:9999',
+    'display:flex',
+    'align-items:center',
+    'justify-content:center',
+    'overflow:hidden'
+  ].join(';');
+
+  // 내부 회전 래퍼: CSS rotate로 강제 가로
+  var inner = document.createElement('div');
+  inner.id = 'sb-overlay-inner';
+  inner.style.cssText = [
+    // 세로폰 기준: 너비=화면높이, 높이=화면너비 로 설정 후 90도 회전
+    'width:' + window.innerHeight + 'px',
+    'height:' + window.innerWidth + 'px',
+    'transform:rotate(90deg)',
+    'transform-origin:center center',
+    'overflow:hidden',
+    'position:relative'
+  ].join(';');
+
+  // 닫기 버튼 (회전 후 기준 우상단)
+  var closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕ 닫기';
+  closeBtn.style.cssText = [
+    'position:absolute',
+    'top:10px', 'right:10px',
+    'z-index:10',
+    'background:rgba(255,255,255,0.1)',
+    'color:#fff',
+    'border:1px solid rgba(255,255,255,0.2)',
+    'border-radius:20px',
+    'padding:6px 14px',
+    'font-size:12px',
+    'font-family:Noto Sans KR,sans-serif',
+    'cursor:pointer',
+    'letter-spacing:1px'
+  ].join(';');
+  closeBtn.onclick = function() { overlay.remove(); };
+
+  // 스코어보드 콘텐츠 div
+  var sbContent = document.createElement('div');
+  sbContent.id = 'score-root';
+  sbContent.style.cssText = 'width:100%;height:100%;overflow-y:auto;overflow-x:hidden;';
+
+  inner.appendChild(closeBtn);
+  inner.appendChild(sbContent);
+  overlay.appendChild(inner);
+  document.body.appendChild(overlay);
+
+  // 가로모드일 때는 회전 없이 그대로
+  function applyRotation() {
+    var W = window.innerWidth, H = window.innerHeight;
+    if (W >= H) {
+      // 이미 가로: 회전 없이 전체화면
+      inner.style.width  = W + 'px';
+      inner.style.height = H + 'px';
+      inner.style.transform = 'none';
+    } else {
+      // 세로: 90도 회전하여 가로처럼 표시
+      inner.style.width  = H + 'px';
+      inner.style.height = W + 'px';
+      inner.style.transform = 'rotate(90deg)';
+    }
   }
-});
-window.addEventListener('orientationchange', function() {
-  setTimeout(sbCheckOrientation, 200);
-});
+  applyRotation();
+  window.addEventListener('resize', applyRotation);
+  overlay.addEventListener('remove', function() {
+    window.removeEventListener('resize', applyRotation);
+  });
+
+  // DOM이 붙은 후 렌더 (타이밍 보장)
+  setTimeout(function() { renderScoreboard(); }, 30);
+}
 
 // ===== 스코어보드 기능 =====
 var _sb = {
@@ -5559,25 +5627,14 @@ var _sbPTXT = ['0','15','30','40'];
 var _sbStatusTimer = null;
 
 function renderScoreboard() {
-  var el = document.getElementById('score-root');
+  // 오버레이 안의 score-root 우선, 없으면 일반 페이지 score-root
+  var el = document.querySelector('#sb-overlay #score-root') || document.getElementById('score-root');
   if (!el) return;
   var n1 = _sb.names[0], n2 = _sb.names[1];
   el.innerHTML = `
 <style>
-  /* 세로모드 안내 */
-  #sb-rotate-msg {
-    display:none;
-    flex-direction:column; align-items:center; justify-content:center;
-    background:#050810; border-radius:16px;
-    min-height:220px; padding:40px 20px; text-align:center;
-  }
-  #sb-rotate-msg .rot-icon { font-size:48px; animation:sbRotateAnim 1.5s ease-in-out infinite; }
-  @keyframes sbRotateAnim { 0%,100%{transform:rotate(0deg);}50%{transform:rotate(90deg);} }
-  #sb-rotate-msg .rot-text { font-family:'Orbitron',sans-serif; font-size:13px; color:#ffd84d; letter-spacing:2px; margin-top:14px; }
-  #sb-rotate-msg .rot-sub  { font-family:'Orbitron',sans-serif; font-size:10px; color:#7a7aaa; letter-spacing:1px; margin-top:6px; }
-
-  #sb-main-wrap { display:block; }
-  /* orientation은 JS로 제어 (CSS 미디어쿼리가 앱 내에서 불안정) */
+  #sb-main-wrap { display:block; width:100%; }
+  #sb-rotate-msg { display:none; }   /* 오버레이에서 항상 가로 → 안내 불필요 */
 
   #sb-wrap { background:#050810; border-radius:16px; overflow:hidden; position:relative; user-select:none; }
   #sb-topbar { display:flex; align-items:center; justify-content:center; height:44px; border-bottom:1px solid #0d1020; position:relative; background:#050810; }
@@ -5641,13 +5698,7 @@ function renderScoreboard() {
   .sbw-score { font-family:'Bebas Neue',sans-serif; font-size:28px; color:#ffd84d; letter-spacing:3px; margin-bottom:16px; }
   .sbw-new { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:12px 28px; font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; cursor:pointer; }
 </style>
-<!-- 세로모드 안내 -->
-<div id="sb-rotate-msg">
-  <div class="rot-icon">📱</div>
-  <div class="rot-text">화면을 가로로 돌려주세요</div>
-  <div class="rot-sub">스코어보드는 가로 화면에서 사용할 수 있어요</div>
-</div>
-<!-- 가로모드 본문 -->
+<!-- 스코어보드 본문 -->
 <div id="sb-main-wrap">
 <div id="sb-wrap">
   <div id="sb-topbar">
