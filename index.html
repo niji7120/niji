@@ -5544,13 +5544,14 @@ function openScoreboardOverlay() {
   var inner = document.createElement('div');
   inner.id = 'sb-overlay-inner';
   inner.style.cssText = [
-    // 세로폰 기준: 너비=화면높이, 높이=화면너비 로 설정 후 90도 회전
     'width:' + window.innerHeight + 'px',
     'height:' + window.innerWidth + 'px',
     'transform:rotate(90deg)',
     'transform-origin:center center',
     'overflow:hidden',
-    'position:relative'
+    'position:relative',
+    'margin:0',
+    'padding:0'
   ].join(';');
 
   // 닫기 버튼 (회전 후 기준 우상단)
@@ -5575,7 +5576,7 @@ function openScoreboardOverlay() {
   // 스코어보드 콘텐츠 div
   var sbContent = document.createElement('div');
   sbContent.id = 'score-root';
-  sbContent.style.cssText = 'width:100%;height:100%;overflow-y:auto;overflow-x:hidden;';
+  sbContent.style.cssText = 'width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column;';
 
   inner.appendChild(closeBtn);
   inner.appendChild(sbContent);
@@ -5590,11 +5591,18 @@ function openScoreboardOverlay() {
       inner.style.width  = W + 'px';
       inner.style.height = H + 'px';
       inner.style.transform = 'none';
+      inner.style.marginTop = '0';
+      inner.style.marginLeft = '0';
     } else {
-      // 세로: 90도 회전하여 가로처럼 표시
+      // 세로: 90도 회전 → 가로로 꽉 차게
+      // 회전 후 width=H, height=W 가 되도록 설정
       inner.style.width  = H + 'px';
       inner.style.height = W + 'px';
       inner.style.transform = 'rotate(90deg)';
+      // 회전 중심 보정 (화면 정중앙에 맞추기)
+      inner.style.position = 'absolute';
+      inner.style.top  = Math.round((H - W) / 2) + 'px';
+      inner.style.left = Math.round((W - H) / 2) + 'px';
     }
   }
   applyRotation();
@@ -5633,15 +5641,15 @@ function renderScoreboard() {
   var n1 = _sb.names[0], n2 = _sb.names[1];
   el.innerHTML = `
 <style>
-  #sb-main-wrap { display:block !important; width:100%; }
+  #sb-main-wrap { display:block !important; width:100%; height:100%; }
   #sb-rotate-msg { display:none !important; }
 
-  #sb-wrap { background:#050810; border-radius:16px; overflow:hidden; position:relative; user-select:none; }
+  #sb-wrap { background:#050810; border-radius:0; overflow:hidden; position:relative; user-select:none; width:100%; height:100%; display:flex; flex-direction:column; }
   #sb-topbar { display:flex; align-items:center; justify-content:center; height:44px; border-bottom:1px solid #0d1020; position:relative; background:#050810; }
   #sb-match-title { font-family:'Orbitron',sans-serif; font-size:12px; color:#ffd84d; letter-spacing:3px; font-weight:700; }
   #sb-set-disp { position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:11px; color:#7a7aaa; letter-spacing:1px; font-family:'Orbitron',sans-serif; }
   #sb-set-disp span { color:#fff; font-weight:700; }
-  #sb-score-area { display:grid; grid-template-columns:1fr 3px 1fr; min-height:180px; }
+  #sb-score-area { display:grid; grid-template-columns:1fr 3px 1fr; flex:1; min-height:0; }
   .sb-pb { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px 8px; background:#050810; position:relative; cursor:pointer; }
   .sb-pb.serving { background:rgba(173,255,47,0.03); }
   .sb-serve-dot { width:10px; height:10px; border-radius:50%; background:transparent; border:2px solid #7a7aaa; position:absolute; top:10px; transition:all .3s; }
