@@ -5698,8 +5698,12 @@ function renderScoreboard() {
   #sb-status.show { opacity:1; }
   #sb-tap-hint { display:none; }
 
-  /* 오른쪽: 컨트롤 패널 */
-  #sb-ctrl { width:200px; min-width:180px; max-width:220px; background:#0d0f1e; border-left:2px solid #1a6bff; padding:10px 10px 14px; display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto; }
+  /* 토글 버튼 */
+  #sb-toggle-btn { position:absolute; bottom:10px; right:10px; z-index:20; background:rgba(26,107,255,0.85); color:#fff; border:none; border-radius:50%; width:44px; height:44px; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 12px rgba(26,107,255,.5); transition:background .2s; }
+  #sb-toggle-btn:active { transform:scale(.92); }
+  /* 오른쪽: 컨트롤 패널 (기본 숨김) */
+  #sb-ctrl { width:200px; min-width:180px; max-width:220px; background:#0d0f1e; border-left:2px solid #1a6bff; padding:10px 10px 14px; display:none; flex-direction:column; flex-shrink:0; overflow-y:auto; }
+  #sb-ctrl.open { display:flex; }
   .sb-tab-row { display:flex; gap:4px; margin-bottom:8px; }
   .sb-tab-btn { flex:1; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:.5px; padding:7px 2px; background:#050810; border:1px solid #1a1a2e; color:#7a7aaa; border-radius:4px; cursor:pointer; transition:all .2s; }
   .sb-tab-btn.active { background:#1a6bff; border-color:#1a6bff; color:#fff; }
@@ -5771,6 +5775,8 @@ function renderScoreboard() {
         </div>
       </div>
     </div>
+    <!-- 컨트롤 토글 버튼 -->
+    <button id="sb-toggle-btn" onclick="sbToggleCtrl()" title="컨트롤 열기/닫기">⚙️</button>
     <!-- 위너 오버레이 -->
     <div id="sb-winner">
       <div class="sbw-title">🏆 경기 승자</div>
@@ -5855,9 +5861,20 @@ function renderScoreboard() {
   `;
   sbRender();
   sbUpdateFaultDots();
-  // 혹시라도 숨겨진 경우 강제 표시
-  var mw = document.getElementById('sb-main-wrap');
-  if (mw) mw.style.display = 'block';
+}
+
+function sbToggleCtrl() {
+  var ctrl = document.getElementById('sb-ctrl');
+  var btn  = document.getElementById('sb-toggle-btn');
+  if (!ctrl) return;
+  ctrl.classList.toggle('open');
+  if (ctrl.classList.contains('open')) {
+    btn.textContent = '✕';
+    btn.style.background = 'rgba(255,79,79,0.85)';
+  } else {
+    btn.textContent = '⚙️';
+    btn.style.background = 'rgba(26,107,255,0.85)';
+  }
 }
 
 function sbSwitchTab(name) {
