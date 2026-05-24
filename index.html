@@ -5516,8 +5516,19 @@ function switchContestTab(tab) {
     renderTnList();
   } else if (tab === 'score') {
     scoreBtn.style.background = 'var(--accent)'; scoreBtn.style.color = '#fff';
-    scoreEl.style.display = 'block';
-    loadScoreboardIframe();
+    // 스코어보드는 전체화면 오버레이로 열기 (탭 전환 후 바로)
+    openScoreboardFullscreen();
+    // 탭 버튼 표시는 유지하되 실제 score-root는 숨김 (오버레이로 대체)
+    scoreEl.style.display = 'none';
+    // 탭 원상복구 (오버레이가 닫히면 이전 탭으로)
+    setTimeout(function() {
+      scoreBtn.style.background = 'var(--surface2)';
+      scoreBtn.style.color = 'var(--text-muted)';
+      _contestTab = 'hanul';
+      hanulBtn.style.background = 'var(--accent)'; hanulBtn.style.color = '#fff';
+      hanulEl.style.display = 'block';
+      renderTournamentList();
+    }, 200);
   }
 }
 
@@ -5530,6 +5541,90 @@ function renderTournamentSection() {
     return;
   }
   switchContestTab(_contestTab);
+}
+
+// ===== 스코어보드 전체화면 강제 가로 고정 =====
+function openScoreboardFullscreen() {
+  // 기존 오버레이 있으면 제거
+  var old = document.getElementById('sb-overlay');
+  if (old) old.remove();
+
+  var W = window.innerWidth, H = window.innerHeight;
+  var isPortrait = H > W;
+
+  // 오버레이 (화면 전체)
+  var overlay = document.createElement('div');
+  overlay.id = 'sb-overlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;overflow:hidden;background:#050810;';
+  document.body.appendChild(overlay);
+
+  // 내부 컨테이너: 세로일 때 90도 회전해서 가로처럼 보이게
+  var inner = document.createElement('div');
+  inner.id = 'sb-overlay-inner';
+
+  function applyLayout() {
+    var W2 = window.innerWidth, H2 = window.innerHeight;
+    if (H2 > W2) {
+      // 세로 모드: 90도 회전 → 실제 너비=H2, 높이=W2 로 설정
+      inner.style.cssText = [
+        'position:absolute',
+        'width:' + H2 + 'px',
+        'height:' + W2 + 'px',
+        'top:' + Math.round((H2 - W2) / 2) + 'px',
+        'left:' + Math.round((W2 - H2) / 2) + 'px',
+        'transform:rotate(90deg)',
+        'transform-origin:center center',
+        'overflow:hidden',
+        'background:#050810'
+      ].join(';');
+    } else {
+      // 가로 모드: 그대로
+      inner.style.cssText = [
+        'position:absolute',
+        'width:100%', 'height:100%',
+        'top:0', 'left:0',
+        'overflow:hidden',
+        'background:#050810'
+      ].join(';');
+    }
+  }
+
+  applyLayout();
+  overlay.appendChild(inner);
+
+  // score-root를 inner 안에 생성
+  var scoreDiv = document.createElement('div');
+  scoreDiv.id = 'score-root';
+  scoreDiv.style.cssText = 'width:100%;height:100%;overflow:hidden;position:relative;display:flex;flex-direction:column;';
+  inner.appendChild(scoreDiv);
+
+  // 닫기 버튼 (inner 기준 우상단)
+  var closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕ 닫기';
+  closeBtn.style.cssText = 'position:absolute;top:8px;right:8px;z-index:1000;background:rgba(0,0,0,0.6);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:sans-serif;';
+  closeBtn.onclick = function() {
+    window.removeEventListener('resize', applyLayout);
+    // 원래 페이지 score-root 복구
+    var orig = document.getElementById('score-root');
+    if (orig) orig.parentNode.removeChild(orig);
+    overlay.remove();
+    // 원래 빈 score-root 재생성
+    var blank = document.createElement('div');
+    blank.id = 'score-root';
+    blank.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9000;background:#050810;overflow:hidden;';
+    var pt = document.getElementById('page-tournament');
+    if (pt) pt.appendChild(blank);
+    else document.body.appendChild(blank);
+  };
+  inner.appendChild(closeBtn);
+
+  window.addEventListener('resize', applyLayout);
+
+  // 스코어보드 렌더링
+  setTimeout(function() {
+    renderScoreboard();
+    sbRender();
+  }, 50);
 }
 
 // ===== 스코어보드 전체화면 오버레이 =====
@@ -5669,6 +5764,9 @@ function loadScoreboardIframe() {
       #sb-close-btn { position:fixed; top:10px; left:10px; z-index:10000; background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:20px; padding:6px 14px; font-size:13px; font-family:'Oswald',sans-serif; letter-spacing:1px; cursor:pointer; }
       #sb-rotate-msg { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#0a0d1a; z-index:9999; flex-direction:column; align-items:center; justify-content:center; gap:20px; color:#ffd84d; font-family:'Oswald',sans-serif; letter-spacing:3px; text-align:center; }
       @media (orientation: portrait) { #sb-rotate-msg { display:flex !important; } #sb-scoreboard-wrap { display:none !important; } }
+      /* 오버레이(강제 가로) 모드에서는 rotate 메시지 항상 숨김 */
+      #sb-overlay #sb-rotate-msg { display:none !important; }
+      #sb-overlay #sb-scoreboard-wrap { display:flex !important; }
       #sb-scoreboard-wrap { width:100vw; height:100vh; display:flex; flex-direction:column; position:relative; cursor:pointer; user-select:none; background:#050810; }
       #sb-scoreboard-wrap::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(0,82,204,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,82,204,0.04) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; }
       #sbD-topbar { display:flex; align-items:center; justify-content:center; height:8vh; border-bottom:1px solid #0d1020; flex-shrink:0; z-index:1; position:relative; }
@@ -5858,6 +5956,10 @@ function sbDInitState() {
 }
 
 function sbDirectClose() {
+  // 전체화면 오버레이 방식으로 열렸을 경우 오버레이 제거
+  var overlay = document.getElementById('sb-overlay');
+  if (overlay) { overlay.remove(); return; }
+  // 기존 인라인 방식 fallback
   var el = document.getElementById('score-root');
   if (el) el.style.display = 'none';
   var btn = document.getElementById('ctab-score');
@@ -6008,7 +6110,7 @@ function renderScoreboard() {
   el.innerHTML = `
 <style>
   /* ===== 스코어보드 가로 전체화면 레이아웃 ===== */
-  #score-root { background:#050810; width:100vw; margin-left:calc(-20px); overflow:hidden; }
+  #score-root { background:#050810; width:100%; margin-left:0; overflow:hidden; }
   #sb-main-wrap { display:flex !important; flex-direction:row; width:100%; min-height:0; }
 
   /* 왼쪽: 점수판 (세로 가득) */
