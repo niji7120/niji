@@ -1610,7 +1610,7 @@
       <!-- 토너먼트 섹션 -->
       <div id="tn-root" style="display:none;"><div style="text-align:center;color:var(--text-muted);padding:30px 0;">불러오는 중...</div></div>
       <!-- 스코어보드 섹션 -->
-      <div id="score-root" style="display:none;"></div>
+      <div id="score-root" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9000;background:#050810;overflow:hidden;"></div>
       <div style="height:60px;"></div>
     </div>
   </div>
@@ -5517,7 +5517,7 @@ function switchContestTab(tab) {
   } else if (tab === 'score') {
     scoreBtn.style.background = 'var(--accent)'; scoreBtn.style.color = '#fff';
     scoreEl.style.display = 'block';
-    renderScoreboardInline();
+    loadScoreboardIframe();
   }
 }
 
@@ -5647,7 +5647,344 @@ var _sb = {
 var _sbPTXT = ['0','15','30','40'];
 var _sbStatusTimer = null;
 
-// 인라인(탭 안) 렌더링 함수
+// ===== 스코어보드 직접 렌더링 =====
+function loadScoreboardIframe() {
+  var el = document.getElementById('score-root');
+  if (!el) return;
+
+  // 이미 로드됐으면 그냥 보여주기
+  if (el.querySelector('#sb-scoreboard-wrap')) {
+    el.style.display = 'block';
+    sbDirectRender();
+    return;
+  }
+
+  // CSS 주입
+  if (!document.getElementById('sb-direct-style')) {
+    var st = document.createElement('style');
+    st.id = 'sb-direct-style';
+    st.textContent = `
+      #score-root * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+      #score-root { font-family:'Bebas Neue',sans-serif; }
+      #sb-close-btn { position:fixed; top:10px; left:10px; z-index:10000; background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:20px; padding:6px 14px; font-size:13px; font-family:'Oswald',sans-serif; letter-spacing:1px; cursor:pointer; }
+      #sb-rotate-msg { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#0a0d1a; z-index:9999; flex-direction:column; align-items:center; justify-content:center; gap:20px; color:#ffd84d; font-family:'Oswald',sans-serif; letter-spacing:3px; text-align:center; }
+      @media (orientation: portrait) { #sb-rotate-msg { display:flex !important; } #sb-scoreboard-wrap { display:none !important; } }
+      #sb-scoreboard-wrap { width:100vw; height:100vh; display:flex; flex-direction:column; position:relative; cursor:pointer; user-select:none; background:#050810; }
+      #sb-scoreboard-wrap::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(0,82,204,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,82,204,0.04) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; }
+      #sbD-topbar { display:flex; align-items:center; justify-content:center; height:8vh; border-bottom:1px solid #0d1020; flex-shrink:0; z-index:1; position:relative; }
+      #sbD-match-title { font-family:'Oswald',sans-serif; font-size:clamp(13px,2.2vh,20px); color:#ffd84d; letter-spacing:4px; font-weight:600; }
+      #sbD-set-display { position:absolute; right:3vw; top:50%; transform:translateY(-50%); font-family:'Oswald',sans-serif; font-size:clamp(11px,1.8vh,16px); color:#7a7aaa; letter-spacing:2px; }
+      #sbD-set-display span { color:#fff; font-weight:700; }
+      #sbD-score-area { flex:1; display:flex; align-items:center; justify-content:center; z-index:1; position:relative; }
+      .sbD-player-block { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; position:relative; transition:background 0.3s; }
+      .sbD-player-block.serving { background:rgba(173,255,47,0.03); }
+      .sbD-serve-dot { width:clamp(10px,1.5vh,16px); height:clamp(10px,1.5vh,16px); border-radius:50%; background:transparent; border:2px solid #7a7aaa; position:absolute; top:14%; transition:all 0.3s; }
+      .sbD-serve-dot.on { background:radial-gradient(circle at 35% 35%,#ccff00,#88cc00); border-color:transparent; box-shadow:0 0 12px rgba(180,255,0,0.7); animation:sbDServePulse 1.4s ease-in-out infinite; }
+      @keyframes sbDServePulse { 0%,100%{box-shadow:0 0 8px rgba(180,255,0,0.5);}50%{box-shadow:0 0 20px rgba(180,255,0,0.9);} }
+      .sbD-p-name { font-size:clamp(18px,4.5vh,50px); letter-spacing:3px; color:#fff; text-align:center; margin-bottom:0.5vh; font-family:'Oswald',sans-serif; font-weight:700; text-shadow:0 2px 12px rgba(0,0,0,0.9); }
+      .sbD-p-pts { font-size:clamp(90px,22vw,280px); line-height:0.85; color:#fff; font-weight:900; -webkit-text-stroke:3px #ffd84d; text-shadow:0 0 30px rgba(255,255,255,0.9),0 0 60px rgba(255,216,77,0.5),0 4px 0 rgba(0,0,0,0.9); transition:color 0.15s; letter-spacing:-2px; }
+      .sbD-p-pts.deuce-ad { color:#ccff00; -webkit-text-stroke:3px rgba(180,255,0,0.5); text-shadow:0 0 30px rgba(180,255,0,0.9),0 0 80px rgba(180,255,0,0.5); }
+      #sbD-divider { width:3px; height:60vh; background:linear-gradient(to bottom,transparent,#ffd84d 20%,#ffd84d 80%,transparent); opacity:0.5; flex-shrink:0; }
+      #sbD-game-row { display:flex; align-items:center; justify-content:center; height:7vh; gap:6vw; flex-shrink:0; z-index:1; }
+      .sbD-g-score { font-size:clamp(28px,5.5vh,56px); color:#fff; letter-spacing:2px; font-weight:900; text-shadow:0 0 15px rgba(255,255,255,0.5); }
+      .sbD-g-label { font-size:clamp(8px,1.2vh,12px); color:#aaaacc; letter-spacing:3px; font-family:'Oswald',sans-serif; text-align:center; }
+      #sbD-tap-hint { position:absolute; bottom:2vh; left:50%; transform:translateX(-50%); font-family:'Oswald',sans-serif; font-size:clamp(9px,1.3vh,13px); color:#7a7aaa; letter-spacing:3px; animation:sbDBlink 2.5s ease-in-out infinite; }
+      @keyframes sbDBlink { 0%,100%{opacity:0.4;}50%{opacity:0.9;} }
+      #sbD-status-msg { position:absolute; top:10%; left:50%; transform:translateX(-50%); font-size:clamp(11px,1.8vh,18px); color:#ffd84d; letter-spacing:4px; font-family:'Oswald',sans-serif; white-space:nowrap; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:5; }
+      #sbD-status-msg.show { opacity:1; }
+      /* 컨트롤 패널 */
+      #sbD-ctrl-panel { position:fixed; inset:0; z-index:10050; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; pointer-events:none; }
+      #sbD-ctrl-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(4px); opacity:0; transition:opacity 0.35s; pointer-events:none; }
+      #sbD-ctrl-box { position:relative; width:100%; max-width:900px; background:rgba(5,8,20,0.99); border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:16px 20px 24px; transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.32,0.72,0,1); pointer-events:none; display:flex; flex-direction:column; gap:14px; }
+      #sbD-ctrl-panel.open #sbD-ctrl-backdrop { opacity:1; pointer-events:all; }
+      #sbD-ctrl-panel.open #sbD-ctrl-box { transform:translateY(0); pointer-events:all; }
+      #sbD-close-handle { width:40px; height:4px; background:#7a7aaa; border-radius:2px; margin:0 auto 4px; cursor:pointer; }
+      .sbD-tab-row { display:flex; gap:6px; border-bottom:1px solid #1a1a2e; padding-bottom:10px; }
+      .sbD-tab-btn { flex:1; font-family:'Oswald',sans-serif; font-size:clamp(11px,1.7vh,15px); letter-spacing:1.5px; padding:8px 4px; background:#0d0f1e; border:1px solid #1a1a2e; color:#7a7aaa; border-radius:4px; cursor:pointer; transition:all 0.2s; }
+      .sbD-tab-btn.active { background:#1a6bff; border-color:#1a6bff; color:#fff; }
+      .sbD-tab-content { display:none; }
+      .sbD-tab-content.active { display:flex; flex-direction:column; gap:10px; }
+      .sbD-score-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+      .sbD-p-ctrl { background:#0d0f1e; border:1px solid #1a1a2e; border-radius:6px; padding:12px; display:flex; flex-direction:column; gap:8px; }
+      .sbD-p-ctrl-name { font-family:'Oswald',sans-serif; font-size:clamp(11px,1.6vh,15px); letter-spacing:2px; color:#ffd84d; }
+      .sbD-p-ctrl-name.b { color:#5599ff; }
+      .sbD-btn-group { display:flex; gap:6px; }
+      .sbD-btn { font-family:'Oswald',sans-serif; letter-spacing:1px; border:none; border-radius:4px; cursor:pointer; transition:all 0.15s; font-weight:500; }
+      .sbD-btn:active { transform:scale(0.94); }
+      .sbD-btn-pt { flex:1; padding:clamp(9px,1.5vh,15px) 8px; font-size:clamp(12px,1.7vh,16px); background:#1a6bff; color:#fff; }
+      .sbD-btn-sm { flex:1; padding:clamp(7px,1.1vh,11px) 6px; font-size:clamp(10px,1.3vh,13px); }
+      .sbD-btn-ace { background:rgba(0,166,81,0.15); color:#00a651; border:1px solid #00a651; }
+      .sbD-btn-flt { background:rgba(255,59,59,0.1); color:#ff4f4f; border:1px solid #ff4f4f; }
+      .sbD-btn-undo { background:rgba(255,255,255,0.07); color:#fff; border:1px solid #2a2a4a; }
+      .sbD-btn-rst { background:rgba(255,59,59,0.07); color:#ff4f4f; border:1px solid rgba(255,59,59,0.3); }
+      .sbD-btn-tb { background:rgba(201,168,76,0.12); color:#ffd84d; border:1px solid rgba(201,168,76,0.4); }
+      .sbD-fault-tab { display:flex; flex-direction:column; gap:12px; }
+      .sbD-fault-info { display:flex; align-items:center; gap:12px; font-family:'Oswald',sans-serif; font-size:14px; letter-spacing:1px; color:#7a7aaa; }
+      .sbD-fd { display:flex; gap:8px; }
+      .sbD-fd-dot { width:18px; height:18px; border-radius:50%; background:#1a1a2e; transition:background 0.2s; }
+      .sbD-fd-dot.on { background:#ff4f4f; box-shadow:0 0 8px #ff4f4f; }
+      .sbD-fault-btns { display:flex; gap:8px; }
+      .sbD-setup-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+      .sbD-setup-item { display:flex; flex-direction:column; gap:4px; }
+      .sbD-setup-item label { font-family:'Oswald',sans-serif; font-size:11px; color:#7a7aaa; letter-spacing:2px; }
+      .sbD-setup-item input { background:#0d0f1e; border:1px solid #1a1a2e; color:#fff; font-family:'Oswald',sans-serif; font-size:clamp(13px,2vh,17px); padding:9px 10px; border-radius:4px; outline:none; }
+      .sbD-setup-item input:focus { border-color:#1a6bff; }
+      .sbD-setup-item.full { grid-column:1/-1; }
+      .sbD-btn-apply { width:100%; padding:11px; font-size:14px; letter-spacing:2px; background:#1a6bff; color:#fff; border-radius:4px; border:none; cursor:pointer; font-family:'Oswald',sans-serif; }
+      #sbD-winner { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.93); z-index:10100; flex-direction:column; align-items:center; justify-content:center; gap:20px; }
+      #sbD-winner.show { display:flex; }
+      .sbD-w-title { font-size:clamp(11px,2vh,18px); letter-spacing:6px; color:#7a7aaa; font-family:'Oswald',sans-serif; }
+      .sbD-w-name { font-size:clamp(40px,10vw,100px); color:#ffd84d; letter-spacing:4px; font-family:'Bebas Neue',sans-serif; }
+      .sbD-w-score { font-size:clamp(14px,2.5vh,24px); color:#7a7aaa; letter-spacing:4px; font-family:'Oswald',sans-serif; }
+      .sbD-btn-new { padding:14px 40px; font-size:15px; background:#1a6bff; color:#fff; border-radius:4px; border:none; cursor:pointer; font-family:'Oswald',sans-serif; letter-spacing:2px; }
+    `;
+    document.head.appendChild(st);
+  }
+
+  // HTML 주입
+  el.innerHTML = `
+    <button id="sb-close-btn" onclick="sbDirectClose()">✕ 닫기</button>
+    <div id="sb-rotate-msg">
+      <div style="font-size:60px;">📱</div>
+      <div style="font-size:clamp(16px,4vw,24px);font-weight:700;">가로로 돌려주세요</div>
+      <div style="font-size:clamp(12px,2.5vw,16px);color:#7a7aaa;margin-top:8px;">ROTATE TO LANDSCAPE</div>
+    </div>
+    <div id="sb-scoreboard-wrap" onclick="sbDirectTap(event)">
+      <div id="sbD-topbar">
+        <div id="sbD-match-title">🎾 동호인 테니스</div>
+        <div id="sbD-set-display">게임 <span id="sbD-top-g1">0</span> - <span id="sbD-top-g2">0</span></div>
+      </div>
+      <div id="sbD-status-msg"></div>
+      <div id="sbD-score-area">
+        <div class="sbD-player-block" id="sbD-pb1">
+          <div class="sbD-serve-dot on" id="sbD-sdot1"></div>
+          <div class="sbD-p-name" id="sbD-name1-d">선수 1</div>
+          <div class="sbD-p-pts" id="sbD-pts1-d">0</div>
+        </div>
+        <div id="sbD-divider"></div>
+        <div class="sbD-player-block" id="sbD-pb2">
+          <div class="sbD-serve-dot" id="sbD-sdot2"></div>
+          <div class="sbD-p-name" id="sbD-name2-d">선수 2</div>
+          <div class="sbD-p-pts" id="sbD-pts2-d">0</div>
+        </div>
+      </div>
+      <div id="sbD-game-row">
+        <div style="text-align:right">
+          <div class="sbD-g-label">게임</div>
+          <div id="sbD-gsc1" class="sbD-g-score">0</div>
+        </div>
+        <div style="font-size:clamp(16px,3vh,30px);color:#7a7aaa">—</div>
+        <div>
+          <div class="sbD-g-label">게임</div>
+          <div id="sbD-gsc2" class="sbD-g-score">0</div>
+        </div>
+      </div>
+      <div id="sbD-tap-hint">화면을 탭하면 메뉴가 열립니다</div>
+    </div>
+    <div id="sbD-ctrl-panel">
+      <div id="sbD-ctrl-backdrop" onclick="sbDClosePanel()"></div>
+      <div id="sbD-ctrl-box">
+        <div id="sbD-close-handle" onclick="sbDClosePanel()"></div>
+        <div class="sbD-tab-row">
+          <button class="sbD-tab-btn active" onclick="sbDSwitchTab('score')">🎾 점수</button>
+          <button class="sbD-tab-btn" onclick="sbDSwitchTab('fault')">✖ 폴트</button>
+          <button class="sbD-tab-btn" onclick="sbDSwitchTab('setup')">⚙ 설정</button>
+        </div>
+        <div class="sbD-tab-content active" id="sbD-tab-score">
+          <div class="sbD-score-grid">
+            <div class="sbD-p-ctrl">
+              <div class="sbD-p-ctrl-name" id="sbD-cname1">선수 1</div>
+              <div class="sbD-btn-group"><button class="sbD-btn sbD-btn-pt" onclick="sbDAddPoint(0);sbDClosePanel()">⚡ 포인트</button></div>
+              <div class="sbD-btn-group">
+                <button class="sbD-btn sbD-btn-sm sbD-btn-ace" onclick="sbDAddAce(0);sbDClosePanel()">🎯 에이스</button>
+                <button class="sbD-btn sbD-btn-sm sbD-btn-flt" onclick="sbDAddFault(0);sbDClosePanel()">폴트</button>
+              </div>
+            </div>
+            <div class="sbD-p-ctrl">
+              <div class="sbD-p-ctrl-name b" id="sbD-cname2">선수 2</div>
+              <div class="sbD-btn-group"><button class="sbD-btn sbD-btn-pt" onclick="sbDAddPoint(1);sbDClosePanel()">⚡ 포인트</button></div>
+              <div class="sbD-btn-group">
+                <button class="sbD-btn sbD-btn-sm sbD-btn-ace" onclick="sbDAddAce(1);sbDClosePanel()">🎯 에이스</button>
+                <button class="sbD-btn sbD-btn-sm sbD-btn-flt" onclick="sbDAddFault(1);sbDClosePanel()">폴트</button>
+              </div>
+            </div>
+          </div>
+          <div class="sbD-btn-group">
+            <button class="sbD-btn sbD-btn-sm sbD-btn-undo" onclick="sbDUndoPoint();sbDClosePanel()">↩ 되돌리기</button>
+            <button class="sbD-btn sbD-btn-sm sbD-btn-tb" onclick="sbDSetTiebreak();sbDClosePanel()">🔀 타이브레이크</button>
+            <button class="sbD-btn sbD-btn-sm sbD-btn-rst" onclick="sbDResetMatch();sbDClosePanel()">↺ 초기화</button>
+          </div>
+        </div>
+        <div class="sbD-tab-content" id="sbD-tab-fault">
+          <div class="sbD-fault-tab">
+            <div class="sbD-fault-info">
+              <span>현재 폴트</span>
+              <div class="sbD-fd"><div class="sbD-fd-dot" id="sbD-fd1"></div><div class="sbD-fd-dot" id="sbD-fd2"></div></div>
+              <span style="margin-left:8px">더블폴트: <span id="sbD-df-cnt" style="color:#ff4f4f">0</span>회</span>
+            </div>
+            <div class="sbD-fault-btns">
+              <button class="sbD-btn sbD-btn-sm sbD-btn-flt" style="flex:1;padding:12px;font-size:14px" onclick="sbDAddFault(0);sbDClosePanel()">선수1 폴트</button>
+              <button class="sbD-btn sbD-btn-sm sbD-btn-flt" style="flex:1;padding:12px;font-size:14px" onclick="sbDAddFault(1);sbDClosePanel()">선수2 폴트</button>
+            </div>
+            <button class="sbD-btn sbD-btn-sm sbD-btn-undo" style="width:100%;padding:10px" onclick="sbDResetFaults()">폴트 초기화</button>
+          </div>
+        </div>
+        <div class="sbD-tab-content" id="sbD-tab-setup">
+          <div class="sbD-setup-grid">
+            <div class="sbD-setup-item"><label>선수 1 이름</label><input type="text" id="sbD-in-name1" value="선수 1" placeholder="선수 1 이름"></div>
+            <div class="sbD-setup-item"><label>선수 2 이름</label><input type="text" id="sbD-in-name2" value="선수 2" placeholder="선수 2 이름"></div>
+            <div class="sbD-setup-item full"><label>경기 제목</label><input type="text" id="sbD-in-title" value="동호인 테니스" placeholder="대회명 또는 경기명"></div>
+          </div>
+          <button class="sbD-btn-apply" onclick="sbDApplySetup();sbDClosePanel()">✔ 적용하기</button>
+        </div>
+      </div>
+    </div>
+    <div id="sbD-winner">
+      <div class="sbD-w-title">🏆 경기 승자</div>
+      <div class="sbD-w-name" id="sbD-w-name">-</div>
+      <div class="sbD-w-score" id="sbD-w-score"></div>
+      <button class="sbD-btn-new" onclick="sbDResetMatch()">↺ 새 경기 시작</button>
+    </div>
+  `;
+
+  // 상태 초기화 (처음 한 번만)
+  if (!window._sbDState) sbDInitState();
+  sbDirectRender();
+}
+
+function sbDInitState() {
+  window._sbDState = { serving:0, pts:[0,0], games:[0,0], deuce:false, tb:false, tbPts:[0,0], faults:0, dfs:0, over:false, history:[], panelOpen:false };
+  window._sbDStatusTimer = null;
+}
+
+function sbDirectClose() {
+  var el = document.getElementById('score-root');
+  if (el) el.style.display = 'none';
+  var btn = document.getElementById('ctab-score');
+  if (btn) { btn.style.background='var(--surface2)'; btn.style.color='var(--text-muted)'; }
+  _contestTab = 'hanul';
+}
+
+function sbDirectTap(e) {
+  var S = window._sbDState;
+  if (!S || S.panelOpen) return;
+  sbDOpenPanel();
+}
+
+function sbDOpenPanel() {
+  var S = window._sbDState; if (!S) return;
+  S.panelOpen = true;
+  var p = document.getElementById('sbD-ctrl-panel'); if (p) p.classList.add('open');
+  var h = document.getElementById('sbD-tap-hint'); if (h) h.style.display='none';
+}
+function sbDClosePanel() {
+  var S = window._sbDState; if (!S) return;
+  S.panelOpen = false;
+  var p = document.getElementById('sbD-ctrl-panel'); if (p) p.classList.remove('open');
+  var h = document.getElementById('sbD-tap-hint'); if (h) h.style.display='';
+}
+function sbDSwitchTab(name) {
+  var tabs=['score','fault','setup'];
+  document.querySelectorAll('.sbD-tab-btn').forEach(function(b,i){ b.classList.toggle('active',tabs[i]===name); });
+  tabs.forEach(function(t){ var e=document.getElementById('sbD-tab-'+t); if(e) e.classList.toggle('active',t===name); });
+}
+
+var _sbDPTXT = ['0','15','30','40'];
+function sbDAddPoint(p) {
+  var S=window._sbDState; if(!S||S.over) return;
+  sbDSaveHist(); S.faults=0; sbDUpdateFaultDots();
+  var o=1-p;
+  if (S.tb) { S.tbPts[p]++; if((S.tbPts[0]+S.tbPts[1])%2===1) S.serving=1-S.serving; sbDCheckTBWin(p); sbDirectRender(); return; }
+  if (S.deuce) { if(S.pts[p]===4){sbDWinGame(p);}else if(S.pts[o]===4){S.pts[o]=3;}else{S.pts[p]=4;} sbDirectRender(); return; }
+  S.pts[p]++;
+  if (S.pts[0]===3&&S.pts[1]===3) { S.deuce=true; S.pts=[3,3]; sbDirectRender(); return; }
+  if (S.pts[p]>=4) sbDWinGame(p); else sbDirectRender();
+}
+function sbDWinGame(p) { var S=window._sbDState; S.games[p]++; S.pts=[0,0]; S.deuce=false; S.faults=0; S.serving=1-S.serving; sbDCheckSetWin(p); }
+function sbDCheckSetWin(p) {
+  var S=window._sbDState, o=1-p, pg=S.games[p], og=S.games[o];
+  if (pg===5&&og===5) { S.tb=true; S.tbPts=[0,0]; sbDFlash('🔀 타이브레이크!',1800); sbDirectRender(); return; }
+  if ((pg>=6&&pg-og>=2)||pg===7) sbDEndMatch(p); else sbDirectRender();
+}
+function sbDCheckTBWin(p) { var S=window._sbDState,o=1-p,pp=S.tbPts[p],op=S.tbPts[o]; if(pp>=7&&pp-op>=2){S.tb=false;S.games[p]++;sbDEndMatch(p);} }
+function sbDAddFault(p) {
+  var S=window._sbDState; sbDSaveHist(); S.faults++; sbDUpdateFaultDots();
+  if (S.faults>=2) { S.dfs++; var d=document.getElementById('sbD-df-cnt'); if(d)d.textContent=S.dfs; sbDFlash('⚡ 더블 폴트!',1800); S.faults=0; sbDUpdateFaultDots(); sbDAddPoint(1-S.serving); }
+  else sbDFlash('폴트 — 2차 서브',1400);
+}
+function sbDAddAce(p) { sbDFlash('🎯 에이스!',1200); sbDAddPoint(p); }
+function sbDSetTiebreak() { var S=window._sbDState; if(S.tb||S.over)return; S.tb=true; S.tbPts=[0,0]; S.games=[5,5]; sbDirectRender(); sbDFlash('🔀 타이브레이크!',1500); }
+function sbDEndMatch(p) {
+  var S=window._sbDState; S.over=true;
+  var n1=(document.getElementById('sbD-in-name1')||{value:'선수 1'}).value||'선수 1';
+  var n2=(document.getElementById('sbD-in-name2')||{value:'선수 2'}).value||'선수 2';
+  var wn=document.getElementById('sbD-w-name'); if(wn)wn.textContent=[n1,n2][p];
+  var ws=document.getElementById('sbD-w-score'); if(ws)ws.textContent=S.games[p]+' - '+S.games[1-p];
+  var wd=document.getElementById('sbD-winner'); if(wd)wd.classList.add('show');
+}
+function sbDSaveHist() { var S=window._sbDState; S.history.push(JSON.stringify({serving:S.serving,pts:[...S.pts],games:[...S.games],deuce:S.deuce,tb:S.tb,tbPts:[...S.tbPts],faults:S.faults,dfs:S.dfs,over:S.over})); }
+function sbDUndoPoint() {
+  var S=window._sbDState;
+  if(!S.history.length){sbDFlash('되돌릴 기록 없음',1000);return;}
+  var prev=JSON.parse(S.history.pop()),hist=S.history; Object.assign(S,prev); S.games=[...prev.games]; S.history=hist;
+  sbDirectRender(); sbDUpdateFaultDots(); var d=document.getElementById('sbD-df-cnt'); if(d)d.textContent=S.dfs; sbDFlash('↩ 되돌렸습니다',1000);
+}
+function sbDResetFaults() { var S=window._sbDState; S.faults=0; sbDUpdateFaultDots(); }
+function sbDResetMatch() {
+  sbDInitState();
+  var wd=document.getElementById('sbD-winner'); if(wd)wd.classList.remove('show');
+  var d=document.getElementById('sbD-df-cnt'); if(d)d.textContent=0;
+  sbDUpdateFaultDots(); sbDirectRender();
+}
+function sbDApplySetup() {
+  var n1=(document.getElementById('sbD-in-name1')||{value:'선수 1'}).value||'선수 1';
+  var n2=(document.getElementById('sbD-in-name2')||{value:'선수 2'}).value||'선수 2';
+  var title=(document.getElementById('sbD-in-title')||{value:'동호인 테니스'}).value||'동호인 테니스';
+  var e;
+  e=document.getElementById('sbD-name1-d'); if(e)e.textContent=n1;
+  e=document.getElementById('sbD-cname1'); if(e)e.textContent=n1;
+  e=document.getElementById('sbD-name2-d'); if(e)e.textContent=n2;
+  e=document.getElementById('sbD-cname2'); if(e)e.textContent=n2;
+  e=document.getElementById('sbD-match-title'); if(e)e.textContent='🎾 '+title;
+  sbDFlash('✔ 설정 저장됨',1000);
+}
+function sbDirectRender() {
+  var S=window._sbDState; if(!S) return;
+  var s1=document.getElementById('sbD-sdot1'),s2=document.getElementById('sbD-sdot2');
+  var pb1=document.getElementById('sbD-pb1'),pb2=document.getElementById('sbD-pb2');
+  if(!s1) return;
+  s1.className='sbD-serve-dot'+(S.serving===0?' on':'');
+  s2.className='sbD-serve-dot'+(S.serving===1?' on':'');
+  pb1.className='sbD-player-block'+(S.serving===0?' serving':'');
+  pb2.className='sbD-player-block'+(S.serving===1?' serving':'');
+  var t0,t1,cls0='sbD-p-pts',cls1='sbD-p-pts';
+  if(S.tb){t0=S.tbPts[0];t1=S.tbPts[1];}
+  else if(S.deuce){t0=S.pts[0]===4?'AD':'DU';t1=S.pts[1]===4?'AD':'DU';if(t0==='DU'&&t1==='DU'){t0='DU';t1='CE';}cls0+=' deuce-ad';cls1+=' deuce-ad';}
+  else{t0=_sbDPTXT[S.pts[0]]||'0';t1=_sbDPTXT[S.pts[1]]||'0';}
+  var p1e=document.getElementById('sbD-pts1-d'),p2e=document.getElementById('sbD-pts2-d');
+  if(p1e){p1e.textContent=t0;p1e.className=cls0;}
+  if(p2e){p2e.textContent=t1;p2e.className=cls1;}
+  var g=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+  g('sbD-gsc1',S.games[0]);g('sbD-gsc2',S.games[1]);g('sbD-top-g1',S.games[0]);g('sbD-top-g2',S.games[1]);
+}
+function sbDUpdateFaultDots() {
+  var S=window._sbDState;
+  var d1=document.getElementById('sbD-fd1'),d2=document.getElementById('sbD-fd2');
+  if(d1)d1.className='sbD-fd-dot'+(S.faults>=1?' on':'');
+  if(d2)d2.className='sbD-fd-dot'+(S.faults>=2?' on':'');
+}
+function sbDFlash(msg,dur) {
+  dur=dur||1500;
+  var el=document.getElementById('sbD-status-msg'); if(!el)return;
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(window._sbDStatusTimer);
+  window._sbDStatusTimer=setTimeout(function(){el.classList.remove('show');},dur);
+}
+
+
+// 스코어 탭 닫기는 sbDirectClose() 함수로 처리
+
+// 인라인(탭 안) 렌더링 함수 (레거시, 더 이상 사용 안함)
 function renderScoreboardInline() {
   var el = document.getElementById('score-root');
   if (!el) return;
