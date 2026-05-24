@@ -5549,47 +5549,16 @@ function openScoreboardFullscreen() {
   var old = document.getElementById('sb-overlay');
   if (old) old.remove();
 
-  var W = window.innerWidth, H = window.innerHeight;
-  var isPortrait = H > W;
-
   // 오버레이 (화면 전체)
   var overlay = document.createElement('div');
   overlay.id = 'sb-overlay';
   overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;overflow:hidden;background:#050810;';
   document.body.appendChild(overlay);
 
-  // 내부 컨테이너: 세로일 때 90도 회전해서 가로처럼 보이게
+  // 내부 컨테이너: 세로/가로 모두 꽉 차게 (회전 없음)
   var inner = document.createElement('div');
   inner.id = 'sb-overlay-inner';
-
-  function applyLayout() {
-    var W2 = window.innerWidth, H2 = window.innerHeight;
-    if (H2 > W2) {
-      // 세로 모드: 90도 회전 → 실제 너비=H2, 높이=W2 로 설정
-      inner.style.cssText = [
-        'position:absolute',
-        'width:' + H2 + 'px',
-        'height:' + W2 + 'px',
-        'top:' + Math.round((H2 - W2) / 2) + 'px',
-        'left:' + Math.round((W2 - H2) / 2) + 'px',
-        'transform:rotate(90deg)',
-        'transform-origin:center center',
-        'overflow:hidden',
-        'background:#050810'
-      ].join(';');
-    } else {
-      // 가로 모드: 그대로
-      inner.style.cssText = [
-        'position:absolute',
-        'width:100%', 'height:100%',
-        'top:0', 'left:0',
-        'overflow:hidden',
-        'background:#050810'
-      ].join(';');
-    }
-  }
-
-  applyLayout();
+  inner.style.cssText = 'position:absolute;width:100%;height:100%;top:0;left:0;overflow:hidden;background:#050810;';
   overlay.appendChild(inner);
 
   // score-root를 inner 안에 생성
@@ -5597,28 +5566,6 @@ function openScoreboardFullscreen() {
   scoreDiv.id = 'score-root';
   scoreDiv.style.cssText = 'width:100%;height:100%;overflow:hidden;position:relative;display:flex;flex-direction:column;';
   inner.appendChild(scoreDiv);
-
-  // 닫기 버튼 (inner 기준 우상단)
-  var closeBtn = document.createElement('button');
-  closeBtn.textContent = '✕ 닫기';
-  closeBtn.style.cssText = 'position:absolute;top:8px;right:8px;z-index:1000;background:rgba(0,0,0,0.6);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:sans-serif;';
-  closeBtn.onclick = function() {
-    window.removeEventListener('resize', applyLayout);
-    // 원래 페이지 score-root 복구
-    var orig = document.getElementById('score-root');
-    if (orig) orig.parentNode.removeChild(orig);
-    overlay.remove();
-    // 원래 빈 score-root 재생성
-    var blank = document.createElement('div');
-    blank.id = 'score-root';
-    blank.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9000;background:#050810;overflow:hidden;';
-    var pt = document.getElementById('page-tournament');
-    if (pt) pt.appendChild(blank);
-    else document.body.appendChild(blank);
-  };
-  inner.appendChild(closeBtn);
-
-  window.addEventListener('resize', applyLayout);
 
   // 스코어보드 렌더링
   setTimeout(function() {
@@ -5636,88 +5583,21 @@ function openScoreboardOverlay() {
   // 오버레이 컨테이너 생성
   var overlay = document.createElement('div');
   overlay.id = 'sb-overlay';
-  overlay.style.cssText = [
-    'position:fixed',
-    'top:0', 'left:0',
-    'width:100vw', 'height:100vh',
-    'background:#050810',
-    'z-index:9999',
-    'display:flex',
-    'align-items:center',
-    'justify-content:center',
-    'overflow:hidden'
-  ].join(';');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#050810;z-index:9999;overflow:hidden;';
 
-  // 내부 회전 래퍼: CSS rotate로 강제 가로
+  // 내부 래퍼 (꽉 차게, 회전 없음)
   var inner = document.createElement('div');
   inner.id = 'sb-overlay-inner';
-  inner.style.cssText = [
-    'width:' + window.innerHeight + 'px',
-    'height:' + window.innerWidth + 'px',
-    'transform:rotate(90deg)',
-    'transform-origin:center center',
-    'overflow:hidden',
-    'position:relative',
-    'margin:0',
-    'padding:0'
-  ].join(';');
-
-  // 닫기 버튼 (회전 후 기준 우상단)
-  var closeBtn = document.createElement('button');
-  closeBtn.textContent = '✕ 닫기';
-  closeBtn.style.cssText = [
-    'position:absolute',
-    'top:10px', 'right:10px',
-    'z-index:10',
-    'background:rgba(255,255,255,0.1)',
-    'color:#fff',
-    'border:1px solid rgba(255,255,255,0.2)',
-    'border-radius:20px',
-    'padding:6px 14px',
-    'font-size:12px',
-    'font-family:Noto Sans KR,sans-serif',
-    'cursor:pointer',
-    'letter-spacing:1px'
-  ].join(';');
-  closeBtn.onclick = function() { overlay.remove(); };
+  inner.style.cssText = 'width:100%;height:100%;overflow:hidden;position:relative;';
 
   // 스코어보드 콘텐츠 div
   var sbContent = document.createElement('div');
   sbContent.id = 'score-root';
   sbContent.style.cssText = 'width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column;';
 
-  inner.appendChild(closeBtn);
   inner.appendChild(sbContent);
   overlay.appendChild(inner);
   document.body.appendChild(overlay);
-
-  // 가로모드일 때는 회전 없이 그대로
-  function applyRotation() {
-    var W = window.innerWidth, H = window.innerHeight;
-    if (W >= H) {
-      // 이미 가로: 회전 없이 전체화면
-      inner.style.width  = W + 'px';
-      inner.style.height = H + 'px';
-      inner.style.transform = 'none';
-      inner.style.marginTop = '0';
-      inner.style.marginLeft = '0';
-    } else {
-      // 세로: 90도 회전 → 가로로 꽉 차게
-      // 회전 후 width=H, height=W 가 되도록 설정
-      inner.style.width  = H + 'px';
-      inner.style.height = W + 'px';
-      inner.style.transform = 'rotate(90deg)';
-      // 회전 중심 보정 (화면 정중앙에 맞추기)
-      inner.style.position = 'absolute';
-      inner.style.top  = Math.round((H - W) / 2) + 'px';
-      inner.style.left = Math.round((W - H) / 2) + 'px';
-    }
-  }
-  applyRotation();
-  window.addEventListener('resize', applyRotation);
-  overlay.addEventListener('remove', function() {
-    window.removeEventListener('resize', applyRotation);
-  });
 
   // DOM이 붙은 후 렌더 (타이밍 보장)
   setTimeout(function() { renderScoreboard(); }, 30);
@@ -5762,12 +5642,10 @@ function loadScoreboardIframe() {
       #score-root * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
       #score-root { font-family:'Bebas Neue',sans-serif; }
       #sb-close-btn { position:fixed; top:10px; left:10px; z-index:10000; background:rgba(255,255,255,0.12); color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:20px; padding:6px 14px; font-size:13px; font-family:'Oswald',sans-serif; letter-spacing:1px; cursor:pointer; }
-      #sb-rotate-msg { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#0a0d1a; z-index:9999; flex-direction:column; align-items:center; justify-content:center; gap:20px; color:#ffd84d; font-family:'Oswald',sans-serif; letter-spacing:3px; text-align:center; }
-      @media (orientation: portrait) { #sb-rotate-msg { display:flex !important; } #sb-scoreboard-wrap { display:none !important; } }
-      /* 오버레이(강제 가로) 모드에서는 rotate 메시지 항상 숨김 */
-      #sb-overlay #sb-rotate-msg { display:none !important; }
+      #sb-rotate-msg { display:none !important; }
+      /* 가로 꽉 찬 화면 - 세로/가로 모두 지원 */
       #sb-overlay #sb-scoreboard-wrap { display:flex !important; }
-      #sb-scoreboard-wrap { width:100vw; height:100vh; display:flex; flex-direction:column; position:relative; cursor:pointer; user-select:none; background:#050810; }
+      #sb-scoreboard-wrap { width:100%; height:100%; display:flex; flex-direction:column; position:relative; user-select:none; background:#050810; overflow:hidden; }
       #sb-scoreboard-wrap::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(0,82,204,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,82,204,0.04) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; }
       #sbD-topbar { display:flex; align-items:center; justify-content:center; height:8vh; border-bottom:1px solid #0d1020; flex-shrink:0; z-index:1; position:relative; }
       #sbD-match-title { font-family:'Oswald',sans-serif; font-size:clamp(13px,2.2vh,20px); color:#ffd84d; letter-spacing:4px; font-weight:600; }
@@ -5810,6 +5688,14 @@ function loadScoreboardIframe() {
       .sbD-btn { font-family:'Oswald',sans-serif; letter-spacing:1px; border:none; border-radius:4px; cursor:pointer; transition:all 0.15s; font-weight:500; }
       .sbD-btn:active { transform:scale(0.94); }
       .sbD-btn-pt { flex:1; padding:clamp(9px,1.5vh,15px) 8px; font-size:clamp(12px,1.7vh,16px); background:#1a6bff; color:#fff; }
+      /* 점수 클릭 빠른 버튼 영역 */
+      .sbD-quick-btns { position:absolute; bottom:8%; left:50%; transform:translateX(-50%); display:flex; gap:12px; z-index:3; pointer-events:all; }
+      .sbD-quick-btn { font-family:'Oswald',sans-serif; letter-spacing:1.5px; border:none; border-radius:8px; cursor:pointer; transition:all 0.15s; font-weight:600; padding:clamp(10px,1.8vh,18px) clamp(16px,3vw,32px); font-size:clamp(13px,2vh,18px); }
+      .sbD-quick-btn:active { transform:scale(0.92); }
+      .sbD-quick-pt { background:#1a6bff; color:#fff; box-shadow:0 4px 16px rgba(26,107,255,0.5); }
+      .sbD-quick-ace { background:rgba(0,166,81,0.9); color:#fff; box-shadow:0 4px 16px rgba(0,166,81,0.5); }
+      /* 버튼 패널 없앤 경우 점수판 클릭으로만 */
+      .sbD-score-clickable { cursor:pointer; }
       .sbD-btn-sm { flex:1; padding:clamp(7px,1.1vh,11px) 6px; font-size:clamp(10px,1.3vh,13px); }
       .sbD-btn-ace { background:rgba(0,166,81,0.15); color:#00a651; border:1px solid #00a651; }
       .sbD-btn-flt { background:rgba(255,59,59,0.1); color:#ff4f4f; border:1px solid #ff4f4f; }
@@ -5839,15 +5725,10 @@ function loadScoreboardIframe() {
     document.head.appendChild(st);
   }
 
-  // HTML 주입
   el.innerHTML = `
     <button id="sb-close-btn" onclick="sbDirectClose()">✕ 닫기</button>
-    <div id="sb-rotate-msg">
-      <div style="font-size:60px;">📱</div>
-      <div style="font-size:clamp(16px,4vw,24px);font-weight:700;">가로로 돌려주세요</div>
-      <div style="font-size:clamp(12px,2.5vw,16px);color:#7a7aaa;margin-top:8px;">ROTATE TO LANDSCAPE</div>
-    </div>
-    <div id="sb-scoreboard-wrap" onclick="sbDirectTap(event)">
+    <div id="sb-rotate-msg"></div>
+    <div id="sb-scoreboard-wrap">
       <div id="sbD-topbar">
         <div id="sbD-match-title">🎾 동호인 테니스</div>
         <div id="sbD-set-display">게임 <span id="sbD-top-g1">0</span> - <span id="sbD-top-g2">0</span></div>
@@ -5857,13 +5738,21 @@ function loadScoreboardIframe() {
         <div class="sbD-player-block" id="sbD-pb1">
           <div class="sbD-serve-dot on" id="sbD-sdot1"></div>
           <div class="sbD-p-name" id="sbD-name1-d">선수 1</div>
-          <div class="sbD-p-pts" id="sbD-pts1-d">0</div>
+          <div class="sbD-p-pts sbD-score-clickable" id="sbD-pts1-d" onclick="sbDClickScore(0)" title="탭해서 포인트">0</div>
+          <div class="sbD-quick-btns" id="sbD-qbtns1">
+            <button class="sbD-quick-btn sbD-quick-ace" id="sbD-ace-btn1" onclick="sbDAddAce(0)">🎯 에이스</button>
+            <button class="sbD-quick-btn sbD-quick-pt" onclick="sbDClickScore(0)">+포인트</button>
+          </div>
         </div>
         <div id="sbD-divider"></div>
         <div class="sbD-player-block" id="sbD-pb2">
           <div class="sbD-serve-dot" id="sbD-sdot2"></div>
           <div class="sbD-p-name" id="sbD-name2-d">선수 2</div>
-          <div class="sbD-p-pts" id="sbD-pts2-d">0</div>
+          <div class="sbD-p-pts sbD-score-clickable" id="sbD-pts2-d" onclick="sbDClickScore(1)" title="탭해서 포인트">0</div>
+          <div class="sbD-quick-btns" id="sbD-qbtns2">
+            <button class="sbD-quick-btn sbD-quick-ace" id="sbD-ace-btn2" onclick="sbDAddAce(1)" style="display:none">🎯 에이스</button>
+            <button class="sbD-quick-btn sbD-quick-pt" onclick="sbDClickScore(1)">+포인트</button>
+          </div>
         </div>
       </div>
       <div id="sbD-game-row">
@@ -5877,41 +5766,24 @@ function loadScoreboardIframe() {
           <div id="sbD-gsc2" class="sbD-g-score">0</div>
         </div>
       </div>
-      <div id="sbD-tap-hint">화면을 탭하면 메뉴가 열립니다</div>
+      <div id="sbD-tap-hint" onclick="sbDOpenPanel()" style="cursor:pointer">⚙ 탭해서 설정·되돌리기</div>
     </div>
     <div id="sbD-ctrl-panel">
       <div id="sbD-ctrl-backdrop" onclick="sbDClosePanel()"></div>
       <div id="sbD-ctrl-box">
         <div id="sbD-close-handle" onclick="sbDClosePanel()"></div>
         <div class="sbD-tab-row">
-          <button class="sbD-tab-btn active" onclick="sbDSwitchTab('score')">🎾 점수</button>
+          <button class="sbD-tab-btn active" onclick="sbDSwitchTab('setup')">👤 선수</button>
           <button class="sbD-tab-btn" onclick="sbDSwitchTab('fault')">✖ 폴트</button>
-          <button class="sbD-tab-btn" onclick="sbDSwitchTab('setup')">⚙ 설정</button>
+          <button class="sbD-tab-btn" onclick="sbDSwitchTab('score')">⚙ 기타</button>
         </div>
-        <div class="sbD-tab-content active" id="sbD-tab-score">
-          <div class="sbD-score-grid">
-            <div class="sbD-p-ctrl">
-              <div class="sbD-p-ctrl-name" id="sbD-cname1">선수 1</div>
-              <div class="sbD-btn-group"><button class="sbD-btn sbD-btn-pt" onclick="sbDAddPoint(0);sbDClosePanel()">⚡ 포인트</button></div>
-              <div class="sbD-btn-group">
-                <button class="sbD-btn sbD-btn-sm sbD-btn-ace" onclick="sbDAddAce(0);sbDClosePanel()">🎯 에이스</button>
-                <button class="sbD-btn sbD-btn-sm sbD-btn-flt" onclick="sbDAddFault(0);sbDClosePanel()">폴트</button>
-              </div>
-            </div>
-            <div class="sbD-p-ctrl">
-              <div class="sbD-p-ctrl-name b" id="sbD-cname2">선수 2</div>
-              <div class="sbD-btn-group"><button class="sbD-btn sbD-btn-pt" onclick="sbDAddPoint(1);sbDClosePanel()">⚡ 포인트</button></div>
-              <div class="sbD-btn-group">
-                <button class="sbD-btn sbD-btn-sm sbD-btn-ace" onclick="sbDAddAce(1);sbDClosePanel()">🎯 에이스</button>
-                <button class="sbD-btn sbD-btn-sm sbD-btn-flt" onclick="sbDAddFault(1);sbDClosePanel()">폴트</button>
-              </div>
-            </div>
+        <div class="sbD-tab-content active" id="sbD-tab-setup">
+          <div class="sbD-setup-grid">
+            <div class="sbD-setup-item"><label>선수 1 이름 (서브)</label><input type="text" id="sbD-in-name1" value="선수 1" placeholder="선수 1 이름"></div>
+            <div class="sbD-setup-item"><label>선수 2 이름 (리시버)</label><input type="text" id="sbD-in-name2" value="선수 2" placeholder="선수 2 이름"></div>
+            <div class="sbD-setup-item full"><label>경기 제목</label><input type="text" id="sbD-in-title" value="동호인 테니스" placeholder="대회명 또는 경기명"></div>
           </div>
-          <div class="sbD-btn-group">
-            <button class="sbD-btn sbD-btn-sm sbD-btn-undo" onclick="sbDUndoPoint();sbDClosePanel()">↩ 되돌리기</button>
-            <button class="sbD-btn sbD-btn-sm sbD-btn-tb" onclick="sbDSetTiebreak();sbDClosePanel()">🔀 타이브레이크</button>
-            <button class="sbD-btn sbD-btn-sm sbD-btn-rst" onclick="sbDResetMatch();sbDClosePanel()">↺ 초기화</button>
-          </div>
+          <button class="sbD-btn-apply" onclick="sbDApplySetup();sbDClosePanel()">✔ 적용하기</button>
         </div>
         <div class="sbD-tab-content" id="sbD-tab-fault">
           <div class="sbD-fault-tab">
@@ -5927,13 +5799,12 @@ function loadScoreboardIframe() {
             <button class="sbD-btn sbD-btn-sm sbD-btn-undo" style="width:100%;padding:10px" onclick="sbDResetFaults()">폴트 초기화</button>
           </div>
         </div>
-        <div class="sbD-tab-content" id="sbD-tab-setup">
-          <div class="sbD-setup-grid">
-            <div class="sbD-setup-item"><label>선수 1 이름</label><input type="text" id="sbD-in-name1" value="선수 1" placeholder="선수 1 이름"></div>
-            <div class="sbD-setup-item"><label>선수 2 이름</label><input type="text" id="sbD-in-name2" value="선수 2" placeholder="선수 2 이름"></div>
-            <div class="sbD-setup-item full"><label>경기 제목</label><input type="text" id="sbD-in-title" value="동호인 테니스" placeholder="대회명 또는 경기명"></div>
+        <div class="sbD-tab-content" id="sbD-tab-score">
+          <div class="sbD-btn-group">
+            <button class="sbD-btn sbD-btn-sm sbD-btn-undo" onclick="sbDUndoPoint();sbDClosePanel()">↩ 되돌리기</button>
+            <button class="sbD-btn sbD-btn-sm sbD-btn-tb" onclick="sbDSetTiebreak();sbDClosePanel()">🔀 타이브레이크</button>
+            <button class="sbD-btn sbD-btn-sm sbD-btn-rst" onclick="sbDResetMatch();sbDClosePanel()">↺ 초기화</button>
           </div>
-          <button class="sbD-btn-apply" onclick="sbDApplySetup();sbDClosePanel()">✔ 적용하기</button>
         </div>
       </div>
     </div>
@@ -5970,6 +5841,8 @@ function sbDirectClose() {
 function sbDirectTap(e) {
   var S = window._sbDState;
   if (!S || S.panelOpen) return;
+  // 점수 숫자나 버튼 클릭은 무시 (해당 요소가 직접 처리)
+  if (e && e.target && (e.target.classList.contains('sbD-p-pts') || e.target.classList.contains('sbD-quick-btn'))) return;
   sbDOpenPanel();
 }
 
@@ -5986,7 +5859,7 @@ function sbDClosePanel() {
   var h = document.getElementById('sbD-tap-hint'); if (h) h.style.display='';
 }
 function sbDSwitchTab(name) {
-  var tabs=['score','fault','setup'];
+  var tabs=['setup','fault','score'];
   document.querySelectorAll('.sbD-tab-btn').forEach(function(b,i){ b.classList.toggle('active',tabs[i]===name); });
   tabs.forEach(function(t){ var e=document.getElementById('sbD-tab-'+t); if(e) e.classList.toggle('active',t===name); });
 }
@@ -6015,6 +5888,13 @@ function sbDAddFault(p) {
   else sbDFlash('폴트 — 2차 서브',1400);
 }
 function sbDAddAce(p) { sbDFlash('🎯 에이스!',1200); sbDAddPoint(p); }
+function sbDClickScore(p) {
+  // 점수 숫자 탭 = 포인트 추가
+  sbDAddPoint(p);
+  // 포인트 추가 시 작은 피드백
+  var el = document.getElementById('sbD-pts'+(p+1)+'-d');
+  if (el) { el.style.transform='scale(1.12)'; setTimeout(function(){ el.style.transform=''; },200); }
+}
 function sbDSetTiebreak() { var S=window._sbDState; if(S.tb||S.over)return; S.tb=true; S.tbPts=[0,0]; S.games=[5,5]; sbDirectRender(); sbDFlash('🔀 타이브레이크!',1500); }
 function sbDEndMatch(p) {
   var S=window._sbDState; S.over=true;
@@ -6059,7 +5939,11 @@ function sbDirectRender() {
   s2.className='sbD-serve-dot'+(S.serving===1?' on':'');
   pb1.className='sbD-player-block'+(S.serving===0?' serving':'');
   pb2.className='sbD-player-block'+(S.serving===1?' serving':'');
-  var t0,t1,cls0='sbD-p-pts',cls1='sbD-p-pts';
+  // 서브 쪽: 에이스 버튼 보임 / 리시버 쪽: 에이스 버튼 숨김
+  var ace1=document.getElementById('sbD-ace-btn1'), ace2=document.getElementById('sbD-ace-btn2');
+  if(ace1) ace1.style.display = S.serving===0 ? '' : 'none';
+  if(ace2) ace2.style.display = S.serving===1 ? '' : 'none';
+  var t0,t1,cls0='sbD-p-pts sbD-score-clickable',cls1='sbD-p-pts sbD-score-clickable';
   if(S.tb){t0=S.tbPts[0];t1=S.tbPts[1];}
   else if(S.deuce){t0=S.pts[0]===4?'AD':'DU';t1=S.pts[1]===4?'AD':'DU';if(t0==='DU'&&t1==='DU'){t0='DU';t1='CE';}cls0+=' deuce-ad';cls1+=' deuce-ad';}
   else{t0=_sbDPTXT[S.pts[0]]||'0';t1=_sbDPTXT[S.pts[1]]||'0';}
