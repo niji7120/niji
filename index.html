@@ -165,7 +165,7 @@
   .topbar-avatar::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid transparent; background: linear-gradient(135deg, var(--accent), var(--accent2)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; }
 
   /* ===== CONTENT ===== */
-  .content { flex: 1; height: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 16px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+  .content { flex: 1; height: 0; min-height: 0; overflow-y: auto; overflow-x: auto; padding: 16px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
   .content::-webkit-scrollbar { width: 4px; }
   .content::-webkit-scrollbar-track { background: transparent; }
   .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -1943,6 +1943,22 @@
             <span class="manual-dot"></span>
             <span>대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다</span>
           </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>📊 스코어보드</b> — 실제 경기 진행 중 실시간 점수판이에요. <b>폰을 가로로 돌리면</b> 대형 점수 화면이 열려요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>스코어보드에서 <b>+POINT</b>로 점수 추가, <b>ACE</b>·<b>FAULT(더블폴트)</b> 버튼으로 특수 상황 입력, <b>↩ UNDO</b>로 되돌리기 가능해요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>40-40 상황에서 자동으로 <b>DEUCE → AD</b> 처리되며, <b>🔀 타이브레이크</b> 버튼으로 타이브레이크를 시작할 수 있어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span>하단 <b>SETUP 탭</b>에서 선수 이름과 경기 제목을 직접 입력할 수 있어요</span>
+          </div>
         </div>
       </div>
 
@@ -2078,6 +2094,10 @@
           <div class="manual-item">
             <span class="manual-dot"></span>
             <span><b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 '화면을 가로로 돌려주세요' 안내가 나와요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -5482,6 +5502,8 @@ function switchContestTab(tab) {
     scoreBtn.style.background = 'var(--accent)'; scoreBtn.style.color = '#fff';
     scoreEl.style.display = 'block';
     renderScoreboard();
+    // 렌더 후 JS로 가로/세로 판별하여 표시 전환
+    setTimeout(sbCheckOrientation, 50);
   }
 }
 
@@ -5495,6 +5517,27 @@ function renderTournamentSection() {
   }
   switchContestTab(_contestTab);
 }
+
+// ===== 스코어보드 가로/세로 감지 (JS 기반) =====
+function sbCheckOrientation() {
+  var rotMsg  = document.getElementById('sb-rotate-msg');
+  var mainWrap = document.getElementById('sb-main-wrap');
+  if (!rotMsg || !mainWrap) return;
+  // 앱 컨테이너 실제 너비/높이로 판별 (CSS orientation은 앱 내에서 불안정)
+  var isLandscape = window.innerWidth > window.innerHeight;
+  rotMsg.style.display  = isLandscape ? 'none'  : 'flex';
+  mainWrap.style.display = isLandscape ? 'block' : 'none';
+}
+// 화면 회전/크기 변경 시 자동 갱신
+window.addEventListener('resize', function() {
+  if (document.getElementById('score-root') &&
+      document.getElementById('score-root').style.display !== 'none') {
+    sbCheckOrientation();
+  }
+});
+window.addEventListener('orientationchange', function() {
+  setTimeout(sbCheckOrientation, 200);
+});
 
 // ===== 스코어보드 기능 =====
 var _sb = {
@@ -5534,15 +5577,7 @@ function renderScoreboard() {
   #sb-rotate-msg .rot-sub  { font-family:'Orbitron',sans-serif; font-size:10px; color:#7a7aaa; letter-spacing:1px; margin-top:6px; }
 
   #sb-main-wrap { display:block; }
-
-  @media (orientation: portrait) {
-    #sb-rotate-msg { display:flex !important; }
-    #sb-main-wrap  { display:none !important; }
-  }
-  @media (orientation: landscape) {
-    #sb-rotate-msg { display:none !important; }
-    #sb-main-wrap  { display:block !important; }
-  }
+  /* orientation은 JS로 제어 (CSS 미디어쿼리가 앱 내에서 불안정) */
 
   #sb-wrap { background:#050810; border-radius:16px; overflow:hidden; position:relative; user-select:none; }
   #sb-topbar { display:flex; align-items:center; justify-content:center; height:44px; border-bottom:1px solid #0d1020; position:relative; background:#050810; }
