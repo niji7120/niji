@@ -5577,14 +5577,22 @@ function openScoreboardOverlay() {
   document.body.appendChild(overlay);
 
   // 닫기 버튼은 renderScoreboard 안에서 ⚙️ 옆에 생성됨
-  // resize 시 재렌더
-  function onResize() { renderScoreboard(); }
+  // resize / orientationchange 시 재렌더
+  function onResize() {
+    // 회전 직후 innerWidth/innerHeight가 아직 바뀌지 않은 경우 대비해 딜레이
+    setTimeout(function() { renderScoreboard(); }, 150);
+  }
   window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onResize);
   // 오버레이 제거 감지 (MutationObserver)
   var mo = new MutationObserver(function(muts) {
     muts.forEach(function(m) {
       m.removedNodes.forEach(function(n) {
-        if (n === overlay) { window.removeEventListener('resize', onResize); mo.disconnect(); }
+        if (n === overlay) {
+          window.removeEventListener('resize', onResize);
+          window.removeEventListener('orientationchange', onResize);
+          mo.disconnect();
+        }
       });
     });
   });
@@ -5663,6 +5671,19 @@ function renderScoreboard() {
   <button onclick="var o=document.getElementById('sb-overlay');if(o)o.remove();" style="margin-top:10px;padding:11px 28px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#aaa;border-radius:20px;font-size:13px;cursor:pointer;">✕ 닫기</button>
 </div>
 <style>@keyframes rot{0%{transform:rotate(0deg);}100%{transform:rotate(90deg);}}</style>
+<script>
+(function(){
+  function _sbCheckLandscape(){
+    setTimeout(function(){
+      if(window.innerWidth > window.innerHeight){
+        if(typeof renderScoreboard === 'function') renderScoreboard();
+      }
+    }, 200);
+  }
+  window.addEventListener('orientationchange', _sbCheckLandscape);
+  window.addEventListener('resize', _sbCheckLandscape);
+})();
+</script>
     `;
     return;
   }
