@@ -5504,7 +5504,18 @@ function switchContestTab(tab) {
     var contentEl = document.querySelector('.content');
     if (contentEl) { contentEl.style.padding = '16px'; contentEl.style.overflowX = 'auto'; }
     var appEl = document.getElementById('app');
-    if (appEl) appEl.style.maxWidth = '480px';
+    if (appEl) {
+      appEl.style.maxWidth = '480px';
+      appEl.style.width = '';
+      appEl.style.margin = '0 auto';
+      appEl.style.position = 'relative';
+      appEl.style.left = '';
+      appEl.style.top = '';
+      appEl.style.bottom = '';
+      appEl.style.zIndex = '';
+    }
+    var topbar = document.querySelector('.topbar');
+    if (topbar) topbar.style.display = '';
   }
   if (tab === 'hanul') {
     hanulBtn.style.background = 'var(--accent)'; hanulBtn.style.color = '#fff';
@@ -5651,15 +5662,27 @@ var _sbStatusTimer = null;
 function renderScoreboardInline() {
   var el = document.getElementById('score-root');
   if (!el) return;
-  // content 영역을 가로로 꽉 차게 확장
+  // content 영역 패딩 제거
   var contentEl = document.querySelector('.content');
   if (contentEl) {
     contentEl.style.padding = '0';
     contentEl.style.overflowX = 'hidden';
   }
-  // #app 최대 너비 제한 해제
+  // #app 최대 너비 제한 해제 + 화면 전체 차지
   var appEl = document.getElementById('app');
-  if (appEl) appEl.style.maxWidth = '100%';
+  if (appEl) {
+    appEl.style.maxWidth = '100vw';
+    appEl.style.width = '100vw';
+    appEl.style.margin = '0';
+    appEl.style.position = 'fixed';
+    appEl.style.left = '0';
+    appEl.style.top = '0';
+    appEl.style.bottom = '0';
+    appEl.style.zIndex = '1000';
+  }
+  // topbar 숨기기
+  var topbar = document.querySelector('.topbar');
+  if (topbar) topbar.style.display = 'none';
   renderScoreboard();
 }
 
@@ -5681,12 +5704,8 @@ function renderScoreboard() {
     overflow:hidden;
     display:flex;
     flex-direction:column;
-    height:calc(100vh - 120px);
+    height:calc(100vh - 56px);
     min-height:320px;
-  }
-  /* 인라인 탭 안에서는 높이 조정 */
-  .content #score-root {
-    height:calc(100vh - 170px);
   }
 
   /* 상단 타이틀 바 */
@@ -5723,17 +5742,19 @@ function renderScoreboard() {
   .sb-pb:active { background:rgba(255,216,77,0.06); }
   .sb-pb.serving { background:rgba(173,255,47,0.04); }
 
-  /* 서브 표시 점 */
+  /* 서브 표시 점 - 점수 아래 */
   .sb-serve-dot {
-    width:10px; height:10px; border-radius:50%;
-    background:transparent; border:2px solid #3a3a5a;
-    position:absolute; top:10px; transition:all .3s;
+    width:14px; height:14px; border-radius:50%;
+    background:transparent; border:2px solid #2a2a4a;
+    transition:all .3s; margin-top:10px; flex-shrink:0;
+    opacity:0.3;
   }
   .sb-serve-dot.on {
     background:radial-gradient(circle at 35% 35%,#ccff00,#88cc00);
     border-color:transparent;
-    box-shadow:0 0 12px rgba(180,255,0,.8);
+    box-shadow:0 0 14px rgba(180,255,0,.9);
     animation:sbServePulse 1.4s ease-in-out infinite;
+    opacity:1;
   }
   @keyframes sbServePulse { 0%,100%{box-shadow:0 0 8px rgba(180,255,0,.5);}50%{box-shadow:0 0 20px rgba(180,255,0,.95);} }
 
@@ -5906,9 +5927,9 @@ function renderScoreboard() {
 
   <!-- 선수 1 -->
   <div class="sb-pb" id="sb-pb1" onclick="sbOpenPopup(0)">
-    <div class="sb-serve-dot" id="sb-sdot1"></div>
     <div class="sb-pname" id="sb-name1-d">${n1}</div>
     <div class="sb-pts" id="sb-pts1-d">0</div>
+    <div class="sb-serve-dot" id="sb-sdot1"></div>
     <div class="sb-tap-hint">TAP TO SCORE</div>
   </div>
 
@@ -5916,9 +5937,9 @@ function renderScoreboard() {
 
   <!-- 선수 2 -->
   <div class="sb-pb" id="sb-pb2" onclick="sbOpenPopup(1)">
-    <div class="sb-serve-dot" id="sb-sdot2"></div>
     <div class="sb-pname" id="sb-name2-d">${n2}</div>
     <div class="sb-pts" id="sb-pts2-d">0</div>
+    <div class="sb-serve-dot" id="sb-sdot2"></div>
     <div class="sb-tap-hint">TAP TO SCORE</div>
   </div>
 </div>
