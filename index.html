@@ -5548,13 +5548,42 @@ function renderTournamentSection() {
   switchContestTab(_contestTab);
 }
 
+// 오버레이 닫기 (강제 회전 스타일도 함께 제거)
+function sbCloseOverlay() {
+  var o = document.getElementById('sb-overlay');
+  if (o) o.remove();
+  var rs = document.getElementById('sb-rotate-style');
+  if (rs) rs.remove();
+}
+
 // ===== 스코어보드 전체화면 오버레이 =====
 function openScoreboardOverlay() {
   // 기존 오버레이 있으면 제거
   var old = document.getElementById('sb-overlay');
   if (old) old.remove();
 
-  // 오버레이: 회전 없이 그냥 화면 전체 fixed
+  // ── CSS 강제 가로 회전 스타일 삽입 (세로모드일 때 자동 회전) ──
+  var existStyle = document.getElementById('sb-rotate-style');
+  if (!existStyle) {
+    var rotStyle = document.createElement('style');
+    rotStyle.id = 'sb-rotate-style';
+    rotStyle.textContent = [
+      '@media (orientation: portrait) {',
+      '  #sb-overlay {',
+      '    width: 100vh !important;',
+      '    height: 100vw !important;',
+      '    transform: rotate(90deg) !important;',
+      '    transform-origin: top left !important;',
+      '    position: fixed !important;',
+      '    top: 0 !important;',
+      '    left: 100% !important;',
+      '  }',
+      '}'
+    ].join('\n');
+    document.head.appendChild(rotStyle);
+  }
+
+  // 오버레이: 화면 전체 fixed
   var overlay = document.createElement('div');
   overlay.id = 'sb-overlay';
   overlay.style.cssText = [
@@ -5578,9 +5607,15 @@ function openScoreboardOverlay() {
 
   // 닫기 버튼은 renderScoreboard 안에서 ⚙️ 옆에 생성됨
   // resize / orientationchange 시 재렌더 (딜레이 추가 - 회전 직후 크기 변경 대기)
-  function onResize() { setTimeout(function(){ renderScoreboard(); }, 200); }
+  function onResize() {
+    setTimeout(function(){ renderScoreboard(); }, 150);
+    setTimeout(function(){ renderScoreboard(); }, 400);
+  }
   window.addEventListener('resize', onResize);
   window.addEventListener('orientationchange', onResize);
+  if (screen.orientation) {
+    screen.orientation.addEventListener('change', function(){ setTimeout(renderScoreboard, 300); });
+  }
   // 오버레이 제거 감지 (MutationObserver)
   var mo = new MutationObserver(function(muts) {
     muts.forEach(function(m) {
@@ -5655,8 +5690,20 @@ function renderScoreboard() {
   if (!el) return;
 
   // ── 세로 모드: 안내 화면만 표시 ──
-  var isLandscape = window.innerWidth > window.innerHeight;
+  // 가로 감지: 여러 방법 병행 사용 (iOS/Android 모두 대응)
+  var isLandscape = false;
+  if (screen.orientation && screen.orientation.type) {
+    isLandscape = screen.orientation.type.indexOf('landscape') !== -1;
+  } else if (typeof window.orientation !== 'undefined') {
+    isLandscape = Math.abs(window.orientation) === 90;
+  }
+  // 위 방법이 실패하거나 데스크탑인 경우 크기로도 판단
   if (!isLandscape) {
+    isLandscape = window.innerWidth > window.innerHeight;
+  }
+  // 오버레이 모드에서는 CSS 강제 회전이 적용되므로 항상 스코어보드 표시
+  var inOverlay = !!document.querySelector('#sb-overlay #score-root');
+  if (!isLandscape && !inOverlay) {
     el.innerHTML = `
 <style>
 #score-root { background:#050810; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; }
@@ -5665,7 +5712,7 @@ function renderScoreboard() {
   <div style="font-size:52px;animation:rot 2s ease-in-out infinite alternate;">📱</div>
   <div style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffd84d;letter-spacing:2px;font-weight:700;">ROTATE DEVICE</div>
   <div style="font-size:15px;color:#aaa;line-height:1.7;">폰을 <b style="color:#fff;">가로로 돌리면</b><br>스코어보드가 열립니다</div>
-  <button onclick="var o=document.getElementById('sb-overlay');if(o)o.remove();" style="margin-top:10px;padding:11px 28px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#aaa;border-radius:20px;font-size:13px;cursor:pointer;">✕ 닫기</button>
+  <button onclick="sbCloseOverlay()" style="margin-top:10px;padding:11px 28px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#aaa;border-radius:20px;font-size:13px;cursor:pointer;">✕ 닫기</button>
 </div>
 <style>@keyframes rot{0%{transform:rotate(0deg);}100%{transform:rotate(90deg);}}</style>
     `;
@@ -5894,7 +5941,7 @@ function renderScoreboard() {
 
 <!-- ===== 스코어보드 메인 ===== -->
 <div id="sb-topbar">
-  <button id="sb-close-btn" onclick="var o=document.getElementById('sb-overlay');if(o)o.remove();" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:20px;padding:5px 12px;font-size:11px;font-family:Noto Sans KR,sans-serif;cursor:pointer;letter-spacing:1px;">✕ 닫기</button>
+  <button id="sb-close-btn" onclick="sbCloseOverlay()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:20px;padding:5px 12px;font-size:11px;font-family:Noto Sans KR,sans-serif;cursor:pointer;letter-spacing:1px;">✕ 닫기</button>
   <div id="sb-match-title">🎾 ${_sb.title}</div>
   <div style="display:flex;align-items:center;gap:6px;">
     <div id="sb-set-disp">GAMES <span id="sb-top-g1">0</span> – <span id="sb-top-g2">0</span></div>
