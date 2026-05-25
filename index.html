@@ -5527,8 +5527,13 @@ function switchContestTab(tab) {
     renderTnList();
   } else if (tab === 'score') {
     scoreBtn.style.background = 'var(--accent)'; scoreBtn.style.color = '#fff';
-    scoreEl.style.display = 'block';
-    renderScoreboardInline();
+    // 스코어보드는 전체화면 오버레이로 띄움
+    scoreEl.style.display = 'none'; // score-root는 숨기고 오버레이 사용
+    openScoreboardOverlay();
+    // 버튼 active 상태 잠깐 보여주고 원래 탭으로
+    setTimeout(function() {
+      scoreBtn.style.background = 'var(--surface2)'; scoreBtn.style.color = 'var(--text-muted)';
+    }, 300);
   }
 }
 
@@ -5549,93 +5554,43 @@ function openScoreboardOverlay() {
   var old = document.getElementById('sb-overlay');
   if (old) old.remove();
 
-  // 오버레이 컨테이너 생성
+  // 오버레이: 회전 없이 그냥 화면 전체 fixed
   var overlay = document.createElement('div');
   overlay.id = 'sb-overlay';
   overlay.style.cssText = [
     'position:fixed',
     'top:0', 'left:0',
-    'width:100vw', 'height:100vh',
+    'width:100%', 'height:100%',
     'background:#050810',
     'z-index:9999',
     'display:flex',
-    'align-items:center',
-    'justify-content:center',
+    'flex-direction:column',
     'overflow:hidden'
   ].join(';');
 
-  // 내부 회전 래퍼: CSS rotate로 강제 가로
-  var inner = document.createElement('div');
-  inner.id = 'sb-overlay-inner';
-  inner.style.cssText = [
-    'width:' + window.innerHeight + 'px',
-    'height:' + window.innerWidth + 'px',
-    'transform:rotate(90deg)',
-    'transform-origin:center center',
-    'overflow:hidden',
-    'position:relative',
-    'margin:0',
-    'padding:0'
-  ].join(';');
-
-  // 닫기 버튼 (회전 후 기준 우상단)
-  var closeBtn = document.createElement('button');
-  closeBtn.textContent = '✕ 닫기';
-  closeBtn.style.cssText = [
-    'position:absolute',
-    'top:10px', 'right:10px',
-    'z-index:10',
-    'background:rgba(255,255,255,0.1)',
-    'color:#fff',
-    'border:1px solid rgba(255,255,255,0.2)',
-    'border-radius:20px',
-    'padding:6px 14px',
-    'font-size:12px',
-    'font-family:Noto Sans KR,sans-serif',
-    'cursor:pointer',
-    'letter-spacing:1px'
-  ].join(';');
-  closeBtn.onclick = function() { overlay.remove(); };
-
-  // 스코어보드 콘텐츠 div
+  // score-root 콘텐츠 div (오버레이 전체 차지)
   var sbContent = document.createElement('div');
   sbContent.id = 'score-root';
-  sbContent.style.cssText = 'width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column;';
+  sbContent.style.cssText = 'width:100%;flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;';
 
-  inner.appendChild(closeBtn);
-  inner.appendChild(sbContent);
-  overlay.appendChild(inner);
+  overlay.appendChild(sbContent);
   document.body.appendChild(overlay);
 
-  // 가로모드일 때는 회전 없이 그대로
-  function applyRotation() {
-    var W = window.innerWidth, H = window.innerHeight;
-    if (W >= H) {
-      // 이미 가로: 회전 없이 전체화면
-      inner.style.width  = W + 'px';
-      inner.style.height = H + 'px';
-      inner.style.transform = 'none';
-      inner.style.marginTop = '0';
-      inner.style.marginLeft = '0';
-    } else {
-      // 세로: 90도 회전 → 가로로 꽉 차게
-      // 회전 후 width=H, height=W 가 되도록 설정
-      inner.style.width  = H + 'px';
-      inner.style.height = W + 'px';
-      inner.style.transform = 'rotate(90deg)';
-      // 회전 중심 보정 (화면 정중앙에 맞추기)
-      inner.style.position = 'absolute';
-      inner.style.top  = Math.round((H - W) / 2) + 'px';
-      inner.style.left = Math.round((W - H) / 2) + 'px';
-    }
-  }
-  applyRotation();
-  window.addEventListener('resize', applyRotation);
-  overlay.addEventListener('remove', function() {
-    window.removeEventListener('resize', applyRotation);
+  // 닫기 버튼은 renderScoreboard 안에서 ⚙️ 옆에 생성됨
+  // resize 시 재렌더
+  function onResize() { renderScoreboard(); }
+  window.addEventListener('resize', onResize);
+  // 오버레이 제거 감지 (MutationObserver)
+  var mo = new MutationObserver(function(muts) {
+    muts.forEach(function(m) {
+      m.removedNodes.forEach(function(n) {
+        if (n === overlay) { window.removeEventListener('resize', onResize); mo.disconnect(); }
+      });
+    });
   });
+  mo.observe(document.body, { childList: true });
 
-  // DOM이 붙은 후 렌더 (타이밍 보장)
+  // DOM 붙은 후 렌더
   setTimeout(function() { renderScoreboard(); }, 30);
 }
 
@@ -5693,19 +5648,14 @@ function renderScoreboard() {
   var n1 = _sb.names[0], n2 = _sb.names[1];
   el.innerHTML = `
 <style>
-  /* ===== 스코어보드 가로 전체화면 ===== */
+  /* ===== 스코어보드 전체화면 ===== */
   #score-root {
     background:#050810;
-    width:100vw;
-    max-width:100vw;
-    position:relative;
-    left:50%;
-    transform:translateX(-50%);
+    width:100%;
+    height:100%;
     overflow:hidden;
     display:flex;
     flex-direction:column;
-    height:calc(100vh - 56px);
-    min-height:320px;
   }
 
   /* 상단 타이틀 바 */
@@ -5917,9 +5867,12 @@ function renderScoreboard() {
 
 <!-- ===== 스코어보드 메인 ===== -->
 <div id="sb-topbar">
+  <button id="sb-close-btn" onclick="var o=document.getElementById('sb-overlay');if(o)o.remove();" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:20px;padding:5px 12px;font-size:11px;font-family:Noto Sans KR,sans-serif;cursor:pointer;letter-spacing:1px;">✕ 닫기</button>
   <div id="sb-match-title">🎾 ${_sb.title}</div>
-  <div id="sb-set-disp">GAMES <span id="sb-top-g1">0</span> – <span id="sb-top-g2">0</span></div>
-  <button id="sb-setup-icon" onclick="sbShowSetup()">⚙️</button>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <div id="sb-set-disp">GAMES <span id="sb-top-g1">0</span> – <span id="sb-top-g2">0</span></div>
+    <button id="sb-setup-icon" onclick="sbShowSetup()">⚙️</button>
+  </div>
 </div>
 
 <div id="sb-score-area">
