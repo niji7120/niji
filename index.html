@@ -5613,27 +5613,27 @@ function renderScoreboard() {
 <style>
   #sb-wrap { background:#050810; width:100%; height:100%; display:flex; flex-direction:column; position:relative; user-select:none; overflow:hidden; cursor:pointer; }
   #sb-wrap::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(0,82,204,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,82,204,0.04) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; }
-  #sb-topbar { display:grid; grid-template-columns:auto 1fr auto; align-items:center; height:8%; min-height:40px; border-bottom:1px solid #0d1020; position:relative; z-index:1; flex-shrink:0; padding:0 16px; gap:12px; }
-  #sb-close-btn { background:rgba(255,255,255,0.08); color:#aaa; border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:5px 12px; font-size:11px; font-family:'Orbitron',sans-serif; letter-spacing:1px; cursor:pointer; justify-self:start; white-space:nowrap; }
+  #sb-topbar { display:grid; grid-template-columns:auto 1fr auto; align-items:center; height:10%; min-height:44px; border-bottom:1px solid #0d1020; position:relative; z-index:1; flex-shrink:0; padding:0 16px; gap:12px; }
+  #sb-close-btn { background:rgba(255,255,255,0.08); color:#aaa; border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:6px 14px; font-size:clamp(10px,1.8vw,13px); font-family:'Orbitron',sans-serif; letter-spacing:1px; cursor:pointer; justify-self:start; white-space:nowrap; }
   #sb-close-btn:active { background:rgba(255,255,255,0.18); }
-  #sb-match-title { font-family:'Orbitron',sans-serif; font-size:clamp(10px,1.6vw,14px); color:#ffd84d; letter-spacing:3px; font-weight:700; text-align:center; }
+  #sb-match-title { font-family:'Orbitron',sans-serif; font-size:clamp(11px,2.2vw,18px); color:#ffd84d; letter-spacing:3px; font-weight:700; text-align:center; }
   #sb-game-score { display:flex; flex-direction:column; align-items:flex-end; justify-self:end; }
-  #sb-game-score .sb-gs-label { font-family:'Orbitron',sans-serif; font-size:11px; color:#7a7aaa; letter-spacing:2px; }
-  #sb-game-score .sb-gs-num { font-family:'Bebas Neue',sans-serif; font-size:clamp(32px,6vw,52px); color:#fff; letter-spacing:3px; line-height:1; }
+  #sb-game-score .sb-gs-label { font-family:'Orbitron',sans-serif; font-size:clamp(10px,1.6vw,13px); color:#7a7aaa; letter-spacing:2px; }
+  #sb-game-score .sb-gs-num { font-family:'Bebas Neue',sans-serif; font-size:clamp(28px,7vw,64px); color:#fff; letter-spacing:3px; line-height:1; }
   #sb-game-score .sb-gs-num span { color:#ffd84d; }
-  #sb-status-msg { position:absolute; top:12%; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:clamp(10px,1.5vw,14px); color:#ffd84d; letter-spacing:3px; white-space:nowrap; opacity:0; transition:opacity .3s; pointer-events:none; z-index:5; text-shadow:0 0 8px rgba(255,216,77,.6); }
+  #sb-status-msg { position:absolute; top:12%; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:clamp(12px,2vw,18px); color:#ffd84d; letter-spacing:3px; white-space:nowrap; opacity:0; transition:opacity .3s; pointer-events:none; z-index:5; text-shadow:0 0 8px rgba(255,216,77,.6); }
   #sb-status-msg.show { opacity:1; }
   #sb-score-area { display:grid; grid-template-columns:1fr 3px 1fr; flex:1; min-height:0; }
   .sb-pb { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px 8px; background:#050810; position:relative; }
   .sb-pb.serving { background:rgba(173,255,47,0.03); }
-  .sb-serve-dot { width:22px; height:22px; border-radius:50%; background:transparent; border:2px solid #7a7aaa; position:absolute; top:14px; transition:all .3s; }
+  .sb-serve-dot { width:clamp(16px,2.8vw,28px); height:clamp(16px,2.8vw,28px); border-radius:50%; background:transparent; border:2px solid #7a7aaa; position:absolute; top:14px; transition:all .3s; }
   .sb-serve-dot.on { background:radial-gradient(circle at 35% 35%,#ccff00,#88cc00); border-color:transparent; box-shadow:0 0 14px rgba(180,255,0,.8); animation:sbServePulse 1.4s ease-in-out infinite; }
   @keyframes sbServePulse { 0%,100%{box-shadow:0 0 12px rgba(180,255,0,.6);}50%{box-shadow:0 0 28px rgba(180,255,0,1);} }
-  .sb-pname { font-family:'Orbitron',sans-serif; font-size:clamp(11px,2.5vw,18px); color:#fff; letter-spacing:2px; font-weight:700; text-align:center; margin-bottom:4px; }
-  .sb-pts { font-family:'Bebas Neue',sans-serif; font-size:clamp(140px,34vw,280px); line-height:.9; color:#fff; -webkit-text-stroke:2px #ffd84d; text-shadow:0 0 20px rgba(255,255,255,.8),0 0 40px rgba(255,216,77,.4); letter-spacing:-1px; }
+  .sb-pname { font-family:'Orbitron',sans-serif; font-size:clamp(14px,3.5vw,30px); color:#fff; letter-spacing:2px; font-weight:700; text-align:center; margin-bottom:6px; word-break:break-all; }
+  .sb-pts { font-family:'Bebas Neue',sans-serif; font-size:clamp(100px,28vw,260px); line-height:.88; color:#fff; -webkit-text-stroke:2px #ffd84d; text-shadow:0 0 20px rgba(255,255,255,.8),0 0 40px rgba(255,216,77,.4); letter-spacing:-1px; }
   .sb-pts.deuce-ad { color:#ccff00; -webkit-text-stroke:2px rgba(180,255,0,.4); text-shadow:0 0 20px rgba(180,255,0,.8),0 0 50px rgba(180,255,0,.4); }
   #sb-divider { width:3px; background:linear-gradient(to bottom,transparent,#ffd84d 20%,#ffd84d 80%,transparent); opacity:.5; }
-  #sb-tap-hint { text-align:center; padding:6px 0 8px; font-family:'Orbitron',sans-serif; font-size:10px; color:#7a7aaa; letter-spacing:2px; background:#050810; animation:sbBlink 2.5s ease-in-out infinite; flex-shrink:0; }
+  #sb-tap-hint { text-align:center; padding:6px 0 8px; font-family:'Orbitron',sans-serif; font-size:clamp(9px,1.5vw,12px); color:#7a7aaa; letter-spacing:2px; background:#050810; animation:sbBlink 2.5s ease-in-out infinite; flex-shrink:0; }
   @keyframes sbBlink { 0%,100%{opacity:.4;}50%{opacity:.9;} }
 
   /* 컨트롤 패널 (61번 방식: 슬라이드업) */
@@ -6005,6 +6005,12 @@ function sbRender() {
   var p2e=document.getElementById('sb-pts2-d');
   if (p1e) { p1e.textContent=t0; p1e.className=cls0; }
   if (p2e) { p2e.textContent=t1; p2e.className=cls1; }
+
+  // 게임 스코어 우측 상단 업데이트 (버그 수정)
+  var gs1=document.getElementById('sb-gs1');
+  var gs2=document.getElementById('sb-gs2');
+  if (gs1) gs1.textContent=_sb.games[0];
+  if (gs2) gs2.textContent=_sb.games[1];
 
   sbUpdateServeBtns();
 }
