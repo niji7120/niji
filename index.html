@@ -12,6 +12,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="NIJI STRING">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <!-- Firebase SDK 9.23.0 compat (안정 버전) -->
@@ -5790,14 +5793,14 @@ function renderScoreboard() {
           <div class="sb-setup-item" id="sb-setup-s1">
             <label>🟡 선수 1</label>
             <div class="sb-ac-wrap">
-              <input id="sb-in-name1" value="${n1}" placeholder="이름 또는 초성" autocomplete="off" oninput="sbShowAC(this,'sb-ac-1')">
+              <input id="sb-in-name1" value="${n1}" placeholder="이름 또는 초성" autocomplete="off" onfocus="this.select()" oninput="sbShowAC(this,'sb-ac-1')">
               <div class="sb-ac-list" id="sb-ac-1" style="display:none;"></div>
             </div>
           </div>
           <div class="sb-setup-item" id="sb-setup-s2">
             <label>🔵 선수 2</label>
             <div class="sb-ac-wrap">
-              <input id="sb-in-name2" value="${n2}" placeholder="이름 또는 초성" autocomplete="off" oninput="sbShowAC(this,'sb-ac-2')">
+              <input id="sb-in-name2" value="${n2}" placeholder="이름 또는 초성" autocomplete="off" onfocus="this.select()" oninput="sbShowAC(this,'sb-ac-2')">
               <div class="sb-ac-list" id="sb-ac-2" style="display:none;"></div>
             </div>
           </div>
@@ -5805,20 +5808,20 @@ function renderScoreboard() {
           <div class="sb-setup-item" id="sb-setup-d1" style="display:none;">
             <label>🟡 우리팀 선수 2</label>
             <div class="sb-ac-wrap">
-              <input id="sb-in-name3" value="${_sb.names2[0]||''}" placeholder="이름 또는 초성" autocomplete="off" oninput="sbShowAC(this,'sb-ac-3')">
+              <input id="sb-in-name3" value="${_sb.names2[0]||''}" placeholder="이름 또는 초성" autocomplete="off" onfocus="this.select()" oninput="sbShowAC(this,'sb-ac-3')">
               <div class="sb-ac-list" id="sb-ac-3" style="display:none;"></div>
             </div>
           </div>
           <div class="sb-setup-item" id="sb-setup-d2" style="display:none;">
             <label>🔵 상대팀 선수 2</label>
             <div class="sb-ac-wrap">
-              <input id="sb-in-name4" value="${_sb.names2[1]||''}" placeholder="이름 또는 초성" autocomplete="off" oninput="sbShowAC(this,'sb-ac-4')">
+              <input id="sb-in-name4" value="${_sb.names2[1]||''}" placeholder="이름 또는 초성" autocomplete="off" onfocus="this.select()" oninput="sbShowAC(this,'sb-ac-4')">
               <div class="sb-ac-list" id="sb-ac-4" style="display:none;"></div>
             </div>
           </div>
           <div class="sb-setup-item" style="grid-column:1/-1">
             <label>경기 제목</label>
-            <input id="sb-in-title" value="${_sb.title}" placeholder="대회명 또는 경기명">
+            <input id="sb-in-title" value="${_sb.title}" placeholder="대회명 또는 경기명" onfocus="this.select()">
           </div>
         </div>
         <button class="sb-btn-apply" onclick="sbApplySetup();sbClosePanel()">✔ 적용하기</button>
@@ -5860,7 +5863,7 @@ function sbShowAC(inputEl, listId) {
   if (!players.length) { list.style.display = 'none'; return; }
   list.innerHTML = players.map(function(p) {
     var safeName = p.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-    return '<div class="sb-ac-item" onclick="sbSelectAC('' + inputEl.id + '','' + listId + '',this.dataset.name)" data-name="' + safeName + '">' + safeName + '</div>';
+    return '<div class="sb-ac-item" onclick="sbSelectAC(\'' + inputEl.id + '\',\'' + listId + '\',this.dataset.name)" data-name="' + safeName + '">' + safeName + '</div>';
   }).join('');
   list.style.display = 'block';
 }
@@ -7087,8 +7090,15 @@ load(); // Firebase에서 데이터 로드 후 _initApp 자동 호출
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
-      .then(() => console.log('SW registered'))
+      .then(reg => {
+        console.log('SW registered');
+        reg.update(); // 항상 최신 버전 체크
+      })
       .catch(e => console.log('SW error:', e));
+    // 기존 SW 캐시 강제 삭제
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for(let reg of registrations) { reg.update(); }
+    });
   });
 }
 
