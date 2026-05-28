@@ -5686,12 +5686,17 @@ function renderScoreboard() {
   #sb-ctrl-panel { position:absolute; left:0; right:0; bottom:0; z-index:20; pointer-events:none; }
   #sb-ctrl-backdrop { position:fixed; inset:0; z-index:18; display:none; }
   #sb-ctrl-backdrop.open { display:block; }
-  #sb-ctrl-box { background:#0a0c1a; border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:10px 14px 16px; transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:auto; max-height:46vh; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  /* 패널 전체: flex column, 탭 고정 + 내용만 스크롤 */
+  #sb-ctrl-box { background:#0a0c1a; border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:0; transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:auto; max-height:55vh; display:flex; flex-direction:column; overflow:hidden; }
   #sb-ctrl-box.open { transform:translateY(0); }
+  /* 탭 고정 영역 */
+  #sb-ctrl-fixed { padding:10px 14px 0; flex-shrink:0; background:#0a0c1a; border-bottom:1px solid #1a1a2e; }
   #sb-ctrl-handle { width:40px; height:4px; border-radius:2px; background:#2a2a4a; margin:0 auto 10px; cursor:pointer; }
-  .sb-tab-row { display:flex; gap:8px; margin-bottom:10px; }
-  .sb-tab-btn { flex:1; font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:1px; padding:12px 4px; background:#050810; border:1px solid #1a1a2e; color:#7a7aaa; border-radius:8px; cursor:pointer; transition:all .2s; }
+  .sb-tab-row { display:flex; gap:8px; padding-bottom:10px; margin-bottom:0; }
+  .sb-tab-btn { flex:1; font-family:'Orbitron',sans-serif; font-size:12px; letter-spacing:1px; padding:13px 4px; background:#050810; border:1px solid #1a1a2e; color:#7a7aaa; border-radius:8px; cursor:pointer; transition:all .2s; }
   .sb-tab-btn.active { background:#1a6bff; border-color:#1a6bff; color:#fff; }
+  /* 탭 내용 스크롤 영역 */
+  #sb-ctrl-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:12px 14px 18px; }
   .sb-tab-content { display:none; }
   .sb-tab-content.active { display:block; }
   /* 점수탭: 선수 좌우 2칸, 하단 버튼은 세로 1줄씩 */
@@ -5762,12 +5767,17 @@ function renderScoreboard() {
   <div id="sb-ctrl-panel">
     <div id="sb-ctrl-backdrop" onclick="sbClosePanel()"></div>
     <div id="sb-ctrl-box">
-      <div id="sb-ctrl-handle" onclick="sbClosePanel()"></div>
-      <div class="sb-tab-row">
-        <button class="sb-tab-btn active" onclick="sbSwitchTab('score')">🎾 점수</button>
-        <button class="sb-tab-btn" onclick="sbSwitchTab('fault')">✖ 폴트</button>
-        <button class="sb-tab-btn" onclick="sbSwitchTab('setup')">⚙ 설정</button>
+      <!-- 항상 보이는 고정 영역: 핸들 + 탭버튼 -->
+      <div id="sb-ctrl-fixed">
+        <div id="sb-ctrl-handle" onclick="sbClosePanel()"></div>
+        <div class="sb-tab-row">
+          <button class="sb-tab-btn active" onclick="sbSwitchTab('score')">🎾 점수</button>
+          <button class="sb-tab-btn" onclick="sbSwitchTab('fault')">✖ 폴트</button>
+          <button class="sb-tab-btn" onclick="sbSwitchTab('setup')">⚙ 설정</button>
+        </div>
       </div>
+      <!-- 스크롤되는 내용 영역 -->
+      <div id="sb-ctrl-scroll">
       <!-- 점수 탭 -->
       <div class="sb-tab-content active" id="sb-tab-score">
         <div class="sb-score-grid">
@@ -5860,8 +5870,9 @@ function renderScoreboard() {
         <input type="hidden" id="sb-in-title" value="${_sb.title}">
         <button class="sb-btn-apply" onclick="sbApplySetup();sbClosePanel()">✔ 적용하기</button>
       </div>
-    </div>
-  </div>
+      </div><!-- /sb-ctrl-scroll -->
+    </div><!-- /sb-ctrl-box -->
+  </div><!-- /sb-ctrl-panel -->
 
   <!-- 위너 화면 -->
   <div id="sb-winner">
@@ -6343,18 +6354,9 @@ function sbResetMatch() {
   _sb.pts=[0,0]; _sb.games=[0,0]; _sb.deuce=false;
   _sb.tb=false; _sb.tbPts=[0,0]; _sb.faults=0; _sb.dfs=0;
   _sb.serving=0; _sb.over=false; _sb.history=[];
-  // 선수 이름도 초기화
-  _sb.names = ['선수 1', '선수 2'];
-  _sb.names2 = ['', ''];
-  _sb.title = '테니스 경기';
   _sbPanelOpen = false;
-  var wn = document.getElementById('sb-winner');
-  if (wn) wn.classList.remove('show');
-  var df = document.getElementById('sb-df-cnt');
-  if (df) df.textContent = 0;
-  sbClosePanel();
-  sbUpdateFaultDots();
-  sbRender();
+  // 스코어보드 전체 다시 그림 (위너 화면 포함 완전 초기화)
+  renderScoreboard();
 }
 
 function sbSetFormat(fmt) {
@@ -6373,8 +6375,7 @@ function sbSetFormat(fmt) {
     if (d2) d2.style.display='';
     if (lbl1) lbl1.textContent='🟡 우리팀 선수 1';
     if (lbl2) lbl2.textContent='🔵 상대팀 선수 1';
-    // 복식: 패널 높이를 60%로 늘리되 스크롤 가능하게
-    if (box) box.style.maxHeight = '60vh';
+    if (box) box.style.maxHeight = '55vh';
   } else {
     if (btnS) { btnS.style.background='#1a6bff'; btnS.style.color='#fff'; btnS.style.border='none'; }
     if (btnD) { btnD.style.background='#050810'; btnD.style.color='#7a7aaa'; btnD.style.border='1px solid #1a1a2e'; }
@@ -6382,7 +6383,7 @@ function sbSetFormat(fmt) {
     if (d2) d2.style.display='none';
     if (lbl1) lbl1.textContent='🟡 선수 1';
     if (lbl2) lbl2.textContent='🔵 선수 2';
-    if (box) box.style.maxHeight = '46vh';
+    if (box) box.style.maxHeight = '55vh';
   }
 }
 function sbApplySetup() {
