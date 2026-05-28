@@ -4712,12 +4712,14 @@ function renderPlayerClubFilter() {
 }
 
 function toggleClubAssign(id) {
+  id = parseInt(id);
   const area = document.getElementById('clubArea-' + id);
   document.querySelectorAll('.player-edit-area.open, .player-memo-area.open, .player-club-area.open').forEach(a => a.classList.remove('open'));
   if (area && !area.classList.contains('open')) area.classList.add('open');
 }
 
 function togglePlayerClub(playerId, club) {
+  playerId = parseInt(playerId);
   const player = state.players.find(p => p.id === playerId);
   if (!player) return;
   if (!player.clubs) player.clubs = [];
@@ -4976,7 +4978,7 @@ function deleteStringingHistory(id) {
 function addPlayer() {
   const name = document.getElementById('newPlayerName').value.trim();
   if (!name) { showToast('⚠️ 이름을 입력하세요'); return; }
-  if (state.players.find(p => p.name === name)) { showToast('⚠️ 이미 등록된 선수입니다'); return; }
+  if (state.players.find(p => p.name.trim() === name)) { showToast('⚠️ 이미 등록된 선수입니다'); return; }
   const age    = document.getElementById('newPlayerAge').value;
   const career = document.getElementById('newPlayerCareer').value;
   const hand   = document.getElementById('newPlayerHand').value;
@@ -5132,6 +5134,7 @@ function renderPlayers() {
 }
 
 function clearPlayerClubs(playerId) {
+  playerId = parseInt(playerId);
   const player = state.players.find(p => p.id === playerId);
   if (!player) return;
   player.clubs = [];
@@ -5349,20 +5352,22 @@ function escHtml(s) {
 }
 
 function toggleEdit(id) {
+  id = parseInt(id);
   const area = document.getElementById('editArea-' + id);
   const isOpen = area.classList.contains('open');
   document.querySelectorAll('.player-edit-area.open, .player-memo-area.open, .player-club-area.open').forEach(a => a.classList.remove('open'));
   if (!isOpen) {
     area.classList.add('open');
-    // 모바일에서 강제 focus 제거 (키보드 튀어나옴 방지)
   }
 }
 
 function cancelEdit(id) {
+  id = parseInt(id);
   document.getElementById('editArea-' + id).classList.remove('open');
 }
 
 function confirmEdit(id) {
+  id = parseInt(id);
   const input = document.getElementById('editInput-' + id);
   const newName = input.value.trim();
   if (!newName) { showToast('⚠️ 이름을 입력하세요'); return; }
@@ -5374,25 +5379,32 @@ function confirmEdit(id) {
     showToast('⚠️ 이미 등록된 이름입니다'); return;
   }
   player.name = newName;
-  // also update matches
+  // 경기기록 선수명 업데이트
   state.matches.forEach(m => {
     if (m.opponent === oldName) m.opponent = newName;
     if (m.opponent2 === oldName) m.opponent2 = newName;
     if (m.partner === oldName) m.partner = newName;
   });
-  // 토너먼트 선수명도 업데이트
+  // 토너먼트(브라켓) 선수명 업데이트
   (state.tnTournaments || []).forEach(t => {
     t.players = (t.players || []).map(n => n === oldName ? newName : n);
     (t.bracket || []).forEach(r => {
       (r.games || []).forEach(g => {
         if (g.a === oldName) g.a = newName;
         if (g.b === oldName) g.b = newName;
-        if (g.winner === 'a' && g.a === newName) {} // already updated
       });
     });
   });
+  // 한울방식 대회 선수명 업데이트 (라운드 내부 게임까지)
   (state.tournaments || []).forEach(t => {
     t.players = (t.players || []).map(n => n === oldName ? newName : n);
+    (t.rounds || []).forEach(r => {
+      (r.games || []).forEach(g => {
+        ['a1','a2','b1','b2'].forEach(k => {
+          if (g[k] === oldName) g[k] = newName;
+        });
+      });
+    });
   });
   save();
   renderPlayers();
@@ -5400,16 +5412,17 @@ function confirmEdit(id) {
 }
 
 function toggleMemo(id) {
+  id = parseInt(id);
   const area = document.getElementById('memoArea-' + id);
   const isOpen = area.classList.contains('open');
   document.querySelectorAll('.player-edit-area.open, .player-memo-area.open, .player-club-area.open').forEach(a => a.classList.remove('open'));
   if (!isOpen) {
     area.classList.add('open');
-    // 모바일에서 강제 focus 제거 (키보드 튀어나옴 방지)
   }
 }
 
 function saveMemo(id) {
+  id = parseInt(id);
   const memo = document.getElementById('memoInput-' + id).value.trim();
   const player = state.players.find(p => p.id === id);
   if (!player) return;
@@ -5421,6 +5434,7 @@ function saveMemo(id) {
 }
 
 function deletePlayer(id) {
+  id = parseInt(id);
   const player = state.players.find(p => p.id === id);
   if (!player) return;
   showConfirm(`"${player.name}" 삭제`, '선수를 삭제하면 복구할 수 없습니다. 경기 기록은 유지됩니다.', '🗑️', () => {
@@ -5549,7 +5563,7 @@ function openScoreboardOverlay() {
 
   // 스코어보드 콘텐츠
   var sbContent = document.createElement('div');
-  sbContent.id = 'score-root';
+  sbContent.id = 'sb-score-content';
   sbContent.style.cssText = 'width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column;';
 
   // 닫기 함수 전역 등록
@@ -5638,7 +5652,7 @@ var _sbStatusTimer = null;
 var _sbPanelOpen = false;
 
 function renderScoreboard() {
-  var el = document.querySelector('#sb-overlay #score-root') || document.getElementById('score-root');
+  var el = document.getElementById('sb-score-content') || document.getElementById('score-root');
   if (!el) return;
   var n1 = _sb.names[0], n2 = _sb.names[1];
   el.innerHTML = `
@@ -5653,7 +5667,7 @@ function renderScoreboard() {
   #sb-game-score .sb-gs-label { font-family:'Orbitron',sans-serif; font-size:clamp(10px,1.6vw,13px); color:#7a7aaa; letter-spacing:2px; }
   #sb-game-score .sb-gs-num { font-family:'Bebas Neue',sans-serif; font-size:clamp(28px,7vw,64px); color:#fff; letter-spacing:3px; line-height:1; }
   #sb-game-score .sb-gs-num span { color:#ffd84d; }
-  #sb-status-msg { position:absolute; top:12%; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:clamp(12px,2vw,18px); color:#ffd84d; letter-spacing:3px; white-space:nowrap; opacity:0; transition:opacity .3s; pointer-events:none; z-index:5; text-shadow:0 0 8px rgba(255,216,77,.6); }
+  #sb-status-msg { position:absolute; top:13%; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:clamp(12px,2vw,18px); color:#ffd84d; letter-spacing:3px; white-space:nowrap; opacity:0; transition:opacity .3s; pointer-events:none; z-index:5; text-shadow:0 0 8px rgba(255,216,77,.6); }
   #sb-status-msg.show { opacity:1; }
   #sb-score-area { display:grid; grid-template-columns:1fr 3px 1fr; flex:1; min-height:0; }
   .sb-pb { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px 8px; background:#050810; position:relative; }
@@ -5672,7 +5686,7 @@ function renderScoreboard() {
   #sb-ctrl-panel { position:absolute; left:0; right:0; bottom:0; z-index:20; pointer-events:none; }
   #sb-ctrl-backdrop { position:fixed; inset:0; z-index:18; display:none; }
   #sb-ctrl-backdrop.open { display:block; }
-  #sb-ctrl-box { background:#0a0c1a; border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:10px 12px 16px; transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:auto; }
+  #sb-ctrl-box { background:#0a0c1a; border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:10px 12px 16px; transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:auto; max-height:75vh; overflow-y:auto; -webkit-overflow-scrolling:touch; }
   #sb-ctrl-box.open { transform:translateY(0); }
   #sb-ctrl-handle { width:40px; height:4px; border-radius:2px; background:#2a2a4a; margin:0 auto 10px; cursor:pointer; }
   .sb-tab-row { display:flex; gap:6px; margin-bottom:10px; }
@@ -5703,7 +5717,7 @@ function renderScoreboard() {
   .sb-setup-item input { background:#050810; border:1px solid #1a1a2e; color:#fff; font-family:'Noto Sans KR',sans-serif; font-size:18px; padding:12px 10px; border-radius:4px; outline:none; width:100%; box-sizing:border-box; }
   .sb-setup-item input:focus { border-color:#1a6bff; }
   .sb-ac-wrap { position:relative; }
-  .sb-ac-list { position:absolute; top:100%; left:0; right:0; background:#0d1020; border:1px solid #1a6bff; border-radius:6px; z-index:200; max-height:160px; overflow-y:auto; margin-top:2px; }
+  .sb-ac-list { position:absolute; top:100%; left:0; right:0; background:#0d1020; border:1px solid #1a6bff; border-radius:6px; z-index:9999; max-height:160px; overflow-y:auto; margin-top:2px; }
   .sb-ac-item { padding:10px 12px; font-family:'Noto Sans KR',sans-serif; font-size:15px; color:#fff; cursor:pointer; border-bottom:1px solid #1a1a2e; }
   .sb-ac-item:last-child { border-bottom:none; }
   .sb-ac-item:active { background:#1a6bff; }
@@ -5789,9 +5803,9 @@ function renderScoreboard() {
           <span>더블폴트: <span id="sb-df-cnt" style="color:#ff4f4f">0</span>회</span>
         </div>
         <div class="sb-btn-group">
-          <button class="sb-btn sb-btn-flt" style="flex:1;padding:12px;font-size:14px" onclick="sbAddFault(0);sbClosePanel()">선수1 폴트</button>
-          <button class="sb-btn sb-btn-flt" style="flex:1;padding:12px;font-size:14px" onclick="sbAddFault(1);sbClosePanel()">선수2 폴트</button>
+          <button class="sb-btn sb-btn-flt" style="flex:1;padding:12px;font-size:14px" onclick="sbAddFaultAuto()">서버 폴트</button>
         </div>
+        <div style="font-family:'Noto Sans KR',sans-serif;font-size:11px;color:#7a7aaa;text-align:center;margin-top:4px;letter-spacing:0.5px;">폴트는 서브하는 선수에게 자동 적용됩니다</div>
         <button class="sb-btn sb-btn-undo" style="width:100%;padding:10px;margin-top:6px;" onclick="sbResetFaults()">폴트 초기화</button>
       </div>
       <!-- 설정 탭 -->
@@ -5876,17 +5890,25 @@ function sbShowAC(inputEl, listId) {
     return p.name.includes(query);
   });
   if (!players.length) { list.style.display = 'none'; return; }
-  list.innerHTML = players.map(function(p) {
-    var safeName = p.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-    return '<div class="sb-ac-item" onclick="sbSelectAC(\'' + inputEl.id + '\',\'' + listId + '\',this.dataset.name)" data-name="' + safeName + '">' + safeName + '</div>';
-  }).join('');
+  // onclick 속성 대신 addEventListener로 등록 (특수문자/따옴표 포함 이름 안전 처리)
+  list.innerHTML = '';
+  players.forEach(function(p) {
+    var item = document.createElement('div');
+    item.className = 'sb-ac-item';
+    item.textContent = p.name;
+    item.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      inputEl.value = p.name;
+      list.style.display = 'none';
+    });
+    item.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      inputEl.value = p.name;
+      list.style.display = 'none';
+    }, { passive: false });
+    list.appendChild(item);
+  });
   list.style.display = 'block';
-}
-function sbSelectAC(inputId, listId, name) {
-  var inp = document.getElementById(inputId);
-  var list = document.getElementById(listId);
-  if (inp) inp.value = name;
-  if (list) list.style.display = 'none';
 }
 // 스코어보드 자동완성 닫기 (바깥 터치시)
 document.addEventListener('click', function(e) {
@@ -5965,13 +5987,14 @@ function sbAddPoint(p) {
     sbRender(); return;
   }
   var o = 1-p;
-  // 노애드: 듀스 상태에서 바로 게임 결정
+  // 노애드: 40:40(deuce) 상태에서 다음 포인트 획득자가 바로 게임 승리
   if (_sb.deuce) {
     sbWinGame(p);
     return;
   }
   _sb.pts[p]++;
-  if (_sb.pts[0]===3 && _sb.pts[1]===3) {
+  // 양쪽 모두 3점(40점)이면 노애드 결정포인트
+  if (_sb.pts[0]>=3 && _sb.pts[1]>=3) {
     _sb.deuce=true; _sb.pts=[3,3];
     sbFlashStatus('⚡ 노애드 — 결정 포인트!', 1800);
     sbRender(); return;
@@ -5988,12 +6011,14 @@ function sbWinGame(p) {
 
 function sbCheckSetWin(p) {
   var o=1-p, pg=_sb.games[p], og=_sb.games[o];
+  // 동호인 룰: 5:5이면 타이브레이크
   if (pg===5 && og===5) {
     _sb.tb=true; _sb.tbPts=[0,0];
     sbFlashStatus('🔀 타이브레이크!', 1800);
     sbRender(); return;
   }
-  var won = (pg>=6 && pg-og>=2) || pg===7;
+  // 5게임 이상이고 2게임차 이상이면 세트 승리, 또는 6게임(타이브레이크 승)
+  var won = (pg>=5 && pg-og>=2) || pg===6;
   if (won) sbEndMatch(p); else sbRender();
 }
 
@@ -6083,8 +6108,9 @@ function sbTrySaveToRecord(winnerIdx) {
 
   state.matches.unshift(matchData);
 
-  // 상대 선수 자동 등록
+  // 상대 선수 자동 등록 (이름 공백 제거 후 중복 체크)
   [opponent, opponent2, partner].filter(Boolean).forEach(function(n) {
+    n = n.trim();
     if (n && n !== myName && !state.players.find(function(pl){ return pl.name === n; })) {
       state.players.push({ id: state.nextPlayerId++, name: n, memo: '', clubs: [], age: '', career: '', hand: '', style: '' });
     }
@@ -6111,6 +6137,9 @@ function sbTrySaveToRecord(winnerIdx) {
     }
   }
 }
+
+// 서버에게 자동으로 폴트 적용 (폴트는 항상 서버의 실수)
+function sbAddFaultAuto() { sbAddFault(_sb.serving); sbClosePanel(); }
 
 function sbAddFault(p) {
   sbSaveHist(); _sb.faults++;
@@ -6189,15 +6218,15 @@ function sbSetFormat(fmt) {
   }
 }
 function sbApplySetup() {
-  var a1 = (document.getElementById('sb-in-name1')||{}).value || '';
-  var a2 = (document.getElementById('sb-in-name2')||{}).value || '';
-  var b1 = (document.getElementById('sb-in-name3')||{}).value || '';
-  var b2 = (document.getElementById('sb-in-name4')||{}).value || '';
-  var title = (document.getElementById('sb-in-title')||{}).value || '테니스 경기';
+  var a1 = ((document.getElementById('sb-in-name1')||{}).value || '').trim();
+  var a2 = ((document.getElementById('sb-in-name2')||{}).value || '').trim();
+  var b1 = ((document.getElementById('sb-in-name3')||{}).value || '').trim();
+  var b2 = ((document.getElementById('sb-in-name4')||{}).value || '').trim();
+  var title = ((document.getElementById('sb-in-title')||{}).value || '').trim() || '테니스 경기';
   var n1, n2;
   if (_sb.format === 'doubles') {
-    n1 = (a1 && b1) ? a1 + ' / ' + b1 : (a1 || '우리팀');
-    n2 = (a2 && b2) ? a2 + ' / ' + b2 : (a2 || '상대팀');
+    n1 = a1 ? (b1 ? a1 + ' / ' + b1 : a1) : '우리팀';
+    n2 = a2 ? (b2 ? a2 + ' / ' + b2 : a2) : '상대팀';
     _sb.names2 = [b1, b2];
   } else {
     n1 = a1 || '선수 1';
