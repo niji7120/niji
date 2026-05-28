@@ -5581,16 +5581,31 @@ function openScoreboardOverlay() {
   overlay.appendChild(inner);
   document.body.appendChild(overlay);
 
-  // 가로모드 고정 - 항상 꽉 채우기
+  // 가로/세로 자동 감지 → 세로이면 JS로 90도 회전해서 강제 가로 표시
   function applyLayout() {
     var W = window.innerWidth;
     var H = window.innerHeight;
+    var isPortrait = H > W;
     overlay.style.display = 'block';
-    inner.style.width     = W + 'px';
-    inner.style.height    = H + 'px';
-    inner.style.top       = '0px';
-    inner.style.left      = '0px';
-    inner.style.transform = 'none';
+    if (isPortrait) {
+      // 세로 모드: 화면을 90도 돌려서 가로처럼 보이게
+      inner.style.width = H + 'px';
+      inner.style.height = W + 'px';
+      inner.style.top = ((H - W) / 2) + 'px';
+      inner.style.left = (-(H - W) / 2) + 'px';
+      inner.style.transform = 'rotate(90deg)';
+      inner.style.transformOrigin = 'center center';
+    } else {
+      // 가로 모드: 그대로
+      inner.style.width = W + 'px';
+      inner.style.height = H + 'px';
+      inner.style.top = '0px';
+      inner.style.left = '0px';
+      inner.style.transform = 'none';
+    }
+    // 세로모드 안내 메시지는 항상 숨김 (JS 회전으로 대체)
+    var pm = document.getElementById('sb-portrait-msg');
+    if (pm) pm.style.display = 'none';
   }
 
   applyLayout();
@@ -6022,7 +6037,7 @@ function sbTrySaveToRecord(winnerIdx) {
   var iWon = (winnerIdx === myTeamIdx);
   var result = iWon ? 'win' : 'lose';
 
-  var today = new Date().toISOString().slice(0,10);
+  var today = getTodayStr();
   var myScore = _sb.games[myTeamIdx].toString();
   var oppScore = _sb.games[oppTeamIdx].toString();
 
