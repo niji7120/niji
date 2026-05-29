@@ -5572,24 +5572,17 @@ function openScoreboardOverlay() {
     if (screen.orientation && screen.orientation.unlock) {
       screen.orientation.unlock();
     }
-    var pm = document.getElementById('sb-portrait-msg');
-    if (pm) pm.remove();
     if (window._sbResizeHandler) {
       window.removeEventListener('resize', window._sbResizeHandler);
       window._sbResizeHandler = null;
     }
+    // 입력 팝업도 정리
+    var inputPopup = document.getElementById('sb-input-popup');
+    if (inputPopup) inputPopup.remove();
     overlay.remove();
   };
 
-  // 세로모드 안내 화면
-  var portraitMsg = document.createElement('div');
-  portraitMsg.id = 'sb-portrait-msg';
-  portraitMsg.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#050810;z-index:10000;flex-direction:column;align-items:center;justify-content:center;text-align:center;display:none;';
-  portraitMsg.innerHTML = '<div style="font-size:60px;margin-bottom:24px;">📱↔️</div>'
-    + '<div style="font-family:\'Noto Sans KR\',sans-serif;font-size:20px;color:#ffd84d;font-weight:700;margin-bottom:12px;">폰을 가로로 돌려주세요</div>'
-    + '<div style="font-family:\'Noto Sans KR\',sans-serif;font-size:14px;color:#7a7aaa;margin-bottom:8px;">스코어보드는 가로 모드에서 사용할 수 있어요</div>'
-    + '<button onclick="window._sbOverlayClose()" style="margin-top:28px;padding:12px 28px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#fff;font-family:\'Noto Sans KR\',sans-serif;font-size:14px;cursor:pointer;">닫기</button>';
-  document.body.appendChild(portraitMsg);
+  // (세로모드 안내 메시지 제거 - JS 90도 회전 방식으로 통합 처리)
 
   inner.appendChild(sbContent);
   overlay.appendChild(inner);
@@ -5617,9 +5610,6 @@ function openScoreboardOverlay() {
       inner.style.left = '0px';
       inner.style.transform = 'none';
     }
-    // 세로모드 안내 메시지는 항상 숨김 (JS 회전으로 대체)
-    var pm = document.getElementById('sb-portrait-msg');
-    if (pm) pm.style.display = 'none';
   }
 
   applyLayout();
@@ -5630,7 +5620,7 @@ function openScoreboardOverlay() {
 }
 
 
-// ===== 스코어보드 기능 (v2 - 61번 업그레이드) =====
+// ===== 스코어보드 기능 (v3 - 오류수정·코드정리) =====
 var _sb = {
   names: ['선수 1', '선수 2'],
   names2: ['', ''],
@@ -5724,8 +5714,7 @@ function renderScoreboard() {
   .sb-setup-item label { font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#aaa; letter-spacing:0.5px; font-weight:600; }
   .sb-setup-item input { background:#050810; border:1px solid #1a1a2e; color:#fff; font-family:'Noto Sans KR',sans-serif; font-size:15px; padding:11px 10px; border-radius:6px; outline:none; width:100%; box-sizing:border-box; }
   .sb-setup-item input:focus { border-color:#1a6bff; }
-  .sb-ac-wrap { position:relative; }
-  .sb-ac-list { position:absolute; top:100%; left:0; right:0; background:#0d1020; border:1px solid #1a6bff; border-radius:6px; z-index:9999; max-height:120px; overflow-y:auto; margin-top:2px; }
+  /* 자동완성 팝업 내부 목록 스타일 (sbOpenInput 팝업용) */
   .sb-ac-item { padding:12px 14px; font-family:'Noto Sans KR',sans-serif; font-size:15px; color:#fff; cursor:pointer; border-bottom:1px solid #1a1a2e; }
   .sb-ac-item:last-child { border-bottom:none; }
   .sb-ac-item:active { background:#1a6bff; }
@@ -5761,7 +5750,7 @@ function renderScoreboard() {
     </div>
   </div>
 
-  <div id="sb-tap-hint">화면을 탭하면 메뉴가 열립니다</div>
+  <div id="sb-tap-hint">▲ 화면을 탭하면 점수 입력 메뉴가 열립니다</div>
 
   <!-- 컨트롤 패널 -->
   <div id="sb-ctrl-panel">
@@ -5880,6 +5869,7 @@ function renderScoreboard() {
     <div class="sbw-name" id="sbw-name">-</div>
     <div class="sbw-score" id="sbw-score"></div>
     <button class="sbw-new" onclick="sbResetMatch()">↺ 새 경기 시작</button>
+    <button onclick="event.stopPropagation();if(window._sbOverlayClose)window._sbOverlayClose();" style="margin-top:12px;padding:10px 28px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#aaa;font-family:'Noto Sans KR',sans-serif;font-size:14px;cursor:pointer;">✕ 닫기</button>
   </div>
 </div>
   `;
@@ -5887,10 +5877,6 @@ function renderScoreboard() {
   sbUpdateFaultDots();
   // 단식/복식 버튼 초기 상태 반영
   setTimeout(function(){ sbSetFormat(_sb.format || 'singles'); }, 0);
-  var gs1=document.getElementById('sb-gs1');
-  var gs2=document.getElementById('sb-gs2');
-  if (gs1) gs1.textContent=_sb.games[0];
-  if (gs2) gs2.textContent=_sb.games[1];
   sbUpdateServeBtns();
 }
 
@@ -6025,44 +6011,7 @@ function sbOpenInput(fieldId, label) {
   }, 80);
 }
 
-function sbShowAC(inputEl, listId) {
-  var query = inputEl.value.trim();
-  var list = document.getElementById(listId);
-  if (!list) return;
-  if (!query) { list.style.display = 'none'; return; }
-  var isChosung = /^[ㄱ-ㅎ]+$/.test(query);
-  var players = (state.players || []).filter(function(p) {
-    if (isChosung) return getChosung(p.name).startsWith(query);
-    return p.name.includes(query);
-  });
-  if (!players.length) { list.style.display = 'none'; return; }
-  // onclick 속성 대신 addEventListener로 등록 (특수문자/따옴표 포함 이름 안전 처리)
-  list.innerHTML = '';
-  players.forEach(function(p) {
-    var item = document.createElement('div');
-    item.className = 'sb-ac-item';
-    item.textContent = p.name;
-    item.addEventListener('mousedown', function(e) {
-      e.preventDefault();
-      inputEl.value = p.name;
-      list.style.display = 'none';
-    });
-    item.addEventListener('touchstart', function(e) {
-      e.preventDefault();
-      inputEl.value = p.name;
-      list.style.display = 'none';
-    }, { passive: false });
-    list.appendChild(item);
-  });
-  list.style.display = 'block';
-}
-// 스코어보드 자동완성 닫기 (바깥 터치시)
-document.addEventListener('click', function(e) {
-  ['sb-ac-1','sb-ac-2','sb-ac-3','sb-ac-4'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el && !el.contains(e.target)) el.style.display = 'none';
-  });
-});
+// (sbShowAC 및 sb-ac-1~4 이벤트 리스너 제거 - 미사용 코드)
 
 // 패널 열기/닫기
 function sbHandleTap(e) {
@@ -6167,7 +6116,7 @@ function sbAddPoint(p) {
   // 양쪽 모두 3점(40점)이면 노애드 결정포인트
   if (_sb.pts[0]>=3 && _sb.pts[1]>=3) {
     _sb.deuce=true; _sb.pts=[3,3];
-    sbFlashStatus('⚡ 노애드 — 결정 포인트!', 1800);
+    sbFlashStatus('⚡ DEUCE — 결정 포인트!', 2000);
     sbRender(); return;
   }
   if (_sb.pts[p] >= 4) sbWinGame(p); else sbRender();
@@ -6182,14 +6131,17 @@ function sbWinGame(p) {
 
 function sbCheckSetWin(p) {
   var o=1-p, pg=_sb.games[p], og=_sb.games[o];
-  // 동호인 룰: 5:5이면 타이브레이크
+  // 타이브레이크 진행 중이면 sbCheckTBWin에서 처리
+  if (_sb.tb) { sbRender(); return; }
+  // 동호인 룰: 5:5이면 타이브레이크 돌입
   if (pg===5 && og===5) {
     _sb.tb=true; _sb.tbPts=[0,0];
     sbFlashStatus('🔀 타이브레이크!', 1800);
     sbRender(); return;
   }
-  // 5게임 이상이고 2게임차 이상이면 세트 승리, 또는 6게임(타이브레이크 승)
-  var won = (pg>=5 && pg-og>=2) || pg===6;
+  // 5게임 이상이고 2게임차 이상 → 세트 승리
+  // 또는 6게임 (상대 4이하, 타이브레이크 없이) → 세트 승리
+  var won = (pg>=5 && pg-og>=2) || (pg===6 && og<=4);
   if (won) sbEndMatch(p); else sbRender();
 }
 
@@ -6355,6 +6307,12 @@ function sbResetMatch() {
   _sb.tb=false; _sb.tbPts=[0,0]; _sb.faults=0; _sb.dfs=0;
   _sb.serving=0; _sb.over=false; _sb.history=[];
   _sbPanelOpen = false;
+  // visualViewport 핸들러 정리
+  if (window._sbVPHandler && window.visualViewport) {
+    window.visualViewport.removeEventListener('resize', window._sbVPHandler);
+    window.visualViewport.removeEventListener('scroll', window._sbVPHandler);
+    window._sbVPHandler = null;
+  }
   // 스코어보드 전체 다시 그림 (위너 화면 포함 완전 초기화)
   renderScoreboard();
 }
@@ -6436,13 +6394,13 @@ function sbRender() {
   if (p1e) { p1e.textContent=t0; p1e.className=cls0; }
   if (p2e) { p2e.textContent=t1; p2e.className=cls1; }
 
-  // 게임 스코어 우측 상단 업데이트 (버그 수정)
+  // 게임 스코어 우측 상단 업데이트
   var gs1=document.getElementById('sb-gs1');
   var gs2=document.getElementById('sb-gs2');
   if (gs1) gs1.textContent=_sb.games[0];
   if (gs2) gs2.textContent=_sb.games[1];
 
-  sbUpdateServeBtns();
+  if (_sbPanelOpen) sbUpdateServeBtns();
 }
 
 function sbUpdateFaultDots() {
