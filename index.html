@@ -5677,50 +5677,56 @@ function renderScoreboard() {
   #sb-ctrl-backdrop { position:fixed; inset:0; z-index:18; display:none; }
   #sb-ctrl-backdrop.open { display:block; }
   /* 패널 전체: flex column, 탭 고정 + 내용만 스크롤 */
-  #sb-ctrl-box { background:#0a0c1a; border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:0; transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:auto; max-height:55vh; display:flex; flex-direction:column; overflow:hidden; }
+  #sb-ctrl-box { background:#0a0c1a; border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:0; transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:auto; max-height:42vh; display:flex; flex-direction:column; overflow:hidden; }
   #sb-ctrl-box.open { transform:translateY(0); }
   /* 탭 고정 영역 */
-  #sb-ctrl-fixed { padding:10px 14px 0; flex-shrink:0; background:#0a0c1a; border-bottom:1px solid #1a1a2e; }
-  #sb-ctrl-handle { width:40px; height:4px; border-radius:2px; background:#2a2a4a; margin:0 auto 10px; cursor:pointer; }
-  .sb-tab-row { display:flex; gap:8px; padding-bottom:10px; margin-bottom:0; }
-  .sb-tab-btn { flex:1; font-family:'Orbitron',sans-serif; font-size:12px; letter-spacing:1px; padding:13px 4px; background:#050810; border:1px solid #1a1a2e; color:#7a7aaa; border-radius:8px; cursor:pointer; transition:all .2s; }
-  .sb-tab-btn.active { background:#1a6bff; border-color:#1a6bff; color:#fff; }
+  #sb-ctrl-fixed { padding:7px 12px 0; flex-shrink:0; background:#0a0c1a; border-bottom:1px solid #1a1a2e; }
+  #sb-ctrl-handle { width:36px; height:4px; border-radius:2px; background:#2a2a4a; margin:0 auto 7px; cursor:pointer; }
+  .sb-tab-row { display:flex; gap:6px; padding-bottom:7px; margin-bottom:0; }
+  /* ★ 탭버튼: 폰트 크게, 잘 보이게 */
+  .sb-tab-btn { flex:1; font-family:'Noto Sans KR',sans-serif; font-size:15px; font-weight:700; letter-spacing:0; padding:10px 4px; background:#0d0f20; border:1px solid #2a2a4a; color:#8888bb; border-radius:8px; cursor:pointer; transition:all .2s; }
+  .sb-tab-btn.active { background:#1a6bff; border-color:#1a6bff; color:#fff; box-shadow:0 2px 10px rgba(26,107,255,.4); }
   /* 탭 내용 스크롤 영역 */
-  #sb-ctrl-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:12px 14px 18px; }
+  #sb-ctrl-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:8px 12px 12px; }
   .sb-tab-content { display:none; }
   .sb-tab-content.active { display:block; }
-  /* 점수탭: 선수 좌우 2칸, 하단 버튼은 세로 1줄씩 */
-  .sb-score-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .sb-pctrl { background:#050810; border:1px solid #1a1a2e; border-radius:10px; padding:12px 10px; }
-  .sb-pctrl-name { font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:1px; color:#ffd84d; margin-bottom:8px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* 점수탭: 선수 좌우 2칸 */
+  .sb-score-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .sb-pctrl { background:#050810; border:1px solid #1a1a2e; border-radius:10px; padding:8px; }
+  /* ★ 선수명 폰트 크고 선명하게 */
+  .sb-pctrl-name { font-family:'Noto Sans KR',sans-serif; font-size:14px; font-weight:700; letter-spacing:0; color:#ffd84d; margin-bottom:6px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .sb-pctrl-name.b { color:#5599ff; }
-  .sb-btn-group { display:flex; flex-direction:column; gap:8px; margin-bottom:0; }
-  .sb-btn { font-family:'Orbitron',sans-serif; letter-spacing:.5px; border:none; border-radius:8px; cursor:pointer; transition:all .15s; font-size:13px; padding:14px 8px; flex:1; font-weight:700; width:100%; }
+  .sb-btn-group { display:flex; flex-direction:column; gap:5px; margin-bottom:0; }
+  /* ★ 버튼 폰트 크고 패딩 적당히 */
+  .sb-btn { font-family:'Noto Sans KR',sans-serif; letter-spacing:0; border:none; border-radius:8px; cursor:pointer; transition:all .15s; font-size:14px; font-weight:700; padding:9px 8px; flex:1; width:100%; }
   .sb-btn:active { transform:scale(.95); opacity:.85; }
-  .sb-btn-pt { background:#1a6bff; color:#fff; font-size:15px; padding:16px 8px; }
-  .sb-btn-ace { background:rgba(0,166,81,.2); color:#00c861; border:2px solid #00a651; }
-  .sb-btn-flt { background:rgba(255,79,79,.15); color:#ff6060; border:2px solid #ff4f4f; }
-  /* 하단 3버튼: 가로 배열, 충분한 크기 */
-  .sb-bottom-btns { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:10px; }
-  .sb-btn-undo { background:rgba(255,255,255,.08); color:#fff; border:1px solid #3a3a5a; padding:14px 4px; font-size:12px; }
-  .sb-btn-rst { background:rgba(255,79,79,.1); color:#ff6060; border:2px solid rgba(255,79,79,.4); padding:14px 4px; font-size:12px; }
-  .sb-btn-tb { background:rgba(201,168,76,.15); color:#ffd84d; border:2px solid rgba(201,168,76,.5); padding:14px 4px; font-size:12px; }
-  .sb-fault-info { font-family:'Orbitron',sans-serif; font-size:11px; color:#7a7aaa; letter-spacing:1px; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+  .sb-btn-pt { background:#1a6bff; color:#fff; font-size:16px; padding:11px 8px; }
+  .sb-btn-ace { background:rgba(0,166,81,.2); color:#00e070; border:2px solid #00a651; }
+  .sb-btn-flt { background:rgba(255,79,79,.15); color:#ff7070; border:2px solid #ff4f4f; }
+  /* 하단 3버튼 */
+  .sb-bottom-btns { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-top:7px; }
+  .sb-btn-undo { background:rgba(255,255,255,.08); color:#dde; border:1px solid #3a3a5a; padding:9px 4px; font-size:13px; }
+  .sb-btn-rst { background:rgba(255,79,79,.1); color:#ff7070; border:2px solid rgba(255,79,79,.4); padding:9px 4px; font-size:13px; }
+  .sb-btn-tb { background:rgba(201,168,76,.15); color:#ffd84d; border:2px solid rgba(201,168,76,.5); padding:9px 4px; font-size:13px; }
+  /* 폴트탭 */
+  .sb-fault-info { font-family:'Noto Sans KR',sans-serif; font-size:13px; font-weight:600; color:#aaa; letter-spacing:0; margin-bottom:7px; display:flex; align-items:center; gap:10px; }
   .sb-fd { display:flex; gap:6px; }
-  .sb-fd-dot { width:18px; height:18px; border-radius:50%; background:#1a1a2e; transition:background .2s; }
+  .sb-fd-dot { width:16px; height:16px; border-radius:50%; background:#1a1a2e; transition:background .2s; }
   .sb-fd-dot.on { background:#ff4f4f; box-shadow:0 0 8px #ff4f4f; }
-  .sb-setup-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-  .sb-setup-item { display:flex; flex-direction:column; gap:4px; }
-  .sb-setup-item label { font-family:'Noto Sans KR',sans-serif; font-size:12px; color:#aaa; letter-spacing:0.5px; font-weight:600; }
-  .sb-setup-item input { background:#050810; border:1px solid #1a1a2e; color:#fff; font-family:'Noto Sans KR',sans-serif; font-size:15px; padding:11px 10px; border-radius:6px; outline:none; width:100%; box-sizing:border-box; }
+  /* 설정탭 */
+  .sb-setup-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .sb-setup-item { display:flex; flex-direction:column; gap:3px; }
+  /* ★ 설정탭 라벨 폰트 선명하게 */
+  .sb-setup-item label { font-family:'Noto Sans KR',sans-serif; font-size:13px; font-weight:700; color:#ccc; letter-spacing:0; }
+  .sb-setup-item input { background:#050810; border:1px solid #1a1a2e; color:#fff; font-family:'Noto Sans KR',sans-serif; font-size:14px; padding:8px 10px; border-radius:6px; outline:none; width:100%; box-sizing:border-box; }
   .sb-setup-item input:focus { border-color:#1a6bff; }
-  /* 자동완성 팝업 내부 목록 스타일 (sbOpenInput 팝업용) */
-  .sb-ac-item { padding:12px 14px; font-family:'Noto Sans KR',sans-serif; font-size:15px; color:#fff; cursor:pointer; border-bottom:1px solid #1a1a2e; }
+  /* 자동완성 팝업 목록 */
+  .sb-ac-item { padding:11px 14px; font-family:'Noto Sans KR',sans-serif; font-size:15px; color:#fff; cursor:pointer; border-bottom:1px solid #1a1a2e; }
   .sb-ac-item:last-child { border-bottom:none; }
   .sb-ac-item:active { background:#1a6bff; }
-  .sb-btn-apply { width:100%; padding:13px; background:#7c6af7; color:#fff; border:none; border-radius:8px; font-family:'Orbitron',sans-serif; font-size:13px; letter-spacing:1px; font-weight:700; cursor:pointer; margin-top:10px; }
-  /* 이름 입력 버튼 (실제 input 대신 사용) */
-  .sb-name-btn { width:100%; background:#050810; border:1px solid #1a1a2e; color:#fff; font-family:'Noto Sans KR',sans-serif; font-size:15px; padding:11px 10px; border-radius:6px; cursor:pointer; text-align:left; transition:border-color .2s; }
+  .sb-btn-apply { width:100%; padding:10px; background:#7c6af7; color:#fff; border:none; border-radius:8px; font-family:'Noto Sans KR',sans-serif; font-size:14px; font-weight:700; letter-spacing:0; cursor:pointer; margin-top:8px; }
+  /* 이름 입력 버튼 */
+  .sb-name-btn { width:100%; background:#050810; border:1px solid #1a1a2e; color:#fff; font-family:'Noto Sans KR',sans-serif; font-size:14px; padding:8px 10px; border-radius:6px; cursor:pointer; text-align:left; transition:border-color .2s; }
   .sb-name-btn:active { border-color:#1a6bff; background:#0a0f1e; }
   #sb-winner { display:none; position:absolute; inset:0; background:linear-gradient(135deg,#0d0022,#1a0040); flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:30; }
   #sb-winner.show { display:flex; }
@@ -5806,7 +5812,7 @@ function renderScoreboard() {
         <div class="sb-btn-group">
           <button class="sb-btn sb-btn-flt" style="flex:1;padding:12px;font-size:14px" onclick="sbAddFaultAuto()">서버 폴트</button>
         </div>
-        <div style="font-family:'Noto Sans KR',sans-serif;font-size:11px;color:#7a7aaa;text-align:center;margin-top:4px;letter-spacing:0.5px;">폴트는 서브하는 선수에게 자동 적용됩니다</div>
+        <div style="font-family:'Noto Sans KR',sans-serif;font-size:13px;color:#aaa;text-align:center;margin-top:4px;letter-spacing:0.5px;">폴트는 서브하는 선수에게 자동 적용됩니다</div>
         <button class="sb-btn sb-btn-undo" style="width:100%;padding:10px;margin-top:6px;" onclick="sbResetFaults()">폴트 초기화</button>
       </div>
       <!-- 설정 탭 -->
@@ -6333,21 +6339,21 @@ function sbSetFormat(fmt) {
   var lbl2 = document.querySelector('#sb-setup-s2 label');
   var box = document.getElementById('sb-ctrl-box');
   if (fmt === 'doubles') {
-    if (btnS) { btnS.style.background='#050810'; btnS.style.color='#7a7aaa'; btnS.style.border='1px solid #1a1a2e'; }
+    if (btnS) { btnS.style.background='#0d0f20'; btnS.style.color='#8888bb'; btnS.style.border='1px solid #2a2a4a'; }
     if (btnD) { btnD.style.background='#1a6bff'; btnD.style.color='#fff'; btnD.style.border='none'; }
     if (d1) d1.style.display='';
     if (d2) d2.style.display='';
     if (lbl1) lbl1.textContent='🟡 우리팀 선수 1';
     if (lbl2) lbl2.textContent='🔵 상대팀 선수 1';
-    if (box) box.style.maxHeight = '55vh';
+    if (box) box.style.maxHeight = '52vh';
   } else {
     if (btnS) { btnS.style.background='#1a6bff'; btnS.style.color='#fff'; btnS.style.border='none'; }
-    if (btnD) { btnD.style.background='#050810'; btnD.style.color='#7a7aaa'; btnD.style.border='1px solid #1a1a2e'; }
+    if (btnD) { btnD.style.background='#0d0f20'; btnD.style.color='#8888bb'; btnD.style.border='1px solid #2a2a4a'; }
     if (d1) d1.style.display='none';
     if (d2) d2.style.display='none';
     if (lbl1) lbl1.textContent='🟡 선수 1';
     if (lbl2) lbl2.textContent='🔵 선수 2';
-    if (box) box.style.maxHeight = '55vh';
+    if (box) box.style.maxHeight = '42vh';
   }
 }
 function sbApplySetup() {
