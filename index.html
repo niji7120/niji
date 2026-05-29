@@ -6133,15 +6133,15 @@ function sbCheckSetWin(p) {
   var o=1-p, pg=_sb.games[p], og=_sb.games[o];
   // 타이브레이크 진행 중이면 sbCheckTBWin에서 처리
   if (_sb.tb) { sbRender(); return; }
-  // 동호인 룰: 5:5이면 타이브레이크 돌입
+  // 5:5이면 타이브레이크 돌입
   if (pg===5 && og===5) {
     _sb.tb=true; _sb.tbPts=[0,0];
     sbFlashStatus('🔀 타이브레이크!', 1800);
     sbRender(); return;
   }
-  // 5게임 이상이고 2게임차 이상 → 세트 승리
-  // 또는 6게임 (상대 4이하, 타이브레이크 없이) → 세트 승리
-  var won = (pg>=5 && pg-og>=2) || (pg===6 && og<=4);
+  // 일반 게임: 6게임 먼저 따야 승리 (6-0 ~ 6-4)
+  // 6게임이고 상대가 4게임 이하일 때만 승리 (5-5는 타이브레이크로 처리됨)
+  var won = (pg===6 && og<=4);
   if (won) sbEndMatch(p); else sbRender();
 }
 
@@ -6303,9 +6303,15 @@ function sbUndoPoint() {
 function sbResetFaults() { _sb.faults=0; sbUpdateFaultDots(); }
 
 function sbResetMatch() {
+  // 점수/게임/상태 전체 초기화
   _sb.pts=[0,0]; _sb.games=[0,0]; _sb.deuce=false;
   _sb.tb=false; _sb.tbPts=[0,0]; _sb.faults=0; _sb.dfs=0;
   _sb.serving=0; _sb.over=false; _sb.history=[];
+  // 선수 이름/포맷/타이틀도 초기값으로 리셋
+  _sb.names=['선수 1','선수 2'];
+  _sb.names2=['',''];
+  _sb.format='singles';
+  _sb.title='테니스 경기';
   _sbPanelOpen = false;
   // visualViewport 핸들러 정리
   if (window._sbVPHandler && window.visualViewport) {
