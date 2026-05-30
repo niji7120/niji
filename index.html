@@ -3,8 +3,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8709822707087045"
-     crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>NIJI STRING</title>
@@ -34,6 +32,18 @@
       messagingSenderId: "179605771373",
       appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
     };
+    // ※ 보안 참고: Firebase Console → Realtime Database → 규칙(Rules)에서
+    //   반드시 로그인된 사용자만 본인 데이터에 접근하도록 설정 필요:
+    // {
+    //   "rules": {
+    //     "users": {
+    //       "$uid": {
+    //         ".read": "$uid === auth.uid",
+    //         ".write": "$uid === auth.uid"
+    //       }
+    //     }
+    //   }
+    // }
     firebase.initializeApp(firebaseConfig);
     window._firebaseDB = firebase.database();
     window._firebaseAuth = firebase.auth();
@@ -2207,10 +2217,18 @@ function save() {
     var dbRef = _getDbRef();
     if (dbRef) {
       dbRef.set(saveState)
+        .then(function() {
+          // Firebase 저장 성공 → 오프라인 대기 데이터 삭제
+          try { localStorage.removeItem('nijiData_pending_' + window._userId); } catch(e) {}
+        })
         .catch(function(e) {
           console.warn('Firebase 저장 실패:', e);
-          try { localStorage.setItem('nijiData_' + window._userId, JSON.stringify(saveState)); } catch(ex) {}
-          showToast('⚠️ 저장 실패. 인터넷 연결을 확인하세요.');
+          // 오프라인 대기 큐에 저장 (온라인 복귀 시 자동 동기화)
+          try {
+            localStorage.setItem('nijiData_pending_' + window._userId, JSON.stringify(saveState));
+            localStorage.setItem('nijiData_' + window._userId, JSON.stringify(saveState));
+          } catch(ex) {}
+          showToast('📴 오프라인 저장됨. 인터넷 연결 시 자동 동기화돼요.');
         });
     } else {
       try { localStorage.setItem('nijiData_offline', JSON.stringify(saveState)); } catch(e) {}
@@ -2221,15 +2239,42 @@ function save() {
       try {
         if (photo.length < 500000) {
           localStorage.setItem('nijiPhoto_' + (window._userId || 'local'), photo);
+        } else {
+          // 사용자에게 명확하게 안내 (조용히 실패하지 않음)
+          showToast('⚠️ 사진이 너무 커서 저장 안됐어요. 더 작은 사진을 써주세요.');
+          console.warn('사진 저장 실패(용량 초과): ' + Math.round(photo.length/1024) + 'KB');
         }
       } catch(e) {
-        console.warn('사진 저장 실패(용량 초과):', e);
+        showToast('⚠️ 사진 저장 실패. 기기 저장공간을 확인해 주세요.');
+        console.warn('사진 저장 실패(예외):', e);
       }
     }
   } catch(e) {
     console.warn('save 오류:', e);
   }
 }
+
+// ===== 오프라인 → 온라인 자동 동기화 =====
+function _syncPendingData() {
+  if (!window._firebaseDB || !window._userId) return;
+  try {
+    var pendingKey = 'nijiData_pending_' + window._userId;
+    var pending = localStorage.getItem(pendingKey);
+    if (!pending) return;
+    var parsed = JSON.parse(pending);
+    window._firebaseDB.ref('users/' + window._userId + '/nijiData').set(parsed)
+      .then(function() {
+        localStorage.removeItem(pendingKey);
+        showToast('✅ 오프라인 기록이 클라우드에 동기화됐어요!');
+        console.log('오프라인 대기 데이터 동기화 완료');
+      })
+      .catch(function(e) { console.warn('동기화 재시도 실패:', e); });
+  } catch(e) { console.warn('pending 동기화 오류:', e); }
+}
+// 온라인 복귀 감지 → 1.5초 후 자동 동기화
+window.addEventListener('online', function() {
+  setTimeout(_syncPendingData, 1500);
+});
 
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
@@ -2282,6 +2327,7 @@ function load() {
       var msgEl = document.getElementById('loadingMsg');
       if (msgEl) msgEl.textContent = '데이터 불러오는 중...';
       _migrateOfflineData();
+      _syncPendingData();
       _loadFromFirebase();
     } else {
       _showLoginScreen();
@@ -7812,30 +7858,93 @@ history.pushState(null, '', location.href);
   window.tcSave=function(){document.getElementById("tc-saveNameInput").value="";document.getElementById("tc-modalSave").style.display="flex";setTimeout(()=>document.getElementById("tc-saveNameInput").focus(),100);};
   window.tcSaveOk=function(){
     const name=document.getElementById("tc-saveNameInput").value.trim()||"전술판";
-    const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
-    saves.unshift({name,date:new Date().toLocaleString("ko-KR"),state:tcGetState()});
-    if(saves.length>20)saves.pop();
-    localStorage.setItem("niji_tactics_saves",JSON.stringify(saves));
+    const newEntry={name,date:new Date().toLocaleString("ko-KR"),state:tcGetState()};
+
+    // Firebase 저장 (로그인된 경우)
+    if(window._firebaseDB && window._userId){
+      const ref=window._firebaseDB.ref('users/'+window._userId+'/tacticsSaves');
+      ref.once('value').then(snap=>{
+        const saves=[];
+        snap.forEach(child=>{saves.push({key:child.key,...child.val()});});
+        // 최대 20개 제한: 20개 초과시 가장 오래된 것 삭제
+        if(saves.length>=20){
+          const oldest=saves[saves.length-1];
+          if(oldest&&oldest.key) ref.child(oldest.key).remove();
+        }
+        ref.push({name:newEntry.name,date:newEntry.date,state:newEntry.state});
+      }).catch(()=>{
+        // Firebase 실패시 localStorage 폴백
+        const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+        saves.unshift(newEntry);
+        if(saves.length>20)saves.pop();
+        localStorage.setItem("niji_tactics_saves",JSON.stringify(saves));
+      });
+    } else {
+      // 비로그인: localStorage 사용
+      const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+      saves.unshift(newEntry);
+      if(saves.length>20)saves.pop();
+      localStorage.setItem("niji_tactics_saves",JSON.stringify(saves));
+    }
     document.getElementById("tc-modalSave").style.display="none";
     tcShowToast(`"${name}" 저장 완료! 💾`);
   };
 
   window.tcLoad=function(){
-    const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
-    const list=document.getElementById("tc-slotList");list.innerHTML="";
-    if(saves.length===0){list.innerHTML="<div style='text-align:center;color:#3e5f70;font-size:12px;padding:20px;'>저장된 전술판이 없어요</div>";}
-    else{
-      saves.forEach((s,i)=>{
+    const list=document.getElementById("tc-slotList");
+    list.innerHTML="<div style='text-align:center;color:#7a7a95;font-size:12px;padding:20px;'>불러오는 중...</div>";
+    document.getElementById("tc-modalLoad").style.display="flex";
+
+    function renderTcSaveList(saves){
+      list.innerHTML="";
+      if(!saves||saves.length===0){list.innerHTML="<div style='text-align:center;color:#7a7a95;font-size:12px;padding:20px;'>저장된 전술판이 없어요</div>";return;}
+      saves.forEach(s=>{
         const row=document.createElement("div");
         row.style.cssText="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.05);margin-bottom:6px;cursor:pointer;";
-        row.innerHTML=`<div style="flex:1;"><div style="font-size:13px;color:#ddf0f8;">${s.name}</div><div style="font-size:10px;color:#4e7a8a;">${s.date}</div></div><button style="padding:2px 8px;border-radius:8px;border:none;background:rgba(248,113,113,0.15);color:#f87171;font-size:11px;cursor:pointer;" data-i="${i}">삭제</button>`;
+        row.innerHTML=`<div style="flex:1;"><div style="font-size:13px;color:#ddf0f8;">${s.name}</div><div style="font-size:10px;color:#4e7a8a;">${s.date}</div></div><button style="padding:2px 8px;border-radius:8px;border:none;background:rgba(248,113,113,0.15);color:#f87171;font-size:11px;cursor:pointer;" data-key="${s.key||''}" data-i="${s.localIdx!==undefined?s.localIdx:''}">삭제</button>`;
         row.addEventListener("click",e=>{
-          if(e.target.dataset.i!==undefined){saves.splice(parseInt(e.target.dataset.i),1);localStorage.setItem("niji_tactics_saves",JSON.stringify(saves));window.tcLoad();return;}
+          const delBtn=e.target.closest("button[data-key],button[data-i]");
+          if(delBtn){
+            const fbKey=delBtn.dataset.key;
+            const localIdx=delBtn.dataset.i;
+            if(fbKey&&window._firebaseDB&&window._userId){
+              window._firebaseDB.ref('users/'+window._userId+'/tacticsSaves/'+fbKey).remove().then(()=>window.tcLoad());
+            } else if(localIdx!==''){
+              const arr=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+              arr.splice(parseInt(localIdx),1);
+              localStorage.setItem("niji_tactics_saves",JSON.stringify(arr));
+              window.tcLoad();
+            }
+            return;
+          }
           tcLoadState(s.state);document.getElementById("tc-modalLoad").style.display="none";tcShowToast(`"${s.name}" 불러오기 완료! 📂`);
         });list.appendChild(row);
       });
     }
-    document.getElementById("tc-modalLoad").style.display="flex";
+
+    // Firebase 우선 로드
+    if(window._firebaseDB&&window._userId){
+      window._firebaseDB.ref('users/'+window._userId+'/tacticsSaves').orderByChild('date').once('value')
+        .then(snap=>{
+          const saves=[];
+          snap.forEach(child=>{saves.unshift({key:child.key,...child.val()});});
+          // localStorage에 기존 데이터 있으면 Firebase로 마이그레이션
+          const old=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+          if(old.length>0&&saves.length===0){
+            const ref=window._firebaseDB.ref('users/'+window._userId+'/tacticsSaves');
+            old.forEach(o=>ref.push(o));
+            localStorage.removeItem("niji_tactics_saves");
+            window.tcLoad(); return;
+          }
+          renderTcSaveList(saves);
+        }).catch(()=>{
+          const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+          renderTcSaveList(saves.map((s,i)=>({...s,localIdx:i})));
+        });
+    } else {
+      const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+      renderTcSaveList(saves.map((s,i)=>({...s,localIdx:i})));
+    }
   };
 
   window.tcShare=function(){
