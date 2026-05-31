@@ -1106,7 +1106,7 @@
       <!-- 경기 입력 폼 아코디언 -->
       <div class="acc-wrap" style="margin-bottom:10px;">
         <button class="acc-header" id="matchFormAccHeader" onclick="toggleMatchForm()" style="background:linear-gradient(135deg,var(--accent),#6256e0);color:#fff;border-radius:12px;">
-          <span>➕ 새 경기 입력</span>
+          <span id="matchFormTitle">➕ 새 경기 입력</span>
           <span class="acc-arrow" id="matchForm-arrow" style="color:rgba(255,255,255,0.85);">▼</span>
         </button>
         <div class="acc-body" id="matchFormBody" style="display:none;">
@@ -2214,6 +2214,12 @@ function save() {
     delete saveState._matchSelectedMonth;
     delete saveState.editingMatchId;
 
+    // ★ 항상 localStorage에 먼저 저장 (데이터 유실 방지)
+    var uid = window._userId || 'offline';
+    try {
+      localStorage.setItem('nijiData_' + uid, JSON.stringify(saveState));
+    } catch(ex) { console.warn('localStorage 저장 실패:', ex); }
+
     var dbRef = _getDbRef();
     if (dbRef) {
       dbRef.set(saveState)
@@ -2226,11 +2232,11 @@ function save() {
           // 오프라인 대기 큐에 저장 (온라인 복귀 시 자동 동기화)
           try {
             localStorage.setItem('nijiData_pending_' + window._userId, JSON.stringify(saveState));
-            localStorage.setItem('nijiData_' + window._userId, JSON.stringify(saveState));
           } catch(ex) {}
           showToast('📴 오프라인 저장됨. 인터넷 연결 시 자동 동기화돼요.');
         });
     } else {
+      // Firebase 없으면 offline 키에도 추가 저장
       try { localStorage.setItem('nijiData_offline', JSON.stringify(saveState)); } catch(e) {}
     }
 
@@ -2240,7 +2246,6 @@ function save() {
         if (photo.length < 500000) {
           localStorage.setItem('nijiPhoto_' + (window._userId || 'local'), photo);
         } else {
-          // 사용자에게 명확하게 안내 (조용히 실패하지 않음)
           showToast('⚠️ 사진이 너무 커서 저장 안됐어요. 더 작은 사진을 써주세요.');
           console.warn('사진 저장 실패(용량 초과): ' + Math.round(photo.length/1024) + 'KB');
         }
@@ -2262,6 +2267,14 @@ function _syncPendingData() {
     var pending = localStorage.getItem(pendingKey);
     if (!pending) return;
     var parsed = JSON.parse(pending);
+    // pending 데이터를 Firebase에 업로드 (현재 state가 더 최신이면 무시)
+    var pendingMatchCount = (parsed.matches || []).length;
+    var currentMatchCount = (state.matches || []).length;
+    // 현재 메모리 state가 더 많으면 pending 삭제만
+    if (currentMatchCount > pendingMatchCount) {
+      localStorage.removeItem(pendingKey);
+      return;
+    }
     window._firebaseDB.ref('users/' + window._userId + '/nijiData').set(parsed)
       .then(function() {
         localStorage.removeItem(pendingKey);
@@ -2293,7 +2306,10 @@ function applyTheme() {
 function _loadFromLocalStorage() {
   try {
     var uid = window._userId || 'offline';
-    var d = localStorage.getItem('nijiData_' + uid) || localStorage.getItem('nijiData_offline') || localStorage.getItem('nijiData');
+    // 현재 userId 키 우선, 없으면 offline/legacy 순으로 탐색
+    var d = localStorage.getItem('nijiData_' + uid)
+         || localStorage.getItem('nijiData_offline')
+         || localStorage.getItem('nijiData');
     if (d) _applyFirebaseData(JSON.parse(d));
     var photo = localStorage.getItem('nijiPhoto_' + uid) || localStorage.getItem('nijiPhoto');
     if (photo && photo.length > 10 && state.profile) state.profile.photo = photo;
@@ -2317,8 +2333,14 @@ function load() {
     _showLoginScreen();
   }, 5000);
 
+  // 이미 로드된 경우 중복 실행 방지
+  var _appLoaded = false;
+
   window._firebaseAuth.onAuthStateChanged(function(user) {
     clearTimeout(authTimeout);
+    if (_appLoaded) return; // 중복 실행 방지
+    _appLoaded = true;
+
     if (user) {
       window._userId = user.uid;
       window._userDisplayName = user.displayName || '';
@@ -2487,13 +2509,13 @@ function _migrateOfflineData() {
 
 function _loadFromFirebase() {
   return new Promise(function(resolve) {
-    // 5초 타임아웃
+    // 8초 타임아웃 (모바일 환경 고려)
     var timeout = setTimeout(function() {
       console.warn('Firebase 타임아웃 → localStorage 사용');
       _loadFromLocalStorage();
       _initApp();
       resolve();
-    }, 5000);
+    }, 8000);
 
     try {
       var dbRef = _getDbRef();
@@ -2507,8 +2529,29 @@ function _loadFromFirebase() {
       dbRef.once('value')
         .then(function(snapshot) {
           clearTimeout(timeout);
-          if (snapshot.exists()) _applyFirebaseData(snapshot.val());
-          else _loadFromLocalStorage(); // Firebase에 데이터 없으면 localStorage 확인
+          if (snapshot.exists()) {
+            _applyFirebaseData(snapshot.val());
+            // Firebase 데이터가 있어도 localStorage 경기 데이터 병합 확인
+            // (Firebase 저장 실패 후 localStorage에만 있는 데이터 복구)
+            try {
+              var uid = window._userId;
+              var localRaw = localStorage.getItem('nijiData_pending_' + uid);
+              if (localRaw) {
+                var localParsed = JSON.parse(localRaw);
+                // pending 데이터의 matches가 더 많으면 병합
+                var fbMatchCount = (state.matches || []).length;
+                var localMatchCount = (localParsed.matches || []).length;
+                if (localMatchCount > fbMatchCount) {
+                  console.log('pending 데이터 병합:', localMatchCount - fbMatchCount, '개 경기 복구');
+                  _applyFirebaseData(localParsed);
+                  // Firebase에 재저장
+                  save();
+                }
+              }
+            } catch(mergeErr) {}
+          } else {
+            _loadFromLocalStorage(); // Firebase에 데이터 없으면 localStorage 확인
+          }
           // 사진 불러오기
           try {
             var uid = window._userId || 'local';
@@ -2624,8 +2667,9 @@ function _applyFirebaseData(parsed) {
     }).filter(Boolean);
 
     // id 보정 - 0이거나 비정상이면 최대값 기준으로 재설정
-    const maxMatchId = state.matches.reduce((max, m) => Math.max(max, m.id || 0), 0);
-    const maxPlayerId = state.players.reduce((max, p) => Math.max(max, p.id || 0), 0);
+    const maxMatchId = state.matches.reduce((max, m) => Math.max(max, (m.id || 0)), 0);
+    const maxPlayerId = state.players.reduce((max, p) => Math.max(max, (p.id || 0)), 0);
+    // nextMatchId는 항상 현재 최대 id+1 이상이어야 함
     if (!state.nextMatchId || state.nextMatchId <= maxMatchId) state.nextMatchId = maxMatchId + 1;
     if (!state.nextPlayerId || state.nextPlayerId <= maxPlayerId) state.nextPlayerId = maxPlayerId + 1;
 
@@ -3196,12 +3240,14 @@ function genHanul(players, numGames) {
   return rounds;
 }
 
+let _toastTimer = null;
 function showToast(msg) {
   const t = document.getElementById('toast');
   if (!t) return;
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { t.classList.remove('show'); _toastTimer = null; }, 2500);
 }
 
 // ===== MODAL =====
@@ -3743,7 +3789,7 @@ function saveMatch() {
     state.editingMatchId = null;
     document.getElementById('matchEditBanner').classList.remove('active');
     const _titleEl = document.getElementById('matchFormTitle');
-    if (_titleEl) _titleEl.textContent = '새 경기';
+    if (_titleEl) _titleEl.textContent = '➕ 새 경기 입력';
     document.getElementById('matchSaveBtn').textContent = '경기 저장';
     showToast('✅ 경기 수정 완료!');
   } else {
@@ -3781,7 +3827,8 @@ function saveMatch() {
   document.getElementById('myTiebreak').value = '';
   document.getElementById('oppTiebreak').value = '';
   document.getElementById('matchMemo').value = '';
-  document.getElementById('matchRacket').value = '';
+  var matchRacketEl = document.getElementById('matchRacket');
+  if (matchRacketEl) matchRacketEl.value = '';
   // 피클볼 점수 방식 초기화 불필요 (UI 제거됨)
   togglePartner();
   renderMatchList();
@@ -3878,7 +3925,7 @@ function renderMatchListPast() {
   const countEl = document.getElementById('matchHistoryCount');
   if (!pastEl) return;
   const today = getTodayStr();
-  const ym = state._matchSelectedMonth || getLast6Months()[1] || getLast6Months()[0];
+  const ym = state._matchSelectedMonth || getLast6Months()[0];
   const filtered = (state.matches||[])
     .filter(m => m.date !== today && m.date.slice(0,7) === ym)
     .sort((a,b) => b.date.localeCompare(a.date));
@@ -3977,15 +4024,15 @@ function toggleMatchForm() {
   const isOpen = body.style.display !== 'none';
   body.style.display = isOpen ? 'none' : 'block';
   if (arrow) arrow.textContent = isOpen ? '▼' : '▲';
-  if (header) header.querySelector('span:first-child').textContent = isOpen ? '➕ 새 경기 입력' : '✖ 닫기';
+  const titleEl2 = document.getElementById('matchFormTitle');
+  if (titleEl2) titleEl2.textContent = isOpen ? '➕ 새 경기 입력' : '✖ 닫기';
   // 폼 닫을 때 수정 모드 자동 해제
   if (isOpen && state.editingMatchId) {
     state.editingMatchId = null;
     const banner = document.getElementById('matchEditBanner');
-    const titleEl = document.getElementById('matchFormTitle');
     const saveBtn = document.getElementById('matchSaveBtn');
     if (banner) banner.classList.remove('active');
-    if (titleEl) titleEl.textContent = '새 경기';
+    if (titleEl2) titleEl2.textContent = '➕ 새 경기 입력';
     if (saveBtn) saveBtn.textContent = '경기 저장';
   }
 }
@@ -4027,7 +4074,8 @@ function openMatchForm() {
   if (!body) return;
   body.style.display = 'block';
   if (arrow) arrow.textContent = '▲';
-  if (header) header.querySelector('span:first-child').textContent = '✖ 닫기';
+  const _openTitleEl = document.getElementById('matchFormTitle');
+  if (_openTitleEl) _openTitleEl.textContent = '✖ 닫기';
 }
 function closeMatchForm() {
   const body  = document.getElementById('matchFormBody');
@@ -4037,7 +4085,8 @@ function closeMatchForm() {
   body.style.display = 'none';
   body.classList.remove('open');
   if (arrow) arrow.textContent = '▼';
-  if (header) header.querySelector('span:first-child').textContent = '➕ 새 경기 입력';
+  const _closeTitleEl = document.getElementById('matchFormTitle');
+  if (_closeTitleEl) _closeTitleEl.textContent = '➕ 새 경기 입력';
 }
 
 function editMatch(id) {
@@ -4066,13 +4115,15 @@ function editMatch(id) {
   document.getElementById('myTiebreak').value = m.myTiebreak || '';
   document.getElementById('oppTiebreak').value = m.oppTiebreak || '';
   document.getElementById('matchMemo').value = m.memo || '';
+  // 라켓 옵션 먼저 갱신 후 저장값 복원
+  updateMatchRacketOptions();
   document.getElementById('matchRacket').value = m.racketUsed || '';
 
   // UI 수정 모드 배너
   document.getElementById('matchEditBanner').classList.add('active');
   const titleEl = document.getElementById('matchFormTitle');
   const saveBtn = document.getElementById('matchSaveBtn');
-  if (titleEl) titleEl.textContent = '경기 수정';
+  if (titleEl) titleEl.textContent = '✏️ 경기 수정';
   if (saveBtn) saveBtn.textContent = '수정 저장';
 
   // 폼 열고 스크롤 맨 위로 (약간 딜레이 줘서 DOM 안정화 후 실행)
@@ -4087,7 +4138,7 @@ function cancelEditMatch() {
   state.editingMatchId = null;
   document.getElementById('matchEditBanner').classList.remove('active');
   const _cancelTitleEl = document.getElementById('matchFormTitle');
-  if (_cancelTitleEl) _cancelTitleEl.textContent = '새 경기';
+  if (_cancelTitleEl) _cancelTitleEl.textContent = '➕ 새 경기 입력';
   document.getElementById('matchSaveBtn').textContent = '경기 저장';
   // 폼 초기화
   state.currentResult = null;
@@ -4106,7 +4157,8 @@ function cancelEditMatch() {
   document.getElementById('myTiebreak').value = '';
   document.getElementById('oppTiebreak').value = '';
   document.getElementById('matchMemo').value = '';
-  document.getElementById('matchRacket').value = '';
+  var _cancelRacketEl = document.getElementById('matchRacket');
+  if (_cancelRacketEl) _cancelRacketEl.value = '';
   togglePartner();
   closeMatchForm();
   setTodayDate();
@@ -7311,7 +7363,8 @@ function getTodayStr() {
 }
 function setTodayDate() {
   const el = document.getElementById('matchDate');
-  if (el) el.value = getTodayStr();
+  if (el && !el.value) el.value = getTodayStr();
+  else if (el) el.value = getTodayStr(); // 항상 오늘로 초기화
 }
 
 // ===== INIT =====
