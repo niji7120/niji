@@ -2327,45 +2327,47 @@ function load() {
     return;
   }
 
-  // 5초 타임아웃 안전장치
-  var authTimeout = setTimeout(function() {
-    console.warn('Firebase Auth 응답 없음 → 로그인 화면 표시');
-    _showLoginScreen();
-  }, 5000);
-
   // 이미 로드된 경우 중복 실행 방지
   var _appLoaded = false;
 
-  // ★ 아이폰 웹앱: redirect 로그인 결과 먼저 처리
+  // ★ 아이폰/안드로이드 웹앱: redirect 로그인 결과 먼저 확인
+  // → getRedirectResult가 끝난 뒤에 타임아웃 시작 (순서 중요!)
   window._firebaseAuth.getRedirectResult().then(function(result) {
-    // redirect 결과가 있으면 onAuthStateChanged가 알아서 처리함 (여기선 아무것도 안 해도 됨)
-    // 단, redirect 도중 로딩이 멈추는 것을 방지하기 위해 타임아웃만 연장
     if (result && result.user) {
       console.log('redirect 로그인 성공:', result.user.email);
+      // onAuthStateChanged가 곧 호출됨 → 여기선 아무것도 안 해도 됨
     }
   }).catch(function(e) {
-    console.warn('getRedirectResult 오류:', e.code, e.message);
-    // redirect 실패해도 onAuthStateChanged가 로그인 화면 보여줌 → 무시
-  });
+    console.warn('getRedirectResult 오류:', e.code);
+  }).finally(function() {
+    // getRedirectResult 완료 후 타임아웃 시작 (안드로이드에서 늦게 응답해도 안전)
+    var authTimeout = setTimeout(function() {
+      if (!_appLoaded) {
+        console.warn('Firebase Auth 응답 없음 → 로그인 화면 표시');
+        _appLoaded = true;
+        _showLoginScreen();
+      }
+    }, 8000); // 8초로 여유있게 (redirect 처리 후 시작이라 안전)
 
-  window._firebaseAuth.onAuthStateChanged(function(user) {
-    clearTimeout(authTimeout);
-    if (_appLoaded) return; // 중복 실행 방지
-    _appLoaded = true;
+    window._firebaseAuth.onAuthStateChanged(function(user) {
+      clearTimeout(authTimeout);
+      if (_appLoaded) return; // 중복 실행 방지
+      _appLoaded = true;
 
-    if (user) {
-      window._userId = user.uid;
-      window._userDisplayName = user.displayName || '';
-      window._userEmail = user.email || '';
-      window._userPhoto = user.photoURL || '';
-      var msgEl = document.getElementById('loadingMsg');
-      if (msgEl) msgEl.textContent = '데이터 불러오는 중...';
-      _migrateOfflineData();
-      _syncPendingData();
-      _loadFromFirebase();
-    } else {
-      _showLoginScreen();
-    }
+      if (user) {
+        window._userId = user.uid;
+        window._userDisplayName = user.displayName || '';
+        window._userEmail = user.email || '';
+        window._userPhoto = user.photoURL || '';
+        var msgEl = document.getElementById('loadingMsg');
+        if (msgEl) msgEl.textContent = '데이터 불러오는 중...';
+        _migrateOfflineData();
+        _syncPendingData();
+        _loadFromFirebase();
+      } else {
+        _showLoginScreen();
+      }
+    });
   });
 }
 
