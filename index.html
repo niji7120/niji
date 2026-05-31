@@ -2327,8 +2327,8 @@ function load() {
     return;
   }
 
-  // 이미 로드된 경우 중복 실행 방지 (전역 변수: 함수 재호출 시에도 상태 유지)
-  if (typeof window._appLoaded === 'undefined') window._appLoaded = false;
+  // 이미 로드된 경우 중복 실행 방지
+  var _appLoaded = false;
 
   // ★ 아이폰/안드로이드 웹앱: redirect 로그인 결과 먼저 확인
   // → getRedirectResult가 끝난 뒤에 타임아웃 시작 (순서 중요!)
@@ -2342,9 +2342,9 @@ function load() {
   }).finally(function() {
     // getRedirectResult 완료 후 타임아웃 시작 (안드로이드에서 늦게 응답해도 안전)
     var authTimeout = setTimeout(function() {
-      if (!window._appLoaded) {
+      if (!_appLoaded) {
         console.warn('Firebase Auth 응답 없음 → 로그인 화면 표시');
-        window._appLoaded = true;
+        _appLoaded = true;
         _showLoginScreen();
       }
     }, 8000); // 8초로 여유있게 (redirect 처리 후 시작이라 안전)
@@ -2354,8 +2354,8 @@ function load() {
 
       if (user) {
         // ★ 로그인 성공: 앱이 이미 떠 있으면 무시 (재로그인은 location.reload로 처리)
-        if (window._appLoaded) return;
-        window._appLoaded = true;
+        if (_appLoaded) return;
+        _appLoaded = true;
         window._userId = user.uid;
         window._userDisplayName = user.displayName || '';
         window._userEmail = user.email || '';
@@ -2379,8 +2379,8 @@ function load() {
         _loadFromFirebase();
       } else {
         // ★ 로그아웃 상태: 앱이 이미 뜬 후면 무시 (signOut은 location.reload 처리)
-        if (window._appLoaded) return;
-        window._appLoaded = true;
+        if (_appLoaded) return;
+        _appLoaded = true;
         _showLoginScreen();
       }
     });
