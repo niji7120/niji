@@ -4368,7 +4368,7 @@ function renderStats() {
 function renderSummaryCard(ms) {
   const el = document.getElementById('summaryCard');
   if (!el) return;
-  if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
+  if (!ms) { const sport = state.sportType||'tennis'; const cutoff = getRolling12MonthsCutoff(); ms = state.matches.filter(m=>(m.sport||'tennis')===sport && m.date >= cutoff); }
   if (!ms.length) { el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:8px 0;text-align:center;">경기를 입력하면 요약이 표시됩니다</div>'; return; }
 
   // 이번달 (KST 기준)
@@ -4413,20 +4413,28 @@ const OPP_PAGE_SIZE = 5;
 window._oppShowAll = false;
 
 function renderOpponentStats(ms) {
-  if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
+  if (!ms) { const sport = state.sportType||'tennis'; const cutoff = getRolling12MonthsCutoff(); ms = state.matches.filter(m=>(m.sport||'tennis')===sport && m.date >= cutoff); }
   const om = {};
   ms.forEach(m => {
-    [m.opponent, m.opponent2].filter(Boolean).forEach(name => {
+    // ★ 복식: 상대팀 전체를 하나의 경기로 집계 (opponent, opponent2 각각 개별 집계하지 않음)
+    // 개인별 상대전적은 단식처럼 각 상대에게 1경기씩 기록
+    const opps = [m.opponent, m.opponent2].filter(Boolean);
+    if (!opps.length) return;
+    opps.forEach(name => {
       if (!om[name]) om[name] = { w: 0, l: 0, combos: {} };
       if (m.result === 'win') om[name].w++; else om[name].l++;
-      if (m.format === 'doubles') {
-        const oppTeam = [m.opponent, m.opponent2].filter(Boolean).sort().join(' & ');
-        const myPartner = m.partner || '';
-        const comboKey = oppTeam + '||' + myPartner;
+    });
+    // combos는 경기 단위로 1번만 기록 (opponent 기준으로 대표 등록)
+    if (m.format === 'doubles' && opps.length > 0) {
+      const oppTeam = [m.opponent, m.opponent2].filter(Boolean).sort().join(' & ');
+      const myPartner = m.partner || '';
+      const comboKey = oppTeam + '||' + myPartner;
+      // combo는 첫 번째 상대(opponent) 에만 등록하고, 나머지는 참조만
+      opps.forEach(name => {
         if (!om[name].combos[comboKey]) om[name].combos[comboKey] = { w: 0, l: 0, oppTeam, myPartner };
         if (m.result === 'win') om[name].combos[comboKey].w++; else om[name].combos[comboKey].l++;
-      }
-    });
+      });
+    }
   });
   if (!Object.keys(om).length) {
     document.getElementById('opponentCard').innerHTML = '<div class="empty-state"><div class="empty-icon">⚔️</div><div class="empty-text">경기를 입력하면<br>상대 데이터가 표시됩니다</div></div>';
@@ -4511,7 +4519,7 @@ function renderOpponentStats(ms) {
 window._partnerShowAll = false;
 
 function renderPartnerStats(ms) {
-  if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
+  if (!ms) { const sport = state.sportType||'tennis'; const cutoff = getRolling12MonthsCutoff(); ms = state.matches.filter(m=>(m.sport||'tennis')===sport && m.date >= cutoff); }
   const doubles = ms.filter(m => m.format === 'doubles' && m.partner);
   const pm = {};
   doubles.forEach(m => {
@@ -4583,7 +4591,7 @@ window._enemyShowAll = false;
 window._singlesShowAll = false;
 
 function renderSinglesStats(ms) {
-  if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
+  if (!ms) { const sport = state.sportType||'tennis'; const cutoff = getRolling12MonthsCutoff(); ms = state.matches.filter(m=>(m.sport||'tennis')===sport && m.date >= cutoff); }
   const singles = ms.filter(m => m.format === 'singles' && m.opponent);
   const tm = {};
   singles.forEach(m => {
@@ -4657,7 +4665,7 @@ function renderSinglesStats(ms) {
 }
 
 function renderEnemyTeamStats(ms) {
-  if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
+  if (!ms) { const sport = state.sportType||'tennis'; const cutoff = getRolling12MonthsCutoff(); ms = state.matches.filter(m=>(m.sport||'tennis')===sport && m.date >= cutoff); }
   const doubles = ms.filter(m => m.format === 'doubles' && m.opponent);
   const tm = {};
   doubles.forEach(m => {
