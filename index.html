@@ -17,44 +17,76 @@
 <meta http-equiv="Expires" content="0">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<!-- Firebase SDK 9.23.0 compat (안정 버전) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<!-- Firebase SDK: 순서 보장 동적 로드 -->
 <script>
-  try {
-    const firebaseConfig = {
-      apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
-      authDomain: "niji-string-app.firebaseapp.com",
-      databaseURL: "https://niji-string-app-default-rtdb.firebaseio.com",
-      projectId: "niji-string-app",
-      storageBucket: "niji-string-app.firebasestorage.app",
-      messagingSenderId: "179605771373",
-      appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
+(function() {
+  var FIREBASE_VER = '9.23.0';
+  var BASE = 'https://www.gstatic.com/firebasejs/' + FIREBASE_VER + '/';
+  var scripts = [
+    BASE + 'firebase-app-compat.js',
+    BASE + 'firebase-database-compat.js',
+    BASE + 'firebase-auth-compat.js'
+  ];
+
+  // ★ 스크립트를 순서대로 하나씩 로드 (앞 것이 완전히 로드된 뒤 다음 것 로드)
+  function loadNext(index) {
+    if (index >= scripts.length) {
+      // 모든 SDK 로드 완료 → 초기화
+      _initFirebase();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = scripts[index];
+    s.onload = function() { loadNext(index + 1); };
+    s.onerror = function() {
+      // SDK 로드 실패 → 오프라인 모드로 앱 시작
+      window._firebaseDB   = null;
+      window._firebaseAuth = null;
+      window._userId       = null;
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() { load(); });
+      } else {
+        load();
+      }
     };
-    // ※ 보안 참고: Firebase Console → Realtime Database → 규칙(Rules)에서
-    //   반드시 로그인된 사용자만 본인 데이터에 접근하도록 설정 필요:
-    // {
-    //   "rules": {
-    //     "users": {
-    //       "$uid": {
-    //         ".read": "$uid === auth.uid",
-    //         ".write": "$uid === auth.uid"
-    //       }
-    //     }
-    //   }
-    // }
-    firebase.initializeApp(firebaseConfig);
-    window._firebaseDB = firebase.database();
-    window._firebaseAuth = firebase.auth();
-    // 현재 사용자 ID (익명 로그인 후 설정됨)
-    window._userId = null;
-  } catch(e) {
-    console.warn('Firebase 초기화 실패:', e);
-    window._firebaseDB = null;
-    window._firebaseAuth = null;
-    window._userId = null;
+    document.head.appendChild(s);
   }
+
+  function _initFirebase() {
+    try {
+      var firebaseConfig = {
+        apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
+        authDomain: "niji-string-app.firebaseapp.com",
+        databaseURL: "https://niji-string-app-default-rtdb.firebaseio.com",
+        projectId: "niji-string-app",
+        storageBucket: "niji-string-app.firebasestorage.app",
+        messagingSenderId: "179605771373",
+        appId: "1:179605771373:web:a0e1900361cdc6a2c41b64"
+      };
+      // 이미 초기화된 경우 중복 방지
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      window._firebaseDB   = firebase.database();
+      window._firebaseAuth = firebase.auth();
+      window._userId       = null;
+      console.log('Firebase 초기화 완료');
+    } catch(e) {
+      console.warn('Firebase 초기화 실패:', e);
+      window._firebaseDB   = null;
+      window._firebaseAuth = null;
+      window._userId       = null;
+    }
+    // ★ Firebase 준비 완료 후 앱 시작 (DOM 준비도 함께 보장)
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() { load(); });
+    } else {
+      load();
+    }
+  }
+
+  loadNext(0);
+})();
 </script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&family=Orbitron:wght@700;900&display=swap');
@@ -2327,45 +2359,38 @@ function load() {
     return;
   }
 
-  // 이미 로드된 경우 중복 실행 방지
-  var _appLoaded = false;
+  // 중복 실행 방지
+  if (typeof window._appLoaded === 'undefined') window._appLoaded = false;
+  if (typeof window._authListenerSet === 'undefined') window._authListenerSet = false;
 
-  // ★ 아이폰/안드로이드 웹앱: redirect 로그인 결과 먼저 확인
-  // → getRedirectResult가 끝난 뒤에 타임아웃 시작 (순서 중요!)
-  window._firebaseAuth.getRedirectResult().then(function(result) {
-    if (result && result.user) {
-      console.log('redirect 로그인 성공:', result.user.email);
-      // onAuthStateChanged가 곧 호출됨 → 여기선 아무것도 안 해도 됨
+  // ★ 핵심 수정: onAuthStateChanged를 먼저 등록하고, getRedirectResult는 별도로 처리
+  // (기존 코드: finally 안에 등록 → 타이밍 문제로 user 감지 놓침)
+
+  var authTimeout = setTimeout(function() {
+    if (!window._appLoaded) {
+      console.warn('Firebase Auth 응답 없음 → 로그인 화면 표시');
+      window._appLoaded = true;
+      _showLoginScreen();
     }
-  }).catch(function(e) {
-    console.warn('getRedirectResult 오류:', e.code);
-  }).finally(function() {
-    // getRedirectResult 완료 후 타임아웃 시작 (안드로이드에서 늦게 응답해도 안전)
-    var authTimeout = setTimeout(function() {
-      if (!_appLoaded) {
-        console.warn('Firebase Auth 응답 없음 → 로그인 화면 표시');
-        _appLoaded = true;
-        _showLoginScreen();
-      }
-    }, 8000); // 8초로 여유있게 (redirect 처리 후 시작이라 안전)
+  }, 15000); // 15초 여유 (redirect 왕복 시간 포함)
 
+  // ① onAuthStateChanged 먼저 등록 (getRedirectResult 보다 앞에!)
+  if (!window._authListenerSet) {
+    window._authListenerSet = true;
     window._firebaseAuth.onAuthStateChanged(function(user) {
       clearTimeout(authTimeout);
 
       if (user) {
-        // ★ 로그인 성공: 앱이 이미 떠 있으면 무시 (재로그인은 location.reload로 처리)
-        if (_appLoaded) return;
-        _appLoaded = true;
+        if (window._appLoaded) return;
+        window._appLoaded = true;
         window._userId = user.uid;
         window._userDisplayName = user.displayName || '';
         window._userEmail = user.email || '';
         window._userPhoto = user.photoURL || '';
         var msgEl = document.getElementById('loadingMsg');
-        // loadingScreen이 로그인 폼으로 바뀐 경우 → 로딩 화면 복원 후 진입
         if (msgEl) {
           msgEl.textContent = '데이터 불러오는 중...';
         } else {
-          // 로그인 폼 상태: loadingScreen을 로딩 스피너로 교체
           var ls = document.getElementById('loadingScreen');
           if (ls) {
             ls.style.display = 'flex';
@@ -2378,12 +2403,27 @@ function load() {
         _syncPendingData();
         _loadFromFirebase();
       } else {
-        // ★ 로그아웃 상태: 앱이 이미 뜬 후면 무시 (signOut은 location.reload 처리)
-        if (_appLoaded) return;
-        _appLoaded = true;
-        _showLoginScreen();
+        // 로그아웃 상태 — 단, getRedirectResult가 아직 처리 중일 수 있으므로
+        // 잠깐 대기 후 여전히 로그아웃이면 로그인 화면 표시
+        if (window._appLoaded) return;
+        setTimeout(function() {
+          if (!window._appLoaded) {
+            window._appLoaded = true;
+            _showLoginScreen();
+          }
+        }, 3000); // 3초 대기 (getRedirectResult 처리 완료 시간)
       }
     });
+  }
+
+  // ② getRedirectResult는 별도 처리 (onAuthStateChanged 등록 후)
+  window._firebaseAuth.getRedirectResult().then(function(result) {
+    if (result && result.user) {
+      console.log('redirect 로그인 성공:', result.user.email);
+      // onAuthStateChanged가 이미 처리함
+    }
+  }).catch(function(e) {
+    console.warn('getRedirectResult 오류:', e.code);
   });
 }
 
@@ -2442,37 +2482,20 @@ function _showLoginScreen() {
   `;
 }
 
-// 구글 로그인
+// 구글 로그인 (TWA/안드로이드 앱 환경: 팝업 없이 바로 redirect 사용)
 function signInWithGoogle() {
   var btn = document.getElementById('googleLoginBtn');
   var msgEl = document.getElementById('loginMsg');
-  var googleBtnHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"> Google로 로그인';
   // Firebase 초기화 실패 시 안내
   if (!window._firebaseAuth) {
     if (msgEl) { msgEl.style.color = '#f87171'; msgEl.textContent = '서버 연결 오류. 잠시 후 다시 시도해 주세요.'; }
     return;
   }
-  if (btn) { btn.disabled = true; btn.innerHTML = '로그인 중...'; }
+  if (btn) { btn.disabled = true; btn.innerHTML = '구글 로그인 페이지로 이동 중...'; }
   if (msgEl) msgEl.textContent = '';
   var provider = new firebase.auth.GoogleAuthProvider();
-  window._firebaseAuth.signInWithPopup(provider)
-    .then(function(result) {
-      // 로그인 성공 → onAuthStateChanged가 처리하므로 여기선 버튼 복구만
-      if (btn) { btn.disabled = false; btn.innerHTML = googleBtnHTML; }
-    })
-    .catch(function(e) {
-      // 팝업 차단 → redirect로 전환
-      if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
-        if (msgEl) msgEl.textContent = '구글 로그인 페이지로 이동 중...'; 
-        window._firebaseAuth.signInWithRedirect(provider);
-      } else {
-        // 그 외 모든 오류(취소 포함) → 버튼 복구
-        if (btn) { btn.disabled = false; btn.innerHTML = googleBtnHTML; }
-        if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
-          if (msgEl) msgEl.textContent = '구글 로그인 실패. 다시 시도해 주세요.';
-        }
-      }
-    });
+  // TWA/안드로이드에서 팝업은 항상 차단됨 → 처음부터 redirect 사용
+  window._firebaseAuth.signInWithRedirect(provider);
 }
 
 // 이메일 로그인
@@ -2489,12 +2512,38 @@ function signInWithEmail() {
   if (!email || !pw) { if (msgEl) msgEl.textContent = '이메일과 비밀번호를 입력해 주세요.'; return; }
   if (msgEl) msgEl.textContent = '';
   if (loginBtn) { loginBtn.disabled = true; loginBtn.textContent = '로그인 중...'; }
+  // ★ 이메일 로그인 시도 전 _appLoaded 초기화 (onAuthStateChanged가 앱 진입 처리할 수 있도록)
+  // 단, 실패 시를 대비해 타임아웃도 함께 설정
+  window._appLoaded = false;
+  window._authListenerSet = false; // onAuthStateChanged 재등록 허용
+  // 로그인 성공 후 onAuthStateChanged 재등록 (loadingScreen 표시 후 앱 진입)
+  var loginTimeout = setTimeout(function() {
+    if (!window._appLoaded) {
+      window._appLoaded = true;
+      _showLoginScreen();
+      var m = document.getElementById('loginMsg');
+      if (m) { m.style.color='#f87171'; m.textContent='응답이 없어요. 다시 시도해 주세요.'; }
+    }
+  }, 10000);
   window._firebaseAuth.signInWithEmailAndPassword(email, pw)
-    .then(function() {
-      // 로그인 성공 → onAuthStateChanged가 앱 진입 처리, 버튼만 복구
-      if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = '로그인'; }
+    .then(function(result) {
+      // 로그인 성공 → 로딩 화면 보여주고 onAuthStateChanged가 앱 진입 처리
+      clearTimeout(loginTimeout);
+      var ls = document.getElementById('loadingScreen');
+      if (ls) {
+        ls.style.display = 'flex';
+        ls.innerHTML = "<div style=\"font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;background:linear-gradient(135deg,#7c6af7,#f76ac8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;\">NIJI STRING</div>"
+          + "<div style=\"width:36px;height:36px;border:3px solid #2e2e3e;border-top-color:#7c6af7;border-radius:50%;animation:spin .8s linear infinite;\"></div>"
+          + "<div style=\"font-size:12px;color:#7a7a95;\">로그인 중...</div>";
+      }
+      // onAuthStateChanged 재등록
+      load();
     })
     .catch(function(e) {
+      // 로그인 실패 → _appLoaded 다시 true로 (로그인 화면 유지)
+      clearTimeout(loginTimeout);
+      window._appLoaded = true;
+      window._authListenerSet = true;
       var msg = '로그인 실패.';
       if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') msg = '이메일 또는 비밀번호가 틀렸어요.';
       else if (e.code === 'auth/wrong-password') msg = '비밀번호가 틀렸어요.';
@@ -2515,12 +2564,36 @@ function signUpWithEmail() {
   if (pw.length < 6) { if (msgEl) msgEl.textContent = '비밀번호는 6자 이상이어야 해요.'; return; }
   if (msgEl) msgEl.textContent = '';
   if (signupBtn) { signupBtn.disabled = true; signupBtn.textContent = '가입 중...'; }
+  // ★ 가입 시도 전 _appLoaded/_authListenerSet 초기화
+  window._appLoaded = false;
+  window._authListenerSet = false;
+  var signupTimeout = setTimeout(function() {
+    if (!window._appLoaded) {
+      window._appLoaded = true;
+      _showLoginScreen();
+      var m = document.getElementById('loginMsg');
+      if (m) { m.style.color='#f87171'; m.textContent='응답이 없어요. 다시 시도해 주세요.'; }
+    }
+  }, 10000);
   window._firebaseAuth.createUserWithEmailAndPassword(email, pw)
     .then(function() {
-      // 가입 성공 → onAuthStateChanged가 앱 진입 처리
+      // 가입 성공 → 로딩 보여주고 onAuthStateChanged가 앱 진입 처리
+      clearTimeout(signupTimeout);
       if (msgEl) { msgEl.style.color = '#4ade80'; msgEl.textContent = '✅ 가입 완료! 잠시 기다려주세요...'; }
+      var ls = document.getElementById('loadingScreen');
+      if (ls) {
+        ls.style.display = 'flex';
+        ls.innerHTML = "<div style=\"font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;background:linear-gradient(135deg,#7c6af7,#f76ac8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;\">NIJI STRING</div>"
+          + "<div style=\"width:36px;height:36px;border:3px solid #2e2e3e;border-top-color:#7c6af7;border-radius:50%;animation:spin .8s linear infinite;\"></div>"
+          + "<div style=\"font-size:12px;color:#7a7a95;\">계정 생성 중...</div>";
+      }
+      load();
     })
     .catch(function(e) {
+      // 가입 실패 → _appLoaded 다시 true로 (로그인 화면 유지)
+      clearTimeout(signupTimeout);
+      window._appLoaded = true;
+      window._authListenerSet = true;
       var msg = '회원가입 실패.';
       if (e.code === 'auth/email-already-in-use') msg = '이미 사용 중인 이메일이에요.';
       else if (e.code === 'auth/invalid-email') msg = '이메일 형식이 올바르지 않아요.';
@@ -3753,10 +3826,15 @@ function saveProfileField(key, value) {
 
 function uploadPhoto(input) {
   const file = input.files[0]; if (!file) return;
+  // ★ 같은 사진 다시 선택해도 onChange 발생하도록 input 초기화
+  input.value = '';
   if (file.size > 15*1024*1024) { showToast('⚠️ 사진 크기는 15MB 이하여야 합니다'); return; }
+  if (!file.type.startsWith('image/')) { showToast('⚠️ 이미지 파일만 선택해 주세요.'); return; }
   const reader = new FileReader();
+  reader.onerror = function() { showToast('⚠️ 사진을 읽는 데 실패했어요.'); };
   reader.onload = e => {
     const img = new Image();
+    img.onerror = function() { showToast('⚠️ 이미지를 불러오는 데 실패했어요. 다른 사진을 써주세요.'); };
     img.onload = () => {
       // Canvas로 최대 400px 리사이즈 + 강한 압축 (저장공간 절약)
       const MAX = 400;
@@ -3765,22 +3843,28 @@ function uploadPhoto(input) {
         const r = Math.min(MAX/w, MAX/h);
         w = Math.round(w*r); h = Math.round(h*r);
       }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      const compressed = canvas.toDataURL('image/jpeg', 0.6);
-      // 압축 후 크기 확인 (500KB 초과시 더 압축)
-      if (compressed.length > 500000) {
-        const canvas2 = document.createElement('canvas');
-        canvas2.width = Math.round(w*0.7); canvas2.height = Math.round(h*0.7);
-        canvas2.getContext('2d').drawImage(img, 0, 0, canvas2.width, canvas2.height);
-        const compressed2 = canvas2.toDataURL('image/jpeg', 0.5);
-        state.profile.photo = compressed2;
-      } else {
-        state.profile.photo = compressed;
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const compressed = canvas.toDataURL('image/jpeg', 0.6);
+        let finalPhoto;
+        if (compressed.length > 500000) {
+          const canvas2 = document.createElement('canvas');
+          canvas2.width = Math.round(w*0.7); canvas2.height = Math.round(h*0.7);
+          canvas2.getContext('2d').drawImage(img, 0, 0, canvas2.width, canvas2.height);
+          finalPhoto = canvas2.toDataURL('image/jpeg', 0.5);
+        } else {
+          finalPhoto = compressed;
+        }
+        if (!state.profile) state.profile = {};
+        state.profile.photo = finalPhoto;
+        save(); renderProfile();
+        showToast('📷 사진 업로드 완료!');
+      } catch(err) {
+        showToast('⚠️ 사진 처리 중 오류가 발생했어요.');
+        console.warn('uploadPhoto 오류:', err);
       }
-      save(); renderProfile();
-      showToast('📷 사진 업로드 완료!');
     };
     img.src = e.target.result;
   };
@@ -7464,21 +7548,29 @@ function setTodayDate() {
 }
 
 // ===== INIT =====
-load(); // Firebase에서 데이터 로드 후 _initApp 자동 호출
+// load()는 Firebase SDK 로드 완료 후 _initFirebase() 안에서 자동 호출됨
 
 // ===== SERVICE WORKER 등록 =====
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => {
-        console.log('SW registered');
-        reg.update(); // 항상 최신 버전 체크
+    // sw.js 파일이 실제로 존재하는지 먼저 확인 후 등록 (404 오류 방지)
+    fetch('./sw.js', { method: 'HEAD' })
+      .then(function(res) {
+        if (res.ok) {
+          return navigator.serviceWorker.register('./sw.js')
+            .then(function(reg) {
+              console.log('SW registered');
+              reg.update();
+            });
+        }
+        // sw.js 없으면 기존 등록된 SW만 정리
+        return navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for (var reg of registrations) { reg.unregister(); }
+        });
       })
-      .catch(e => console.log('SW error:', e));
-    // 기존 SW 캐시 강제 삭제
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      for(let reg of registrations) { reg.update(); }
-    });
+      .catch(function() {
+        // 네트워크 오류 등 → 조용히 무시
+      });
   });
 }
 
