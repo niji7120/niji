@@ -2431,19 +2431,25 @@ function signInWithGoogle() {
   var btn = document.getElementById('googleLoginBtn');
   var msgEl = document.getElementById('loginMsg');
   var googleBtnHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"> Google로 로그인';
-  if (btn) { btn.disabled = true; btn.textContent = '로그인 중...'; }
+  if (btn) { btn.disabled = true; btn.innerHTML = '로그인 중...'; }
   if (msgEl) msgEl.textContent = '';
   var provider = new firebase.auth.GoogleAuthProvider();
   window._firebaseAuth.signInWithPopup(provider)
+    .then(function(result) {
+      // 로그인 성공 → onAuthStateChanged가 처리하므로 여기선 버튼 복구만
+      if (btn) { btn.disabled = false; btn.innerHTML = googleBtnHTML; }
+    })
     .catch(function(e) {
-      if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user' || e.code === 'auth/operation-not-supported-in-this-environment') {
+      // 팝업 차단 → redirect로 전환
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
         if (msgEl) msgEl.textContent = '구글 로그인 페이지로 이동 중...'; 
         window._firebaseAuth.signInWithRedirect(provider);
-      } else if (e.code === 'auth/cancelled-popup-request') {
-        if (btn) { btn.disabled = false; btn.innerHTML = googleBtnHTML; }
       } else {
+        // 그 외 모든 오류(취소 포함) → 버튼 복구
         if (btn) { btn.disabled = false; btn.innerHTML = googleBtnHTML; }
-        if (msgEl) msgEl.textContent = '구글 로그인 실패. 다시 시도해 주세요.'; 
+        if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
+          if (msgEl) msgEl.textContent = '구글 로그인 실패. 다시 시도해 주세요.';
+        }
       }
     });
 }
@@ -2453,16 +2459,19 @@ function signInWithEmail() {
   var email = (document.getElementById('loginEmail') || {}).value || '';
   var pw = (document.getElementById('loginPassword') || {}).value || '';
   var msgEl = document.getElementById('loginMsg');
+  var loginBtn = document.querySelector('button[onclick="signInWithEmail()"]');
   if (!email || !pw) { if (msgEl) msgEl.textContent = '이메일과 비밀번호를 입력해 주세요.'; return; }
   if (msgEl) msgEl.textContent = '';
+  if (loginBtn) { loginBtn.disabled = true; loginBtn.textContent = '로그인 중...'; }
   window._firebaseAuth.signInWithEmailAndPassword(email, pw)
     .catch(function(e) {
       var msg = '로그인 실패.';
-      if (e.code === 'auth/user-not-found') msg = '등록되지 않은 이메일이에요.';
+      if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') msg = '이메일 또는 비밀번호가 틀렸어요.';
       else if (e.code === 'auth/wrong-password') msg = '비밀번호가 틀렸어요.';
       else if (e.code === 'auth/invalid-email') msg = '이메일 형식이 올바르지 않아요.';
       else if (e.code === 'auth/too-many-requests') msg = '시도 횟수 초과. 잠시 후 다시 시도해 주세요.';
-      if (msgEl) msgEl.textContent = msg;
+      if (msgEl) { msgEl.style.color = '#f87171'; msgEl.textContent = msg; }
+      if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = '로그인'; }
     });
 }
 
@@ -2471,16 +2480,23 @@ function signUpWithEmail() {
   var email = (document.getElementById('loginEmail') || {}).value || '';
   var pw = (document.getElementById('loginPassword') || {}).value || '';
   var msgEl = document.getElementById('loginMsg');
+  var signupBtn = document.querySelector('button[onclick="signUpWithEmail()"]');
   if (!email || !pw) { if (msgEl) msgEl.textContent = '이메일과 비밀번호를 입력해 주세요.'; return; }
   if (pw.length < 6) { if (msgEl) msgEl.textContent = '비밀번호는 6자 이상이어야 해요.'; return; }
   if (msgEl) msgEl.textContent = '';
+  if (signupBtn) { signupBtn.disabled = true; signupBtn.textContent = '가입 중...'; }
   window._firebaseAuth.createUserWithEmailAndPassword(email, pw)
+    .then(function() {
+      // 가입 성공 → onAuthStateChanged가 앱 진입 처리
+      if (msgEl) { msgEl.style.color = '#4ade80'; msgEl.textContent = '✅ 가입 완료! 잠시 기다려주세요...'; }
+    })
     .catch(function(e) {
       var msg = '회원가입 실패.';
       if (e.code === 'auth/email-already-in-use') msg = '이미 사용 중인 이메일이에요.';
       else if (e.code === 'auth/invalid-email') msg = '이메일 형식이 올바르지 않아요.';
       else if (e.code === 'auth/weak-password') msg = '비밀번호가 너무 짧아요 (6자 이상).';
-      if (msgEl) msgEl.textContent = msg;
+      if (msgEl) { msgEl.style.color = '#f87171'; msgEl.textContent = msg; }
+      if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = '회원가입'; }
     });
 }
 
@@ -4219,6 +4235,7 @@ function selectSportTab(sport) {
 
   save();
   renderStats();
+  renderProfile();
   updateMatchSportBadge();
   updateStatsSportBadge();
   const sportLabel = sport === 'badminton' ? '배드민턴' : sport === 'tennis' ? '테니스' : '피클볼';
