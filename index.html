@@ -2353,27 +2353,33 @@ function load() {
       clearTimeout(authTimeout);
 
       if (user) {
-        // 로그인 상태: 앱 초기 로딩 or 재로그인 모두 처리
-        var isFirstLoad = !_appLoaded;
+        // ★ 로그인 성공: 앱이 이미 떠 있으면 무시 (재로그인은 location.reload로 처리)
+        if (_appLoaded) return;
         _appLoaded = true;
         window._userId = user.uid;
         window._userDisplayName = user.displayName || '';
         window._userEmail = user.email || '';
         window._userPhoto = user.photoURL || '';
         var msgEl = document.getElementById('loadingMsg');
-        if (msgEl) msgEl.textContent = '데이터 불러오는 중...';
-        if (isFirstLoad) {
-          // 최초 로딩: 마이그레이션 + 동기화 + 데이터 로드
-          _migrateOfflineData();
-          _syncPendingData();
-          _loadFromFirebase();
+        // loadingScreen이 로그인 폼으로 바뀐 경우 → 로딩 화면 복원 후 진입
+        if (msgEl) {
+          msgEl.textContent = '데이터 불러오는 중...';
         } else {
-          // 재로그인: 데이터만 다시 로드 (마이그레이션 불필요)
-          _syncPendingData();
-          _loadFromFirebase();
+          // 로그인 폼 상태: loadingScreen을 로딩 스피너로 교체
+          var ls = document.getElementById('loadingScreen');
+          if (ls) {
+            ls.style.display = 'flex';
+            ls.innerHTML = "<div style=\"font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;background:linear-gradient(135deg,#7c6af7,#f76ac8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;\">NIJI STRING</div>"
+              + "<div style=\"width:36px;height:36px;border:3px solid #2e2e3e;border-top-color:#7c6af7;border-radius:50%;animation:spin .8s linear infinite;\"></div>"
+              + "<div id=\"loadingMsg\" style=\"font-size:12px;color:#7a7a95;\">데이터 불러오는 중...</div>";
+          }
         }
+        _migrateOfflineData();
+        _syncPendingData();
+        _loadFromFirebase();
       } else {
-        // 로그아웃 상태: 항상 로그인 화면 표시
+        // ★ 로그아웃 상태: 앱이 이미 뜬 후면 무시 (signOut은 location.reload 처리)
+        if (_appLoaded) return;
         _appLoaded = true;
         _showLoginScreen();
       }
