@@ -2428,18 +2428,20 @@ function _showLoginScreen() {
 function signInWithGoogle() {
   var btn = document.getElementById('googleLoginBtn');
   var msgEl = document.getElementById('loginMsg');
+  var googleBtnHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"> Google로 로그인';
   if (btn) { btn.disabled = true; btn.textContent = '로그인 중...'; }
   if (msgEl) msgEl.textContent = '';
   var provider = new firebase.auth.GoogleAuthProvider();
   window._firebaseAuth.signInWithPopup(provider)
     .catch(function(e) {
       if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user' || e.code === 'auth/operation-not-supported-in-this-environment') {
-        // 아이폰 웹앱에서는 팝업이 막힘 → redirect 방식으로 전환
-        if (msgEl) msgEl.textContent = '구글 로그인 페이지로 이동 중...';
+        if (msgEl) msgEl.textContent = '구글 로그인 페이지로 이동 중...'; 
         window._firebaseAuth.signInWithRedirect(provider);
+      } else if (e.code === 'auth/cancelled-popup-request') {
+        if (btn) { btn.disabled = false; btn.innerHTML = googleBtnHTML; }
       } else {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"> Google로 로그인'; }
-        if (msgEl) msgEl.textContent = '구글 로그인 실패. 다시 시도해 주세요.';
+        if (btn) { btn.disabled = false; btn.innerHTML = googleBtnHTML; }
+        if (msgEl) msgEl.textContent = '구글 로그인 실패. 다시 시도해 주세요.'; 
       }
     });
 }
