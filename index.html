@@ -2423,7 +2423,17 @@ function load() {
       // onAuthStateChanged가 이미 처리함
     }
   }).catch(function(e) {
-    console.warn('getRedirectResult 오류:', e.code);
+    console.warn('getRedirectResult 오류:', e.code, e.message);
+    setTimeout(function() {
+      var msgEl = document.getElementById('loginMsg');
+      if (msgEl) {
+        msgEl.style.color = '#f87171';
+        var errMsg = '구글 로그인 오류.';
+        if (e.code === 'auth/unauthorized-domain') errMsg = '도메인 미승인 오류. Firebase Console 확인 필요.';
+        else if (e.code) errMsg = '오류코드: ' + e.code;
+        msgEl.textContent = errMsg;
+      }
+    }, 500);
   });
 }
 
@@ -2482,20 +2492,50 @@ function _showLoginScreen() {
   `;
 }
 
-// 구글 로그인 (TWA/안드로이드 앱 환경: 팝업 없이 바로 redirect 사용)
+// 구글 로그인 (웹: 팝업 우선 / TWA·안드로이드: redirect)
 function signInWithGoogle() {
   var btn = document.getElementById('googleLoginBtn');
   var msgEl = document.getElementById('loginMsg');
-  // Firebase 초기화 실패 시 안내
   if (!window._firebaseAuth) {
     if (msgEl) { msgEl.style.color = '#f87171'; msgEl.textContent = '서버 연결 오류. 잠시 후 다시 시도해 주세요.'; }
     return;
   }
-  if (btn) { btn.disabled = true; btn.innerHTML = '구글 로그인 페이지로 이동 중...'; }
+  if (btn) { btn.disabled = true; btn.innerHTML = '구글 로그인 중...'; }
   if (msgEl) msgEl.textContent = '';
+
   var provider = new firebase.auth.GoogleAuthProvider();
-  // TWA/안드로이드에서 팝업은 항상 차단됨 → 처음부터 redirect 사용
-  window._firebaseAuth.signInWithRedirect(provider);
+
+  // TWA(안드로이드 앱) 환경 감지
+  var isTWA = document.referrer.includes('android-app://') ||
+              window.matchMedia('(display-mode: standalone)').matches ||
+              navigator.userAgent.includes('wv'); // WebView
+
+  if (isTWA) {
+    // 안드로이드 앱 → redirect
+    window._firebaseAuth.signInWithRedirect(provider);
+  } else {
+    // 웹 브라우저 → 팝업 (redirect보다 안정적)
+    window._firebaseAuth.signInWithPopup(provider)
+      .then(function(result) {
+        if (result && result.user) {
+          // 팝업 로그인 성공 → onAuthStateChanged가 처리
+          console.log('팝업 로그인 성공:', result.user.email);
+        }
+      })
+      .catch(function(e) {
+        console.warn('팝업 로그인 실패, redirect로 전환:', e.code);
+        // 팝업 차단 등 실패 시 redirect로 fallback
+        if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
+          if (msgEl) { msgEl.style.color = '#fbbf24'; msgEl.textContent = '팝업이 차단됐어요. 페이지 이동으로 재시도합니다...'; }
+          setTimeout(function() {
+            window._firebaseAuth.signInWithRedirect(provider);
+          }, 1000);
+        } else {
+          if (btn) { btn.disabled = false; btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"> Google로 로그인'; }
+          if (msgEl) { msgEl.style.color = '#f87171'; msgEl.textContent = '로그인 오류: ' + (e.message || e.code); }
+        }
+      });
+  }
 }
 
 // 이메일 로그인
