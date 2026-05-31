@@ -2336,6 +2336,18 @@ function load() {
   // 이미 로드된 경우 중복 실행 방지
   var _appLoaded = false;
 
+  // ★ 아이폰 웹앱: redirect 로그인 결과 먼저 처리
+  window._firebaseAuth.getRedirectResult().then(function(result) {
+    // redirect 결과가 있으면 onAuthStateChanged가 알아서 처리함 (여기선 아무것도 안 해도 됨)
+    // 단, redirect 도중 로딩이 멈추는 것을 방지하기 위해 타임아웃만 연장
+    if (result && result.user) {
+      console.log('redirect 로그인 성공:', result.user.email);
+    }
+  }).catch(function(e) {
+    console.warn('getRedirectResult 오류:', e.code, e.message);
+    // redirect 실패해도 onAuthStateChanged가 로그인 화면 보여줌 → 무시
+  });
+
   window._firebaseAuth.onAuthStateChanged(function(user) {
     clearTimeout(authTimeout);
     if (_appLoaded) return; // 중복 실행 방지
@@ -2421,7 +2433,9 @@ function signInWithGoogle() {
   var provider = new firebase.auth.GoogleAuthProvider();
   window._firebaseAuth.signInWithPopup(provider)
     .catch(function(e) {
-      if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user' || e.code === 'auth/operation-not-supported-in-this-environment') {
+        // 아이폰 웹앱에서는 팝업이 막힘 → redirect 방식으로 전환
+        if (msgEl) msgEl.textContent = '구글 로그인 페이지로 이동 중...';
         window._firebaseAuth.signInWithRedirect(provider);
       } else {
         if (btn) { btn.disabled = false; btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"> Google로 로그인'; }
