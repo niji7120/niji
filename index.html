@@ -2596,8 +2596,8 @@ function _applyFirebaseData(parsed) {
 
     // 기본 값 병합
     state.sportType     = parsed.sportType     || state.sportType;
-    state.nextMatchId   = parsed.nextMatchId   || state.nextMatchId;
-    state.nextPlayerId  = parsed.nextPlayerId  || state.nextPlayerId;
+    state.nextMatchId   = (parsed.nextMatchId && !isNaN(parseInt(parsed.nextMatchId))) ? parseInt(parsed.nextMatchId) : state.nextMatchId;
+    state.nextPlayerId  = (parsed.nextPlayerId && !isNaN(parseInt(parsed.nextPlayerId))) ? parseInt(parsed.nextPlayerId) : state.nextPlayerId;
     state.playerClubFilter = parsed.playerClubFilter || '전체';
     state.playerSort    = parsed.playerSort    || 'name';
     state.lastStringDate = parsed.lastStringDate || '';
@@ -3004,6 +3004,7 @@ function tvCreate() {
   const date = document.getElementById('tv-tdate').value;
   const numGames = parseInt(document.getElementById('tv-tgames').value);
   if (!name) { showToast('대회 이름을 입력하세요'); return; }
+  if (!date) { showToast('날짜를 선택하세요'); return; }
   if (tvSelected.length < 4) { showToast('최소 4명 이상 선택하세요'); return; }
   const t = {
     id: Date.now(), name, date, numGames,
@@ -6578,7 +6579,10 @@ function renderTnList() {
       const fmtLabel = t.format === 'doubles' ? '복식' : '단식';
       const fmtColor = t.format === 'doubles' ? 'rgba(124,106,247,.15)' : 'rgba(247,106,200,.15)';
       const fmtTextColor = t.format === 'doubles' ? 'var(--accent)' : 'var(--accent2)';
-      const done = (t.bracket || []).filter(r => r && r.name !== '3·4위전').every(r => r.games && r.games.every(g => g && g.winner));
+      const mainDone = (t.bracket || []).filter(r => r && r.name !== '3·4위전').every(r => r.games && r.games.every(g => g && g.winner));
+      const thirdRoundTn = (t.bracket || []).find(r => r && r.name === '3·4위전');
+      const thirdDone = !thirdRoundTn || (thirdRoundTn.games && thirdRoundTn.games.every(g => g && g.winner));
+      const done = mainDone && thirdDone;
       return `<div style="background:var(--surface);border-radius:12px;padding:16px;margin-bottom:12px;">
         <div onclick="tnOpen(${t.id})" style="cursor:pointer;margin-bottom:10px;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -7007,10 +7011,10 @@ function tnOpenScoreModal(tid, ri, gi) {
       <button onclick="tnCloseScoreModal()" style="width:100%;padding:11px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:14px;cursor:pointer;">취소</button>
     </div>
   `;
-  overlay.addEventListener('click', e => { if (e.target === overlay) tnCloseScoreModal(); });
-  document.body.appendChild(overlay);
   window._tnScoreSA = 0;
   window._tnScoreSB = 0;
+  overlay.addEventListener('click', e => { if (e.target === overlay) tnCloseScoreModal(); });
+  document.body.appendChild(overlay);
 }
 
 function tnScoreAdj(which, delta) {
@@ -7310,10 +7314,11 @@ function tnResetWinner(tid, ri, gi) {
       const thirdSlot = gi === 0 ? 'a' : 'b';
       if (thirdRound.games[0][thirdSlot] === oldLoser) {
         thirdRound.games[0][thirdSlot] = null;
-        thirdRound.games[0].winner = null;
-        thirdRound.games[0].scoreA = '';
-        thirdRound.games[0].scoreB = '';
       }
+      // 3위전 결과도 초기화 (어느 한 쪽 슬롯이 바뀌면 결과 무효)
+      thirdRound.games[0].winner = null;
+      thirdRound.games[0].scoreA = '';
+      thirdRound.games[0].scoreB = '';
     }
   }
   save();
@@ -7373,6 +7378,7 @@ function tnSyncToMatch(t, ri, gi) {
     matchData.id = state.matches[existIdx].id; // 기존 ID 유지
     state.matches[existIdx] = matchData;
   } else {
+    if (!state.nextMatchId || isNaN(state.nextMatchId)) state.nextMatchId = 1;
     matchData.id = state.nextMatchId++;
     state.matches.unshift(matchData);
   }
