@@ -2351,20 +2351,30 @@ function load() {
 
     window._firebaseAuth.onAuthStateChanged(function(user) {
       clearTimeout(authTimeout);
-      if (_appLoaded) return; // 중복 실행 방지
-      _appLoaded = true;
 
       if (user) {
+        // 로그인 상태: 앱 초기 로딩 or 재로그인 모두 처리
+        var isFirstLoad = !_appLoaded;
+        _appLoaded = true;
         window._userId = user.uid;
         window._userDisplayName = user.displayName || '';
         window._userEmail = user.email || '';
         window._userPhoto = user.photoURL || '';
         var msgEl = document.getElementById('loadingMsg');
         if (msgEl) msgEl.textContent = '데이터 불러오는 중...';
-        _migrateOfflineData();
-        _syncPendingData();
-        _loadFromFirebase();
+        if (isFirstLoad) {
+          // 최초 로딩: 마이그레이션 + 동기화 + 데이터 로드
+          _migrateOfflineData();
+          _syncPendingData();
+          _loadFromFirebase();
+        } else {
+          // 재로그인: 데이터만 다시 로드 (마이그레이션 불필요)
+          _syncPendingData();
+          _loadFromFirebase();
+        }
       } else {
+        // 로그아웃 상태: 항상 로그인 화면 표시
+        _appLoaded = true;
         _showLoginScreen();
       }
     });
@@ -2431,6 +2441,11 @@ function signInWithGoogle() {
   var btn = document.getElementById('googleLoginBtn');
   var msgEl = document.getElementById('loginMsg');
   var googleBtnHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"> Google로 로그인';
+  // Firebase 초기화 실패 시 안내
+  if (!window._firebaseAuth) {
+    if (msgEl) { msgEl.style.color = '#f87171'; msgEl.textContent = '서버 연결 오류. 잠시 후 다시 시도해 주세요.'; }
+    return;
+  }
   if (btn) { btn.disabled = true; btn.innerHTML = '로그인 중...'; }
   if (msgEl) msgEl.textContent = '';
   var provider = new firebase.auth.GoogleAuthProvider();
@@ -2460,10 +2475,19 @@ function signInWithEmail() {
   var pw = (document.getElementById('loginPassword') || {}).value || '';
   var msgEl = document.getElementById('loginMsg');
   var loginBtn = document.querySelector('button[onclick="signInWithEmail()"]');
+  // Firebase 초기화 실패 시 안내
+  if (!window._firebaseAuth) {
+    if (msgEl) { msgEl.style.color = '#f87171'; msgEl.textContent = '서버 연결 오류. 잠시 후 다시 시도해 주세요.'; }
+    return;
+  }
   if (!email || !pw) { if (msgEl) msgEl.textContent = '이메일과 비밀번호를 입력해 주세요.'; return; }
   if (msgEl) msgEl.textContent = '';
   if (loginBtn) { loginBtn.disabled = true; loginBtn.textContent = '로그인 중...'; }
   window._firebaseAuth.signInWithEmailAndPassword(email, pw)
+    .then(function() {
+      // 로그인 성공 → onAuthStateChanged가 앱 진입 처리, 버튼만 복구
+      if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = '로그인'; }
+    })
     .catch(function(e) {
       var msg = '로그인 실패.';
       if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') msg = '이메일 또는 비밀번호가 틀렸어요.';
