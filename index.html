@@ -8111,38 +8111,39 @@ window.addEventListener('DOMContentLoaded', function() {
 // ★ 중요: 스마트폰이 뒤로가기 신호를 한 번에 2번 연속 보낼 때, 이를 막아주는 잠금장치 변수입니다.
 let isNijiBackActionProcessing = false;
 
+// [수정된 코드] 뒤로가기 및 앱 종료 창 제어
 window.addEventListener('popstate', function(event) {
-  // 만약 0.3초 이내에 뒤로가기가 또 연속으로 눌렸다면, 명령을 무시하고 취소합니다.
-  if (isNijiBackActionProcessing) {
-    window.history.pushState('forward', null, null);
-    return;
-  }
-
-  // 뒤로가기가 한 번 실행되면 즉시 잠금장치를 켭니다.
-  isNijiBackActionProcessing = true;
-  setTimeout(function() {
-    isNijiBackActionProcessing = false; // 0.3초 후에 잠금장치를 풉니다.
-  }, 300);
-
+  // 1. 만약 공유 창(모달)이 열려있다면, 공유 창을 먼저 닫아줍니다.
   var shareModal = document.getElementById('tc-modalShare');
   if (shareModal && shareModal.style.display === 'flex') {
     shareModal.style.display = 'none';
-    window.history.pushState('forward', null, null);
+    window.history.pushState('forward', null, null); // 뒤로가기 기록을 하나 채워줍니다.
     return;
   }
 
+  // 2. 종료 창을 제어합니다.
   var exitModal = document.getElementById('niji-exit-modal');
-  // 이미 종료창이 눈에 보이고 있다면 또 띄우지 않고 그냥 넘어갑니다.
-  if (exitModal && exitModal.style.display === 'flex') {
-    return;
+  if (exitModal) {
+    // 이미 종료 창이 화면에 켜져 있는 상태라면?
+    // 이 상태에서 뒤로가기를 한 번 더 누르면 진짜로 앱이 완전히 종료되도록 내버려 둡니다.
+    if (exitModal.style.display === 'flex') {
+      return; 
+    }
+    
+    // 종료 창이 닫혀있었다면, 뒤로가기를 눌렀을 때 종료 창을 화면에 보여줍니다.
+    exitModal.style.display = 'flex';
+    // 종료 창이 떴으므로 브라우저 기록이 뒤로 넘어가지 않도록 방어벽을 칩니다.
+    window.history.pushState('forward', null, null);
   }
-
-  if (exitModal) exitModal.style.display = 'flex';
 });
 
+// 종료 창에서 [취소] 버튼을 눌렀을 때 실행되는 함수
 function closeNijiExitModal() {
   var exitModal = document.getElementById('niji-exit-modal');
-  if (exitModal) exitModal.style.display = 'none';
+  if (exitModal) {
+    exitModal.style.display = 'none'; // 종료 창을 안 보이게 숨깁니다.
+  }
+  // 취소를 눌러 다시 원래 앱 화면으로 돌아왔으므로, 다음번에 뒤로가기를 누르면 또 종료 창이 뜨도록 기록을 채워둡니다.
   window.history.pushState('forward', null, null);
   window.dispatchEvent(new Event('resize'));
 }
