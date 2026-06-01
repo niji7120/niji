@@ -8107,7 +8107,22 @@ window.addEventListener('DOMContentLoaded', function() {
   setTimeout(initNijiHistory, 500);
 });
 
+// ★ 중요: 스마트폰이 뒤로가기 신호를 한 번에 2번 연속 보낼 때, 이를 막아주는 잠금장치 변수입니다.
+let isNijiBackActionProcessing = false;
+
 window.addEventListener('popstate', function(event) {
+  // 만약 0.3초 이내에 뒤로가기가 또 연속으로 눌렸다면, 명령을 무시하고 취소합니다.
+  if (isNijiBackActionProcessing) {
+    window.history.pushState('forward', null, null);
+    return;
+  }
+
+  // 뒤로가기가 한 번 실행되면 즉시 잠금장치를 켭니다.
+  isNijiBackActionProcessing = true;
+  setTimeout(function() {
+    isNijiBackActionProcessing = false; // 0.3초 후에 잠금장치를 풉니다.
+  }, 300);
+
   var shareModal = document.getElementById('tc-modalShare');
   if (shareModal && shareModal.style.display === 'flex') {
     shareModal.style.display = 'none';
@@ -8116,6 +8131,7 @@ window.addEventListener('popstate', function(event) {
   }
 
   var exitModal = document.getElementById('niji-exit-modal');
+  // 이미 종료창이 눈에 보이고 있다면 또 띄우지 않고 그냥 넘어갑니다.
   if (exitModal && exitModal.style.display === 'flex') {
     return;
   }
