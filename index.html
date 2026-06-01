@@ -2355,6 +2355,12 @@ function load() {
       _migrateOfflineData();
       _syncPendingData();
       _loadFromFirebase();
+
+      // [추가된 부분] 로그인 후 하단 탭 메뉴들이 정상적으로 잘 보이도록 화면 크기를 다시 맞춰줍니다.
+      setTimeout(function() {
+        window.dispatchEvent(new Event('resize'));
+      }, 300);
+
     } else {
       // 로그아웃 상태가 되면, 다음에 다시 로그인할 수 있도록 잠금을 풀어줍니다.
       window._appLoaded = false; 
