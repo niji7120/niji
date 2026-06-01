@@ -8080,59 +8080,55 @@ history.pushState(null, '', location.href);
 </div>
 
 <script>
-// 가짜 기록을 만들어 두는 장치
-window.addEventListener('DOMContentLoaded', function() {
+// 1. 앱이 완전히 켜지고 화면이 안정화된 직후에만 뒤로가기 방지 장치를 켭니다.
+function initNijiHistory() {
   if (window.history && window.history.pushState) {
-    window.history.pushState('forward', null, './#forward');
+    window.history.replaceState('forward', null, null);
+    window.history.pushState('forward', null, null);
   }
+}
+
+// 앱이 켜지고 0.5초 뒤 안전하게 딱 실행합니다.
+window.addEventListener('DOMContentLoaded', function() {
+  setTimeout(initNijiHistory, 500);
 });
 
-// 뒤로가기 버튼을 눌렀을 때 실행되는 곳
+// 2. 스마트폰 뒤로가기 버튼을 눌렀을 때 실행되는 제어실
 window.addEventListener('popstate', function(event) {
-  // 1. 공유 팝업창이 열려있다면 그것부터 닫기
   var shareModal = document.getElementById('tc-modalShare');
   if (shareModal && shareModal.style.display === 'flex') {
     shareModal.style.display = 'none';
-    window.history.pushState('forward', null, './#forward');
+    window.history.pushState('forward', null, null);
     return;
   }
 
-  // 2. 이미 종료 안내창이 눈에 보이고 있다면 무시하기
   var exitModal = document.getElementById('niji-exit-modal');
   if (exitModal.style.display === 'flex') {
     return;
   }
 
-  // 3. 종료 안내창을 화면에 띄웁니다.
   exitModal.style.display = 'flex';
 });
 
-// [취소] 버튼을 누르면 작동하는 함수
+// [취소] 버튼을 눌렀을 때
 function closeNijiExitModal() {
   var exitModal = document.getElementById('niji-exit-modal');
   exitModal.style.display = 'none';
-  // 취소했으니 뒤로가기를 대비해 가짜 기록을 다시 채워둡니다.
-  window.history.pushState('forward', null, './#forward');
+  window.history.pushState('forward', null, null);
+  window.dispatchEvent(new Event('resize'));
 }
 
-// [종료] 버튼을 누르면 작동하는 함수
+// [종료] 버튼을 눌렀을 때
 function exitNijiApp() {
   var exitModal = document.getElementById('niji-exit-modal');
   exitModal.style.display = 'none';
   
-  // 안드로이드 앱 자체를 안전하게 종료시키는 진짜 명령어들입니다.
   if (window.Android && window.Android.closeApp) {
     window.Android.closeApp();
   } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeApp) {
     window.webkit.messageHandlers.closeApp.postMessage('');
   } else {
-    // 일반 인터넷 창일 경우 브라우저 탭을 닫거나 뒤로 이동합니다.
-    window.opener = null;
-    window.open('', '_self', '');
-    window.close();
-    setTimeout(function() {
-      window.history.back();
-    }, 100);
+    window.history.go(-2);
   }
 }
 </script>
