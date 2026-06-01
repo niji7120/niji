@@ -7460,6 +7460,8 @@ window.addEventListener('popstate', function() {
     history.pushState(null, '', location.href);
   }
 });
+// 히스토리 초기 상태 push
+history.pushState(null, '', location.href);
 </script>
 
 <!-- ===== TACTICS BOARD MODAL ===== -->
@@ -8066,15 +8068,16 @@ window.addEventListener('popstate', function() {
 })();
 </script>
 </body>
-<div id="niji-exit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center; font-family: sans-serif;">
-  <div style="background: white; padding: 24px; border-radius: 12px; width: 280px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-    <div style="font-size: 24px; margin-bottom: 8px;">🚪</div>
-    <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #333;">앱 종료</h3>
-    <p style="margin: 0 0 20px 0; font-size: 14px; color: #666;">앱을 종료하시겠습니까?</p>
-    <div style="display: flex; gap: 10px;">
-      <button onclick="closeNijiExitModal()" style="flex: 1; padding: 10px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer; font-size: 14px;">취소</button>
-      <button onclick="exitNijiApp()" style="flex: 1; padding: 10px; border: none; background: #7c6af7; color: white; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold;">종료</button>
-    </div>
+<div id="niji-exit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 99999; justify-content: center; align-items: center; font-family: sans-serif;" onclick="closeNijiExitModal()">
+  <div style="background: white; padding: 28px 24px; border-radius: 16px; width: 280px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" onclick="event.stopPropagation()">
+    <div style="font-size: 32px; margin-bottom: 10px;">🏠</div>
+    <h3 style="margin: 0 0 10px 0; font-size: 17px; color: #333; font-weight: bold;">앱을 종료하려면</h3>
+    <p style="margin: 0 0 6px 0; font-size: 14px; color: #555; line-height: 1.6;">
+      홈 버튼을 누르거나<br>
+      최근 앱 목록에서 닫아주세요
+    </p>
+    <p style="margin: 0 0 20px 0; font-size: 12px; color: #aaa;">( ← 뒤로가기로 이 창을 닫을 수 있어요 )</p>
+    <button onclick="closeNijiExitModal()" style="width: 100%; padding: 11px; border: none; background: #7c6af7; color: white; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: bold;">확인</button>
   </div>
 </div>
 
@@ -8094,76 +8097,55 @@ if (window._firebaseAuth) {
   });
 }
 
-// ===== 앱 종료 팝업 제어 (수정됨) =====
-// 종료 팝업이 현재 떠 있는지 추적하는 변수
-let _nijiExitShowing = false;
-// 중복 이벤트 방지 잠금
-let _nijiBackLock = false;
+// ===== 뒤로가기 버튼 처리 =====
+let _backLock = false;
 
-// 시작할 때 히스토리 스택에 "현재 위치" 하나만 추가
 window.addEventListener('DOMContentLoaded', function() {
   setTimeout(function() {
-    window.history.pushState('niji-app', null, null);
+    window.history.pushState('app', null, null);
   }, 500);
 });
 
-window.addEventListener('popstate', function(event) {
-  // 0.3초 이내 중복 이벤트 무시
-  if (_nijiBackLock) {
-    window.history.pushState('niji-app', null, null);
+window.addEventListener('popstate', function() {
+  if (_backLock) {
+    window.history.pushState('app', null, null);
     return;
   }
-  _nijiBackLock = true;
-  setTimeout(function() { _nijiBackLock = false; }, 300);
+  _backLock = true;
+  setTimeout(function() { _backLock = false; }, 400);
 
-  // 공유 모달이 열려 있으면 닫기
+  // 공유 모달 열려있으면 닫기
   var shareModal = document.getElementById('tc-modalShare');
   if (shareModal && shareModal.style.display === 'flex') {
     shareModal.style.display = 'none';
-    window.history.pushState('niji-app', null, null);
+    window.history.pushState('app', null, null);
     return;
   }
 
-  // 종료 팝업이 이미 떠 있으면 → 진짜 종료
-  if (_nijiExitShowing) {
-    _doExitApp();
-    return;
-  }
-
-  // 종료 팝업 보여주기
+  // 안내 팝업이 이미 떠있으면 닫기
   var exitModal = document.getElementById('niji-exit-modal');
+  if (exitModal && exitModal.style.display === 'flex') {
+    exitModal.style.display = 'none';
+    window.history.pushState('app', null, null);
+    return;
+  }
+
+  // 안내 팝업 띄우기
   if (exitModal) {
     exitModal.style.display = 'flex';
-    _nijiExitShowing = true;
+    window.history.pushState('app', null, null);
   }
-  // 히스토리 스택 다시 추가 (팝업 닫을 때 한 번 더 뒤로가기를 쓸 수 있도록)
-  window.history.pushState('niji-app', null, null);
 });
 
-// "취소" 버튼 → 팝업만 닫기
+// 확인 버튼 / 배경 클릭으로 팝업 닫기
 function closeNijiExitModal() {
   var exitModal = document.getElementById('niji-exit-modal');
   if (exitModal) exitModal.style.display = 'none';
-  _nijiExitShowing = false;
 }
 
-// "종료" 버튼 → 바로 앱 종료
+// exitNijiApp 혹시 다른 곳에서 호출될 경우를 위해 빈 함수로 유지
 function exitNijiApp() {
-  var exitModal = document.getElementById('niji-exit-modal');
-  if (exitModal) exitModal.style.display = 'none';
-  _nijiExitShowing = false;
-  _doExitApp();
-}
-
-// 실제 종료 처리
-function _doExitApp() {
-  if (window.Android && window.Android.closeApp) {
-    window.Android.closeApp();
-  } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeApp) {
-    window.webkit.messageHandlers.closeApp.postMessage('');
-  } else {
-    window.history.go(-10); // 히스토리 끝까지 이동 → 앱 종료
-  }
+  closeNijiExitModal();
 }
 </script>
 </html>
