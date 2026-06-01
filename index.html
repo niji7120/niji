@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7459,8 +7460,6 @@ window.addEventListener('popstate', function() {
     history.pushState(null, '', location.href);
   }
 });
-// 히스토리 초기 상태 push
-history.pushState(null, '', location.href);
 </script>
 
 <!-- ===== TACTICS BOARD MODAL ===== -->
@@ -8095,67 +8094,75 @@ if (window._firebaseAuth) {
   });
 }
 
-// [문제 2 고치기] 스마트폰 뒤로가기 버튼 제어장치 시작
-function initNijiHistory() {
-  if (window.history && window.history.pushState) {
-    window.history.replaceState('forward', null, null);
-    window.history.pushState('forward', null, null);
-  }
-}
+// ===== 앱 종료 팝업 제어 (수정됨) =====
+// 종료 팝업이 현재 떠 있는지 추적하는 변수
+let _nijiExitShowing = false;
+// 중복 이벤트 방지 잠금
+let _nijiBackLock = false;
 
+// 시작할 때 히스토리 스택에 "현재 위치" 하나만 추가
 window.addEventListener('DOMContentLoaded', function() {
-  setTimeout(initNijiHistory, 500);
+  setTimeout(function() {
+    window.history.pushState('niji-app', null, null);
+  }, 500);
 });
 
-// ★ 중요: 스마트폰이 뒤로가기 신호를 한 번에 2번 연속 보낼 때, 이를 막아주는 잠금장치 변수입니다.
-let isNijiBackActionProcessing = false;
-
 window.addEventListener('popstate', function(event) {
-  // 만약 0.3초 이내에 뒤로가기가 또 연속으로 눌렸다면, 명령을 무시하고 취소합니다.
-  if (isNijiBackActionProcessing) {
-    window.history.pushState('forward', null, null);
+  // 0.3초 이내 중복 이벤트 무시
+  if (_nijiBackLock) {
+    window.history.pushState('niji-app', null, null);
     return;
   }
+  _nijiBackLock = true;
+  setTimeout(function() { _nijiBackLock = false; }, 300);
 
-  // 뒤로가기가 한 번 실행되면 즉시 잠금장치를 켭니다.
-  isNijiBackActionProcessing = true;
-  setTimeout(function() {
-    isNijiBackActionProcessing = false; // 0.3초 후에 잠금장치를 풉니다.
-  }, 300);
-
+  // 공유 모달이 열려 있으면 닫기
   var shareModal = document.getElementById('tc-modalShare');
   if (shareModal && shareModal.style.display === 'flex') {
     shareModal.style.display = 'none';
-    window.history.pushState('forward', null, null);
+    window.history.pushState('niji-app', null, null);
     return;
   }
 
+  // 종료 팝업이 이미 떠 있으면 → 진짜 종료
+  if (_nijiExitShowing) {
+    _doExitApp();
+    return;
+  }
+
+  // 종료 팝업 보여주기
   var exitModal = document.getElementById('niji-exit-modal');
-  // 이미 종료창이 눈에 보이고 있다면 또 띄우지 않고 그냥 넘어갑니다.
-  if (exitModal && exitModal.style.display === 'flex') {
-    return;
+  if (exitModal) {
+    exitModal.style.display = 'flex';
+    _nijiExitShowing = true;
   }
-
-  if (exitModal) exitModal.style.display = 'flex';
+  // 히스토리 스택 다시 추가 (팝업 닫을 때 한 번 더 뒤로가기를 쓸 수 있도록)
+  window.history.pushState('niji-app', null, null);
 });
 
+// "취소" 버튼 → 팝업만 닫기
 function closeNijiExitModal() {
   var exitModal = document.getElementById('niji-exit-modal');
   if (exitModal) exitModal.style.display = 'none';
-  window.history.pushState('forward', null, null);
-  window.dispatchEvent(new Event('resize'));
+  _nijiExitShowing = false;
 }
 
+// "종료" 버튼 → 바로 앱 종료
 function exitNijiApp() {
   var exitModal = document.getElementById('niji-exit-modal');
   if (exitModal) exitModal.style.display = 'none';
-  
+  _nijiExitShowing = false;
+  _doExitApp();
+}
+
+// 실제 종료 처리
+function _doExitApp() {
   if (window.Android && window.Android.closeApp) {
     window.Android.closeApp();
   } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeApp) {
     window.webkit.messageHandlers.closeApp.postMessage('');
   } else {
-    window.history.go(-2);
+    window.history.go(-10); // 히스토리 끝까지 이동 → 앱 종료
   }
 }
 </script>
