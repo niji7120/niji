@@ -8067,7 +8067,7 @@ history.pushState(null, '', location.href);
 })();
 </script>
 </body>
- <div id="niji-exit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center; font-family: sans-serif;">
+<div id="niji-exit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center; font-family: sans-serif;">
   <div style="background: white; padding: 24px; border-radius: 12px; width: 280px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
     <div style="font-size: 24px; margin-bottom: 8px;">🚪</div>
     <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #333;">앱 종료</h3>
@@ -8080,7 +8080,22 @@ history.pushState(null, '', location.href);
 </div>
 
 <script>
-// 1. 앱이 완전히 켜지고 화면이 안정화된 직후에만 뒤로가기 방지 장치를 켭니다.
+// [문제 1 고치기] 로그인 성공하면 아래쪽 탭 메뉴가 바로 보이도록 새로고침해주는 명령어입니다.
+if (window._firebaseAuth) {
+  window._firebaseAuth.onAuthStateChanged(function(user) {
+    if (user) {
+      setTimeout(function() {
+        const navBar = document.querySelector('.nav');
+        if (navBar) navBar.style.display = 'flex';
+        if (typeof showPage === 'function') {
+          showPage('profile'); 
+        }
+      }, 300);
+    }
+  });
+}
+
+// [문제 2 고치기] 스마트폰 뒤로가기 버튼 제어장치 시작
 function initNijiHistory() {
   if (window.history && window.history.pushState) {
     window.history.replaceState('forward', null, null);
@@ -8088,12 +8103,10 @@ function initNijiHistory() {
   }
 }
 
-// 앱이 켜지고 0.5초 뒤 안전하게 딱 실행합니다.
 window.addEventListener('DOMContentLoaded', function() {
   setTimeout(initNijiHistory, 500);
 });
 
-// 2. 스마트폰 뒤로가기 버튼을 눌렀을 때 실행되는 제어실
 window.addEventListener('popstate', function(event) {
   var shareModal = document.getElementById('tc-modalShare');
   if (shareModal && shareModal.style.display === 'flex') {
@@ -8103,25 +8116,23 @@ window.addEventListener('popstate', function(event) {
   }
 
   var exitModal = document.getElementById('niji-exit-modal');
-  if (exitModal.style.display === 'flex') {
+  if (exitModal && exitModal.style.display === 'flex') {
     return;
   }
 
-  exitModal.style.display = 'flex';
+  if (exitModal) exitModal.style.display = 'flex';
 });
 
-// [취소] 버튼을 눌렀을 때
 function closeNijiExitModal() {
   var exitModal = document.getElementById('niji-exit-modal');
-  exitModal.style.display = 'none';
+  if (exitModal) exitModal.style.display = 'none';
   window.history.pushState('forward', null, null);
   window.dispatchEvent(new Event('resize'));
 }
 
-// [종료] 버튼을 눌렀을 때
 function exitNijiApp() {
   var exitModal = document.getElementById('niji-exit-modal');
-  exitModal.style.display = 'none';
+  if (exitModal) exitModal.style.display = 'none';
   
   if (window.Android && window.Android.closeApp) {
     window.Android.closeApp();
