@@ -2485,7 +2485,13 @@ function resetPassword() {
 // 로그아웃
 function signOut() {
   showConfirm('로그아웃', '로그아웃 하시겠습니까?', '🚪', function() {
-    window._firebaseAuth.signOut().then(function() { location.reload(); });
+    // 로그아웃하기 전에 로그인 잠금 장치를 먼저 풀어줍니다.
+    window._appLoaded = false;
+    
+    window._firebaseAuth.signOut().then(function() { 
+      // 그 다음 화면을 새로고침합니다.
+      location.reload(); 
+    });
   }, '로그아웃');
 }
 
