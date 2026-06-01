@@ -8067,4 +8067,36 @@ history.pushState(null, '', location.href);
 })();
 </script>
 </body>
+  <script>
+// 1. 앱이 켜질 때 가상의 기록(History)을 하나 강제로 만들어 둡니다.
+window.addEventListener('DOMContentLoaded', function() {
+  if (window.history && window.history.pushState) {
+    window.history.pushState('forward', null, './#forward');
+  }
+});
+
+// 2. 사용자가 스마트폰 뒤로가기 버튼(또는 제스처)을 누르면 이 이벤트가 실행됩니다.
+window.addEventListener('popstate', function(event) {
+  // 열려있는 모달창(팝업창)이나 닫아야 할 화면이 있는지 확인합니다.
+  // (앱 내부에 모달창을 닫는 로직이 있다면 여기에 추가할 수 있습니다.)
+  
+  // 예시: 만약 공유 모달창 같은 게 열려있다면 그것만 닫아줍니다.
+  var shareModal = document.getElementById('tc-modalShare');
+  if (shareModal && shareModal.style.display === 'flex') {
+    shareModal.style.display = 'none';
+    // 뒤로가기를 한 번 막았으니 다시 가상 기록을 채워둡니다.
+    window.history.pushState('forward', null, './#forward');
+    return;
+  }
+
+  // 3. 더 이상 닫을 팝업창이 없고 메인 화면이라면 사용자에게 물어봅니다.
+  if (confirm('앱을 종료하시겠습니까?')) {
+    // 확인을 누르면 뒤로가기가 작동하여 앱이 종료됩니다.
+    window.history.back();
+  } else {
+    // 취소를 누르면 종료하지 않고 현재 화면을 유지합니다.
+    window.history.pushState('forward', null, './#forward');
+  }
+});
+</script>
 </html>
