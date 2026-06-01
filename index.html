@@ -8067,7 +8067,7 @@ history.pushState(null, '', location.href);
 })();
 </script>
 </body>
-  <div id="niji-exit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center; font-family: sans-serif;">
+ <div id="niji-exit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center; font-family: sans-serif;">
   <div style="background: white; padding: 24px; border-radius: 12px; width: 280px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
     <div style="font-size: 24px; margin-bottom: 8px;">🚪</div>
     <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #333;">앱 종료</h3>
@@ -8119,8 +8119,21 @@ function closeNijiExitModal() {
 function exitNijiApp() {
   var exitModal = document.getElementById('niji-exit-modal');
   exitModal.style.display = 'none';
-  // 실제로 앱을 종료하기 위해 뒤로가기를 실행합니다.
-  window.history.back();
+  
+  // 안드로이드 앱 자체를 안전하게 종료시키는 진짜 명령어들입니다.
+  if (window.Android && window.Android.closeApp) {
+    window.Android.closeApp();
+  } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeApp) {
+    window.webkit.messageHandlers.closeApp.postMessage('');
+  } else {
+    // 일반 인터넷 창일 경우 브라우저 탭을 닫거나 뒤로 이동합니다.
+    window.opener = null;
+    window.open('', '_self', '');
+    window.close();
+    setTimeout(function() {
+      window.history.back();
+    }, 100);
+  }
 }
 </script>
 </html>
