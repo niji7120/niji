@@ -2739,6 +2739,10 @@ function _initApp() {
   var ls = document.getElementById('loadingScreen');
   if (ls) ls.style.display = 'none';
 
+  // 하단 탭 메뉴 반드시 보이게 (로그아웃→재로그인 시 탭이 안 보이는 문제 수정)
+  var navBar = document.querySelector('.nav');
+  if (navBar) navBar.style.display = 'flex';
+
   if (document.getElementById('sportType')) {
     document.getElementById('sportType').value = state.sportType || 'tennis';
   }
@@ -2762,6 +2766,9 @@ function _initApp() {
     imgEl.style.display = 'block';
     if (emojiEl) emojiEl.style.display = 'none';
   }
+
+  // 프로필 탭을 기본 화면으로 표시 (로그아웃→재로그인 후 탭이 안 보이는 문제 수정)
+  showPage('profile');
 }
 
 // ===== 저장공간 정리 =====
@@ -8115,20 +8122,7 @@ history.pushState(null, '', location.href);
 </div>
 
 <script>
-// [문제 1 고치기] 로그인 성공하면 아래쪽 탭 메뉴가 바로 보이도록 새로고침해주는 명령어입니다.
-if (window._firebaseAuth) {
-  window._firebaseAuth.onAuthStateChanged(function(user) {
-    if (user) {
-      setTimeout(function() {
-        const navBar = document.querySelector('.nav');
-        if (navBar) navBar.style.display = 'flex';
-        if (typeof showPage === 'function') {
-          showPage('profile'); 
-        }
-      }, 300);
-    }
-  });
-}
+// _initApp() 내부에서 탭 표시 및 showPage('profile') 처리가 완료됩니다.
 
 // [문제 2 고치기] 스마트폰 뒤로가기 버튼 제어장치 시작
 function initNijiHistory() {
