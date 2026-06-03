@@ -2,6 +2,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -1776,6 +1777,33 @@
         <button onclick="tnAddManual()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 0.9333rem;cursor:pointer;">추가</button>
       </div>
       <div id="tn-selected" style="margin-bottom:16px;"></div>
+
+      <!-- [추가] 복식 전용: 파트너 지정 방식 선택 영역 -->
+      <div id="tn-doubles-partner-section" style="display:none;">
+        <div class="section-title">복식 팀 구성 방법</div>
+        <!-- 자동/수동 토글 버튼 -->
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <button id="tn-team-auto-btn" onclick="tnSetTeamMode('auto')"
+            style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;">
+            🎲 자동 팀 섞기
+          </button>
+          <button id="tn-team-manual-btn" onclick="tnSetTeamMode('manual')"
+            style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);">
+            ✋ 직접 파트너 지정
+          </button>
+        </div>
+        <!-- 자동 안내 -->
+        <div id="tn-team-auto-area" style="font-size: 0.8rem;color:var(--text-muted);padding:10px;background:var(--surface2);border-radius:10px;margin-bottom:10px;">
+          선택된 선수 순서(위→아래)로 자동 팀을 구성해요.<br>1번↔마지막, 2번↔끝에서 2번 방식으로 짝이 맺어져요.
+        </div>
+        <!-- 수동 지정 UI -->
+        <div id="tn-team-manual-area" style="display:none;">
+          <div style="font-size: 0.8rem;color:var(--text-muted);margin-bottom:8px;">선수를 순서대로 2명씩 클릭하면 팀이 만들어져요. 파란색 = 1번째, 초록색 = 2번째(파트너)</div>
+          <div id="tn-manual-player-btns" style="margin-bottom:10px;"></div>
+          <div id="tn-manual-teams" style="margin-bottom:10px;"></div>
+          <button onclick="tnResetManualTeams()" style="padding:7px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size: 0.8rem;cursor:pointer;">🗑️ 팀 초기화</button>
+        </div>
+      </div>
     </div>
     <div style="padding:12px 20px max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;">
       <button onclick="tnCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;">🏆 대진표 생성</button>
@@ -1980,6 +2008,11 @@
           <div class="manual-item">
             <span class="manual-dot"></span>
             <span><b>토너먼트</b> — 단식·복식 대진표를 자동 생성해요. 시드 순서를 직접 조정할 수 있고, 결과 입력 시 다음 라운드가 자동으로 채워져요</span>
+          </div>
+          <!-- [수정] 복식 파트너 직접 지정 기능 설명 추가 -->
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>단식</b>은 무작위 시드 배정이 가능하며, <b>복식</b>은 자동 팀 매칭뿐만 아니라 원하는 파트너를 직접 선택하여 대진표를 짤 수 있어요. 복식 선택 후 <b>🎲 자동 팀 섞기</b> 또는 <b>✋ 직접 파트너 지정</b> 방식 중 선택하세요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -2362,11 +2395,17 @@ function load() {
     return;
   }
 
-  // 5초 타임아웃 안전장치
+  // [수정] 타임아웃: iOS는 4초, 일반 환경은 5초 - 무한 로딩 방지
+  var _authTimeoutMs = _isIOSSafari() ? 4000 : 5000;
   var authTimeout = setTimeout(function() {
-    console.warn('Firebase Auth 응답 없음 → 로그인 화면 표시');
+    console.warn('Firebase Auth 응답 없음(' + _authTimeoutMs + 'ms) → 로그인 화면 표시');
+    // [추가] iOS에서 무한 로딩 상태 강제 해제 + 안내 메시지
+    var msgEl = document.getElementById('loadingMsg');
+    if (msgEl && _isIOSSafari()) {
+      msgEl.textContent = '네트워크 문제가 감지됐어요. 로그인 화면으로 이동합니다...';
+    }
     _showLoginScreen();
-  }, 5000);
+  }, _authTimeoutMs);
 
   // [수정된 부분] 중복 방지 변수를 함수 바깥(전역)처럼 작동하도록 window에 저장합니다.
   // 이렇게 하면 로그아웃 후 다시 로그인할 때도 멈추지 않고 정상 작동합니다.
@@ -2405,9 +2444,26 @@ function load() {
 }
 
 // 로그인 화면 (구글 + 이메일)
+// [수정] iOS Safari 환경 감지 헬퍼 - 쿠키/스토리지 제한 기기 식별용
+function _isIOSSafari() {
+  var ua = navigator.userAgent;
+  return /iP(hone|od|ad)/.test(ua);
+}
+
+// [수정] _showLoginScreen: iOS 환경에서 인메모리 세션 예외처리 추가
 function _showLoginScreen() {
   var loadingScreen = document.getElementById('loadingScreen');
   if (!loadingScreen) return;
+
+  // [추가] iOS Safari에서 localStorage 접근 불가할 때 대비 안전 처리
+  if (_isIOSSafari() && window._firebaseAuth) {
+    try {
+      // 인메모리 persistence로 전환 시도 (Safari 쿠키 차단 대응)
+      window._firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.NONE)
+        .catch(function(e) { console.warn('iOS persistence 설정 실패:', e); });
+    } catch(e) { console.warn('iOS persistence 예외:', e); }
+  }
+
   loadingScreen.innerHTML = `
     <div style="display:flex;flex-direction:column;align-items:center;gap:0;padding:40px 20px;width:100%;max-width:360px;margin:0 auto;">
       <div style="font-family:'Orbitron',sans-serif;font-size: 1.6rem;font-weight:900;
@@ -2459,13 +2515,25 @@ function _showLoginScreen() {
   `;
 }
 
-// 구글 로그인
+// [수정] 구글 로그인 - iOS Safari는 팝업 차단 가능성 높으므로 바로 redirect 시도
 function signInWithGoogle() {
   var btn = document.getElementById('googleLoginBtn');
   var msgEl = document.getElementById('loginMsg');
   if (btn) { btn.disabled = true; btn.textContent = '로그인 중...'; }
   if (msgEl) msgEl.textContent = '';
   var provider = new firebase.auth.GoogleAuthProvider();
+
+  // [추가] iOS는 팝업이 거의 막히므로 바로 redirect 방식 사용
+  if (_isIOSSafari()) {
+    try {
+      window._firebaseAuth.signInWithRedirect(provider);
+    } catch(e) {
+      if (btn) { btn.disabled = false; btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;"> Google로 로그인'; }
+      if (msgEl) msgEl.textContent = 'iOS 로그인 오류. 이메일 로그인을 이용해 주세요.';
+    }
+    return;
+  }
+
   window._firebaseAuth.signInWithPopup(provider)
     .catch(function(e) {
       if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
@@ -6670,9 +6738,17 @@ function renderTnList() {
 let _tnFormat = 'singles';
 let _tnSelected = [];
 
+// [수정] showTnCreate: 복식 파트너 모드 변수 초기화 추가
+let _tnTeamMode = 'auto';       // 'auto' | 'manual'
+let _tnManualPick = [];         // 수동 지정 중 첫 번째로 클릭된 선수 (대기 중)
+let _tnManualTeams = [];        // 수동으로 확정된 팀 배열 [{a, b}, ...]
+
 function showTnCreate() {
   _tnSelected = [];
   _tnFormat = 'singles';
+  _tnTeamMode = 'auto';
+  _tnManualPick = [];
+  _tnManualTeams = [];
   document.getElementById('tn-tname').value = '';
   document.getElementById('tn-tdate').value = getTodayStr();
   tnSetFormat('singles');
@@ -6680,6 +6756,7 @@ function showTnCreate() {
   document.getElementById('tnCreateModal').classList.add('open');
 }
 
+// [수정] tnSetFormat: 복식 선택 시 파트너 지정 섹션 보이기/숨기기
 function tnSetFormat(fmt) {
   _tnFormat = fmt;
   const sBtn = document.getElementById('tn-fmt-singles');
@@ -6691,6 +6768,115 @@ function tnSetFormat(fmt) {
   // 복식은 짝수 명 안내 표시
   const note = document.getElementById('tn-fmt-note');
   if (note) note.textContent = fmt === 'doubles' ? '※ 복식은 짝수 명이어야 해요 (4·8·16명)' : '※ 단식은 2·4·8·16명 권장';
+
+  // [추가] 복식일 때만 파트너 구성 섹션 표시
+  const partnerSec = document.getElementById('tn-doubles-partner-section');
+  if (partnerSec) {
+    partnerSec.style.display = fmt === 'doubles' ? 'block' : 'none';
+  }
+  // 복식 → 자동 모드로 초기화
+  if (fmt === 'doubles') {
+    _tnTeamMode = 'auto';
+    _tnManualPick = [];
+    _tnManualTeams = [];
+    tnSetTeamMode('auto');
+  }
+}
+
+// [추가] 복식 팀 구성 모드 전환 (자동 <-> 수동)
+function tnSetTeamMode(mode) {
+  _tnTeamMode = mode;
+  const autoBtn = document.getElementById('tn-team-auto-btn');
+  const manualBtn = document.getElementById('tn-team-manual-btn');
+  const autoArea = document.getElementById('tn-team-auto-area');
+  const manualArea = document.getElementById('tn-team-manual-area');
+
+  if (autoBtn) {
+    autoBtn.style.background = mode === 'auto' ? 'var(--accent)' : 'var(--surface2)';
+    autoBtn.style.color      = mode === 'auto' ? '#fff' : 'var(--text-muted)';
+  }
+  if (manualBtn) {
+    manualBtn.style.background = mode === 'manual' ? 'var(--accent)' : 'var(--surface2)';
+    manualBtn.style.color      = mode === 'manual' ? '#fff' : 'var(--text-muted)';
+  }
+  if (autoArea)   autoArea.style.display   = mode === 'auto'   ? 'block' : 'none';
+  if (manualArea) manualArea.style.display = mode === 'manual' ? 'block' : 'none';
+
+  // 수동 모드 진입 시 선수 버튼 렌더
+  if (mode === 'manual') {
+    _tnManualPick = [];
+    _tnManualTeams = [];
+    tnRenderManualTeamUI();
+  }
+}
+
+// [추가] 수동 팀 지정 UI 렌더링
+function tnRenderManualTeamUI() {
+  const btnArea = document.getElementById('tn-manual-player-btns');
+  const teamArea = document.getElementById('tn-manual-teams');
+  if (!btnArea || !teamArea) return;
+
+  // 이미 팀에 배정된 선수 목록
+  const assigned = _tnManualTeams.flatMap(t => [t.a, t.b]);
+  const waiting = _tnSelected.filter(n => !assigned.includes(n));
+
+  // 선수 버튼 (배정 안 된 선수만)
+  if (waiting.length === 0) {
+    btnArea.innerHTML = '<div style="color:var(--text-muted);font-size: 0.8rem;">모든 선수가 팀에 배정되었어요 ✅</div>';
+  } else {
+    btnArea.innerHTML = waiting.map(name => {
+      const isSel = _tnManualPick === name;
+      const safeN = name.replace(/"/g, '&quot;');
+      return `<span onclick="tnManualPickPlayer('${safeN}')"
+        style="display:inline-block;margin:3px;padding:7px 14px;border-radius:20px;cursor:pointer;font-size: 0.9333rem;
+          background:${isSel ? 'var(--accent)' : 'var(--surface2)'};
+          color:${isSel ? '#fff' : 'var(--text-muted)'};
+          border:2px solid ${isSel ? 'var(--accent)' : 'transparent'};">${escHtml(name)}</span>`;
+    }).join('');
+  }
+
+  // 확정된 팀 목록
+  if (_tnManualTeams.length === 0) {
+    teamArea.innerHTML = '<div style="color:var(--text-muted);font-size: 0.8rem;">아직 팀이 없어요. 위에서 선수를 2명씩 클릭하세요!</div>';
+  } else {
+    teamArea.innerHTML = _tnManualTeams.map((t, i) => `
+      <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--surface2);border-radius:10px;margin-bottom:6px;">
+        <span style="font-size: 0.8rem;color:var(--accent);font-weight:700;width:28px;">팀${i+1}</span>
+        <span style="flex:1;font-size: 0.9333rem;font-weight:600;">${escHtml(t.a)} <span style="color:var(--text-muted);font-weight:400;">&</span> ${escHtml(t.b)}</span>
+        <button onclick="tnRemoveManualTeam(${i})" style="background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:6px;color:#f87171;cursor:pointer;padding:2px 8px;font-size: 0.8rem;">✕</button>
+      </div>`).join('');
+  }
+}
+
+// [추가] 수동 팀 지정 - 선수 클릭 처리 (2번 클릭으로 1팀 완성)
+function tnManualPickPlayer(name) {
+  if (!_tnManualPick) {
+    // 첫 번째 선수 선택
+    _tnManualPick = name;
+  } else if (_tnManualPick === name) {
+    // 같은 선수 다시 클릭 → 취소
+    _tnManualPick = null;
+  } else {
+    // 두 번째 선수 선택 → 팀 확정
+    _tnManualTeams.push({ a: _tnManualPick, b: name });
+    _tnManualPick = null;
+    showToast('✅ 팀 ' + _tnManualTeams.length + ' 확정!');
+  }
+  tnRenderManualTeamUI();
+}
+
+// [추가] 수동 팀 삭제
+function tnRemoveManualTeam(idx) {
+  _tnManualTeams.splice(idx, 1);
+  _tnManualPick = '';
+  tnRenderManualTeamUI();
+}
+
+// [추가] 수동 팀 전체 초기화
+function tnResetManualTeams() {
+  _tnManualTeams = [];
+  _tnManualPick = '';
+  tnRenderManualTeamUI();
 }
 
 function tnRenderPlayerBtns() {
@@ -6811,11 +6997,18 @@ function tnAddManual() {
   input.value = '';
 }
 
+// [수정] tnRenderSelected: 수동 팀 모드일 때 팀 UI도 함께 갱신
 function tnRenderSelected() {
   const el = document.getElementById('tn-selected');
   if (!el) return;
   if (!_tnSelected.length) {
     el.innerHTML = '<div style="color:var(--text-muted);font-size: 0.8667rem;">선수를 선택하세요 (최소 2명)</div>';
+    // 선수가 없으면 수동 팀도 초기화
+    if (_tnManualTeams && _tnManualTeams.length) {
+      _tnManualTeams = [];
+      _tnManualPick = '';
+      tnRenderManualTeamUI();
+    }
     return;
   }
   el.innerHTML = `<div style="background:var(--surface);border-radius:10px;padding:12px;">
@@ -6828,6 +7021,16 @@ function tnRenderSelected() {
       <button onclick="tnRemove(${i})" style="background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:6px;color:#f87171;cursor:pointer;padding:2px 8px;font-size: 0.8667rem;">✕</button>
     </div>`).join('')}
   </div>`;
+
+  // [추가] 수동 팀 모드이면 팀 UI도 갱신 (선수 선택 변경 시 팀 초기화)
+  if (_tnFormat === 'doubles' && _tnTeamMode === 'manual') {
+    // 선수 목록이 바뀌면 팀도 다시 구성해야 하므로 초기화
+    _tnManualTeams = _tnManualTeams.filter(t =>
+      _tnSelected.includes(t.a) && _tnSelected.includes(t.b)
+    );
+    _tnManualPick = '';
+    tnRenderManualTeamUI();
+  }
 }
 
 function tnMoveUp(i) { if (i===0) return; [_tnSelected[i-1],_tnSelected[i]]=[_tnSelected[i],_tnSelected[i-1]]; tnRenderSelected(); }
@@ -6845,7 +7048,7 @@ function tnRemove(i) {
   tnRenderSelected();
 }
 
-// 토너먼트 대진표 생성 (시드 방식)
+// [수정] 토너먼트 대진표 생성 - 복식 수동 팀 지정 모드 처리 포함
 function tnCreate() {
   const name = document.getElementById('tn-tname').value.trim();
   const date = document.getElementById('tn-tdate').value;
@@ -6854,6 +7057,15 @@ function tnCreate() {
   if (_tnSelected.length < 2) { showToast('⚠️ 최소 2명 이상 선택하세요'); return; }
   if (_tnFormat === 'doubles' && _tnSelected.length % 2 !== 0) {
     showToast('⚠️ 복식은 짝수 명이어야 해요'); return;
+  }
+
+  // [추가] 복식 수동 팀 지정 모드 검증
+  if (_tnFormat === 'doubles' && _tnTeamMode === 'manual') {
+    const neededTeams = _tnSelected.length / 2;
+    if (_tnManualTeams.length < neededTeams) {
+      showToast('⚠️ 아직 팀이 덜 만들어졌어요 (' + _tnManualTeams.length + '/' + neededTeams + '팀)');
+      return;
+    }
   }
 
   const bracket = tnBuildBracket(_tnSelected, _tnFormat);
@@ -6867,14 +7079,20 @@ function tnCreate() {
   setTimeout(() => tnOpen(id), 300);
 }
 
-// 시드 배정 대진표 생성
+// [수정] 시드 배정 대진표 생성 - 복식 수동 팀 모드 반영
 function tnBuildBracket(players, format) {
   let entries;
   if (format === 'doubles') {
-    entries = [];
-    const n = players.length;
-    for (let i = 0; i < n / 2; i++) {
-      entries.push(players[i] + '/' + players[n - 1 - i]);
+    if (_tnTeamMode === 'manual' && _tnManualTeams.length >= players.length / 2) {
+      // 수동 지정 팀: _tnManualTeams 배열 사용
+      entries = _tnManualTeams.map(t => t.a + '/' + t.b);
+    } else {
+      // 자동 팀: 기존 로직 (1번↔마지막, 2번↔끝에서 2번)
+      entries = [];
+      const n = players.length;
+      for (let i = 0; i < n / 2; i++) {
+        entries.push(players[i] + '/' + players[n - 1 - i]);
+      }
     }
   } else {
     entries = [...players];
