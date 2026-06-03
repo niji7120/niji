@@ -6740,14 +6740,14 @@ let _tnSelected = [];
 
 // [수정] showTnCreate: 복식 파트너 모드 변수 초기화 추가
 let _tnTeamMode = 'auto';       // 'auto' | 'manual'
-let _tnManualPick = [];         // 수동 지정 중 첫 번째로 클릭된 선수 (대기 중)
+let _tnManualPick = null;        // 수동 지정 중 첫 번째로 클릭된 선수 (대기 중)
 let _tnManualTeams = [];        // 수동으로 확정된 팀 배열 [{a, b}, ...]
 
 function showTnCreate() {
   _tnSelected = [];
   _tnFormat = 'singles';
   _tnTeamMode = 'auto';
-  _tnManualPick = [];
+  _tnManualPick = null;
   _tnManualTeams = [];
   document.getElementById('tn-tname').value = '';
   document.getElementById('tn-tdate').value = getTodayStr();
@@ -6777,7 +6777,7 @@ function tnSetFormat(fmt) {
   // 복식 → 자동 모드로 초기화
   if (fmt === 'doubles') {
     _tnTeamMode = 'auto';
-    _tnManualPick = [];
+    _tnManualPick = null;
     _tnManualTeams = [];
     tnSetTeamMode('auto');
   }
@@ -6804,7 +6804,7 @@ function tnSetTeamMode(mode) {
 
   // 수동 모드 진입 시 선수 버튼 렌더
   if (mode === 'manual') {
-    _tnManualPick = [];
+    _tnManualPick = null;
     _tnManualTeams = [];
     tnRenderManualTeamUI();
   }
@@ -6857,9 +6857,10 @@ function tnManualPickPlayer(name) {
     // 같은 선수 다시 클릭 → 취소
     _tnManualPick = null;
   } else {
-    // 두 번째 선수 선택 → 팀 확정
-    _tnManualTeams.push({ a: _tnManualPick, b: name });
+    // 두 번째 선수 선택 → 팀 확정 (먼저 첫 번째 선수를 임시 저장 후 null 처리)
+    var firstPick = _tnManualPick;
     _tnManualPick = null;
+    _tnManualTeams.push({ a: firstPick, b: name });
     showToast('✅ 팀 ' + _tnManualTeams.length + ' 확정!');
   }
   tnRenderManualTeamUI();
@@ -6868,14 +6869,14 @@ function tnManualPickPlayer(name) {
 // [추가] 수동 팀 삭제
 function tnRemoveManualTeam(idx) {
   _tnManualTeams.splice(idx, 1);
-  _tnManualPick = '';
+  _tnManualPick = null;
   tnRenderManualTeamUI();
 }
 
 // [추가] 수동 팀 전체 초기화
 function tnResetManualTeams() {
   _tnManualTeams = [];
-  _tnManualPick = '';
+  _tnManualPick = null;
   tnRenderManualTeamUI();
 }
 
@@ -7006,7 +7007,7 @@ function tnRenderSelected() {
     // 선수가 없으면 수동 팀도 초기화
     if (_tnManualTeams && _tnManualTeams.length) {
       _tnManualTeams = [];
-      _tnManualPick = '';
+      _tnManualPick = null;
       tnRenderManualTeamUI();
     }
     return;
@@ -7028,7 +7029,7 @@ function tnRenderSelected() {
     _tnManualTeams = _tnManualTeams.filter(t =>
       _tnSelected.includes(t.a) && _tnSelected.includes(t.b)
     );
-    _tnManualPick = '';
+    _tnManualPick = null;
     tnRenderManualTeamUI();
   }
 }
