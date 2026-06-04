@@ -138,6 +138,15 @@
   html { font-size: var(--app-font-size); }
   body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 1rem; overflow: hidden; }
 
+  /* ===== 모바일 키보드 대응: input/textarea 포커스 시 스크롤 허용 ===== */
+  body.keyboard-open {
+    overflow: auto !important;
+  }
+  body.keyboard-open #app {
+    height: auto !important;
+    min-height: 100dvh;
+  }
+
   /* ===== APP SHELL ===== */
   #app { display: flex; flex-direction: column; height: 100%; height: 100dvh; max-width: 480px; margin: 0 auto; position: relative; }
 
@@ -1031,7 +1040,7 @@
       <!-- 종목 선택 카드 -->
       <div style="padding:14px 16px 0;">
         <div class="card" style="padding:14px 16px;">
-          <div class="card-title" style="margin-bottom:10px;">🎮 종목 선택</div>
+          <div class="card-title" style="margin-bottom:10px;">🎮 <span data-lang="pf_sport_title">종목 선택</span></div>
           <div style="display:flex;gap:8px;">
 
             <!-- 테니스 -->
@@ -1050,7 +1059,7 @@
                 <circle cx="5" cy="31" r="3" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.8"/>
                 <path d="M3 29.5 Q5 31 7 29.5" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/>
               </svg>
-              <span style="font-size: 0.7333rem;font-weight:700;letter-spacing:.3px;">테니스</span>
+              <span style="font-size: 0.7333rem;font-weight:700;letter-spacing:.3px;" data-lang="pf_tennis">테니스</span>
             </button>
 
             <!-- 배드민턴 -->
@@ -1069,7 +1078,7 @@
                 <line x1="5" y1="27.8" x2="5"  y2="21" stroke="currentColor" stroke-width="1" opacity="0.5"/>
                 <line x1="5" y1="27.8" x2="7"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
               </svg>
-              <span style="font-size: 0.7333rem;font-weight:700;letter-spacing:.3px;">배드민턴</span>
+              <span style="font-size: 0.7333rem;font-weight:700;letter-spacing:.3px;" data-lang="pf_badminton">배드민턴</span>
             </button>
 
             <!-- 피클볼 -->
@@ -1088,7 +1097,7 @@
                 <circle cx="31" cy="11" r="0.8" fill="currentColor" opacity="0.6"/>
                 <circle cx="30" cy="12" r="0.8" fill="currentColor" opacity="0.6"/>
               </svg>
-              <span style="font-size: 0.7333rem;font-weight:700;letter-spacing:.3px;">피클볼</span>
+              <span style="font-size: 0.7333rem;font-weight:700;letter-spacing:.3px;" data-lang="pf_pickleball">피클볼</span>
             </button>
 
           </div>
@@ -1099,40 +1108,40 @@
 
     <!-- ===== MATCH PAGE ===== -->
     <div class="page" id="page-match">
-      <div class="page-header">경기기록</div>
+      <div class="page-header" data-lang="match_page_header">경기기록</div>
       <!-- 현재 등록 종목 표시 배지 -->
       <div id="matchSportBadge" style="display:flex;align-items:center;justify-content:center;gap:8px;margin:4px 0 10px;padding:10px 16px;background:rgba(124,106,247,0.13);border:1.5px solid var(--accent);border-radius:12px;">
         <span id="matchSportIcon" style="font-size: 1.4667rem;"></span>
         <span style="font-size: 0.8667rem;color:var(--accent);font-weight:700;" id="matchSportLabel"></span>
-        <span style="font-size: 0.8rem;color:var(--text-muted);">종목으로 저장됩니다</span>
-        <button onclick="showPage('profile')" style="margin-left:auto;font-size: 0.7333rem;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:8px;padding:3px 8px;cursor:pointer;">종목 변경 →</button>
+        <span style="font-size: 0.8rem;color:var(--text-muted);" data-lang="match_sport_saved_as">종목으로 저장됩니다</span>
+        <button onclick="showPage('profile')" style="margin-left:auto;font-size: 0.7333rem;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:8px;padding:3px 8px;cursor:pointer;" data-lang="match_change_sport">종목 변경 →</button>
       </div>
-      <div class="page-sub">새 경기를 입력하세요</div>
+      <div class="page-sub" data-lang="match_new_sub">새 경기를 입력하세요</div>
 
       <!-- 경기 입력 폼 아코디언 -->
       <div class="acc-wrap" style="margin-bottom:10px;">
         <button class="acc-header" id="matchFormAccHeader" onclick="toggleMatchForm()" style="background:linear-gradient(135deg,var(--accent),#6256e0);color:#fff;border-radius:12px;">
-          <span id="matchFormTitle">➕ 새 경기 입력</span>
+          <span id="matchFormTitle" data-lang="match_new_btn">➕ 새 경기 입력</span>
           <span class="acc-arrow" id="matchForm-arrow" style="color:rgba(255,255,255,0.85);">▼</span>
         </button>
         <div class="acc-body" id="matchFormBody" style="display:none;">
           <div class="card" style="margin-top:0;border-radius:0 0 12px 12px;padding:12px 14px;">
             <div class="match-edit-mode-banner" id="matchEditBanner">
-              ✏️ 경기 수정 중
-              <button class="match-edit-cancel-btn" onclick="cancelEditMatch()">✕ 취소</button>
+              <span data-lang="match_editing">✏️ 경기 수정 중</span>
+              <button class="match-edit-cancel-btn" onclick="cancelEditMatch()" data-lang="match_cancel">✕ 취소</button>
             </div>
 
             <!-- 줄 1: 날짜 -->
             <div style="margin-bottom:8px;">
-              <div class="form-label" style="margin-bottom:4px;">📅 날짜</div>
+              <div class="form-label" style="margin-bottom:4px;" data-lang="match_date_lbl">📅 날짜</div>
               <input type="date" class="form-input" id="matchDate" style="padding:9px 10px;font-size: 0.9333rem;">
             </div>
             <!-- 줄 1b: 형식 -->
             <div style="margin-bottom:8px;">
-              <div class="form-label" style="margin-bottom:4px;">형식</div>
+              <div class="form-label" style="margin-bottom:4px;" data-lang="match_format_lbl">형식</div>
               <div class="format-toggle" style="display:flex;gap:8px;">
-                <button class="format-btn" id="btnSingles" onclick="selectFormat('singles')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="12" cy="7" r="4"/><path d="M12 13c-5 0-8 2.5-8 4v1h16v-1c0-1.5-3-4-8-4z"/></svg> 단식</button>
-                <button class="format-btn" id="btnDoubles" onclick="selectFormat('doubles')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="22" height="16" viewBox="0 0 32 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="10" cy="7" r="4"/><path d="M10 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/><circle cx="22" cy="7" r="4"/><path d="M22 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/></svg> 복식</button>
+                <button class="format-btn" id="btnSingles" onclick="selectFormat('singles')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="12" cy="7" r="4"/><path d="M12 13c-5 0-8 2.5-8 4v1h16v-1c0-1.5-3-4-8-4z"/></svg> <span data-lang="match_singles">단식</span></button>
+                <button class="format-btn" id="btnDoubles" onclick="selectFormat('doubles')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="22" height="16" viewBox="0 0 32 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="10" cy="7" r="4"/><path d="M10 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/><circle cx="22" cy="7" r="4"/><path d="M22 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/></svg> <span data-lang="match_doubles">복식</span></button>
               </div>
               <input type="hidden" id="matchFormat">
             </div>
@@ -1140,7 +1149,7 @@
             <!-- 줄 2: 단식 - 상대 1명 / 복식 - 파트너 표시 후 상대1+2 -->
             <!-- 단식용 상대 입력 -->
             <div id="singlesOpponentRow" style="margin-bottom:8px;">
-              <div class="form-label" style="margin-bottom:4px;">🆚 상대</div>
+              <div class="form-label" style="margin-bottom:4px;" data-lang="match_opponent_lbl">🆚 상대</div>
               <div style="position:relative;">
                 <input class="form-input" id="matchOpponent" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent')" style="padding:9px 12px;font-size: 0.9333rem;">
                 <div class="player-ac-list" id="ac-opponent" style="display:none;"></div>
@@ -1151,7 +1160,7 @@
             <div id="doublesRow" style="display:none;">
               <!-- 파트너 -->
               <div id="partnerGroup" style="margin-bottom:8px;">
-                <div class="form-label" style="margin-bottom:4px;">🤝 파트너</div>
+                <div class="form-label" style="margin-bottom:4px;" data-lang="match_partner_lbl">🤝 파트너</div>
                 <div style="position:relative;">
                   <input class="form-input" id="matchPartner" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-partner')" style="padding:9px 12px;font-size: 0.9333rem;">
                   <div class="player-ac-list" id="ac-partner" style="display:none;"></div>
@@ -1160,14 +1169,14 @@
               <!-- 상대 1 + 상대 2 나란히 -->
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
                 <div>
-                  <div class="form-label" style="margin-bottom:4px;">🆚 상대 1</div>
+                  <div class="form-label" style="margin-bottom:4px;" data-lang="match_opp1_lbl">🆚 상대 1</div>
                   <div style="position:relative;">
                     <input class="form-input" id="matchOpponent1" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent1')" style="padding:9px 10px;font-size: 0.9333rem;">
                     <div class="player-ac-list" id="ac-opponent1" style="display:none;"></div>
                   </div>
                 </div>
                 <div id="opponent2Group">
-                  <div class="form-label" style="margin-bottom:4px;">🆚 상대 2</div>
+                  <div class="form-label" style="margin-bottom:4px;" data-lang="match_opp2_lbl">🆚 상대 2</div>
                   <div style="position:relative;">
                     <input class="form-input" id="matchOpponent2" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent2')" style="padding:9px 10px;font-size: 0.9333rem;">
                     <div class="player-ac-list" id="ac-opponent2" style="display:none;"></div>
@@ -1178,40 +1187,40 @@
 
             <!-- 줄 4: 승/패 버튼 -->
             <div style="margin-bottom:8px;">
-              <div class="form-label" style="margin-bottom:4px;">결과</div>
+              <div class="form-label" style="margin-bottom:4px;" data-lang="match_result_lbl">결과</div>
               <div class="match-result-winner">
-                <button class="winner-btn" id="winBtn" onclick="setResult('win')">🏆 승리</button>
-                <button class="winner-btn" id="loseBtn" onclick="setResult('lose')">😔 패배</button>
+                <button class="winner-btn" id="winBtn" onclick="setResult('win')" data-lang="match_win_btn">🏆 승리</button>
+                <button class="winner-btn" id="loseBtn" onclick="setResult('lose')" data-lang="match_lose_btn">😔 패배</button>
               </div>
             </div>
 
             <!-- 줄 5: 스코어 + 타이브레이크 한 줄 -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
               <div>
-                <div class="form-label" style="margin-bottom:4px;">스코어 (선택)</div>
+                <div class="form-label" style="margin-bottom:4px;" data-lang="match_score_lbl">스코어 (선택)</div>
                 <div style="display:flex;align-items:center;gap:4px;">
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
                     <input type="number" class="form-input" id="myScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
-                    <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;">나</span>
+                    <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_me_label">나</span>
                   </div>
                   <span style="font-size: 0.7333rem;color:var(--text-muted);font-weight:700;">:</span>
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
                     <input type="number" class="form-input" id="oppScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
-                    <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;">상대</span>
+                    <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_opp_label">상대</span>
                   </div>
                 </div>
               </div>
               <div>
-                <div class="form-label" style="margin-bottom:4px;">타이브레이크 (선택)</div>
+                <div class="form-label" style="margin-bottom:4px;" data-lang="match_tiebreak_lbl">타이브레이크 (선택)</div>
                 <div style="display:flex;align-items:center;gap:4px;">
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
                     <input type="number" class="form-input" id="myTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
-                    <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;">나</span>
+                    <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_me_label">나</span>
                   </div>
                   <span style="font-size: 0.7333rem;color:var(--text-muted);font-weight:700;">:</span>
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
                     <input type="number" class="form-input" id="oppTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
-                    <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;">상대</span>
+                    <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_opp_label">상대</span>
                   </div>
                 </div>
               </div>
@@ -1219,35 +1228,35 @@
 
             <!-- 줄 6: 라켓 선택 -->
             <div style="margin-bottom:8px;" id="racketSelectGroup">
-              <div class="form-label" id="racketSelectLabel" style="margin-bottom:4px;">🎾 사용 라켓 (선택)</div>
+              <div class="form-label" id="racketSelectLabel" style="margin-bottom:4px;" data-lang="match_racket_lbl">🎾 사용 라켓 (선택)</div>
               <select class="form-select" id="matchRacket" style="padding:9px 12px;font-size: 0.9333rem;">
-                <option value="">선택 안 함</option>
+                <option value="" data-lang="match_racket_none_opt">선택 안 함</option>
               </select>
               <div id="racketNoRegMsg" style="display:none;margin-top:6px;font-size: 0.7333rem;color:var(--text-muted);">
-                ⚠️ 라켓이 등록되지 않았어요.
-                <span onclick="showPage('profile')" style="color:var(--accent);font-weight:700;cursor:pointer;text-decoration:underline;">프로필에서 등록하기 →</span>
+                <span data-lang="match_racket_noreg">⚠️ 라켓이 등록되지 않았어요.</span>
+                <span onclick="showPage('profile')" style="color:var(--accent);font-weight:700;cursor:pointer;text-decoration:underline;" data-lang="match_racket_go_profile">프로필에서 등록하기 →</span>
               </div>
             </div>
 
             <!-- 줄 7: 메모 -->
             <div style="margin-bottom:10px;">
-              <div class="form-label" style="margin-bottom:4px;">📝 메모 (선택)</div>
+              <div class="form-label" style="margin-bottom:4px;" data-lang="match_memo_lbl">📝 메모 (선택)</div>
               <textarea class="form-textarea" id="matchMemo" placeholder="경기 메모..." style="min-height:54px;padding:9px 12px;font-size: 0.9333rem;"></textarea>
             </div>
 
-            <button class="btn btn-primary" id="matchSaveBtn" onclick="saveMatch()">경기 저장</button>
+            <button class="btn btn-primary" id="matchSaveBtn" onclick="saveMatch()" data-lang="match_save_btn">경기 저장</button>
           </div>
         </div>
       </div>
 
       <!-- 오늘 경기 (항상 표시) -->
-      <div class="section-title" style="margin-top:20px;">오늘 경기</div>
+      <div class="section-title" style="margin-top:20px;" data-lang="match_today_title">오늘 경기</div>
       <div id="matchListToday"></div>
 
       <!-- 이전 경기 월별 선택 -->
       <div style="margin-top:14px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-          <span style="font-size: 0.8667rem;font-weight:700;color:var(--text);">📋 이전 경기 기록</span>
+          <span style="font-size: 0.8667rem;font-weight:700;color:var(--text);" data-lang="match_past_title">📋 이전 경기 기록</span>
           <span id="matchHistoryCount" style="font-size: 0.7333rem;color:var(--text-muted);"></span>
         </div>
         <select id="matchMonthSelect" onchange="onMatchMonthChange()" style="width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 0.9333rem;margin-bottom:10px;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22/></svg>');background-repeat:no-repeat;background-position:right 12px center;">
@@ -1258,13 +1267,13 @@
 
     <!-- ===== STATS PAGE ===== -->
     <div class="page" id="page-stats">
-      <div class="page-header">통계</div>
+      <div class="page-header" data-lang="stats_page_header">통계</div>
       <!-- 현재 종목 표시 + 프로필로 이동 안내 -->
       <div id="statsCurrentSportBadge" style="display:flex;align-items:center;justify-content:center;gap:8px;margin:4px 0 10px;padding:10px 16px;background:rgba(124,106,247,0.13);border:1.5px solid var(--accent);border-radius:12px;">
         <span id="statsSportIcon" style="font-size: 1.4667rem;"></span>
         <span style="font-size: 0.8667rem;color:var(--accent);font-weight:700;" id="statsSportLabel"></span>
-        <span style="font-size: 0.8rem;color:var(--text-muted);">기준 통계</span>
-        <button onclick="showPage('profile')" style="margin-left:auto;font-size: 0.7333rem;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:8px;padding:3px 8px;cursor:pointer;">종목 변경 →</button>
+        <span style="font-size: 0.8rem;color:var(--text-muted);" data-lang="stats_sport_basis">기준 통계</span>
+        <button onclick="showPage('profile')" style="margin-left:auto;font-size: 0.7333rem;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:8px;padding:3px 8px;cursor:pointer;" data-lang="stats_change_sport">종목 변경 →</button>
       </div>
       <!-- 숨겨진 select (JS 호환용) -->
       <select id="sportType" onchange="updateSportType()" style="display:none;">
@@ -1277,18 +1286,18 @@
       <div id="streakBanner"></div>
 
       <!-- ① 내 기록 요약 (항상 표시) -->
-      <div id="statsRangeNotice" style="text-align:center;font-size: 0.7333rem;color:var(--accent);background:rgba(124,106,247,0.1);border-radius:8px;padding:5px 10px;margin-bottom:8px;">🏆 ATP 방식 · 최근 12개월 기준</div>
+      <div id="statsRangeNotice" style="text-align:center;font-size: 0.7333rem;color:var(--accent);background:rgba(124,106,247,0.1);border-radius:8px;padding:5px 10px;margin-bottom:8px;" data-lang="stats_atp_notice">🏆 ATP 방식 · 최근 12개월 기준</div>
       <div class="stat-grid">
-        <div class="stat-box"><div class="stat-num" id="st-total">0</div><div class="stat-lbl">경기수</div></div>
-        <div class="stat-box"><div class="stat-num" id="st-win">0</div><div class="stat-lbl">승</div></div>
-        <div class="stat-box"><div class="stat-num" id="st-lose">0</div><div class="stat-lbl">패</div></div>
-        <div class="stat-box"><div class="stat-num" id="st-rate">0%</div><div class="stat-lbl">승률</div></div>
+        <div class="stat-box"><div class="stat-num" id="st-total">0</div><div class="stat-lbl" data-lang="stats_lbl_total">경기수</div></div>
+        <div class="stat-box"><div class="stat-num" id="st-win">0</div><div class="stat-lbl" data-lang="stats_lbl_win">승</div></div>
+        <div class="stat-box"><div class="stat-num" id="st-lose">0</div><div class="stat-lbl" data-lang="stats_lbl_lose">패</div></div>
+        <div class="stat-box"><div class="stat-num" id="st-rate">0%</div><div class="stat-lbl" data-lang="stats_lbl_rate">승률</div></div>
       </div>
 
       <!-- ② 상세 요약 드롭다운 -->
       <div class="acc-wrap">
         <button class="acc-header" onclick="toggleAcc('accSummary')">
-          <span>📊 상세 요약</span><span class="acc-arrow" id="accSummary-arrow">▼</span>
+          <span data-lang="stats_acc_summary">📊 상세 요약</span><span class="acc-arrow" id="accSummary-arrow">▼</span>
         </button>
         <div class="acc-body" id="accSummary">
           <div id="summaryCard"></div>
@@ -1298,11 +1307,11 @@
       <!-- ③ 월별 승률 드롭다운 -->
       <div class="acc-wrap">
         <button class="acc-header" onclick="toggleAcc('accMonthly')">
-          <span>📅 월별 승률 (12개월)</span><span class="acc-arrow" id="accMonthly-arrow">▼</span>
+          <span data-lang="stats_acc_monthly">📅 월별 승률 (12개월)</span><span class="acc-arrow" id="accMonthly-arrow">▼</span>
         </button>
         <div class="acc-body" id="accMonthly">
           <div class="monthly-graph-wrap" id="monthlyGraph">
-            <div style="color:var(--text-muted);font-size: 0.8667rem;text-align:center;padding:20px 0;">경기를 입력하면 그래프가 표시됩니다</div>
+            <div style="color:var(--text-muted);font-size: 0.8667rem;text-align:center;padding:20px 0;" data-lang="stats_monthly_empty">경기를 입력하면 그래프가 표시됩니다</div>
           </div>
         </div>
       </div>
@@ -1310,20 +1319,20 @@
       <!-- ④ 상대 전적 드롭다운 -->
       <div class="acc-wrap">
         <button class="acc-header" onclick="toggleAcc('accOpponent')">
-          <span>⚔️ 상대 전적</span><span class="acc-arrow" id="accOpponent-arrow">▼</span>
+          <span data-lang="stats_acc_opponent">⚔️ 상대 전적</span><span class="acc-arrow" id="accOpponent-arrow">▼</span>
         </button>
         <div class="acc-body" id="accOpponent">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
             <input id="oppSearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderOpponentStats()"
               style="flex:1;font-size: 0.8rem;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._oppShowAll=false;renderOpponentStats();" id="oppSort" style="font-size: 0.8rem;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
-              <option value="winrate" selected>승률 높은 순</option>
-              <option value="games">경기 많은 순</option>
-              <option value="name">이름순</option>
+              <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
+              <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
+              <option value="name" data-lang="stats_opp_sort_name">이름순</option>
             </select>
           </div>
           <div id="opponentCard">
-            <div class="empty-state"><div class="empty-icon">⚔️</div><div class="empty-text">경기를 입력하면<br>상대 데이터가 표시됩니다</div></div>
+            <div class="empty-state"><div class="empty-icon">⚔️</div><div class="empty-text" data-lang="stats_opp_empty">경기를 입력하면<br>상대 데이터가 표시됩니다</div></div>
           </div>
         </div>
       </div>
@@ -1331,20 +1340,20 @@
       <!-- ⑤ 파트너 궁합 드롭다운 -->
       <div class="acc-wrap">
         <button class="acc-header" onclick="toggleAcc('accPartner')">
-          <span>🤝 파트너 궁합</span><span class="acc-arrow" id="accPartner-arrow">▼</span>
+          <span data-lang="stats_acc_partner">🤝 파트너 궁합</span><span class="acc-arrow" id="accPartner-arrow">▼</span>
         </button>
         <div class="acc-body" id="accPartner">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
             <input id="partnerSearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderPartnerStats()"
               style="flex:1;font-size: 0.8rem;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._partnerShowAll=false;renderPartnerStats();" id="partnerSort" style="font-size: 0.8rem;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
-              <option value="winrate" selected>승률 높은 순</option>
-              <option value="games">경기 많은 순</option>
-              <option value="name">이름순</option>
+              <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
+              <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
+              <option value="name" data-lang="stats_opp_sort_name">이름순</option>
             </select>
           </div>
           <div id="partnerCard">
-            <div class="empty-state"><div class="empty-icon">🤝</div><div class="empty-text">복식 경기를 입력하면<br>파트너 데이터가 표시됩니다</div></div>
+            <div class="empty-state"><div class="empty-icon">🤝</div><div class="empty-text" data-lang="stats_partner_empty">복식 경기를 입력하면<br>파트너 데이터가 표시됩니다</div></div>
           </div>
         </div>
       </div>
@@ -1352,7 +1361,7 @@
       <!-- ⑥ 단식 상성 드롭다운 -->
       <div class="acc-wrap">
         <button class="acc-header" onclick="toggleAcc('accSingles')">
-          <span>🎯 단식 상성 <span style="font-size: 0.7333rem;color:var(--text-muted);font-weight:400;">(1:1)</span></span>
+          <span>🎯 <span data-lang="stats_acc_singles">단식 상성</span> <span style="font-size: 0.7333rem;color:var(--text-muted);font-weight:400;" data-lang="stats_singles_sub">(1:1)</span></span>
           <span class="acc-arrow" id="accSingles-arrow">▼</span>
         </button>
         <div class="acc-body" id="accSingles">
@@ -1360,13 +1369,13 @@
             <input id="singlesSearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderSinglesStats()"
               style="flex:1;font-size: 0.8rem;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._singlesShowAll=false;renderSinglesStats();" id="singlesSort" style="font-size: 0.8rem;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
-              <option value="winrate" selected>승률 높은 순</option>
-              <option value="games">경기 많은 순</option>
-              <option value="name">이름순</option>
+              <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
+              <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
+              <option value="name" data-lang="stats_opp_sort_name">이름순</option>
             </select>
           </div>
           <div id="singlesCard">
-            <div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-text">단식 경기를 입력하면<br>상성 데이터가 표시됩니다</div></div>
+            <div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-text" data-lang="stats_singles_empty">단식 경기를 입력하면<br>상성 데이터가 표시됩니다</div></div>
           </div>
         </div>
       </div>
@@ -1374,7 +1383,7 @@
       <!-- ⑦ 상대팀 상성 드롭다운 -->
       <div class="acc-wrap">
         <button class="acc-header" onclick="toggleAcc('accEnemy')">
-          <span>🆚 상대팀 상성 <span style="font-size: 0.7333rem;color:var(--text-muted);font-weight:400;">(복식)</span></span>
+          <span>🆚 <span data-lang="stats_acc_enemy">상대팀 상성</span> <span style="font-size: 0.7333rem;color:var(--text-muted);font-weight:400;" data-lang="stats_enemy_sub">(복식)</span></span>
           <span class="acc-arrow" id="accEnemy-arrow">▼</span>
         </button>
         <div class="acc-body" id="accEnemy">
@@ -1382,13 +1391,13 @@
             <input id="enemySearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderEnemyTeamStats()"
               style="flex:1;font-size: 0.8rem;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._enemyShowAll=false;renderEnemyTeamStats();" id="enemySort" style="font-size: 0.8rem;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
-              <option value="winrate" selected>승률 높은 순</option>
-              <option value="games">경기 많은 순</option>
-              <option value="name">이름순</option>
+              <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
+              <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
+              <option value="name" data-lang="stats_opp_sort_name">이름순</option>
             </select>
           </div>
           <div id="enemyTeamCard">
-            <div class="empty-state"><div class="empty-icon">🆚</div><div class="empty-text">복식 경기를 입력하면<br>상대팀 데이터가 표시됩니다</div></div>
+            <div class="empty-state"><div class="empty-icon">🆚</div><div class="empty-text" data-lang="stats_enemy_empty">복식 경기를 입력하면<br>상대팀 데이터가 표시됩니다</div></div>
           </div>
         </div>
       </div>
@@ -1398,23 +1407,23 @@
     <!-- ===== PLAYERS PAGE ===== -->
     <div class="page" id="page-players">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
-        <div class="page-header" style="margin-bottom:0;">선수 목록</div>
+        <div class="page-header" style="margin-bottom:0;" data-lang="players_page_header">선수 목록</div>
         <select class="form-select" id="playerSortSelect" onchange="setPlayerSort(this.value)"
           style="width:auto;font-size: 0.8rem;padding:5px 10px;background:var(--surface2);">
-          <option value="name">이름순</option>
-          <option value="recent">최근 대전순</option>
-          <option value="matches">전적 많은 순</option>
-          <option value="winrate">승률 높은 순</option>
+          <option value="name" data-lang="players_sort_name">이름순</option>
+          <option value="recent" data-lang="players_sort_recent">최근 대전순</option>
+          <option value="matches" data-lang="players_sort_matches">전적 많은 순</option>
+          <option value="winrate" data-lang="players_sort_winrate">승률 높은 순</option>
         </select>
       </div>
-      <div class="page-sub" style="margin-bottom:12px;">등록된 선수를 관리하세요</div>
+      <div class="page-sub" style="margin-bottom:12px;" data-lang="players_page_sub">등록된 선수를 관리하세요</div>
 
       <!-- 클럽 관리 -->
       <div class="card club-section">
-        <div class="card-title">🏠 클럽 관리</div>
+        <div class="card-title" data-lang="players_club_title">🏠 클럽 관리</div>
         <div class="club-add-row">
           <input class="form-input" id="newClubName" placeholder="클럽 이름 입력" onkeydown="if(event.key==='Enter')addClub()" style="font-size: 1.0667rem;">
-          <button class="btn btn-primary btn-sm" onclick="addClub()" style="white-space:nowrap;padding:0 16px;">+ 추가</button>
+          <button class="btn btn-primary btn-sm" onclick="addClub()" style="white-space:nowrap;padding:0 16px;" data-lang="players_club_add_btn">+ 추가</button>
         </div>
         <div class="club-tag-list" id="clubTagList"></div>
       </div>
@@ -1422,7 +1431,7 @@
       <!-- 선수 추가 -->
       <div class="acc-wrap" style="margin-bottom:10px;">
         <button class="acc-header" id="playerFormAccHeader" onclick="togglePlayerForm()" style="background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;border-radius:12px;">
-          <span>👤 선수 등록</span>
+          <span data-lang="players_reg_acc">👤 선수 등록</span>
           <span class="acc-arrow" id="playerForm-arrow" style="color:rgba(255,255,255,0.85);">▼</span>
         </button>
         <div id="playerFormBody" style="display:none;">
@@ -1432,40 +1441,40 @@
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
               <select class="form-select" id="newPlayerGender">
-                <option value="">성별</option>
-                <option>남자</option><option>여자</option>
+                <option value="" data-lang="players_gender_lbl">성별</option>
+                <option data-lang="players_gender_m">남자</option><option data-lang="players_gender_f">여자</option>
               </select>
               <input class="form-input" id="newPlayerGrade" placeholder="등급 (예: 14)" inputmode="numeric" style="font-size: 1.0667rem;">
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
               <select class="form-select" id="newPlayerAge">
-                <option value="">나이대</option>
-                <option>10대</option><option>20대</option><option>30대</option>
-                <option>40대</option><option>50대</option><option>60대 이상</option>
+                <option value="" data-lang="players_age_lbl">나이대</option>
+                <option data-lang="players_age_10s">10대</option><option data-lang="players_age_20s">20대</option><option data-lang="players_age_30s">30대</option>
+                <option data-lang="players_age_40s">40대</option><option data-lang="players_age_50s">50대</option><option data-lang="players_age_60s">60대 이상</option>
               </select>
               <select class="form-select" id="newPlayerHand">
-                <option value="">손잡이</option>
-                <option>오른손</option><option>왼손</option>
+                <option value="" data-lang="players_hand_lbl">손잡이</option>
+                <option data-lang="players_hand_r">오른손</option><option data-lang="players_hand_l">왼손</option>
               </select>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
               <select class="form-select" id="newPlayerCareer">
-                <option value="">구력</option>
-                <option>6개월 미만</option><option>6개월~1년</option><option>1~2년</option>
-                <option>2~5년</option><option>5~10년</option><option>10년 이상</option>
+                <option value="" data-lang="players_career_lbl">구력</option>
+                <option data-lang="players_career_1">6개월 미만</option><option data-lang="players_career_2">6개월~1년</option><option data-lang="players_career_3">1~2년</option>
+                <option data-lang="players_career_4">2~5년</option><option data-lang="players_career_5">5~10년</option><option data-lang="players_career_6">10년 이상</option>
               </select>
               <select class="form-select" id="newPlayerStyle">
-                <option value="">플레이스타일</option>
-                <option>공격형</option><option>수비형</option><option>올라운드</option>
-                <option>네트플레이</option><option>베이스라인</option>
+                <option value="" data-lang="players_style_lbl">플레이스타일</option>
+                <option data-lang="players_style_1">공격형</option><option data-lang="players_style_2">수비형</option><option data-lang="players_style_3">올라운드</option>
+                <option data-lang="players_style_4">네트플레이</option><option data-lang="players_style_5">베이스라인</option>
               </select>
             </div>
             <div class="form-group" style="margin-bottom:12px;" id="newPlayerClubWrap">
               <select class="form-select" id="newPlayerClub">
-                <option value="">클럽 선택 (선택사항)</option>
+                <option value="" data-lang="players_club_opt">클럽 선택 (선택사항)</option>
               </select>
             </div>
-            <button class="btn btn-primary" onclick="addPlayer()" style="width:100%;padding:12px;">+ 선수 등록</button>
+            <button class="btn btn-primary" onclick="addPlayer()" style="width:100%;padding:12px;" data-lang="players_add_btn">+ 선수 등록</button>
           </div>
         </div>
       </div>
@@ -8485,6 +8494,109 @@ const NIJI_DICT = {
   nav_players:       { ko: '선수',     en: 'Players' },
   nav_tournament:    { ko: '대회',     en: 'Contest' },
   nav_share:         { ko: '공유',     en: 'Share' },
+
+  /* 프로필 탭 */
+  pf_sport_title:    { ko: '종목 선택',     en: 'Sport' },
+  pf_tennis:         { ko: '테니스',        en: 'Tennis' },
+  pf_badminton:      { ko: '배드민턴',      en: 'Badminton' },
+  pf_pickleball:     { ko: '피클볼',        en: 'Pickleball' },
+
+  /* 경기기록 탭 */
+  match_page_header:       { ko: '경기기록',           en: 'Records' },
+  match_sport_saved_as:    { ko: '종목으로 저장됩니다', en: 'will be recorded' },
+  match_change_sport:      { ko: '종목 변경 →',        en: 'Change →' },
+  match_new_sub:           { ko: '새 경기를 입력하세요', en: 'Enter a new match' },
+  match_new_btn:           { ko: '➕ 새 경기 입력',    en: '➕ New Match' },
+  match_editing:           { ko: '✏️ 경기 수정 중',    en: '✏️ Editing Match' },
+  match_cancel:            { ko: '✕ 취소',             en: '✕ Cancel' },
+  match_date_lbl:          { ko: '📅 날짜',             en: '📅 Date' },
+  match_format_lbl:        { ko: '형식',               en: 'Format' },
+  match_singles:           { ko: '단식',               en: 'Singles' },
+  match_doubles:           { ko: '복식',               en: 'Doubles' },
+  match_opponent_lbl:      { ko: '🆚 상대',             en: '🆚 Opponent' },
+  match_partner_lbl:       { ko: '🤝 파트너',           en: '🤝 Partner' },
+  match_opp1_lbl:          { ko: '🆚 상대 1',           en: '🆚 Opp 1' },
+  match_opp2_lbl:          { ko: '🆚 상대 2',           en: '🆚 Opp 2' },
+  match_result_lbl:        { ko: '결과',               en: 'Result' },
+  match_win_btn:           { ko: '🏆 승리',             en: '🏆 Win' },
+  match_lose_btn:          { ko: '😔 패배',             en: '😔 Lose' },
+  match_score_lbl:         { ko: '스코어 (선택)',       en: 'Score (opt.)' },
+  match_tiebreak_lbl:      { ko: '타이브레이크 (선택)', en: 'Tiebreak (opt.)' },
+  match_racket_lbl:        { ko: '🎾 사용 라켓 (선택)', en: '🎾 Racket (opt.)' },
+  match_racket_none_opt:   { ko: '선택 안 함',          en: 'None' },
+  match_racket_noreg:      { ko: '⚠️ 라켓이 등록되지 않았어요.', en: '⚠️ No racket registered.' },
+  match_racket_go_profile: { ko: '프로필에서 등록하기 →', en: 'Register in Profile →' },
+  match_memo_lbl:          { ko: '📝 메모 (선택)',      en: '📝 Memo (opt.)' },
+  match_save_btn:          { ko: '경기 저장',           en: 'Save Match' },
+  match_today_title:       { ko: '오늘 경기',           en: "Today's Matches" },
+  match_past_title:        { ko: '📋 이전 경기 기록',   en: '📋 Past Records' },
+  match_me_label:          { ko: '나',                  en: 'Me' },
+  match_opp_label:         { ko: '상대',               en: 'Opp' },
+
+  /* 통계 탭 */
+  stats_page_header:       { ko: '통계',               en: 'Stats' },
+  stats_sport_basis:       { ko: '기준 통계',          en: 'stats' },
+  stats_change_sport:      { ko: '종목 변경 →',        en: 'Change →' },
+  stats_atp_notice:        { ko: '🏆 ATP 방식 · 최근 12개월 기준', en: '🏆 ATP Style · Last 12 Months' },
+  stats_lbl_total:         { ko: '경기수',             en: 'Matches' },
+  stats_lbl_win:           { ko: '승',                 en: 'Win' },
+  stats_lbl_lose:          { ko: '패',                 en: 'Loss' },
+  stats_lbl_rate:          { ko: '승률',               en: 'Win%' },
+  stats_acc_summary:       { ko: '📊 상세 요약',       en: '📊 Summary' },
+  stats_acc_monthly:       { ko: '📅 월별 승률 (12개월)', en: '📅 Monthly Win% (12mo)' },
+  stats_monthly_empty:     { ko: '경기를 입력하면 그래프가 표시됩니다', en: 'Enter matches to see the graph' },
+  stats_acc_opponent:      { ko: '⚔️ 상대 전적',       en: '⚔️ Head-to-Head' },
+  stats_opp_sort_winrate:  { ko: '승률 높은 순',       en: 'By Win Rate' },
+  stats_opp_sort_games:    { ko: '경기 많은 순',       en: 'By Matches' },
+  stats_opp_sort_name:     { ko: '이름순',             en: 'By Name' },
+  stats_opp_empty:         { ko: '경기를 입력하면\n상대 데이터가 표시됩니다', en: 'Enter matches to see\nopponent data' },
+  stats_acc_partner:       { ko: '🤝 파트너 궁합',     en: '🤝 Partner Stats' },
+  stats_partner_empty:     { ko: '복식 경기를 입력하면\n파트너 데이터가 표시됩니다', en: 'Enter doubles matches to see\npartner data' },
+  stats_acc_singles:       { ko: '🎯 단식 상성',       en: '🎯 Singles Matchups' },
+  stats_singles_sub:       { ko: '(1:1)',               en: '(1:1)' },
+  stats_singles_empty:     { ko: '단식 경기를 입력하면\n상성 데이터가 표시됩니다', en: 'Enter singles matches to see\nmatchup data' },
+  stats_acc_enemy:         { ko: '🆚 상대팀 상성',     en: '🆚 Rival Team Stats' },
+  stats_enemy_sub:         { ko: '(복식)',              en: '(Doubles)' },
+  stats_enemy_empty:       { ko: '복식 경기를 입력하면\n상대팀 데이터가 표시됩니다', en: 'Enter doubles matches to see\nrival team data' },
+
+  /* 선수 탭 */
+  players_page_header:     { ko: '선수 목록',          en: 'Players' },
+  players_page_sub:        { ko: '등록된 선수를 관리하세요', en: 'Manage registered players' },
+  players_sort_name:       { ko: '이름순',             en: 'By Name' },
+  players_sort_recent:     { ko: '최근 대전순',        en: 'Recent Match' },
+  players_sort_matches:    { ko: '전적 많은 순',       en: 'Most Matches' },
+  players_sort_winrate:    { ko: '승률 높은 순',       en: 'Best Win Rate' },
+  players_club_title:      { ko: '🏠 클럽 관리',       en: '🏠 Club Manager' },
+  players_club_add_btn:    { ko: '+ 추가',             en: '+ Add' },
+  players_reg_acc:         { ko: '👤 선수 등록',       en: '👤 Add Player' },
+  players_gender_lbl:      { ko: '성별',               en: 'Gender' },
+  players_gender_m:        { ko: '남자',               en: 'Male' },
+  players_gender_f:        { ko: '여자',               en: 'Female' },
+  players_age_lbl:         { ko: '나이대',             en: 'Age Group' },
+  players_age_10s:         { ko: '10대',               en: 'Teens' },
+  players_age_20s:         { ko: '20대',               en: '20s' },
+  players_age_30s:         { ko: '30대',               en: '30s' },
+  players_age_40s:         { ko: '40대',               en: '40s' },
+  players_age_50s:         { ko: '50대',               en: '50s' },
+  players_age_60s:         { ko: '60대 이상',          en: '60s+' },
+  players_hand_lbl:        { ko: '손잡이',             en: 'Handedness' },
+  players_hand_r:          { ko: '오른손',             en: 'Right' },
+  players_hand_l:          { ko: '왼손',               en: 'Left' },
+  players_career_lbl:      { ko: '구력',               en: 'Experience' },
+  players_career_1:        { ko: '6개월 미만',         en: 'Under 6mo' },
+  players_career_2:        { ko: '6개월~1년',          en: '6mo~1yr' },
+  players_career_3:        { ko: '1~2년',              en: '1~2 yrs' },
+  players_career_4:        { ko: '2~5년',              en: '2~5 yrs' },
+  players_career_5:        { ko: '5~10년',             en: '5~10 yrs' },
+  players_career_6:        { ko: '10년 이상',          en: '10+ yrs' },
+  players_style_lbl:       { ko: '플레이스타일',       en: 'Play Style' },
+  players_style_1:         { ko: '공격형',             en: 'Aggressive' },
+  players_style_2:         { ko: '수비형',             en: 'Defensive' },
+  players_style_3:         { ko: '올라운드',           en: 'All-round' },
+  players_style_4:         { ko: '네트플레이',         en: 'Net Play' },
+  players_style_5:         { ko: '베이스라인',         en: 'Baseline' },
+  players_club_opt:        { ko: '클럽 선택 (선택사항)', en: 'Club (optional)' },
+  players_add_btn:         { ko: '+ 선수 등록',        en: '+ Register Player' },
 };
 
 // ── 글자 크기 변경 ──────────────────────────────────
@@ -8535,6 +8647,56 @@ function setLanguage(lang) {
 
   var savedLang = localStorage.getItem('niji_language') || 'ko';
   setLanguage(savedLang);
+})();
+
+// ── 모바일 키보드 대응: 입력창 포커스 시 스크롤 허용 ──────────
+(function mobileKeyboardFix() {
+  var initialWindowHeight = window.innerHeight;
+
+  // input/textarea 포커스될 때 (키보드 올라옴)
+  document.addEventListener('focusin', function(e) {
+    var tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+      document.body.classList.add('keyboard-open');
+      // 입력창이 화면에 보이도록 자동 스크롤 (약간 딜레이 후 실행)
+      setTimeout(function() {
+        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 350);
+    }
+  });
+
+  // 포커스가 사라질 때 (키보드 내려감)
+  document.addEventListener('focusout', function(e) {
+    var tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+      setTimeout(function() {
+        var focused = document.activeElement;
+        var ft = focused ? focused.tagName : '';
+        if (ft !== 'INPUT' && ft !== 'TEXTAREA' && ft !== 'SELECT') {
+          document.body.classList.remove('keyboard-open');
+          // iOS에서 화면이 올라간 채 고정되는 현상 방지
+          window.scrollTo(0, 0);
+        }
+      }, 200);
+    }
+  });
+
+  // visualViewport API 지원 기기 (안드로이드 크롬, iOS 사파리 최신)
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function() {
+      var keyboardOpen = window.visualViewport.height < initialWindowHeight * 0.8;
+      if (keyboardOpen) {
+        document.body.classList.add('keyboard-open');
+      } else {
+        var focused = document.activeElement;
+        var ft = focused ? focused.tagName : '';
+        if (ft !== 'INPUT' && ft !== 'TEXTAREA' && ft !== 'SELECT') {
+          document.body.classList.remove('keyboard-open');
+          window.scrollTo(0, 0);
+        }
+      }
+    });
+  }
 })();
 </script>
 </html>
