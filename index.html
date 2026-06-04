@@ -1650,19 +1650,19 @@
       <div style="display:flex;gap:8px;margin-bottom:16px;padding-top:4px;">
         <button id="ctab-hanul" onclick="switchContestTab('hanul')"
           style="flex:1;padding:12px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;transition:all .2s;min-height:44px;">
-          🔄 한울방식
+          <span data-lang="ctab_hanul">🔄 한울방식</span>
         </button>
         <button id="ctab-tour" onclick="switchContestTab('tour')"
           style="flex:1;padding:12px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);transition:all .2s;min-height:44px;">
-          🏆 토너먼트
+          <span data-lang="ctab_tour">🏆 토너먼트</span>
         </button>
         <button id="ctab-score" onclick="switchContestTab('score')"
           style="flex:1;padding:12px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);transition:all .2s;min-height:44px;">
-          🎾 스코어
+          <span data-lang="ctab_score">🎾 스코어</span>
         </button>
         <button onclick="showTacticsBoard()"
           style="flex:1;padding:12px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);transition:all .2s;min-height:44px;">
-          📋 전술판
+          <span data-lang="ctab_tactics">📋 전술판</span>
         </button>
       </div>
       <!-- 한울방식 섹션 -->
@@ -1710,30 +1710,30 @@
   <div class="modal" style="display:flex;flex-direction:column;max-height:92vh;padding:0;">
     <div style="padding:20px 20px 0;flex-shrink:0;">
       <div class="modal-header">
-        <span class="modal-title">새 대회 만들기</span>
+        <span class="modal-title" data-lang="tv_modal_title">새 대회 만들기</span>
         <button class="modal-close" onclick="closeModal('tvCreateModal')">✕</button>
       </div>
     </div>
     <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;">
-      <div class="section-title">대회 정보</div>
-      <input id="tv-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;box-sizing:border-box;margin-bottom:10px;">
+      <div class="section-title" data-lang="contest_info">대회 정보</div>
+      <input id="tv-tname" data-lang-placeholder="contest_name_ph" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;box-sizing:border-box;margin-bottom:10px;">
       <input id="tv-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;box-sizing:border-box;margin-bottom:10px;">
       <select id="tv-tgames" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1rem;box-sizing:border-box;margin-bottom:16px;">
-        <option value="1">1게임</option>
-        <option value="2">2게임</option>
-        <option value="3">3게임</option>
-        <option value="4" selected>4게임</option>
+        <option value="1" data-lang="game_n1">1게임</option>
+        <option value="2" data-lang="game_n2">2게임</option>
+        <option value="3" data-lang="game_n3">3게임</option>
+        <option value="4" selected data-lang="game_n4">4게임</option>
       </select>
-      <div class="section-title">참가 선수</div>
+      <div class="section-title" data-lang="contest_players">참가 선수</div>
       <div id="tv-player-btns" style="margin-bottom:10px;"></div>
       <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <input id="tv-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;">
-        <button onclick="tvAddPlayer()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 0.9333rem;cursor:pointer;">추가</button>
+        <input id="tv-new-name" data-lang-placeholder="contest_direct_input" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;">
+        <button onclick="tvAddPlayer()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 0.9333rem;cursor:pointer;" data-lang="contest_add_btn">추가</button>
       </div>
       <div id="tv-selected" style="margin-bottom:16px;"></div>
     </div>
     <div style="padding:12px 20px max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;">
-      <button onclick="tvCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;">대진표 생성</button>
+      <button onclick="tvCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;" data-lang="contest_create_bracket">대진표 생성</button>
     </div>
   </div>
 </div>
@@ -1747,8 +1747,8 @@
         <button class="modal-close" onclick="closeModal('tvDetailModal')">✕</button>
       </div>
       <div style="display:flex;gap:8px;margin-bottom:14px;">
-        <button id="tv-tab-b" onclick="tvTabSwitch('bracket')" style="flex:1;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;min-height:44px;">대진표</button>
-        <button id="tv-tab-r" onclick="tvTabSwitch('ranking')" style="flex:1;padding:10px;background:var(--surface2);color:var(--text-muted);border:none;border-radius:10px;font-size: 0.9333rem;cursor:pointer;min-height:44px;">순위표</button>
+        <button id="tv-tab-b" onclick="tvTabSwitch('bracket')" style="flex:1;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;min-height:44px;" data-lang="contest_bracket">대진표</button>
+        <button id="tv-tab-r" onclick="tvTabSwitch('ranking')" style="flex:1;padding:10px;background:var(--surface2);color:var(--text-muted);border:none;border-radius:10px;font-size: 0.9333rem;cursor:pointer;min-height:44px;" data-lang="contest_ranking">순위표</button>
       </div>
     </div>
     <div id="tv-modal-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;padding-bottom:max(20px,env(safe-area-inset-bottom));"></div>
@@ -1761,61 +1761,61 @@
   <div class="modal" style="display:flex;flex-direction:column;max-height:92vh;padding:0;">
     <div style="padding:20px 20px 0;flex-shrink:0;">
       <div class="modal-header">
-        <span class="modal-title">🏆 새 토너먼트 만들기</span>
+        <span class="modal-title" data-lang="tn_modal_title">🏆 새 토너먼트 만들기</span>
         <button class="modal-close" onclick="closeModal('tnCreateModal')">✕</button>
       </div>
     </div>
     <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;">
-      <div class="section-title">대회 정보</div>
-      <input id="tn-tname" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;box-sizing:border-box;margin-bottom:10px;">
+      <div class="section-title" data-lang="contest_info">대회 정보</div>
+      <input id="tn-tname" data-lang-placeholder="contest_name_ph" placeholder="대회 이름" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;box-sizing:border-box;margin-bottom:10px;">
       <input id="tn-tdate" type="date" style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;box-sizing:border-box;margin-bottom:10px;">
 
-      <div class="section-title">형식 선택</div>
+      <div class="section-title" data-lang="tn_format_title">형식 선택</div>
       <div style="display:flex;gap:8px;margin-bottom:8px;">
         <button id="tn-fmt-singles" onclick="tnSetFormat('singles')"
-          style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;">🎾 단식</button>
+          style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;" data-lang="tn_singles">🎾 단식</button>
         <button id="tn-fmt-doubles" onclick="tnSetFormat('doubles')"
-          style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);">🤝 복식</button>
+          style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);" data-lang="tn_doubles">🤝 복식</button>
       </div>
-      <div id="tn-fmt-note" style="font-size: 0.8rem;color:var(--text-muted);margin-bottom:12px;">※ 단식은 2·4·8·16명 권장</div>
+      <div id="tn-fmt-note" style="font-size: 0.8rem;color:var(--text-muted);margin-bottom:12px;" data-lang="tn_singles_note">※ 단식은 2·4·8·16명 권장</div>
 
-      <div class="section-title">참가 선수</div>
+      <div class="section-title" data-lang="contest_players">참가 선수</div>
       <div id="tn-player-btns" style="margin-bottom:10px;"></div>
       <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <input id="tn-new-name" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;">
-        <button onclick="tnAddManual()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 0.9333rem;cursor:pointer;">추가</button>
+        <input id="tn-new-name" data-lang-placeholder="contest_direct_input" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;">
+        <button onclick="tnAddManual()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 0.9333rem;cursor:pointer;" data-lang="contest_add_btn">추가</button>
       </div>
       <div id="tn-selected" style="margin-bottom:16px;"></div>
 
       <!-- [추가] 복식 전용: 파트너 지정 방식 선택 영역 -->
       <div id="tn-doubles-partner-section" style="display:none;">
-        <div class="section-title">복식 팀 구성 방법</div>
+        <div class="section-title" data-lang="tn_team_build_title">복식 팀 구성 방법</div>
         <!-- 자동/수동 토글 버튼 -->
         <div style="display:flex;gap:8px;margin-bottom:12px;">
           <button id="tn-team-auto-btn" onclick="tnSetTeamMode('auto')"
-            style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;">
+            style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;" data-lang="tn_team_auto">
             🎲 자동 팀 섞기
           </button>
           <button id="tn-team-manual-btn" onclick="tnSetTeamMode('manual')"
-            style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);">
+            style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);" data-lang="tn_team_manual">
             ✋ 직접 파트너 지정
           </button>
         </div>
         <!-- 자동 안내 -->
-        <div id="tn-team-auto-area" style="font-size: 0.8rem;color:var(--text-muted);padding:10px;background:var(--surface2);border-radius:10px;margin-bottom:10px;">
+        <div id="tn-team-auto-area" style="font-size: 0.8rem;color:var(--text-muted);padding:10px;background:var(--surface2);border-radius:10px;margin-bottom:10px;" data-lang="tn_auto_desc">
           선택된 선수 순서(위→아래)로 자동 팀을 구성해요.<br>1번↔마지막, 2번↔끝에서 2번 방식으로 짝이 맺어져요.
         </div>
         <!-- 수동 지정 UI -->
         <div id="tn-team-manual-area" style="display:none;">
-          <div style="font-size: 0.8rem;color:var(--text-muted);margin-bottom:8px;">선수를 순서대로 2명씩 클릭하면 팀이 만들어져요. 파란색 = 1번째, 초록색 = 2번째(파트너)</div>
+          <div style="font-size: 0.8rem;color:var(--text-muted);margin-bottom:8px;" data-lang="tn_manual_desc">선수를 순서대로 2명씩 클릭하면 팀이 만들어져요. 파란색 = 1번째, 초록색 = 2번째(파트너)</div>
           <div id="tn-manual-player-btns" style="margin-bottom:10px;"></div>
           <div id="tn-manual-teams" style="margin-bottom:10px;"></div>
-          <button onclick="tnResetManualTeams()" style="padding:7px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size: 0.8rem;cursor:pointer;">🗑️ 팀 초기화</button>
+          <button onclick="tnResetManualTeams()" style="padding:7px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size: 0.8rem;cursor:pointer;" data-lang="tn_team_reset">🗑️ 팀 초기화</button>
         </div>
       </div>
     </div>
     <div style="padding:12px 20px max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;">
-      <button onclick="tnCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;">🏆 대진표 생성</button>
+      <button onclick="tnCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;" data-lang="tn_create_btn">🏆 대진표 생성</button>
     </div>
   </div>
 </div>
@@ -2907,12 +2907,12 @@ function renderTournamentList() {
   if (!el) return;
   const list = state.tournaments || [];
   let html = `
-    <div class="page-header">🏆 한울방식</div>
-    <div class="page-sub">파트너·상대방 순환 복식 대회</div>
-    <button onclick="showTVCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;margin-bottom:16px;">+ 새 대회 만들기</button>
+    <div class="page-header">${_t('ctab_hanul')}</div>
+    <div class="page-sub">${_t('tv_list_sub')}</div>
+    <button onclick="showTVCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;margin-bottom:16px;">${_t('tv_new_btn')}</button>
   `;
   if (list.length === 0) {
-    html += '<div style="text-align:center;color:var(--text-muted);padding:40px 0;">대회가 없어요.<br>새 대회를 만들어보세요!</div>';
+    html += `<div style="text-align:center;color:var(--text-muted);padding:40px 0;">${_t('tv_empty')}</div>`;
   } else {
     html += list.slice().reverse().map(t => {
       const total = t.rounds.reduce((s,r) => s + r.games.length, 0);
@@ -2922,16 +2922,16 @@ function renderTournamentList() {
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <div>
               <div id="tv-name-${t.id}" style="font-size: 1.0667rem;font-weight:700;">${escHtml(t.name)}</div>
-              <div style="font-size: 0.8667rem;color:var(--text-muted);margin-top:4px;">${t.date} · ${t.players.length}명 · ${t.numGames}게임</div>
+              <div style="font-size: 0.8667rem;color:var(--text-muted);margin-top:4px;">${t.date} · ${t.players.length}${_t('contest_persons')} · ${t.numGames}${_t('contest_games')}</div>
             </div>
             <div style="font-size: 0.8rem;padding:4px 10px;border-radius:20px;background:${done===total?'rgba(74,222,128,.15)':'rgba(124,106,247,.15)'};color:${done===total?'#4ade80':'var(--accent)'};">
-              ${done===total?'완료':'진행중'}
+              ${done===total?_t('contest_done'):_t('contest_ongoing')}
             </div>
           </div>
         </div>
         <div style="display:flex;gap:8px;">
-          <button onclick="tvEdit(${t.id})" style="flex:1;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size: 0.8667rem;cursor:pointer;">✏️ 수정</button>
-          <button onclick="tvDelete(${t.id})" style="flex:1;padding:8px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size: 0.8667rem;cursor:pointer;">🗑️ 삭제</button>
+          <button onclick="tvEdit(${t.id})" style="flex:1;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size: 0.8667rem;cursor:pointer;">✏️ ${_t('contest_edit')}</button>
+          <button onclick="tvDelete(${t.id})" style="flex:1;padding:8px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size: 0.8667rem;cursor:pointer;">🗑️ ${_t('contest_delete')}</button>
         </div>
       </div>`;
     }).join('');
@@ -2952,12 +2952,12 @@ function showTVCreate() {
   let html = '';
 
   if (players.length === 0) {
-    html = '<div style="color:var(--text-muted);font-size: 0.8667rem;">선수 탭에서 먼저 선수를 등록하세요.</div>';
+    html = `<div style="color:var(--text-muted);font-size: 0.8667rem;">${_t('contest_no_players')}</div>`;
   } else {
     // 전체 선택 버튼
     html += `<div style="margin-bottom:8px;">
-      <button onclick="tvSelectAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.8rem;cursor:pointer;margin-right:6px;">전체 선택</button>
-      <button onclick="tvClearAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.8rem;cursor:pointer;">전체 해제</button>
+      <button onclick="tvSelectAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.8rem;cursor:pointer;margin-right:6px;">${_t('contest_select_all')}</button>
+      <button onclick="tvClearAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.8rem;cursor:pointer;">${_t('contest_deselect_all')}</button>
     </div>`;
 
     // 클럽별 그룹
@@ -2980,7 +2980,7 @@ function showTVCreate() {
       html += `<div style="margin-bottom:10px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
           <span style="font-size: 0.8rem;font-weight:700;color:var(--accent);">🏠 ${escHtml(club)}</span>
-          <button onclick="tvSelectClub(this.dataset.club)" data-club="${escHtml(club)}" style="padding:3px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.7333rem;cursor:pointer;">전체선택</button>
+          <button onclick="tvSelectClub(this.dataset.club)" data-club="${escHtml(club)}" style="padding:3px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.7333rem;cursor:pointer;">${_t('contest_select_all')}</button>
         </div>
         <div>
           ${clubPlayers.map(p => `<span id="tvbtn-${p.id}" data-pname="${escHtml(p.name)}" onclick="tvToggle(this.dataset.pname,this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size: 0.9333rem;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
@@ -2991,7 +2991,7 @@ function showTVCreate() {
     // 클럽 없는 선수
     if (noClub.length > 0) {
       html += `<div style="margin-bottom:10px;">
-        <div style="font-size: 0.8rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">기타</div>
+        <div style="font-size: 0.8rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">${_t('contest_other')}</div>
         <div>
           ${noClub.map(p => `<span id="tvbtn-${p.id}" data-pname="${escHtml(p.name)}" onclick="tvToggle(this.dataset.pname,this)" style="display:inline-block;margin:3px;padding:7px 13px;border-radius:20px;cursor:pointer;font-size: 0.9333rem;background:var(--surface2);color:var(--text-muted);">${escHtml(p.name)}</span>`).join('')}
         </div>
@@ -3001,7 +3001,7 @@ function showTVCreate() {
 
   document.getElementById('tv-player-btns').innerHTML = html;
   document.getElementById('tv-selected').innerHTML =
-    '<div style="color:var(--text-muted);font-size: 0.8667rem;">선수를 선택하세요 (최소 4명)</div>';
+    `<div style="color:var(--text-muted);font-size: 0.8667rem;">${_t('tv_select_hint')}</div>`;
   document.getElementById('tvCreateModal').classList.add('open');
 }
 
@@ -3068,12 +3068,12 @@ function tvRenderSelected() {
   const el = document.getElementById('tv-selected');
   if (!el) return;
   if (tvSelected.length === 0) {
-    el.innerHTML = '<div style="color:var(--text-muted);font-size: 0.8667rem;">선수를 선택하세요 (최소 4명)</div>';
+    el.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8667rem;">${_t('tv_select_hint')}</div>`;
     return;
   }
   el.innerHTML = `<div style="background:var(--surface);border-radius:10px;padding:12px;">
-    <div style="font-size: 0.8667rem;color:var(--text-muted);margin-bottom:4px;">선택된 선수 ${tvSelected.length}명</div>
-    <div style="font-size: 0.7333rem;color:var(--text-muted);margin-bottom:8px;">↕️ 순서 조정으로 시드 배정 (위가 강한 선수)</div>
+    <div style="font-size: 0.8667rem;color:var(--text-muted);margin-bottom:4px;">${_t('contest_selected_n').replace('{n}', tvSelected.length)}</div>
+    <div style="font-size: 0.7333rem;color:var(--text-muted);margin-bottom:8px;">${_t('contest_seed_hint')}</div>
     ${tvSelected.map((n,i) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);">
       <span style="font-size: 0.8667rem;color:var(--accent);font-weight:700;width:24px;">${i+1}.</span>
       <span style="flex:1;font-size: 0.9333rem;">${escHtml(n)}</span>
@@ -6704,16 +6704,16 @@ function renderTnList() {
   const list = state.tnTournaments;
 
   let html = `
-    <div class="page-header">🏆 토너먼트</div>
-    <div class="page-sub">단·복식 대진표를 자동으로 생성해요</div>
-    <button onclick="showTnCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;margin-bottom:16px;">+ 새 토너먼트 만들기</button>
+    <div class="page-header">${_t('ctab_tour')}</div>
+    <div class="page-sub">${_t('tn_list_sub')}</div>
+    <button onclick="showTnCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;margin-bottom:16px;">${_t('tn_new_btn')}</button>
   `;
 
   if (!list.length) {
-    html += '<div style="text-align:center;color:var(--text-muted);padding:40px 0;">토너먼트가 없어요.<br>새 토너먼트를 만들어보세요!</div>';
+    html += `<div style="text-align:center;color:var(--text-muted);padding:40px 0;">${_t('tn_empty')}</div>`;
   } else {
     html += list.slice().reverse().map(t => {
-      const fmtLabel = t.format === 'doubles' ? '복식' : '단식';
+      const fmtLabel = t.format === 'doubles' ? _t('tn_doubles') : _t('tn_singles');
       const fmtColor = t.format === 'doubles' ? 'rgba(124,106,247,.15)' : 'rgba(247,106,200,.15)';
       const fmtTextColor = t.format === 'doubles' ? 'var(--accent)' : 'var(--accent2)';
       const mainDone = (t.bracket || []).filter(r => r && r.name !== '3·4위전').every(r => r.games && r.games.every(g => g && g.winner));
@@ -6725,17 +6725,17 @@ function renderTnList() {
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <div>
               <div style="font-size: 1.0667rem;font-weight:700;">${escHtml(t.name)}</div>
-              <div style="font-size: 0.8667rem;color:var(--text-muted);margin-top:4px;">${t.date} · ${t.players.length}명
+              <div style="font-size: 0.8667rem;color:var(--text-muted);margin-top:4px;">${t.date} · ${t.players.length}${_t('contest_persons')}
                 <span style="margin-left:6px;padding:2px 8px;border-radius:20px;background:${fmtColor};color:${fmtTextColor};font-size: 0.7333rem;font-weight:700;">${fmtLabel}</span>
               </div>
             </div>
             <div style="font-size: 0.8rem;padding:4px 10px;border-radius:20px;background:${done?'rgba(74,222,128,.15)':'rgba(124,106,247,.15)'};color:${done?'#4ade80':'var(--accent)'};">
-              ${done?'완료':'진행중'}
+              ${done?_t('contest_done'):_t('contest_ongoing')}
             </div>
           </div>
         </div>
         <div style="display:flex;gap:8px;">
-          <button onclick="tnOpen(${t.id})" style="flex:1;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size: 0.8667rem;cursor:pointer;">📋 대진표 보기</button>
+          <button onclick="tnOpen(${t.id})" style="flex:1;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size: 0.8667rem;cursor:pointer;">📋 ${_t('contest_bracket')}</button>
           <button onclick="tnDelete(${t.id})" style="padding:8px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size: 0.8667rem;cursor:pointer;">🗑️</button>
         </div>
       </div>`;
@@ -6776,7 +6776,7 @@ function tnSetFormat(fmt) {
   dBtn.style.color      = fmt === 'doubles' ? '#fff' : 'var(--text-muted)';
   // 복식은 짝수 명 안내 표시
   const note = document.getElementById('tn-fmt-note');
-  if (note) note.textContent = fmt === 'doubles' ? '※ 복식은 짝수 명이어야 해요 (4·8·16명)' : '※ 단식은 2·4·8·16명 권장';
+  if (note) note.textContent = fmt === 'doubles' ? _t('tn_doubles_note') : _t('tn_singles_note');
 
   // [추가] 복식일 때만 파트너 구성 섹션 표시
   const partnerSec = document.getElementById('tn-doubles-partner-section');
@@ -6831,7 +6831,7 @@ function tnRenderManualTeamUI() {
 
   // 선수 버튼 (배정 안 된 선수만)
   if (waiting.length === 0) {
-    btnArea.innerHTML = '<div style="color:var(--text-muted);font-size: 0.8rem;">모든 선수가 팀에 배정되었어요 ✅</div>';
+    btnArea.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8rem;">${_t('tn_all_assigned')}</div>`;
   } else {
     btnArea.innerHTML = waiting.map(name => {
       const isSel = _tnManualPick === name;
@@ -6846,7 +6846,7 @@ function tnRenderManualTeamUI() {
 
   // 확정된 팀 목록
   if (_tnManualTeams.length === 0) {
-    teamArea.innerHTML = '<div style="color:var(--text-muted);font-size: 0.8rem;">아직 팀이 없어요. 위에서 선수를 2명씩 클릭하세요!</div>';
+    teamArea.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8rem;">${_t('tn_no_teams_yet')}</div>`;
   } else {
     teamArea.innerHTML = _tnManualTeams.map((t, i) => `
       <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--surface2);border-radius:10px;margin-bottom:6px;">
@@ -6894,7 +6894,7 @@ function tnRenderPlayerBtns() {
   const container = document.getElementById('tn-player-btns');
   if (!container) return;
   if (!players.length) {
-    container.innerHTML = '<div style="color:var(--text-muted);font-size: 0.8667rem;">선수 탭에서 먼저 선수를 등록하세요.</div>';
+    container.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8667rem;">${_t('contest_no_players')}</div>`;
     return;
   }
 
@@ -6914,8 +6914,8 @@ function tnRenderPlayerBtns() {
   });
 
   let html = `<div style="margin-bottom:8px;">
-    <button onclick="tnSelectAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.8rem;cursor:pointer;margin-right:6px;">전체 선택</button>
-    <button onclick="tnClearAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.8rem;cursor:pointer;">전체 해제</button>
+    <button onclick="tnSelectAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.8rem;cursor:pointer;margin-right:6px;">${_t('contest_select_all')}</button>
+    <button onclick="tnClearAll()" style="padding:6px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.8rem;cursor:pointer;">${_t('contest_deselect_all')}</button>
   </div>`;
 
   // 클럽별 섹션
@@ -6924,7 +6924,7 @@ function tnRenderPlayerBtns() {
     html += `<div style="margin-bottom:10px;">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
         <span style="font-size: 0.8rem;font-weight:700;color:var(--accent);">🏠 ${escHtml(club)}</span>
-        <button data-club="${safeClub}" onclick="tnSelectClub(this.dataset.club)" style="padding:3px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.7333rem;cursor:pointer;">전체선택</button>
+        <button data-club="${safeClub}" onclick="tnSelectClub(this.dataset.club)" style="padding:3px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text-muted);font-size: 0.7333rem;cursor:pointer;">${_t('contest_select_all')}</button>
       </div>
       <div>${clubPlayers.map(p => {
         const safeName = p.name.replace(/"/g,'&quot;');
@@ -6937,7 +6937,7 @@ function tnRenderPlayerBtns() {
   // 클럽 없는 선수
   if (noClub.length > 0) {
     html += `<div style="margin-bottom:10px;">
-      <div style="font-size: 0.8rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">기타</div>
+      <div style="font-size: 0.8rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">${_t('contest_other')}</div>
       <div>${noClub.map(p => {
         const safeName = p.name.replace(/"/g,'&quot;');
         return `<span id="tnbtn-${p.id}" data-pname="${safeName}" onclick="tnToggle(this)"
@@ -7012,7 +7012,7 @@ function tnRenderSelected() {
   const el = document.getElementById('tn-selected');
   if (!el) return;
   if (!_tnSelected.length) {
-    el.innerHTML = '<div style="color:var(--text-muted);font-size: 0.8667rem;">선수를 선택하세요 (최소 2명)</div>';
+    el.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8667rem;">${_t('tn_select_hint')}</div>`;
     // 선수가 없으면 수동 팀도 초기화
     if (_tnManualTeams && _tnManualTeams.length) {
       _tnManualTeams = [];
@@ -7022,7 +7022,7 @@ function tnRenderSelected() {
     return;
   }
   el.innerHTML = `<div style="background:var(--surface);border-radius:10px;padding:12px;">
-    <div style="font-size: 0.8667rem;color:var(--text-muted);margin-bottom:8px;">선택된 선수 ${_tnSelected.length}명 (위쪽이 시드 높음)</div>
+    <div style="font-size: 0.8667rem;color:var(--text-muted);margin-bottom:8px;">${_t('contest_selected_n').replace('{n}', _tnSelected.length)} ${_t('contest_seed_hint_short')}</div>
     ${_tnSelected.map((n, i) => `<div style="display:flex;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);gap:8px;">
       <span style="font-size: 0.8rem;color:var(--accent);font-weight:700;width:22px;">${i+1}.</span>
       <span style="flex:1;font-size: 0.9333rem;">${escHtml(n)}</span>
@@ -8597,6 +8597,74 @@ const NIJI_DICT = {
   players_style_5:         { ko: '베이스라인',         en: 'Baseline' },
   players_club_opt:        { ko: '클럽 선택 (선택사항)', en: 'Club (optional)' },
   players_add_btn:         { ko: '+ 선수 등록',        en: '+ Register Player' },
+
+  /* ─── 대회 탭 ─── */
+  // 탭 버튼
+  ctab_hanul:              { ko: '🔄 한울방식',         en: '🔄 Hanul' },
+  ctab_tour:               { ko: '🏆 토너먼트',         en: '🏆 Tournament' },
+  ctab_score:              { ko: '🎾 스코어',            en: '🎾 Score' },
+  ctab_tactics:            { ko: '📋 전술판',            en: '📋 Tactics' },
+
+  // 한울방식 목록
+  tv_list_sub:             { ko: '파트너·상대방 순환 복식 대회', en: 'Rotating Doubles Format' },
+  tv_new_btn:              { ko: '+ 새 대회 만들기',     en: '+ New Contest' },
+  tv_empty:                { ko: '대회가 없어요.\n새 대회를 만들어보세요!', en: 'No contests yet.\nCreate a new one!' },
+
+  // 토너먼트 목록
+  tn_list_sub:             { ko: '단·복식 대진표를 자동으로 생성해요', en: 'Auto-generate singles/doubles brackets' },
+  tn_new_btn:              { ko: '+ 새 토너먼트 만들기', en: '+ New Tournament' },
+  tn_empty:                { ko: '토너먼트가 없어요.\n새 토너먼트를 만들어보세요!', en: 'No tournaments yet.\nCreate a new one!' },
+
+  // 공통 대회 상태
+  contest_done:            { ko: '완료',                en: 'Done' },
+  contest_ongoing:         { ko: '진행중',              en: 'In Progress' },
+  contest_edit:            { ko: '수정',                en: 'Edit' },
+  contest_delete:          { ko: '삭제',                en: 'Delete' },
+  contest_bracket:         { ko: '대진표',              en: 'Bracket' },
+  contest_ranking:         { ko: '순위표',              en: 'Ranking' },
+  contest_info:            { ko: '대회 정보',           en: 'Contest Info' },
+  contest_name_ph:         { ko: '대회 이름',           en: 'Contest Name' },
+  contest_players:         { ko: '참가 선수',           en: 'Players' },
+  contest_direct_input:    { ko: '직접 입력',           en: 'Enter name' },
+  contest_add_btn:         { ko: '추가',                en: 'Add' },
+  contest_create_bracket:  { ko: '대진표 생성',         en: 'Create Bracket' },
+  contest_select_all:      { ko: '전체 선택',           en: 'Select All' },
+  contest_deselect_all:    { ko: '전체 해제',           en: 'Clear All' },
+  contest_other:           { ko: '기타',                en: 'Other' },
+  contest_no_players:      { ko: '선수 탭에서 먼저 선수를 등록하세요.', en: 'Register players in the Players tab first.' },
+  contest_persons:         { ko: '명',                  en: 'p' },
+  contest_games:           { ko: '게임',                en: 'games' },
+  contest_selected_n:      { ko: '선택된 선수 {n}명',  en: '{n} players selected' },
+  contest_seed_hint:       { ko: '↕️ 순서 조정으로 시드 배정 (위가 강한 선수)', en: '↕️ Drag to set seed order (top = strongest)' },
+  contest_seed_hint_short: { ko: '(위쪽이 시드 높음)', en: '(top = top seed)' },
+
+  // 한울방식 만들기 모달
+  tv_modal_title:          { ko: '새 대회 만들기',      en: 'New Contest' },
+  tv_select_hint:          { ko: '선수를 선택하세요 (최소 4명)', en: 'Select players (min 4)' },
+  game_n1:                 { ko: '1게임',               en: '1 Game' },
+  game_n2:                 { ko: '2게임',               en: '2 Games' },
+  game_n3:                 { ko: '3게임',               en: '3 Games' },
+  game_n4:                 { ko: '4게임',               en: '4 Games' },
+
+  // 토너먼트 만들기 모달
+  tn_modal_title:          { ko: '🏆 새 토너먼트 만들기', en: '🏆 New Tournament' },
+  tn_format_title:         { ko: '형식 선택',           en: 'Format' },
+  tn_singles:              { ko: '🎾 단식',             en: '🎾 Singles' },
+  tn_doubles:              { ko: '🤝 복식',             en: '🤝 Doubles' },
+  tn_singles_note:         { ko: '※ 단식은 2·4·8·16명 권장', en: '※ Singles: 2·4·8·16 players recommended' },
+  tn_doubles_note:         { ko: '※ 복식은 짝수 명이어야 해요 (4·8·16명)', en: '※ Doubles: even number required (4·8·16 players)' },
+  tn_select_hint:          { ko: '선수를 선택하세요 (최소 2명)', en: 'Select players (min 2)' },
+  tn_create_btn:           { ko: '🏆 대진표 생성',      en: '🏆 Create Bracket' },
+  tn_team_build_title:     { ko: '복식 팀 구성 방법',   en: 'Doubles Team Setup' },
+  tn_team_auto:            { ko: '🎲 자동 팀 섞기',     en: '🎲 Auto Team' },
+  tn_team_manual:          { ko: '✋ 직접 파트너 지정', en: '✋ Manual Partners' },
+  tn_auto_desc:            { ko: '선택된 선수 순서(위→아래)로 자동 팀을 구성해요.\n1번↔마지막, 2번↔끝에서 2번 방식으로 짝이 맺어져요.',
+                             en: 'Teams are formed by pairing players top-to-bottom: 1st↔last, 2nd↔second-to-last.' },
+  tn_manual_desc:          { ko: '선수를 순서대로 2명씩 클릭하면 팀이 만들어져요. 파란색 = 1번째, 초록색 = 2번째(파트너)',
+                             en: 'Click 2 players in order to form a team. Blue = 1st pick, Green = 2nd pick (partner).' },
+  tn_team_reset:           { ko: '🗑️ 팀 초기화',        en: '🗑️ Reset Teams' },
+  tn_all_assigned:         { ko: '모든 선수가 팀에 배정되었어요 ✅', en: 'All players assigned to teams ✅' },
+  tn_no_teams_yet:         { ko: '아직 팀이 없어요. 위에서 선수를 2명씩 클릭하세요!', en: 'No teams yet. Click 2 players above to form a team!' },
 };
 
 // ── 글자 크기 변경 ──────────────────────────────────
@@ -8616,6 +8684,14 @@ function setFontSize(px) {
   });
 }
 
+// ── 현재 언어로 사전 텍스트 가져오기 (대회 탭 동적 렌더에 사용) ──
+function _t(key) {
+  var lang = localStorage.getItem('niji_language') || 'ko';
+  if (NIJI_DICT[key] && NIJI_DICT[key][lang]) return NIJI_DICT[key][lang];
+  if (NIJI_DICT[key] && NIJI_DICT[key]['ko']) return NIJI_DICT[key]['ko'];
+  return key;
+}
+
 // ── 언어 변경 ───────────────────────────────────────
 function setLanguage(lang) {
   localStorage.setItem('niji_language', lang);
@@ -8627,6 +8703,26 @@ function setLanguage(lang) {
       el.textContent = NIJI_DICT[key][lang];
     }
   });
+
+  // data-lang-placeholder 속성이 달린 input placeholder 교체
+  document.querySelectorAll('[data-lang-placeholder]').forEach(function(el) {
+    var key = el.getAttribute('data-lang-placeholder');
+    if (NIJI_DICT[key] && NIJI_DICT[key][lang]) {
+      el.placeholder = NIJI_DICT[key][lang];
+    }
+  });
+
+  // 대회 탭 동적 렌더 갱신 (현재 보이는 탭만 다시 그림)
+  if (typeof renderTournamentList === 'function' &&
+      document.getElementById('tv-root') &&
+      document.getElementById('tv-root').style.display !== 'none') {
+    renderTournamentList();
+  }
+  if (typeof renderTnList === 'function' &&
+      document.getElementById('tn-root') &&
+      document.getElementById('tn-root').style.display !== 'none') {
+    renderTnList();
+  }
 
   // 버튼 강조
   document.querySelectorAll('.lang-switch-btn').forEach(function(btn) {
