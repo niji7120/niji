@@ -1779,18 +1779,9 @@
       </div>
       <div id="tn-fmt-note" style="font-size: 0.8rem;color:var(--text-muted);margin-bottom:12px;" data-lang="tn_singles_note">※ 단식은 2·4·8·16명 권장</div>
 
-      <div class="section-title" data-lang="contest_players">참가 선수</div>
-      <div id="tn-player-btns" style="margin-bottom:10px;"></div>
-      <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <input id="tn-new-name" data-lang-placeholder="contest_direct_input" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;">
-        <button onclick="tnAddManual()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 0.9333rem;cursor:pointer;" data-lang="contest_add_btn">추가</button>
-      </div>
-      <div id="tn-selected" style="margin-bottom:16px;"></div>
-
-      <!-- [추가] 복식 전용: 파트너 지정 방식 선택 영역 -->
+      <!-- 복식 전용: 파트너 지정 방식 (복식 선택시에만 표시) -->
       <div id="tn-doubles-partner-section" style="display:none;">
         <div class="section-title" data-lang="tn_team_build_title">복식 팀 구성 방법</div>
-        <!-- 자동/수동 토글 버튼 -->
         <div style="display:flex;gap:8px;margin-bottom:12px;">
           <button id="tn-team-auto-btn" onclick="tnSetTeamMode('auto')"
             style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;" data-lang="tn_team_auto">
@@ -1801,11 +1792,9 @@
             ✋ 직접 파트너 지정
           </button>
         </div>
-        <!-- 자동 안내 -->
         <div id="tn-team-auto-area" style="font-size: 0.8rem;color:var(--text-muted);padding:10px;background:var(--surface2);border-radius:10px;margin-bottom:10px;" data-lang="tn_auto_desc">
           선택된 선수 순서(위→아래)로 자동 팀을 구성해요.<br>1번↔마지막, 2번↔끝에서 2번 방식으로 짝이 맺어져요.
         </div>
-        <!-- 수동 지정 UI -->
         <div id="tn-team-manual-area" style="display:none;">
           <div style="font-size: 0.8rem;color:var(--text-muted);margin-bottom:8px;" data-lang="tn_manual_desc">선수를 순서대로 2명씩 클릭하면 팀이 만들어져요. 파란색 = 1번째, 초록색 = 2번째(파트너)</div>
           <div id="tn-manual-player-btns" style="margin-bottom:10px;"></div>
@@ -1813,6 +1802,39 @@
           <button onclick="tnResetManualTeams()" style="padding:7px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size: 0.8rem;cursor:pointer;" data-lang="tn_team_reset">🗑️ 팀 초기화</button>
         </div>
       </div>
+
+      <!-- 상대팀 배치 방법 (단식·복식 공통) -->
+      <div id="tn-opponent-section">
+        <div class="section-title" data-lang="tn_opp_build_title">상대팀 배치 방법</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <button id="tn-opp-auto-btn" onclick="tnSetOppMode('auto')"
+            style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;" data-lang="tn_opp_auto">
+            🎲 자동 배치
+          </button>
+          <button id="tn-opp-manual-btn" onclick="tnSetOppMode('manual')"
+            style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);" data-lang="tn_opp_manual">
+            ✋ 직접 대진 지정
+          </button>
+        </div>
+        <div id="tn-opp-auto-area" style="font-size: 0.8rem;color:var(--text-muted);padding:10px;background:var(--surface2);border-radius:10px;margin-bottom:10px;" data-lang="tn_opp_auto_desc">
+          선수 순서(위→아래)대로 자동으로 대진이 짜여요.<br>시드 순서를 조정하고 싶다면 선수 목록 순서를 바꿔서 생성하세요.
+        </div>
+        <div id="tn-opp-manual-area" style="display:none;">
+          <div style="font-size: 0.8rem;color:var(--text-muted);margin-bottom:8px;" data-lang="tn_opp_manual_desc">선수를 2명씩 클릭해서 1라운드 대진을 직접 짜세요.<br>파란색 = A팀, 초록색 = B팀(상대)</div>
+          <div id="tn-opp-player-btns" style="margin-bottom:10px;"></div>
+          <div id="tn-opp-matchups" style="margin-bottom:10px;"></div>
+          <button onclick="tnResetOppMatchups()" style="padding:7px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:8px;color:#f87171;font-size: 0.8rem;cursor:pointer;" data-lang="tn_opp_reset">🗑️ 대진 초기화</button>
+        </div>
+      </div>
+
+      <!-- 참가 선수 (맨 아래) -->
+      <div class="section-title" data-lang="contest_players">참가 선수</div>
+      <div id="tn-player-btns" style="margin-bottom:10px;"></div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <input id="tn-new-name" data-lang-placeholder="contest_direct_input" placeholder="직접 입력" style="flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 1.0667rem;">
+        <button onclick="tnAddManual()" style="padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size: 0.9333rem;cursor:pointer;" data-lang="contest_add_btn">추가</button>
+      </div>
+      <div id="tn-selected" style="margin-bottom:16px;"></div>
     </div>
     <div style="padding:12px 20px max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;">
       <button onclick="tnCreate()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;" data-lang="tn_create_btn">🏆 대진표 생성</button>
@@ -2012,16 +2034,24 @@
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>한울방식</b> — 파트너와 상대가 매 게임 바뀌는 순환 복식 대회예요. 게임 수를 설정하면 자동으로 대진이 짜여요</span>
+            <span><b>🔄 한울방식</b> — 매 게임마다 파트너와 상대가 자동으로 바뀌는 <b>순환 복식 대회</b>예요. 참가 인원과 게임 수를 설정하면 모든 조합이 자동으로 짜여요. 예) 8명·4게임이면 모두 골고루 파트너/상대로 만나요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>토너먼트</b> — 단식·복식 대진표를 자동 생성해요. 시드 순서를 직접 조정할 수 있고, 결과 입력 시 다음 라운드가 자동으로 채워져요</span>
+            <span><b>🏆 토너먼트</b> — 단식·복식 <b>KO방식 대진표</b>예요. 이긴 팀만 다음 라운드로 진출하고, 결과 입력 시 다음 경기가 자동으로 채워져요</span>
           </div>
-          <!-- [수정] 복식 파트너 직접 지정 기능 설명 추가 -->
+          <!-- [수정] 파트너 + 상대팀 설명 통합 -->
           <div class="manual-item">
             <span class="manual-dot"></span>
-            <span><b>단식</b>은 무작위 시드 배정이 가능하며, <b>복식</b>은 자동 팀 매칭뿐만 아니라 원하는 파트너를 직접 선택하여 대진표를 짤 수 있어요. 복식 선택 후 <b>🎲 자동 팀 섞기</b> 또는 <b>✋ 직접 파트너 지정</b> 방식 중 선택하세요</span>
+            <span><b>복식 파트너 구성</b> — 선수 선택 후 아래 두 가지 중 선택해요<br>
+              · <b>🎲 자동 팀 섞기</b>: 선수 순서대로 1번↔마지막, 2번↔끝에서 2번 방식으로 자동 짝을 맺어요<br>
+              · <b>✋ 직접 파트너 지정</b>: 선수를 2명씩 직접 클릭해서 팀을 만들어요</span>
+          </div>
+          <div class="manual-item">
+            <span class="manual-dot"></span>
+            <span><b>상대팀 배치 방법</b> — 1라운드 대진을 어떻게 짤지 선택해요<br>
+              · <b>🎲 자동 배치</b>: 선수/팀 순서대로 표준 시드 방식으로 자동 대진이 만들어져요<br>
+              · <b>✋ 직접 대진 지정</b>: 내가 원하는 대로 누가 누구와 1라운드에서 붙을지 직접 클릭해서 대진을 짜요</span>
           </div>
           <div class="manual-item">
             <span class="manual-dot"></span>
@@ -6752,16 +6782,25 @@ let _tnTeamMode = 'auto';       // 'auto' | 'manual'
 let _tnManualPick = null;        // 수동 지정 중 첫 번째로 클릭된 선수 (대기 중)
 let _tnManualTeams = [];        // 수동으로 확정된 팀 배열 [{a, b}, ...]
 
+// [추가] 상대팀(대진) 수동 지정 변수
+let _tnOppMode = 'auto';        // 'auto' | 'manual'
+let _tnOppPick = null;           // 수동 대진 중 첫 번째 클릭 선수
+let _tnOppMatchups = [];        // 수동으로 확정된 대진 [{a, b}, ...]
+
 function showTnCreate() {
   _tnSelected = [];
   _tnFormat = 'singles';
   _tnTeamMode = 'auto';
   _tnManualPick = null;
   _tnManualTeams = [];
+  _tnOppMode = 'auto';
+  _tnOppPick = null;
+  _tnOppMatchups = [];
   document.getElementById('tn-tname').value = '';
   document.getElementById('tn-tdate').value = getTodayStr();
   tnSetFormat('singles');
   tnRenderPlayerBtns();
+  tnSetOppMode('auto');
   document.getElementById('tnCreateModal').classList.add('open');
 }
 
@@ -6790,6 +6829,11 @@ function tnSetFormat(fmt) {
     _tnManualTeams = [];
     tnSetTeamMode('auto');
   }
+  // 형식 바뀌면 상대팀 대진도 초기화
+  _tnOppMode = 'auto';
+  _tnOppPick = null;
+  _tnOppMatchups = [];
+  tnSetOppMode('auto');
 }
 
 // [추가] 복식 팀 구성 모드 전환 (자동 <-> 수동)
@@ -6887,6 +6931,115 @@ function tnResetManualTeams() {
   _tnManualTeams = [];
   _tnManualPick = null;
   tnRenderManualTeamUI();
+}
+
+// ─── 상대팀(대진) 수동 배치 함수들 ───────────────────────────────
+
+// 상대팀 배치 모드 전환 (자동 <-> 수동)
+function tnSetOppMode(mode) {
+  _tnOppMode = mode;
+  const autoBtn  = document.getElementById('tn-opp-auto-btn');
+  const manualBtn = document.getElementById('tn-opp-manual-btn');
+  const autoArea  = document.getElementById('tn-opp-auto-area');
+  const manualArea = document.getElementById('tn-opp-manual-area');
+
+  if (autoBtn) {
+    autoBtn.style.background = mode === 'auto' ? 'var(--accent)' : 'var(--surface2)';
+    autoBtn.style.color      = mode === 'auto' ? '#fff' : 'var(--text-muted)';
+  }
+  if (manualBtn) {
+    manualBtn.style.background = mode === 'manual' ? 'var(--accent)' : 'var(--surface2)';
+    manualBtn.style.color      = mode === 'manual' ? '#fff' : 'var(--text-muted)';
+  }
+  if (autoArea)   autoArea.style.display   = mode === 'auto'   ? 'block' : 'none';
+  if (manualArea) manualArea.style.display = mode === 'manual' ? 'block' : 'none';
+
+  if (mode === 'manual') {
+    _tnOppPick = null;
+    _tnOppMatchups = [];
+    tnRenderOppManualUI();
+  }
+}
+
+// 상대팀 수동 대진 UI 렌더링
+function tnRenderOppManualUI() {
+  const btnArea   = document.getElementById('tn-opp-player-btns');
+  const matchArea = document.getElementById('tn-opp-matchups');
+  if (!btnArea || !matchArea) return;
+
+  // 복식은 팀 이름(A/B) 단위, 단식은 선수 이름 단위
+  let entries;
+  if (_tnFormat === 'doubles') {
+    if (_tnTeamMode === 'manual' && _tnManualTeams.length > 0) {
+      entries = _tnManualTeams.map(t => t.a + '/' + t.b);
+    } else {
+      // 자동 팀 구성 (1번↔마지막)
+      const n = _tnSelected.length;
+      entries = [];
+      for (let i = 0; i < n / 2; i++) {
+        entries.push(_tnSelected[i] + '/' + _tnSelected[n - 1 - i]);
+      }
+    }
+  } else {
+    entries = [..._tnSelected];
+  }
+
+  const assigned = _tnOppMatchups.flatMap(m => [m.a, m.b]);
+  const waiting  = entries.filter(e => !assigned.includes(e));
+
+  if (waiting.length === 0) {
+    btnArea.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8rem;">${_t('tn_opp_all_set')}</div>`;
+  } else {
+    btnArea.innerHTML = waiting.map(name => {
+      const isSel = _tnOppPick === name;
+      const safeN = name.replace(/"/g, '&quot;');
+      const color = isSel ? 'var(--accent)' : 'var(--surface2)';
+      const txtColor = isSel ? '#fff' : 'var(--text-muted)';
+      return `<span onclick="tnOppPick('${safeN}')"
+        style="display:inline-block;margin:3px;padding:7px 14px;border-radius:20px;cursor:pointer;font-size: 0.9333rem;
+          background:${color};color:${txtColor};border:2px solid ${isSel ? 'var(--accent)' : 'transparent'};">${escHtml(name)}</span>`;
+    }).join('');
+  }
+
+  if (_tnOppMatchups.length === 0) {
+    matchArea.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8rem;">${_t('tn_opp_no_match')}</div>`;
+  } else {
+    matchArea.innerHTML = _tnOppMatchups.map((m, i) => `
+      <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--surface2);border-radius:10px;margin-bottom:6px;">
+        <span style="font-size: 0.8rem;color:var(--accent);font-weight:700;width:36px;">경기${i+1}</span>
+        <span style="flex:1;font-size: 0.9333rem;font-weight:600;">${escHtml(m.a)} <span style="color:var(--text-muted);font-weight:400;">vs</span> ${escHtml(m.b)}</span>
+        <button onclick="tnRemoveOppMatchup(${i})" style="background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:6px;color:#f87171;cursor:pointer;padding:2px 8px;font-size: 0.8rem;">✕</button>
+      </div>`).join('');
+  }
+}
+
+// 상대팀 수동 대진 - 선수/팀 클릭 처리
+function tnOppPick(name) {
+  if (!_tnOppPick) {
+    _tnOppPick = name;
+  } else if (_tnOppPick === name) {
+    _tnOppPick = null;
+  } else {
+    var first = _tnOppPick;
+    _tnOppPick = null;
+    _tnOppMatchups.push({ a: first, b: name });
+    showToast('✅ 대진 ' + _tnOppMatchups.length + ' 확정!');
+  }
+  tnRenderOppManualUI();
+}
+
+// 상대팀 수동 대진 삭제
+function tnRemoveOppMatchup(idx) {
+  _tnOppMatchups.splice(idx, 1);
+  _tnOppPick = null;
+  tnRenderOppManualUI();
+}
+
+// 상대팀 수동 대진 전체 초기화
+function tnResetOppMatchups() {
+  _tnOppMatchups = [];
+  _tnOppPick = null;
+  tnRenderOppManualUI();
 }
 
 function tnRenderPlayerBtns() {
@@ -7041,6 +7194,13 @@ function tnRenderSelected() {
     _tnManualPick = null;
     tnRenderManualTeamUI();
   }
+
+  // [추가] 상대팀 수동 대진 모드이면 대진 UI도 갱신
+  if (_tnOppMode === 'manual') {
+    _tnOppMatchups = [];
+    _tnOppPick = null;
+    tnRenderOppManualUI();
+  }
 }
 
 function tnMoveUp(i) { if (i===0) return; [_tnSelected[i-1],_tnSelected[i]]=[_tnSelected[i],_tnSelected[i-1]]; tnRenderSelected(); }
@@ -7058,7 +7218,7 @@ function tnRemove(i) {
   tnRenderSelected();
 }
 
-// [수정] 토너먼트 대진표 생성 - 복식 수동 팀 지정 모드 처리 포함
+// [수정] 토너먼트 대진표 생성 - 복식 수동 팀 지정 + 상대팀 수동 모드 처리 포함
 function tnCreate() {
   const name = document.getElementById('tn-tname').value.trim();
   const date = document.getElementById('tn-tdate').value;
@@ -7078,6 +7238,17 @@ function tnCreate() {
     }
   }
 
+  // [추가] 상대팀 수동 대진 모드 검증
+  if (_tnOppMode === 'manual') {
+    // 단식: 선수 수 / 2팀, 복식: 복식팀 수 / 2팀
+    const totalEntries = _tnFormat === 'doubles' ? _tnSelected.length / 2 : _tnSelected.length;
+    const neededMatchups = Math.floor(totalEntries / 2);
+    if (_tnOppMatchups.length < neededMatchups) {
+      showToast('⚠️ 대진이 아직 덜 만들어졌어요 (' + _tnOppMatchups.length + '/' + neededMatchups + ')');
+      return;
+    }
+  }
+
   const bracket = tnBuildBracket(_tnSelected, _tnFormat);
   if (!state.tnTournaments) state.tnTournaments = [];
   const id = Date.now();
@@ -7089,7 +7260,7 @@ function tnCreate() {
   setTimeout(() => tnOpen(id), 300);
 }
 
-// [수정] 시드 배정 대진표 생성 - 복식 수동 팀 모드 반영
+// [수정] 시드 배정 대진표 생성 - 복식 수동 팀 모드 + 상대팀 수동 대진 모드 반영
 function tnBuildBracket(players, format) {
   let entries;
   if (format === 'doubles') {
@@ -7106,6 +7277,11 @@ function tnBuildBracket(players, format) {
     }
   } else {
     entries = [...players];
+  }
+
+  // [추가] 상대팀 수동 대진 모드: 1라운드를 직접 짠 대진으로 배치
+  if (_tnOppMode === 'manual' && _tnOppMatchups.length > 0) {
+    return tnBuildBracketManualOpp(entries);
   }
 
   const size = Math.pow(2, Math.ceil(Math.log2(Math.max(entries.length, 2))));
@@ -7168,6 +7344,70 @@ function tnBuildBracket(players, format) {
       game.winner = byeWinner;
       const winName = byeWinner === 'a' ? game.a : game.b;
       // 다음 라운드가 존재하고 3·4위전이 아닌 경우에만
+      if (rounds[1] && rounds[1].name !== '3·4위전') {
+        const nextGi = Math.floor(gi / 2);
+        const nextSlot = gi % 2 === 0 ? 'a' : 'b';
+        if (rounds[1].games[nextGi]) rounds[1].games[nextGi][nextSlot] = winName;
+      }
+    }
+  });
+
+  return rounds;
+}
+
+// [추가] 상대팀 수동 대진 모드 전용 브래킷 생성
+// entries: 확정된 팀/선수 목록, _tnOppMatchups: 수동으로 짠 1라운드 대진 [{a,b}...]
+function tnBuildBracketManualOpp(entries) {
+  // 수동 대진으로 1라운드 구성
+  const r1games = _tnOppMatchups.map(m => ({
+    a: m.a, b: m.b, winner: null, scoreA: '', scoreB: ''
+  }));
+
+  // 부전승 처리: 대진에 포함 안 된 선수/팀 (홀수 시)
+  const usedEntries = _tnOppMatchups.flatMap(m => [m.a, m.b]);
+  const remaining = entries.filter(e => !usedEntries.includes(e));
+  remaining.forEach(e => {
+    r1games.push({ a: e, b: null, winner: 'a', scoreA: '', scoreB: '' });
+  });
+
+  const totalR1 = r1games.length;
+  const size = Math.pow(2, Math.ceil(Math.log2(Math.max(totalR1, 1))));
+
+  const getRoundName = (total, roundIdx) => {
+    const m = total / Math.pow(2, roundIdx + 1);
+    if (m === 1) return '결승';
+    if (m === 2) return '준결승';
+    if (m === 4) return '8강';
+    if (m === 8) return '16강';
+    if (m === 16) return '32강';
+    return m + '강';
+  };
+
+  const totalMatches = size * 2;
+  const rounds = [];
+  rounds.push({ name: getRoundName(totalMatches, 0), games: r1games });
+
+  let prev = totalR1;
+  let ri = 1;
+  while (prev > 1) {
+    const games = [];
+    for (let i = 0; i < Math.ceil(prev / 2); i++) {
+      games.push({ a: null, b: null, winner: null, scoreA: '', scoreB: '' });
+    }
+    rounds.push({ name: getRoundName(totalMatches, ri), games });
+    prev = Math.ceil(prev / 2);
+    ri++;
+  }
+  if (totalR1 >= 2) {
+    rounds.push({ name: '3·4위전', games: [{ a: null, b: null, winner: null, scoreA: '', scoreB: '', is3rd: true }] });
+  }
+
+  // 부전승 자동 진출 처리
+  r1games.forEach((game, gi) => {
+    const byeWinner = (game.a && !game.b) ? 'a' : (!game.a && game.b) ? 'b' : null;
+    if (byeWinner) {
+      game.winner = byeWinner;
+      const winName = byeWinner === 'a' ? game.a : game.b;
       if (rounds[1] && rounds[1].name !== '3·4위전') {
         const nextGi = Math.floor(gi / 2);
         const nextSlot = gi % 2 === 0 ? 'a' : 'b';
@@ -8665,6 +8905,18 @@ const NIJI_DICT = {
   tn_team_reset:           { ko: '🗑️ 팀 초기화',        en: '🗑️ Reset Teams' },
   tn_all_assigned:         { ko: '모든 선수가 팀에 배정되었어요 ✅', en: 'All players assigned to teams ✅' },
   tn_no_teams_yet:         { ko: '아직 팀이 없어요. 위에서 선수를 2명씩 클릭하세요!', en: 'No teams yet. Click 2 players above to form a team!' },
+
+  // 상대팀 구성 방법 (단식 토너먼트)
+  tn_opp_build_title:      { ko: '상대팀 배치 방법',     en: 'Opponent Setup' },
+  tn_opp_auto:             { ko: '🎲 자동 배치',         en: '🎲 Auto Arrange' },
+  tn_opp_manual:           { ko: '✋ 직접 대진 지정',    en: '✋ Manual Bracket' },
+  tn_opp_auto_desc:        { ko: '선수 순서(위→아래)대로 자동으로 대진이 짜여요.\n시드 순서를 조정하고 싶다면 선수 목록 순서를 바꿔서 생성하세요.',
+                             en: 'Bracket is auto-arranged by player order (top→bottom). Adjust player order to change seeding.' },
+  tn_opp_manual_desc:      { ko: '선수를 2명씩 클릭해서 1라운드 대진을 직접 짜세요.\n파란색 = A팀, 초록색 = B팀(상대)',
+                             en: 'Click 2 players to set 1st round matchups. Blue = A side, Green = B side (opponent).' },
+  tn_opp_reset:            { ko: '🗑️ 대진 초기화',       en: '🗑️ Reset Bracket' },
+  tn_opp_all_set:          { ko: '모든 1라운드 대진이 완성되었어요 ✅', en: 'All 1st round matchups set ✅' },
+  tn_opp_no_match:         { ko: '아직 대진이 없어요. 위에서 선수를 2명씩 클릭하세요!', en: 'No matchups yet. Click 2 players above!' },
 };
 
 // ── 글자 크기 변경 ──────────────────────────────────
