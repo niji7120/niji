@@ -1014,6 +1014,21 @@
     <!-- ===== PROFILE PAGE ===== -->
     <div class="page active profile-page" id="page-profile">
 
+      <!-- ===== 언어 선택 버튼 (프로필 탭 최상단) ===== -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 16px 6px;background:var(--bg);">
+        <span style="font-size:0.7rem;font-weight:700;color:var(--text-muted);letter-spacing:1px;flex-shrink:0;">🌐</span>
+        <button class="lang-switch-btn" id="langBtn-ko"
+          onclick="setLanguage('ko')"
+          style="flex:1;padding:7px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-muted);font-family:inherit;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all .2s;">
+          🇰🇷 한국어
+        </button>
+        <button class="lang-switch-btn" id="langBtn-en"
+          onclick="setLanguage('en')"
+          style="flex:1;padding:7px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text-muted);font-family:inherit;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all .2s;">
+          🇺🇸 English
+        </button>
+      </div>
+
       <!-- 전체화면 프로필 -->
       <div class="pf-wrap">
         <!-- 배경 사진 -->
@@ -1538,7 +1553,7 @@
 
       <!-- ===== 글자 크기 설정 카드 ===== -->
       <div class="section-title" data-lang="set_font_title">글자 크기 설정</div>
-      <div class="share-btn-group" style="display:flex;gap:8px;padding:12px 0 4px;">
+      <div class="share-btn-group" style="display:flex;gap:8px;padding:12px 0 16px;">
         <button class="btn btn-secondary btn-sm lang-font-btn" id="fontBtn-15"
           onclick="setFontSize(15)" style="flex:1;padding:10px 4px;border-radius:10px;transition:all .2s;">
           <div data-lang="font_default" style="font-weight:700;">기본</div>
@@ -1553,19 +1568,6 @@
           onclick="setFontSize(21)" style="flex:1;padding:10px 4px;border-radius:10px;transition:all .2s;">
           <div data-lang="font_xlarge" style="font-weight:700;">아주 크게</div>
           <small style="opacity:.7;">21px</small>
-        </button>
-      </div>
-
-      <!-- ===== 언어 설정 카드 ===== -->
-      <div class="section-title" data-lang="set_lang_title" style="margin-top:8px;">언어 설정</div>
-      <div class="share-btn-group" style="display:flex;gap:8px;padding:12px 0 16px;">
-        <button class="btn btn-secondary btn-sm lang-switch-btn" id="langBtn-ko"
-          onclick="setLanguage('ko')" style="flex:1;padding:10px 4px;border-radius:10px;font-weight:700;transition:all .2s;">
-          🇰🇷 한국어
-        </button>
-        <button class="btn btn-secondary btn-sm lang-switch-btn" id="langBtn-en"
-          onclick="setLanguage('en')" style="flex:1;padding:10px 4px;border-radius:10px;font-weight:700;transition:all .2s;">
-          🇺🇸 English
         </button>
       </div>
       <div class="page-header" data-lang="share_title">공유 & 백업</div>
@@ -3279,7 +3281,7 @@ function tvScore(tid, ri, gi, team, val) {
 
 function tvSyncToMatch(t, ri, gi) {
   const game = t.rounds[ri].games[gi];
-  const myName = state.profile.name || '선수';
+  const myName = state.profile.name || _t('pf_default_name');
 
   // 내가 이 게임에 참여했는지 확인
   const inA = game.teamA.includes(myName);
@@ -3452,31 +3454,37 @@ function doConfirm() {
 }
 
 // ===== PROFILE =====
-const PROFILE_FIELDS = [
+function getProfileFields() {
+  const lang = localStorage.getItem('niji_language') || 'ko';
+  const isEn = lang === 'en';
+  return [
   // ── 기본 정보 ──
-  { key:'name',    lbl:'NAME',    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>',                                                type:'text',   ph:'이름 / 닉네임',        full:false, section:'기본 정보' },
-  { key:'club',    lbl:'CLUB',    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',         type:'text',   ph:'소속 클럽',             full:false },
-  { key:'age',     lbl:'AGE',     icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>',                                          type:'select', opts:['10대','20대','30대','40대','50대','60대 이상'], full:false },
-  { key:'hand',    lbl:'HAND',    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8.5A6 6 0 0 0 18 14v-3a2 2 0 0 0-4 0"/></svg>', type:'select', opts:['오른손','왼손'],        full:false },
-  { key:'career',  lbl:'EXP',     icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>',                                                       type:'select', opts:['6개월 미만','6개월~1년','1~2년','2~5년','5~10년','10년 이상'], full:false },
-  { key:'style',   lbl:'STYLE',   icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>', type:'select', opts:['공격형','수비형','올라운드','네트플레이','베이스라인'], full:false },
+  { key:'name',    lbl:'NAME',    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>',                                                type:'text',   ph: isEn ? 'Name / Nickname' : '이름 / 닉네임', full:false },
+  { key:'club',    lbl:'CLUB',    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',         type:'text',   ph: isEn ? 'Club name' : '소속 클럽', full:false },
+  { key:'age',     lbl:'AGE',     icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>',                                          type:'select', opts: isEn ? ['Teens','20s','30s','40s','50s','60s+'] : ['10대','20대','30대','40대','50대','60대 이상'], optsKo:['10대','20대','30대','40대','50대','60대 이상'], full:false },
+  { key:'hand',    lbl:'HAND',    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8.5A6 6 0 0 0 18 14v-3a2 2 0 0 0-4 0"/></svg>', type:'select', opts: isEn ? ['Right','Left'] : ['오른손','왼손'], optsKo:['오른손','왼손'], full:false },
+  { key:'career',  lbl:'EXP',     icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>',                                                       type:'select', opts: isEn ? ['< 6 mo','6mo~1yr','1~2 yrs','2~5 yrs','5~10 yrs','10+ yrs'] : ['6개월 미만','6개월~1년','1~2년','2~5년','5~10년','10년 이상'], optsKo:['6개월 미만','6개월~1년','1~2년','2~5년','5~10년','10년 이상'], full:false },
+  { key:'style',   lbl:'STYLE',   icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>', type:'select', opts: isEn ? ['Aggressive','Defensive','All-round','Net play','Baseline'] : ['공격형','수비형','올라운드','네트플레이','베이스라인'], optsKo:['공격형','수비형','올라운드','네트플레이','베이스라인'], full:false },
   // ── 장비 정보 (라켓 1) ──
-  { key:'racket',   lbl:'RACQUET 1', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><ellipse cx="11" cy="9" rx="6" ry="8" transform="rotate(-45 11 9)"/><line x1="16" y1="16" x2="21" y2="21"/><line x1="8" y1="11" x2="11" y2="8"/></svg>', type:'text', ph:'예) 윌슨 블레이드 98', full:true, section:'장비 정보' },
-  { key:'string',   lbl:'STRING 1',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>', type:'text', ph:'예) 럭실론 4G 1.25', full:false },
-  { key:'tension',  lbl:'TENSION 1', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>', type:'text', ph:'예) 50/52 파운드', full:false },
+  { key:'racket',   lbl:'RACQUET 1', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><ellipse cx="11" cy="9" rx="6" ry="8" transform="rotate(-45 11 9)"/><line x1="16" y1="16" x2="21" y2="21"/><line x1="8" y1="11" x2="11" y2="8"/></svg>', type:'text', ph: isEn ? 'e.g. Wilson Blade 98' : '예) 윌슨 블레이드 98', full:true },
+  { key:'string',   lbl:'STRING 1',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>', type:'text', ph: isEn ? 'e.g. Luxilon 4G 1.25' : '예) 럭실론 4G 1.25', full:false },
+  { key:'tension',  lbl:'TENSION 1', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>', type:'text', ph: isEn ? 'e.g. 50/52 lbs' : '예) 50/52 파운드', full:false },
   // ── 장비 정보 (라켓 2) ──
-  { key:'racket2',  lbl:'RACQUET 2', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><ellipse cx="11" cy="9" rx="6" ry="8" transform="rotate(-45 11 9)"/><line x1="16" y1="16" x2="21" y2="21"/><line x1="8" y1="11" x2="11" y2="8"/></svg>', type:'text', ph:'예) 요넥스 VCORE 98', full:true },
-  { key:'string2',  lbl:'STRING 2',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>', type:'text', ph:'예) 바볼랏 RPM 블래스트', full:false },
-  { key:'tension2', lbl:'TENSION 2', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>', type:'text', ph:'예) 52/54 파운드', full:false },
+  { key:'racket2',  lbl:'RACQUET 2', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><ellipse cx="11" cy="9" rx="6" ry="8" transform="rotate(-45 11 9)"/><line x1="16" y1="16" x2="21" y2="21"/><line x1="8" y1="11" x2="11" y2="8"/></svg>', type:'text', ph: isEn ? 'e.g. Yonex VCORE 98' : '예) 요넥스 VCORE 98', full:true },
+  { key:'string2',  lbl:'STRING 2',  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>', type:'text', ph: isEn ? 'e.g. Babolat RPM Blast' : '예) 바볼랏 RPM 블래스트', full:false },
+  { key:'tension2', lbl:'TENSION 2', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>', type:'text', ph: isEn ? 'e.g. 52/54 lbs' : '예) 52/54 파운드', full:false },
   // ── 스트링 교체일 ──
-  { key:'stringDate',  lbl:'교체일 1', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg>', type:'date', ph:'', full:true },
-  { key:'stringDate2', lbl:'교체일 2', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg>', type:'date', ph:'', full:true },
-];
+  { key:'stringDate',  lbl: isEn ? 'Replaced 1' : '교체일 1', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg>', type:'date', ph:'', full:true },
+  { key:'stringDate2', lbl: isEn ? 'Replaced 2' : '교체일 2', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg>', type:'date', ph:'', full:true },
+  ];
+}
+// 하위 호환성: 기존 코드가 PROFILE_FIELDS 배열을 참조하는 경우 대비
+const PROFILE_FIELDS = getProfileFields();
 
 function renderProfile() {
   if (!state.profile) state.profile = {};
   const p = state.profile;
-  const name = (p.name && p.name.trim()) ? p.name.trim() : '선수';
+  const name = (p.name && p.name.trim()) ? p.name.trim() : _t('pf_default_name');
   const initial = name.charAt(0).toUpperCase();
 
   // 상단 아바타 버튼
@@ -3516,17 +3524,18 @@ function renderProfile() {
     ['career','style'],
   ];
   const fieldMap = {};
-  PROFILE_FIELDS.forEach(f => fieldMap[f.key] = f);
+  const _fields = getProfileFields();
+  _fields.forEach(f => fieldMap[f.key] = f);
 
   // 스트링 히스토리에서 옵션 목록 생성
   const histStrings = [...new Set((state.stringingHistory || []).map(h => h.name).filter(Boolean))];
 
   // 스트링 선택 드롭다운 + 직접입력 HTML 생성 (개선: 세로 배치)
   function stringSelectInput(key, val) {
-    const ph = key.includes('2') ? '직접 입력 또는 위에서 선택' : '직접 입력 또는 위에서 선택';
+    const ph = _t('pf_string_input_ph');
     const uid = 'ssi_' + key;
     if (histStrings.length === 0) {
-      return `<input class="pf-item-input" value="${escHtml(val)}" placeholder="예) 럭실론 4G 1.25"
+      return `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${_t('pf_string_input_ph')}"
                oninput="pfDebounceSave('${key}',this.value)"
                onkeydown="if(event.key==='Enter')this.blur()">`;
     }
@@ -3541,7 +3550,7 @@ function renderProfile() {
             pfDebounceSave('${key}',this.value);
           }
         ">
-        <option value="">📋 과거 스트링 중 선택</option>
+        <option value="">${_t('pf_select_string')}</option>
         ${histStrings.map(s=>`<option${val===s?' selected':''}>${escHtml(s)}</option>`).join('')}
       </select>
       <input id="${uid}" class="pf-item-input" value="${escHtml(val)}" placeholder="${ph}"
@@ -3567,8 +3576,12 @@ function renderProfile() {
       const val = p[f.key] || '';
       const inputEl = f.type === 'select'
         ? `<select class="pf-item-select${val?'':' unset'}" onchange="this.classList.toggle('unset',!this.value);saveProfileField('${f.key}',this.value)">
-             <option value="">미설정</option>
-             ${f.opts.map(o=>`<option${val===o?' selected':''}>${o}</option>`).join('')}
+             <option value="">${_t('pf_unset')}</option>
+             ${(f.optsKo || f.opts).map((koOpt, i) => {
+               const displayOpt = f.opts[i];
+               const isSelected = (val === koOpt) || (val === displayOpt);
+               return `<option value="${escHtml(koOpt)}"${isSelected?' selected':''}>${escHtml(displayOpt)}</option>`;
+             }).join('')}
            </select>`
         : `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${f.ph||''}"
              oninput="pfDebounceSave('${f.key}',this.value)"
@@ -3590,7 +3603,7 @@ function renderProfile() {
   const tensionIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>';
 
   // 장비 섹션 타이틀
-  html += `<div style="margin:12px 0 6px;font-size: 0.6667rem;font-weight:700;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;">🎾 장비 정보</div>`;
+  html += `<div style="margin:12px 0 6px;font-size: 0.6667rem;font-weight:700;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;">${_t('pf_equipment')}</div>`;
 
   // 라켓 드롭다운 카드 생성 함수
   function racketAccordion(num, rKey, sKey, tKey, dKey, rPh) {
@@ -3601,7 +3614,7 @@ function renderProfile() {
     const isOpen = false; // 기본 항상 닫힘
     const summaryText = rVal
       ? `<span style="font-size: 0.8rem;font-weight:700;color:var(--text);margin-left:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;">${escHtml(rVal)}</span>`
-      : `<span style="font-size: 0.7333rem;color:var(--text-muted);margin-left:6px;">미입력</span>`;
+      : `<span style="font-size: 0.7333rem;color:var(--text-muted);margin-left:6px;">${_t('pf_not_entered')}</span>`;
 
     return `
     <div class="pf-item" style="flex-direction:column;align-items:stretch;padding:0;overflow:hidden;">
@@ -3621,7 +3634,7 @@ function renderProfile() {
         <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);">
           <div class="pf-item-icon">${racketIcon}</div>
           <div class="pf-item-body" style="flex:1;">
-            <div class="pf-item-lbl">[라켓명]</div>
+            <div class="pf-item-lbl">[${_t('pf_racket_name')}]</div>
             <input class="pf-item-input" value="${escHtml(rVal)}" placeholder="${rPh}"
               oninput="pfDebounceSave('${rKey}',this.value);pfUpdateRacketSummary(${num},'${rKey}')"
               onkeydown="if(event.key==='Enter')this.blur()">
@@ -3631,7 +3644,7 @@ function renderProfile() {
         <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);">
           <div class="pf-item-icon">${stringIcon}</div>
           <div class="pf-item-body" style="flex:1;">
-            <div class="pf-item-lbl">[스트링]</div>
+            <div class="pf-item-lbl">[${_t('pf_string_label')}]</div>
             ${stringSelectInput(sKey, sVal)}
           </div>
         </div>
@@ -3639,7 +3652,7 @@ function renderProfile() {
         <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);">
           <div class="pf-item-icon">${tensionIcon}</div>
           <div class="pf-item-body" style="flex:1;">
-            <div class="pf-item-lbl">[텐션]</div>
+            <div class="pf-item-lbl">[${_t('pf_tension_label')}]</div>
             <input class="pf-item-input" value="${escHtml(tVal)}" placeholder="예) 50/52 파운드"
               oninput="pfDebounceSave('${tKey}',this.value)"
               onkeydown="if(event.key==='Enter')this.blur()">
@@ -3649,7 +3662,7 @@ function renderProfile() {
         <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;">
           <div class="pf-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg></div>
           <div class="pf-item-body" style="flex:1;">
-            <div class="pf-item-lbl">[스트링 교체일]</div>
+            <div class="pf-item-lbl">[${_t('pf_string_date')}]</div>
             <input type="date" class="pf-item-input" value="${escHtml(dVal)}"
               style="cursor:pointer;"
               onclick="try{this.showPicker()}catch(e){}"
@@ -3734,15 +3747,15 @@ function renderStringBanner() {
   function racketRow(num, racket, diff, games) {
     const hasData = racket || diff !== null;
     if (!hasData) return '';
-    const name = racket || `라켓 ${num}`;
+    const name = racket || `${_t('pf_racket_name')} ${num}`;
     const cls  = diff !== null ? colorClass(diff) : 'none';
     const dColor = diff !== null ? dayColor(cls) : 'var(--text-muted)';
     const dot = cls === 'green' ? '#4ade80' : cls === 'yellow' ? '#fbbf24' : cls === 'red' ? '#f87171' : 'var(--text-muted)';
     const diffLabel = diff !== null
       ? `<span style="font-family:'Orbitron',sans-serif;font-size: 0.8rem;font-weight:900;color:${dColor};">D+${diff}</span>`
-      : `<span style="font-size: 0.6667rem;color:var(--text-muted);">미입력</span>`;
+      : `<span style="font-size: 0.6667rem;color:var(--text-muted);">${_t('pf_not_entered')}</span>`;
     const gamesLabel = diff !== null
-      ? `<span style="font-size: 0.6667rem;color:var(--text-muted);margin-left:4px;">${games}게임</span>`
+      ? `<span style="font-size: 0.6667rem;color:var(--text-muted);margin-left:4px;">${games}${_t('contest_games')}</span>`
       : '';
     return `<div style="display:flex;align-items:center;gap:6px;padding:4px 0;">
       <span style="width:6px;height:6px;border-radius:50%;background:${dot};flex-shrink:0;"></span>
@@ -3756,7 +3769,7 @@ function renderStringBanner() {
   const hasAny = row1 || row2;
 
   if (!hasAny) {
-    banner.innerHTML = `<div style="font-size: 0.8rem;color:var(--text-muted);padding:8px 2px;">라켓 정보를 입력해주세요</div>`;
+    banner.innerHTML = `<div style="font-size: 0.8rem;color:var(--text-muted);padding:8px 2px;">${_t('pf_no_racket')}</div>`;
     return;
   }
 
@@ -3821,7 +3834,7 @@ function pfUpdateRacketSummary(num, key) {
     summarySpan.style.textOverflow = '';
     summarySpan.style.whiteSpace = '';
     summarySpan.style.maxWidth = '';
-    summarySpan.textContent = '미입력';
+    summarySpan.textContent = _t('pf_not_entered');
   }
 
   // 배너도 즉시 갱신
@@ -3841,7 +3854,7 @@ function saveProfileField(key, value) {
     state.lastStringDate = state.profile[key];
   }
   save();
-  const p = state.profile; const name = (p.name && p.name.trim()) ? p.name.trim() : '선수';
+  const p = state.profile; const name = (p.name && p.name.trim()) ? p.name.trim() : _t('pf_default_name');
   const nameRow = document.getElementById('profileNameBig');
   if (nameRow) nameRow.innerHTML = `
     <span class="pf-club-tag">${p.club ? escHtml(p.club.toUpperCase()) : ''}</span>
@@ -4009,7 +4022,7 @@ function _matchCardHTML(m) {
   const scoreStr = (m.myScore !== '' && m.oppScore !== '') ? `${m.myScore} : ${m.oppScore}` : '';
   const tiebreakStr = (m.myTiebreak && m.myTiebreak !== '' && m.oppTiebreak && m.oppTiebreak !== '') ? ` (${m.myTiebreak}-${m.oppTiebreak})` : '';
   const opps = [m.opponent, m.opponent2].filter(Boolean).map(escHtml).join(', ');
-  const fmtLabel = m.format === 'doubles' ? '복식' : '단식';
+  const fmtLabel = m.format === 'doubles' ? _t('match_doubles') : _t('match_singles');
   // 종목 아이콘
   const sportIcon = m.sport === 'pickleball' ? sportIconHTML('pickleball', 14) : (m.sport === 'tennis' ? '🎾' : '🏸');
   const pickleLabel = '';
@@ -4114,7 +4127,7 @@ function renderMatchList() {
 
   if (!state.matches || !state.matches.length) {
     const _emptyIcon = state.sportType === 'pickleball' ? sportIconHTML('pickleball', 40) : (state.sportType === 'tennis' ? '🎾' : '🏸');
-    todayEl.innerHTML = `<div class="empty-state"><div class="empty-icon">${_emptyIcon}</div><div class="empty-text">아직 경기 기록이 없어요</div></div>`;
+    todayEl.innerHTML = `<div class="empty-state"><div class="empty-icon">${_emptyIcon}</div><div class="empty-text">${_t('match_today_empty')}</div></div>`;
     pastEl.innerHTML = '';
     if (countEl) countEl.textContent = '';
     return;
@@ -4127,7 +4140,7 @@ function renderMatchList() {
     todayEl.innerHTML = todayMatches.map(_matchCardHTML).join('');
   } else {
     const _emptyIcon2 = state.sportType === 'pickleball' ? sportIconHTML('pickleball', 16) : (state.sportType === 'tennis' ? '🎾' : '🏸');
-    todayEl.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8667rem;padding:10px 0 4px;">${_emptyIcon2} 오늘 경기 기록이 없어요</div>`;
+    todayEl.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8667rem;padding:10px 0 4px;">${_emptyIcon2} ${_t('match_today_none')}</div>`;
   }
 
   // 월별 드롭다운 + 이전 경기
@@ -4569,11 +4582,11 @@ function renderSummaryCard(ms) {
     `<div class="summary-row"><span class="summary-label">${label}</span><span class="summary-val ${cls}">${val}</span></div>`;
 
   el.innerHTML = [
-    row('이번 달', thisMonth.length ? `${thisMonth.length}전 ${tmW}승 (${tmRate}%)` : '경기 없음', tmRate >= 50 ? 'good' : thisMonth.length ? 'bad' : ''),
-    row('단식 전적', singles.length ? `${sw}승 ${singles.length-sw}패${sRate !== null ? ` · ${sRate}%` : ''}` : '없음', sRate !== null ? (sRate >= 50 ? 'good' : 'bad') : ''),
-    row('복식 전적', doubles.length ? `${dw}승 ${doubles.length-dw}패${dRate !== null ? ` · ${dRate}%` : ''}` : '없음', dRate !== null ? (dRate >= 50 ? 'good' : 'bad') : ''),
-    bestVs ? row('가장 많이 이긴 상대', `${bestVs[0]} (${bestVs[1].w}승)`, 'good') : '',
-    hardestVs ? row('가장 어려운 상대', `${hardestVs[0]} (${hardestVs[1].l}패)`, 'bad') : '',
+    row(_t('stats_this_month'), thisMonth.length ? `${thisMonth.length}${_t('stats_game_count')} ${tmW}${_t('stats_win_suffix')} (${tmRate}%)` : _t('stats_no_match'), tmRate >= 50 ? 'good' : thisMonth.length ? 'bad' : ''),
+    row(_t('stats_singles_record'), singles.length ? `${sw}${_t('stats_win_suffix')} ${singles.length-sw}${_t('stats_lose_suffix')}${sRate !== null ? ` · ${sRate}%` : ''}` : _t('stats_no_record'), sRate !== null ? (sRate >= 50 ? 'good' : 'bad') : ''),
+    row(_t('stats_doubles_record'), doubles.length ? `${dw}${_t('stats_win_suffix')} ${doubles.length-dw}${_t('stats_lose_suffix')}${dRate !== null ? ` · ${dRate}%` : ''}` : _t('stats_no_record'), dRate !== null ? (dRate >= 50 ? 'good' : 'bad') : ''),
+    bestVs ? row(_t('stats_best_vs'), `${bestVs[0]} (${bestVs[1].w}${_t('stats_win_suffix')})`, 'good') : '',
+    hardestVs ? row(_t('stats_hardest_vs'), `${hardestVs[0]} (${hardestVs[1].l}${_t('stats_lose_suffix')})`, 'bad') : '',
   ].join('');
 }
 
@@ -4605,7 +4618,7 @@ function renderOpponentStats(ms) {
     }
   });
   if (!Object.keys(om).length) {
-    document.getElementById('opponentCard').innerHTML = '<div class="empty-state"><div class="empty-icon">⚔️</div><div class="empty-text">경기를 입력하면<br>상대 데이터가 표시됩니다</div></div>';
+    document.getElementById('opponentCard').innerHTML = `<div class="empty-state"><div class="empty-icon">⚔️</div><div class="empty-text">${_t('stats_opp_empty').replace('\n','<br>')}</div></div>`;
     return;
   }
   const sortEl = document.getElementById('oppSort');
@@ -4635,7 +4648,7 @@ function renderOpponentStats(ms) {
     window._oppShowAll = true;
   }
   if (!sorted.length) {
-    document.getElementById('opponentCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">검색 결과가 없습니다</div></div>';
+    document.getElementById('opponentCard').innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">${_t('stats_search_empty')}</div></div>`;
     return;
   }
   const total = sorted.length;
@@ -4695,7 +4708,7 @@ function renderPartnerStats(ms) {
     if (m.result === 'win') pm[m.partner].w++; else pm[m.partner].l++;
   });
   if (!Object.keys(pm).length) {
-    document.getElementById('partnerCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🤝</div><div class="empty-text">복식 경기를 입력하면<br>파트너 데이터가 표시됩니다</div></div>';
+    document.getElementById('partnerCard').innerHTML = `<div class="empty-state"><div class="empty-icon">🤝</div><div class="empty-text">${_t('stats_partner_empty').replace('\n','<br>')}</div></div>`;
     return;
   }
   const partnerSortEl = document.getElementById('partnerSort');
@@ -4724,7 +4737,7 @@ function renderPartnerStats(ms) {
     window._partnerShowAll = true;
   }
   if (!sorted.length) {
-    document.getElementById('partnerCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">검색 결과가 없습니다</div></div>';
+    document.getElementById('partnerCard').innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">${_t('stats_search_empty')}</div></div>`;
     return;
   }
   const total = sorted.length;
@@ -4769,7 +4782,7 @@ function renderSinglesStats(ms) {
     if (m.result === 'win') tm[opp].w++; else tm[opp].l++;
   });
   if (!Object.keys(tm).length) {
-    document.getElementById('singlesCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-text">단식 경기를 입력하면<br>상성 데이터가 표시됩니다</div></div>';
+    document.getElementById('singlesCard').innerHTML = `<div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-text">${_t('stats_singles_empty').replace('\n','<br>')}</div></div>`;
     return;
   }
   const singlesSortEl = document.getElementById('singlesSort');
@@ -4798,7 +4811,7 @@ function renderSinglesStats(ms) {
     window._singlesShowAll = true;
   }
   if (!sorted.length) {
-    document.getElementById('singlesCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">검색 결과가 없습니다</div></div>';
+    document.getElementById('singlesCard').innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">${_t('stats_search_empty')}</div></div>`;
     return;
   }
   const total = sorted.length;
@@ -4845,7 +4858,7 @@ function renderEnemyTeamStats(ms) {
     if (m.result === 'win') tm[oppTeamKey].partners[partnerKey].w++; else tm[oppTeamKey].partners[partnerKey].l++;
   });
   if (!Object.keys(tm).length) {
-    document.getElementById('enemyTeamCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🆚</div><div class="empty-text">복식 경기를 입력하면<br>상대팀 데이터가 표시됩니다</div></div>';
+    document.getElementById('enemyTeamCard').innerHTML = `<div class="empty-state"><div class="empty-icon">🆚</div><div class="empty-text">${_t('stats_enemy_empty').replace('\n','<br>')}</div></div>`;
     return;
   }
   const enemySortEl = document.getElementById('enemySort');
@@ -4874,7 +4887,7 @@ function renderEnemyTeamStats(ms) {
     window._enemyShowAll = true;
   }
   if (!sorted.length) {
-    document.getElementById('enemyTeamCard').innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">검색 결과가 없습니다</div></div>';
+    document.getElementById('enemyTeamCard').innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">${_t('stats_search_empty')}</div></div>`;
     return;
   }
   const total = sorted.length;
@@ -4982,7 +4995,7 @@ function setPlayerSort(val) {
 function renderPlayerClubFilter() {
   const el = document.getElementById('playerClubFilter');
   if (!state.clubs.length) { el.innerHTML = ''; return; }
-  const all = ['전체', ...state.clubs, '클럽 없음'];
+  const all = [_t('player_all_filter'), ...state.clubs, _t('player_no_club_filter')];
   el.innerHTML = `<div class="club-filter">${all.map(c =>
     `<button class="club-filter-btn${state.playerClubFilter===c?' active':''}" onclick="setPlayerClubFilter(this.dataset.club)" data-club="${escHtml(c)}">${escHtml(c)}</button>`
   ).join('')}</div>`;
@@ -5018,7 +5031,7 @@ function togglePlayerClub(playerId, club) {
   if (nameEl) {
     const badges = player.clubs.length
       ? player.clubs.map(c => `<span class="club-badge">${escHtml(c)}</span>`).join('')
-      : (state.clubs.length ? `<span style="font-size: 0.6667rem;color:var(--text-muted);"> · 클럽 없음</span>` : '');
+      : (state.clubs.length ? `<span style="font-size: 0.6667rem;color:var(--text-muted);"> · ${_t('player_no_club_filter')}</span>` : '');
     nameEl.innerHTML = escHtml(player.name) + badges;
   }
   showToast(club ? `🏠 ${club} ${player.clubs.includes(club) ? '추가' : '해제'}` : '클럽 전체 해제');
@@ -5319,8 +5332,8 @@ function renderPlayers() {
 
   // 필터 적용
   let filtered = state.players;
-  if (state.playerClubFilter !== '전체') {
-    if (state.playerClubFilter === '클럽 없음') {
+  if (state.playerClubFilter !== '전체' && state.playerClubFilter !== _t('player_all_filter')) {
+    if (state.playerClubFilter === '클럽 없음' || state.playerClubFilter === _t('player_no_club_filter')) {
       filtered = state.players.filter(p => !p.clubs || p.clubs.length === 0);
     } else {
       filtered = state.players.filter(p => p.clubs && p.clubs.includes(state.playerClubFilter));
@@ -5354,7 +5367,7 @@ function renderPlayers() {
   }
 
   if (!filtered.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">${state.playerClubFilter === '전체' ? '선수를 추가해보세요!' : '해당 클럽에 선수가 없습니다'}</div></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">${state.playerClubFilter === '전체' || state.playerClubFilter === _t('player_all_filter') ? _t('player_add_placeholder') : _t('player_no_club')}</div></div>`;
     return;
   }
   el.innerHTML = filtered.map(p => {
@@ -5363,7 +5376,7 @@ function renderPlayers() {
     const playerClubs = p.clubs || [];
     const clubDisplay = playerClubs.length
       ? playerClubs.map(c => `<span class="club-badge">${escHtml(c)}</span>`).join('')
-      : (state.clubs.length ? `<span style="font-size: 0.6667rem;color:var(--text-muted);"> · 클럽 없음</span>` : '');
+      : (state.clubs.length ? `<span style="font-size: 0.6667rem;color:var(--text-muted);"> · ${_t('player_no_club_filter')}</span>` : '');
 
     return `<li class="player-item" id="playerItem-${p.id}">
       <div class="player-item-main">
@@ -5429,7 +5442,7 @@ function clearPlayerClubs(playerId) {
     });
   }
   const nameEl = document.querySelector(`#playerItem-${playerId} .player-name`);
-  if (nameEl) nameEl.innerHTML = escHtml(player.name) + (state.clubs.length ? `<span style="font-size: 0.6667rem;color:var(--text-muted);"> · 클럽 없음</span>` : '');
+  if (nameEl) nameEl.innerHTML = escHtml(player.name) + (state.clubs.length ? `<span style="font-size: 0.6667rem;color:var(--text-muted);"> · ${_t('player_no_club_filter')}</span>` : '');
   showToast('클럽 전체 해제');
 }
 
@@ -5469,7 +5482,7 @@ function showPlayerDetail(playerId) {
   const playerClubs = player.clubs || [];
   const clubTag = playerClubs.length
     ? playerClubs.map(c => `<span class="club-badge">${escHtml(c)}</span>`).join('')
-    : '<span style="color:var(--text-muted);font-size: 0.8rem;">클럽 없음</span>';
+    : `<span style="color:var(--text-muted);font-size: 0.8rem;">${_t('player_no_club_filter')}</span>`;
 
   const rateBarWidth = myRate + '%';
 
@@ -5477,7 +5490,7 @@ function showPlayerDetail(playerId) {
   function makeMatchRow(m) {
     const isWin = m.result === 'win';
     const score = m.myScore != null ? `${m.myScore} : ${m.oppScore}` : '';
-    const fmt = m.format === 'doubles' ? '복식' : '단식';
+    const fmt = m.format === 'doubles' ? _t('match_doubles') : _t('match_singles');
     const isDoubles = m.format === 'doubles';
     let doublesInfo = '';
     if (isDoubles) {
@@ -7440,7 +7453,7 @@ function tnRefreshModal() {
   const t = (state.tnTournaments || []).find(x => x.id === _tnCurrentId);
   if (!t) return;
   document.getElementById('tn-modal-name').textContent = t.name;
-  document.getElementById('tn-modal-fmt').textContent = t.format === 'doubles' ? '복식' : '단식';
+  document.getElementById('tn-modal-fmt').textContent = t.format === 'doubles' ? _t('match_doubles') : _t('match_singles');
   document.getElementById('tn-modal-content').innerHTML = tnBracketHTML(t);
   // 3·4위전 카드 별도 렌더링
   const thirdCardEl = document.getElementById('tn-third-card');
@@ -7877,7 +7890,7 @@ function tnCascadeReset(t, ri, gi) {
 function tnSyncToMatch(t, ri, gi) {
   const game = t.bracket[ri].games[gi];
   if (!game.winner) return;
-  const myName = state.profile.name || '선수';
+  const myName = state.profile.name || _t('pf_default_name');
   const aName = game.a || '';
   const bName = game.b || '';
   const inA = t.format === 'singles' ? aName === myName : aName.includes(myName);
@@ -8917,6 +8930,44 @@ const NIJI_DICT = {
   tn_opp_reset:            { ko: '🗑️ 대진 초기화',       en: '🗑️ Reset Bracket' },
   tn_opp_all_set:          { ko: '모든 1라운드 대진이 완성되었어요 ✅', en: 'All 1st round matchups set ✅' },
   tn_opp_no_match:         { ko: '아직 대진이 없어요. 위에서 선수를 2명씩 클릭하세요!', en: 'No matchups yet. Click 2 players above!' },
+
+  // 프로필 탭 동적 렌더 텍스트
+  pf_unset:                { ko: '미설정',          en: 'Not set' },
+  pf_not_entered:          { ko: '미입력',          en: 'Not entered' },
+  pf_equipment:            { ko: '🎾 장비 정보',    en: '🎾 Equipment' },
+  pf_racket_name:          { ko: '라켓명',          en: 'Racket' },
+  pf_string_label:         { ko: '스트링',          en: 'String' },
+  pf_tension_label:        { ko: '텐션',            en: 'Tension' },
+  pf_string_date:          { ko: '스트링 교체일',   en: 'String Date' },
+  pf_no_racket:            { ko: '라켓 정보를 입력해주세요', en: 'Enter your racket info' },
+  pf_default_name:         { ko: '선수',            en: 'Player' },
+  pf_select_string:        { ko: '📋 과거 스트링 중 선택', en: '📋 Select from history' },
+  pf_string_input_ph:      { ko: '직접 입력 또는 위에서 선택', en: 'Type or select above' },
+
+  // 통계 탭 동적 렌더 텍스트
+  stats_this_month:        { ko: '이번 달',         en: 'This Month' },
+  stats_no_match:          { ko: '경기 없음',        en: 'No matches' },
+  stats_singles_record:    { ko: '단식 전적',        en: 'Singles Record' },
+  stats_doubles_record:    { ko: '복식 전적',        en: 'Doubles Record' },
+  stats_no_record:         { ko: '없음',             en: 'None' },
+  stats_best_vs:           { ko: '가장 많이 이긴 상대', en: 'Best Win vs' },
+  stats_hardest_vs:        { ko: '가장 어려운 상대',  en: 'Hardest Opponent' },
+  stats_win_suffix:        { ko: '승',               en: 'W' },
+  stats_lose_suffix:       { ko: '패',               en: 'L' },
+  stats_game_count:        { ko: '전',               en: 'G' },
+  stats_enemyteam_empty:   { ko: '복식 경기를 입력하면\n상대팀 데이터가 표시됩니다', en: 'Enter doubles matches to see\nenemy team data' },
+  stats_search_empty:      { ko: '검색 결과가 없습니다', en: 'No results found' },
+  match_today_empty:       { ko: '아직 경기 기록이 없어요', en: 'No match records yet' },
+  match_today_none:        { ko: '오늘 경기 기록이 없어요', en: 'No matches today' },
+
+  // 선수 탭 동적 렌더 텍스트
+  player_add_placeholder:  { ko: '선수를 추가해보세요!', en: 'Add a player!' },
+  player_no_club:          { ko: '해당 클럽에 선수가 없습니다', en: 'No players in this club' },
+  player_all_filter:       { ko: '전체',             en: 'All' },
+  player_no_club_filter:   { ko: '클럽 없음',        en: 'No Club' },
+
+  // 언어 선택 버튼 (프로필 탭 상단)
+  pf_lang_section:         { ko: '🌐 언어 / Language', en: '🌐 Language / 언어' },
 };
 
 // ── 글자 크기 변경 ──────────────────────────────────
@@ -8974,6 +9025,14 @@ function setLanguage(lang) {
       document.getElementById('tn-root') &&
       document.getElementById('tn-root').style.display !== 'none') {
     renderTnList();
+  }
+
+  // 프로필 탭 동적 렌더 갱신 (언어 변경 시 필드 옵션 등 재구성)
+  if (typeof renderProfile === 'function') {
+    renderProfile();
+  }
+  if (typeof renderStringBanner === 'function') {
+    renderStringBanner();
   }
 
   // 버튼 강조
