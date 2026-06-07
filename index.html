@@ -2701,6 +2701,10 @@ function _initApp() {
   var navBar = document.querySelector('.nav');
   if (navBar) navBar.style.display = 'flex';
 
+  // 저장된 언어 설정 복원 (로그인 후 영어 설정이 한국어로 초기화되는 문제 수정)
+  var savedLang = localStorage.getItem('niji_language') || 'ko';
+  if (typeof setLanguage === 'function') setLanguage(savedLang);
+
   if (document.getElementById('sportType')) {
     document.getElementById('sportType').value = state.sportType || 'tennis';
   }
