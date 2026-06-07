@@ -1166,7 +1166,7 @@
             <div id="singlesOpponentRow" style="margin-bottom:8px;">
               <div class="form-label" style="margin-bottom:4px;" data-lang="match_opponent_lbl">🆚 상대</div>
               <div style="position:relative;">
-                <input class="form-input" id="matchOpponent" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent')" style="padding:9px 12px;font-size: 0.9333rem;">
+                <input class="form-input" id="matchOpponent" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent')" style="padding:9px 12px;font-size: 0.9333rem;">
                 <div class="player-ac-list" id="ac-opponent" style="display:none;"></div>
               </div>
             </div>
@@ -1177,7 +1177,7 @@
               <div id="partnerGroup" style="margin-bottom:8px;">
                 <div class="form-label" style="margin-bottom:4px;" data-lang="match_partner_lbl">🤝 파트너</div>
                 <div style="position:relative;">
-                  <input class="form-input" id="matchPartner" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-partner')" style="padding:9px 12px;font-size: 0.9333rem;">
+                  <input class="form-input" id="matchPartner" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-partner')" style="padding:9px 12px;font-size: 0.9333rem;">
                   <div class="player-ac-list" id="ac-partner" style="display:none;"></div>
                 </div>
               </div>
@@ -1186,14 +1186,14 @@
                 <div>
                   <div class="form-label" style="margin-bottom:4px;" data-lang="match_opp1_lbl">🆚 상대 1</div>
                   <div style="position:relative;">
-                    <input class="form-input" id="matchOpponent1" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent1')" style="padding:9px 10px;font-size: 0.9333rem;">
+                    <input class="form-input" id="matchOpponent1" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent1')" style="padding:9px 10px;font-size: 0.9333rem;">
                     <div class="player-ac-list" id="ac-opponent1" style="display:none;"></div>
                   </div>
                 </div>
                 <div id="opponent2Group">
                   <div class="form-label" style="margin-bottom:4px;" data-lang="match_opp2_lbl">🆚 상대 2</div>
                   <div style="position:relative;">
-                    <input class="form-input" id="matchOpponent2" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent2')" style="padding:9px 10px;font-size: 0.9333rem;">
+                    <input class="form-input" id="matchOpponent2" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent2')" style="padding:9px 10px;font-size: 0.9333rem;">
                     <div class="player-ac-list" id="ac-opponent2" style="display:none;"></div>
                   </div>
                 </div>
@@ -1256,7 +1256,7 @@
             <!-- 줄 7: 메모 -->
             <div style="margin-bottom:10px;">
               <div class="form-label" style="margin-bottom:4px;" data-lang="match_memo_lbl">📝 메모 (선택)</div>
-              <textarea class="form-textarea" id="matchMemo" placeholder="경기 메모..." style="min-height:54px;padding:9px 12px;font-size: 0.9333rem;"></textarea>
+              <textarea class="form-textarea" id="matchMemo" data-lang-placeholder="match_memo_ph" placeholder="경기 메모..." style="min-height:54px;padding:9px 12px;font-size: 0.9333rem;"></textarea>
             </div>
 
             <button class="btn btn-primary" id="matchSaveBtn" onclick="saveMatch()" data-lang="match_save_btn">경기 저장</button>
@@ -1863,7 +1863,7 @@
 <div class="modal-overlay" id="manualModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">📖 사용 설명서</span>
+      <span class="modal-title" data-lang="manual_title">📖 사용 설명서</span>
       <button class="modal-close" onclick="closeModal('manualModal')">✕</button>
     </div>
     <div class="manual-wrap">
@@ -1871,37 +1871,16 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">👤</span>
-          <span class="manual-sec-title">1. 프로필</span>
+          <span class="manual-sec-title" data-lang="manual_s1_title">1. 프로필</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>이름·클럽·나이대·손잡이·구력·스타일 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>라켓은 <b>2자루까지</b> 등록할 수 있어요. RACQUET 1·2 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>스트링 선택</b> — 과거에 입력한 스트링 목록에서 고르거나, 아래 입력창에 직접 타이핑할 수 있어요. 드롭다운에서 선택하면 입력창에도 자동으로 채워져요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>프로필 하단에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼 <b>종목을 설정</b>하세요. 경기기록·통계 탭의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동해요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>상단 🌙/☀️ 버튼으로 <b>다크/라이트 테마</b>를 전환할 수 있어요</span>
-          </div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_1">상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_2">이름·클럽·나이대·손잡이·구력·스타일 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_3">라켓은 <b>2자루까지</b> 등록할 수 있어요. RACQUET 1·2 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_4"><b>스트링 선택</b> — 과거에 입력한 스트링 목록에서 고르거나, 아래 입력창에 직접 타이핑할 수 있어요. 드롭다운에서 선택하면 입력창에도 자동으로 채워져요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_5"><b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_6">프로필 하단에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼 <b>종목을 설정</b>하세요. 경기기록·통계 탭의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동해요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_7">상단 🌙/☀️ 버튼으로 <b>다크/라이트 테마</b>를 전환할 수 있어요</span></div>
         </div>
       </div>
 
@@ -1910,41 +1889,17 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">🎾</span>
-          <span class="manual-sec-title">2. 경기 기록</span>
+          <span class="manual-sec-title" data-lang="manual_s2_title">2. 경기 기록</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>앱을 열면 <b>날짜가 오늘로 자동 입력</b>됩니다. 과거 날짜로 바꿀 수도 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>단식 / 복식을 선택하세요. 복식이면 <b>파트너·상대2 입력란</b>이 추가됩니다</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>날짜 · 상대 이름 · 결과(승/패)는 <b>필수</b>, 스코어·메모·사용 라켓은 선택 사항이에요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>이름 입력 시 <b>초성 자동완성</b>을 지원해요. 예: 'ㄱㄷㅎ' → '김동현' 자동 추천</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수가 따로 카운트돼요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>오늘 경기는 상단에 바로 표시되고, 이전 경기는 <b>📋 이전 경기 기록</b>을 탭해서 확인하세요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>저장된 경기는 ✏️ 수정 · 🗑️ 삭제가 가능해요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>🏆 대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다</span>
-          </div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_1">앱을 열면 <b>날짜가 오늘로 자동 입력</b>됩니다. 과거 날짜로 바꿀 수도 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_2">단식 / 복식을 선택하세요. 복식이면 <b>파트너·상대2 입력란</b>이 추가됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_3">날짜 · 상대 이름 · 결과(승/패)는 <b>필수</b>, 스코어·메모·사용 라켓은 선택 사항이에요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_4">이름 입력 시 <b>초성 자동완성</b>을 지원해요. 예: 'ㄱㄷㅎ' → '김동현' 자동 추천</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_5">경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수가 따로 카운트돼요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_6">오늘 경기는 상단에 바로 표시되고, 이전 경기는 <b>📋 이전 경기 기록</b>을 탭해서 확인하세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_7">저장된 경기는 ✏️ 수정 · 🗑️ 삭제가 가능해요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_8">🏆 대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다</span></div>
         </div>
       </div>
 
@@ -1953,37 +1908,16 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">📊</span>
-          <span class="manual-sec-title">3. 통계</span>
+          <span class="manual-sec-title" data-lang="manual_s3_title">3. 통계</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>통계 탭 상단에 현재 선택된 종목이 표시됩니다. <b>[종목 변경 →]</b> 버튼을 누르면 프로필 탭에서 종목을 바꿀 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>연승·연패 배너</b> — 현재 연속 기록이 자동으로 표시됩니다</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>상세 요약</b> — 이번 달 성적, 단식·복식 승률, 가장 많이 이긴 상대·가장 어려운 상대</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>월별 승률 그래프</b> — 최근 6개월 성적 추이를 바 차트로 확인</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>상대 전적 · 파트너 궁합 · 상대팀 상성</b>을 각각 분석해줘요. 기본 상위 5명만 표시되고, <b>[더보기]</b> 버튼으로 전체를 볼 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>각 섹션 상단 <b>🔍 검색창</b>에서 이름 또는 초성으로 바로 찾을 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>각 항목은 탭하면 펼쳐지는 <b>아코디언 방식</b>으로 필요한 것만 열어볼 수 있어요</span>
-          </div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_1">통계 탭 상단에 현재 선택된 종목이 표시됩니다. <b>[종목 변경 →]</b> 버튼을 누르면 프로필 탭에서 종목을 바꿀 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_2"><b>연승·연패 배너</b> — 현재 연속 기록이 자동으로 표시됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_3"><b>상세 요약</b> — 이번 달 성적, 단식·복식 승률, 가장 많이 이긴 상대·가장 어려운 상대</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_4"><b>월별 승률 그래프</b> — 최근 6개월 성적 추이를 바 차트로 확인</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_5"><b>상대 전적 · 파트너 궁합 · 상대팀 상성</b>을 각각 분석해줘요. 기본 상위 5명만 표시되고, <b>[더보기]</b> 버튼으로 전체를 볼 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_6">각 섹션 상단 <b>🔍 검색창</b>에서 이름 또는 초성으로 바로 찾을 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_7">각 항목은 탭하면 펼쳐지는 <b>아코디언 방식</b>으로 필요한 것만 열어볼 수 있어요</span></div>
         </div>
       </div>
 
@@ -1992,33 +1926,15 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">👥</span>
-          <span class="manual-sec-title">4. 선수 관리</span>
+          <span class="manual-sec-title" data-lang="manual_s4_title">4. 선수 관리</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>선수 등록 시 <b>성별·등급·나이대·손잡이·구력·플레이스타일</b>을 함께 입력할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>이름 입력 시 <b>초성 검색</b>을 지원해요. 예: 'ㄱㄷㅎ' 입력 → '김동현' 검색</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>클럽 관리</b>에서 클럽을 만들고 선수에게 배정할 수 있어요. 한 선수가 여러 클럽에 속할 수도 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>선수 이름을 탭하면 <b>상세 전적 페이지</b>로 이동해요 — 나와의 전적·승률·최근 대전 기록 확인 가능</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>이름순·최근 대전순·전적 많은 순·승률 높은 순으로 <b>정렬</b>할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>📝 메모 버튼으로 선수별 특징이나 스타일을 기록해두세요</span>
-          </div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s4_1">선수 등록 시 <b>성별·등급·나이대·손잡이·구력·플레이스타일</b>을 함께 입력할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s4_2">이름 입력 시 <b>초성 검색</b>을 지원해요. 예: 'ㄱㄷㅎ' 입력 → '김동현' 검색</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s4_3"><b>클럽 관리</b>에서 클럽을 만들고 선수에게 배정할 수 있어요. 한 선수가 여러 클럽에 속할 수도 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s4_4">선수 이름을 탭하면 <b>상세 전적 페이지</b>로 이동해요 — 나와의 전적·승률·최근 대전 기록 확인 가능</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s4_5">이름순·최근 대전순·전적 많은 순·승률 높은 순으로 <b>정렬</b>할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s4_6">📝 메모 버튼으로 선수별 특징이나 스타일을 기록해두세요</span></div>
         </div>
       </div>
 
@@ -2027,62 +1943,21 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">🏆</span>
-          <span class="manual-sec-title">5. 대회</span>
+          <span class="manual-sec-title" data-lang="manual_s5_title">5. 대회</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>대회 탭에는 <b>🔄 한울방식</b>과 <b>🏆 토너먼트</b> 두 가지 방식이 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>🔄 한울방식</b> — 매 게임마다 파트너와 상대가 자동으로 바뀌는 <b>순환 복식 대회</b>예요. 참가 인원과 게임 수를 설정하면 모든 조합이 자동으로 짜여요. 예) 8명·4게임이면 모두 골고루 파트너/상대로 만나요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>🏆 토너먼트</b> — 단식·복식 <b>KO방식 대진표</b>예요. 이긴 팀만 다음 라운드로 진출하고, 결과 입력 시 다음 경기가 자동으로 채워져요</span>
-          </div>
-          <!-- [수정] 파트너 + 상대팀 설명 통합 -->
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>복식 파트너 구성</b> — 선수 선택 후 아래 두 가지 중 선택해요<br>
-              · <b>🎲 자동 팀 섞기</b>: 선수 순서대로 1번↔마지막, 2번↔끝에서 2번 방식으로 자동 짝을 맺어요<br>
-              · <b>✋ 직접 파트너 지정</b>: 선수를 2명씩 직접 클릭해서 팀을 만들어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>상대팀 배치 방법</b> — 1라운드 대진을 어떻게 짤지 선택해요<br>
-              · <b>🎲 자동 배치</b>: 선수/팀 순서대로 표준 시드 방식으로 자동 대진이 만들어져요<br>
-              · <b>✋ 직접 대진 지정</b>: 내가 원하는 대로 누가 누구와 1라운드에서 붙을지 직접 클릭해서 대진을 짜요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>준결승 패자는 자동으로 <b>3·4위전</b>에 배치됩니다</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>선수 탭에서 등록한 선수를 바로 불러오거나, 직접 이름을 입력할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>📊 스코어보드</b> — 실제 경기 진행 중 실시간 점수판이에요. <b>폰을 가로로 돌리면</b> 대형 점수 화면이 열려요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>스코어보드에서 <b>+POINT</b>로 점수 추가, <b>ACE</b>·<b>FAULT(더블폴트)</b> 버튼으로 특수 상황 입력, <b>↩ UNDO</b>로 되돌리기 가능해요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>40-40 상황에서 자동으로 <b>DEUCE → AD</b> 처리되며, <b>🔀 타이브레이크</b> 버튼으로 타이브레이크를 시작할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>하단 <b>SETUP 탭</b>에서 선수 이름과 경기 제목을 직접 입력할 수 있어요</span>
-          </div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_1">대회 탭에는 <b>🔄 한울방식</b>과 <b>🏆 토너먼트</b> 두 가지 방식이 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_2"><b>🔄 한울방식</b> — 매 게임마다 파트너와 상대가 자동으로 바뀌는 <b>순환 복식 대회</b>예요. 참가 인원과 게임 수를 설정하면 모든 조합이 자동으로 짜여요. 예) 8명·4게임이면 모두 골고루 파트너/상대로 만나요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_3"><b>🏆 토너먼트</b> — 단식·복식 <b>KO방식 대진표</b>예요. 이긴 팀만 다음 라운드로 진출하고, 결과 입력 시 다음 경기가 자동으로 채워져요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_4"><b>복식 파트너 구성</b> — 선수 선택 후 아래 두 가지 중 선택해요<br>· <b>🎲 자동 팀 섞기</b>: 선수 순서대로 1번↔마지막, 2번↔끝에서 2번 방식으로 자동 짝을 맺어요<br>· <b>✋ 직접 파트너 지정</b>: 선수를 2명씩 직접 클릭해서 팀을 만들어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_5"><b>상대팀 배치 방법</b> — 1라운드 대진을 어떻게 짤지 선택해요<br>· <b>🎲 자동 배치</b>: 선수/팀 순서대로 표준 시드 방식으로 자동 대진이 만들어져요<br>· <b>✋ 직접 대진 지정</b>: 내가 원하는 대로 누가 누구와 1라운드에서 붙을지 직접 클릭해서 대진을 짜요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_6">준결승 패자는 자동으로 <b>3·4위전</b>에 배치됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_7">선수 탭에서 등록한 선수를 바로 불러오거나, 직접 이름을 입력할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_8">대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_9"><b>📊 스코어보드</b> — 실제 경기 진행 중 실시간 점수판이에요. <b>폰을 가로로 돌리면</b> 대형 점수 화면이 열려요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_10">스코어보드에서 <b>+POINT</b>로 점수 추가, <b>ACE</b>·<b>FAULT(더블폴트)</b> 버튼으로 특수 상황 입력, <b>↩ UNDO</b>로 되돌리기 가능해요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_11">40-40 상황에서 자동으로 <b>DEUCE → AD</b> 처리되며, <b>🔀 타이브레이크</b> 버튼으로 타이브레이크를 시작할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_12">하단 <b>SETUP 탭</b>에서 선수 이름과 경기 제목을 직접 입력할 수 있어요</span></div>
         </div>
       </div>
 
@@ -2091,29 +1966,14 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">🎾</span>
-          <span class="manual-sec-title">6. 스트링 관리</span>
+          <span class="manual-sec-title" data-lang="manual_s6_title">6. 스트링 관리</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>프로필 탭 → 라켓 카드에서 <b>스트링명</b>을 입력하세요. 과거에 입력한 스트링은 드롭다운에서 바로 선택할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>스트링 교체일</b>을 입력하면 프로필 배너에 D+일수와 교체 후 게임 수가 자동 표시됩니다</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>배너 색상으로 교체 시기를 한눈에 확인할 수 있어요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수를 따로 카운트해줘요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>스트링 선택이 안 보여요</b> — 스트링 입력 기록이 없으면 직접 입력창만 표시돼요. 기록이 쌓이면 드롭다운이 자동으로 나타납니다</span>
-          </div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_1">프로필 탭 → 라켓 카드에서 <b>스트링명</b>을 입력하세요. 과거에 입력한 스트링은 드롭다운에서 바로 선택할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_2"><b>스트링 교체일</b>을 입력하면 프로필 배너에 D+일수와 교체 후 게임 수가 자동 표시됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_3">배너 색상으로 교체 시기를 한눈에 확인할 수 있어요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_4">경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수를 따로 카운트해줘요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_5"><b>스트링 선택이 안 보여요</b> — 스트링 입력 기록이 없으면 직접 입력창만 표시돼요. 기록이 쌓이면 드롭다운이 자동으로 나타납니다</span></div>
         </div>
       </div>
 
@@ -2122,57 +1982,21 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">🎯</span>
-          <span class="manual-sec-title">7. 전술판</span>
+          <span class="manual-sec-title" data-lang="manual_s7_title">7. 전술판</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>대회</b> 탭 상단의 <b>📋 전술판</b> 버튼을 탭하면 전용 화면이 열려요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>코트에서 <b>선수(원형 아이콘)를 드래그</b>해서 위치를 자유롭게 움직일 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>선수를 <b>한 번 탭</b>하면 타구각 표시, <b>두 번 탭</b>하면 이름·번호·포지션·색상을 편집할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>상단 버튼으로 <b>기본·양쪽전위·양쪽후위·I포메이션·호주</b> 5가지 대형을 바로 적용할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>☰ 버튼(화면 오른쪽 가운데)을 탭하면 조작 버튼이 나타나요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>➡️ 화살표</b> — 선수 탭 후 드래그: 이동 화살표 / 빈 곳 드래그: 자유 화살표</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>✏️ 그리기</b> — 손가락으로 코트 위에 자유롭게 선을 그을 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>⭕ 커버존 / 🎾 공 / 📐 타구각</b> — 각각 탭해서 표시/숨기기 전환</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>🎨 보드설정</b> — 코트 색상(그린·클레이·하드·다크·잔디), 그리기 색상 변경</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>💾 저장 / 📂 불러오기</b> — 전술판 배치를 이름 붙여 저장하고 나중에 다시 불러올 수 있어요 (최대 20개)</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>🔗 공유</b> — 현재 전술판을 URL 링크로 만들어 카카오톡 등으로 공유할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>🗑️ 삭제</b>는 화살표·그리기만 지워요. <b>🔄 초기화</b>는 선수 위치까지 원래대로 돌아가요</span>
-          </div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_1"><b>대회</b> 탭 상단의 <b>📋 전술판</b> 버튼을 탭하면 전용 화면이 열려요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_2">코트에서 <b>선수(원형 아이콘)를 드래그</b>해서 위치를 자유롭게 움직일 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_3">선수를 <b>한 번 탭</b>하면 타구각 표시, <b>두 번 탭</b>하면 이름·번호·포지션·색상을 편집할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_4">상단 버튼으로 <b>기본·양쪽전위·양쪽후위·I포메이션·호주</b> 5가지 대형을 바로 적용할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_5">☰ 버튼(화면 오른쪽 가운데)을 탭하면 조작 버튼이 나타나요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_6"><b>➡️ 화살표</b> — 선수 탭 후 드래그: 이동 화살표 / 빈 곳 드래그: 자유 화살표</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_7"><b>✏️ 그리기</b> — 손가락으로 코트 위에 자유롭게 선을 그을 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_8"><b>⭕ 커버존 / 🎾 공 / 📐 타구각</b> — 각각 탭해서 표시/숨기기 전환</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_9"><b>🎨 보드설정</b> — 코트 색상(그린·클레이·하드·다크·잔디), 그리기 색상 변경</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_10"><b>💾 저장 / 📂 불러오기</b> — 전술판 배치를 이름 붙여 저장하고 나중에 다시 불러올 수 있어요 (최대 20개)</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_11"><b>🔗 공유</b> — 현재 전술판을 URL 링크로 만들어 카카오톡 등으로 공유할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_12"><b>🗑️ 삭제</b>는 화살표·그리기만 지워요. <b>🔄 초기화</b>는 선수 위치까지 원래대로 돌아가요</span></div>
         </div>
       </div>
 
@@ -2181,29 +2005,14 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">🔗</span>
-          <span class="manual-sec-title">8. 공유 & 백업</span>
+          <span class="manual-sec-title" data-lang="manual_s8_title">8. 공유 &amp; 백업</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 같은 구글 계정으로 로그인하면 그대로 유지돼요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>💾 데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>📂 가져오기</b> — 백업한 JSON 파일을 불러와 데이터를 복원할 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>🧹 <b>저장공간 정리</b> — 기기 캐시만 삭제돼요. 클라우드 데이터는 안전하게 유지됩니다</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>💬 <b>카카오 오픈채팅</b> — 공유 탭에서 참여해 동호인들과 소통하세요</span>
-          </div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_1">데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 같은 구글 계정으로 로그인하면 그대로 유지돼요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_2"><b>💾 데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_3"><b>📂 가져오기</b> — 백업한 JSON 파일을 불러와 데이터를 복원할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_4">🧹 <b>저장공간 정리</b> — 기기 캐시만 삭제돼요. 클라우드 데이터는 안전하게 유지됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_5">💬 <b>카카오 오픈채팅</b> — 공유 탭에서 참여해 동호인들과 소통하세요</span></div>
         </div>
       </div>
 
@@ -2212,33 +2021,15 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">⚠️</span>
-          <span class="manual-sec-title">9. 자주 묻는 질문</span>
+          <span class="manual-sec-title" data-lang="manual_s9_title">9. 자주 묻는 질문</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 '화면을 가로로 돌려주세요' 안내가 나와요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span><b>HTML 파일로 직접 열면 오류가 나요</b> — 반드시 인터넷이 연결된 상태에서 <b>웹 주소(URL)</b>로 접속하세요</span>
-          </div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_1"><b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_2"><b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 '화면을 가로로 돌려주세요' 안내가 나와요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_3"><b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_4"><b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_5"><b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_6"><b>HTML 파일로 직접 열면 오류가 나요</b> — 반드시 인터넷이 연결된 상태에서 <b>웹 주소(URL)</b>로 접속하세요</span></div>
         </div>
       </div>
 
@@ -2247,17 +2038,11 @@
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">💬</span>
-          <span class="manual-sec-title">10. 니지스트링 커뮤니티</span>
+          <span class="manual-sec-title" data-lang="manual_s10_title">10. 니지스트링 커뮤니티</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요</span>
-          </div>
-          <div class="manual-item">
-            <span class="manual-dot"></span>
-            <span>스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요</span>
-          </div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s10_1">공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s10_2">스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요</span></div>
         </div>
       </div>
 
@@ -2505,14 +2290,70 @@ function _showLoginScreen() {
     } catch(e) { console.warn('iOS persistence 예외:', e); }
   }
 
+  // 로그인 화면용 언어 텍스트
+  var _loginDict = {
+    subtitle:  { ko: '테니스·배드민턴·피클볼 경기기록 & 스트링 관리', en: 'Tennis·Badminton·Pickleball Match Records & String Management' },
+    google:    { ko: 'Google로 로그인', en: 'Sign in with Google' },
+    orEmail:   { ko: '또는 이메일로', en: 'or sign in with email' },
+    emailPh:   { ko: '이메일 주소', en: 'Email address' },
+    pwPh:      { ko: '비밀번호', en: 'Password' },
+    signin:    { ko: '로그인', en: 'Sign In' },
+    signup:    { ko: '회원가입', en: 'Sign Up' },
+    forgot:    { ko: '비밀번호를 잊으셨나요?', en: 'Forgot password?' }
+  };
+  var _loginLang = localStorage.getItem('niji_language') || 'ko';
+  function _ld(key) { return (_loginDict[key] && _loginDict[key][_loginLang]) || _loginDict[key]['ko']; }
+  // [수정] window에 미리 등록 - innerHTML 버튼의 onclick에서 호출 가능하도록
+  window._applyLoginLang = function(lang) { _applyLoginLang(lang); };
+  function _applyLoginLang(lang) {
+    _loginLang = lang;
+    localStorage.setItem('niji_language', lang);
+    // 로그인 창 텍스트 갱신
+    var el;
+    el = document.getElementById('login-subtitle');   if(el) el.textContent = _ld('subtitle');
+    el = document.getElementById('googleLoginBtn');   if(el) el.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;" alt="Google"> ' + _ld('google');
+    el = document.getElementById('login-or-email');   if(el) el.textContent = _ld('orEmail');
+    el = document.getElementById('loginEmail');       if(el) el.placeholder = _ld('emailPh');
+    el = document.getElementById('loginPassword');    if(el) el.placeholder = _ld('pwPh');
+    el = document.getElementById('login-signin-btn'); if(el) el.textContent = _ld('signin');
+    el = document.getElementById('login-signup-btn'); if(el) el.textContent = _ld('signup');
+    el = document.getElementById('login-forgot-btn'); if(el) el.textContent = _ld('forgot');
+    // 언어 버튼 강조
+    ['ko','en'].forEach(function(l) {
+      var btn = document.getElementById('loginLangBtn-' + l);
+      if (!btn) return;
+      var on = (l === lang);
+      btn.style.background  = on ? '#7c6af7' : 'transparent';
+      btn.style.color       = on ? '#fff'    : '#7a7a95';
+      btn.style.borderColor = on ? '#7c6af7' : '#3a3a4e';
+    });
+  }
+
   loadingScreen.innerHTML = `
     <div style="display:flex;flex-direction:column;align-items:center;gap:0;padding:40px 20px;width:100%;max-width:360px;margin:0 auto;">
+
+      <!-- 언어 토글 버튼 -->
+      <div style="display:flex;gap:6px;align-self:flex-end;margin-bottom:20px;">
+        <button id="loginLangBtn-ko" onclick="_applyLoginLang('ko')"
+          style="padding:5px 12px;border-radius:20px;border:1.5px solid #3a3a4e;
+            background:transparent;color:#7a7a95;font-size:0.78rem;font-weight:700;
+            cursor:pointer;font-family:inherit;transition:all .2s;">
+          🇰🇷 KO
+        </button>
+        <button id="loginLangBtn-en" onclick="_applyLoginLang('en')"
+          style="padding:5px 12px;border-radius:20px;border:1.5px solid #3a3a4e;
+            background:transparent;color:#7a7a95;font-size:0.78rem;font-weight:700;
+            cursor:pointer;font-family:inherit;transition:all .2s;">
+          🇺🇸 EN
+        </button>
+      </div>
+
       <div style="font-family:'Orbitron',sans-serif;font-size: 1.6rem;font-weight:900;
         background:linear-gradient(135deg,#7c6af7,#f76ac8);
         -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px;margin-bottom:8px;">
         NIJI STRING
       </div>
-      <div style="font-size: 0.8667rem;color:#7a7a95;text-align:center;margin-bottom:28px;">
+      <div id="login-subtitle" style="font-size: 0.8667rem;color:#7a7a95;text-align:center;margin-bottom:28px;">
         테니스·배드민턴·피클볼 경기기록 & 스트링 관리
       </div>
       <button id="googleLoginBtn" onclick="signInWithGoogle()"
@@ -2526,7 +2367,7 @@ function _showLoginScreen() {
       </button>
       <div style="display:flex;align-items:center;gap:10px;width:100%;margin-bottom:16px;">
         <div style="flex:1;height:1px;background:#2e2e3e;"></div>
-        <div style="font-size: 0.8rem;color:#555570;">또는 이메일로</div>
+        <div id="login-or-email" style="font-size: 0.8rem;color:#555570;">또는 이메일로</div>
         <div style="flex:1;height:1px;background:#2e2e3e;"></div>
       </div>
       <input id="loginEmail" type="email" placeholder="이메일 주소" inputmode="email"
@@ -2536,24 +2377,26 @@ function _showLoginScreen() {
         style="width:100%;padding:13px;background:#1a1a24;border:1px solid #2e2e3e;
           border-radius:12px;color:#fff;font-size: 1rem;box-sizing:border-box;margin-bottom:12px;outline:none;">
       <div style="display:flex;gap:8px;width:100%;margin-bottom:12px;">
-        <button onclick="signInWithEmail()"
+        <button id="login-signin-btn" onclick="signInWithEmail()"
           style="flex:1;padding:13px;background:linear-gradient(135deg,#7c6af7,#6a5be0);
             color:#fff;border:none;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;">
           로그인
         </button>
-        <button onclick="signUpWithEmail()"
+        <button id="login-signup-btn" onclick="signUpWithEmail()"
           style="flex:1;padding:13px;background:#1e1e2e;color:#7c6af7;
             border:1px solid #7c6af7;border-radius:12px;font-size: 1rem;font-weight:700;cursor:pointer;">
           회원가입
         </button>
       </div>
-      <button onclick="resetPassword()"
+      <button id="login-forgot-btn" onclick="resetPassword()"
         style="background:none;border:none;color:#555570;font-size: 0.8rem;cursor:pointer;padding:4px;">
         비밀번호를 잊으셨나요?
       </button>
       <div id="loginMsg" style="font-size: 0.8rem;color:#f87171;min-height:20px;margin-top:8px;text-align:center;"></div>
     </div>
   `;
+  // 로그인 창 렌더 직후 저장된 언어 자동 적용
+  _applyLoginLang(_loginLang);
 }
 
 // [수정] 구글 로그인 - iOS Safari는 팝업 차단 가능성 높으므로 바로 redirect 시도
@@ -3433,7 +3276,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
-function showManual() { document.getElementById('manualModal').classList.add('open'); }
+function showManual() {
+  document.getElementById('manualModal').classList.add('open');
+  // 모달 열 때 현재 언어로 텍스트 재적용 (영어 전환 반영)
+  var lang = localStorage.getItem('niji_language') || 'ko';
+  document.querySelectorAll('#manualModal [data-lang]').forEach(function(el) {
+    var key = el.getAttribute('data-lang');
+    if (NIJI_DICT[key] && NIJI_DICT[key][lang]) {
+      el.innerHTML = NIJI_DICT[key][lang];
+    }
+  });
+}
 
 // ===== CONFIRM =====
 function showConfirm(title, desc, icon, cb, okLabel = '삭제') {
@@ -3653,7 +3506,7 @@ function renderProfile() {
           <div class="pf-item-icon">${tensionIcon}</div>
           <div class="pf-item-body" style="flex:1;">
             <div class="pf-item-lbl">[${_t('pf_tension_label')}]</div>
-            <input class="pf-item-input" value="${escHtml(tVal)}" placeholder="예) 50/52 파운드"
+            <input class="pf-item-input" value="${escHtml(tVal)}" placeholder="${_t('pf_tension_ph')}"
               oninput="pfDebounceSave('${tKey}',this.value)"
               onkeydown="if(event.key==='Enter')this.blur()">
           </div>
@@ -3970,9 +3823,9 @@ function saveMatch() {
     state.editingMatchId = null;
     document.getElementById('matchEditBanner').classList.remove('active');
     const _titleEl = document.getElementById('matchFormTitle');
-    if (_titleEl) _titleEl.textContent = '➕ 새 경기 입력';
-    document.getElementById('matchSaveBtn').textContent = '경기 저장';
-    showToast('✅ 경기 수정 완료!');
+    if (_titleEl) _titleEl.textContent = _t('match_new_btn_open');
+    document.getElementById('matchSaveBtn').textContent = _t('match_save_btn');
+    showToast('✅ ' + _t('match_edit_save') + '!');
   } else {
     // 신규 저장
     const match = { id: state.nextMatchId++, ...matchData };
@@ -4028,7 +3881,7 @@ function _matchCardHTML(m) {
   const pickleLabel = '';
   return `<div class="match-item">
     <div class="match-item-top">
-      <span class="match-badge ${win ? 'badge-win' : 'badge-lose'}">${win ? '승리' : '패배'}</span>
+      <span class="match-badge ${win ? 'badge-win' : 'badge-lose'}">${win ? _t('match_result_win') : _t('match_result_lose')}</span>
       <div class="match-date">
         <span>${m.date}</span>
         <span class="format-badge">${sportIcon} ${fmtLabel}${pickleLabel}</span>
@@ -4082,15 +3935,16 @@ function buildMatchMonthSelect() {
   const cur = state._matchSelectedMonth || months[0]; // 기본: 이번달
   sel.innerHTML = months.map(ym => {
     const [y, m] = ym.split('-');
-    const label = `${y}년 ${parseInt(m)}월`;
+    const label = (localStorage.getItem('niji_language')||'ko')==='en' ? `${y}/${m}` : `${y}년 ${parseInt(m)}월`;
     const cnt = (state.matches||[]).filter(mm => mm.date !== today && mm.date.slice(0,7) === ym).length;
-    return `<option value="${ym}"${ym===cur?' selected':''}>${label}  (${cnt}경기)</option>`;
+    const cntLabel = (localStorage.getItem('niji_language')||'ko')==='en' ? `${cnt} ${_t('match_count_unit')}` : `${cnt}${_t('match_count_unit')}`;
+    return `<option value="${ym}"${ym===cur?' selected':''}>${label}  (${cntLabel})</option>`;
   }).join('');
   // 6개월 이전 데이터 있으면 안내 문구
   const cutoff = months[months.length-1]; // 6개월 전
   const oldCount = (state.matches||[]).filter(mm => mm.date !== today && mm.date.slice(0,7) < cutoff).length;
   if (oldCount > 0) {
-    sel.innerHTML += `<option disabled style="color:var(--text-muted);">── 6개월 이전 ${oldCount}개 기록 (통계에는 반영됨)</option>`;
+    sel.innerHTML += `<option disabled style="color:var(--text-muted);">${_t('match_old_records').replace('{n}', oldCount)}</option>`;
   }
   if (!state._matchSelectedMonth) state._matchSelectedMonth = cur;
 }
@@ -4110,9 +3964,9 @@ function renderMatchListPast() {
   const filtered = (state.matches||[])
     .filter(m => m.date !== today && m.date.slice(0,7) === ym)
     .sort((a,b) => b.date.localeCompare(a.date));
-  if (countEl) countEl.textContent = filtered.length ? `${filtered.length}경기` : '';
+  if (countEl) countEl.textContent = filtered.length ? `${filtered.length}${_t('match_count_unit')}` : '';
   if (!filtered.length) {
-    pastEl.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8667rem;padding:16px 0;text-align:center;">이 달에 경기 기록이 없어요</div>`;
+    pastEl.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8667rem;padding:16px 0;text-align:center;">${_t('match_past_empty')}</div>`;
     return;
   }
   pastEl.innerHTML = filtered.map(_matchCardHTML).join('');
@@ -4206,15 +4060,15 @@ function toggleMatchForm() {
   body.style.display = isOpen ? 'none' : 'block';
   if (arrow) arrow.textContent = isOpen ? '▼' : '▲';
   const titleEl2 = document.getElementById('matchFormTitle');
-  if (titleEl2) titleEl2.textContent = isOpen ? '➕ 새 경기 입력' : '✖ 닫기';
+  if (titleEl2) titleEl2.textContent = isOpen ? _t('match_new_btn_open') : _t('match_form_close');
   // 폼 닫을 때 수정 모드 자동 해제
   if (isOpen && state.editingMatchId) {
     state.editingMatchId = null;
     const banner = document.getElementById('matchEditBanner');
     const saveBtn = document.getElementById('matchSaveBtn');
     if (banner) banner.classList.remove('active');
-    if (titleEl2) titleEl2.textContent = '➕ 새 경기 입력';
-    if (saveBtn) saveBtn.textContent = '경기 저장';
+    if (titleEl2) titleEl2.textContent = _t('match_new_btn_open');
+    if (saveBtn) saveBtn.textContent = _t('match_save_btn');
   }
 }
 
@@ -4232,7 +4086,7 @@ function updateMatchRacketOptions() {
   const hasAny = hasR1 || hasR2;
 
   // 라켓 등록된 경우: 필수 선택 / 미등록: 선택 안 함 허용
-  let options = hasAny ? `<option value="">-- 라켓 선택 (필수) --</option>` : `<option value="">선택 안 함</option>`;
+  let options = hasAny ? `<option value="">${_t('match_racket_sel_ph')}</option>` : `<option value="">${_t('match_racket_none_opt')}</option>`;
   if (hasR1) options += `<option value="racket1">🎾 R1 · ${escHtml(r1)}</option>`;
   if (hasR2) options += `<option value="racket2">🎾 R2 · ${escHtml(r2)}</option>`;
 
@@ -4240,7 +4094,7 @@ function updateMatchRacketOptions() {
 
   // 라벨 텍스트 변경 (라켓 등록 여부에 따라)
   if (racketLabel) {
-    racketLabel.textContent = hasAny ? '🎾 사용 라켓 (필수)' : '🎾 사용 라켓 (선택)';
+    racketLabel.textContent = hasAny ? _t('match_racket_required') : _t('match_racket_lbl');
   }
 
   // 라켓이 하나도 없으면 안내 메시지 표시
@@ -4256,7 +4110,7 @@ function openMatchForm() {
   body.style.display = 'block';
   if (arrow) arrow.textContent = '▲';
   const _openTitleEl = document.getElementById('matchFormTitle');
-  if (_openTitleEl) _openTitleEl.textContent = '✖ 닫기';
+  if (_openTitleEl) _openTitleEl.textContent = _t('match_form_close');
 }
 function closeMatchForm() {
   const body  = document.getElementById('matchFormBody');
@@ -4267,7 +4121,7 @@ function closeMatchForm() {
   body.classList.remove('open');
   if (arrow) arrow.textContent = '▼';
   const _closeTitleEl = document.getElementById('matchFormTitle');
-  if (_closeTitleEl) _closeTitleEl.textContent = '➕ 새 경기 입력';
+  if (_closeTitleEl) _closeTitleEl.textContent = _t('match_new_btn_open');
 }
 
 function editMatch(id) {
@@ -4304,8 +4158,8 @@ function editMatch(id) {
   document.getElementById('matchEditBanner').classList.add('active');
   const titleEl = document.getElementById('matchFormTitle');
   const saveBtn = document.getElementById('matchSaveBtn');
-  if (titleEl) titleEl.textContent = '✏️ 경기 수정';
-  if (saveBtn) saveBtn.textContent = '수정 저장';
+  if (titleEl) titleEl.textContent = _t('match_edit_title');
+  if (saveBtn) saveBtn.textContent = _t('match_edit_save');
 
   // 폼 열고 스크롤 맨 위로 (약간 딜레이 줘서 DOM 안정화 후 실행)
   openMatchForm();
@@ -4319,8 +4173,8 @@ function cancelEditMatch() {
   state.editingMatchId = null;
   document.getElementById('matchEditBanner').classList.remove('active');
   const _cancelTitleEl = document.getElementById('matchFormTitle');
-  if (_cancelTitleEl) _cancelTitleEl.textContent = '➕ 새 경기 입력';
-  document.getElementById('matchSaveBtn').textContent = '경기 저장';
+  if (_cancelTitleEl) _cancelTitleEl.textContent = _t('match_new_btn_open');
+  document.getElementById('matchSaveBtn').textContent = _t('match_save_btn');
   // 폼 초기화
   state.currentResult = null;
   document.getElementById('winBtn').className = 'winner-btn';
@@ -4346,12 +4200,12 @@ function cancelEditMatch() {
 }
 
 function deleteMatch(id) {
-  showConfirm('경기 삭제', '이 경기 기록을 삭제하시겠습니까?', '🗑️', () => {
+  showConfirm(_t('match_delete_title'), _t('match_delete_desc'), '🗑️', () => {
     state.matches = state.matches.filter(m => m.id !== id);
     save();
     renderMatchList();
     renderStringBanner();
-    showToast('🗑️ 경기 삭제 완료');
+    showToast(_t('match_delete_done'));
   });
 }
 
@@ -4444,8 +4298,8 @@ function updateMatchSportBadge() {
   const btnD = document.getElementById('btnDoubles');
   const _singleIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="12" cy="7" r="4"/><path d="M12 13c-5 0-8 2.5-8 4v1h16v-1c0-1.5-3-4-8-4z"/></svg>';
   const _doubleIcon = '<svg width="22" height="16" viewBox="0 0 32 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="10" cy="7" r="4"/><path d="M10 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/><circle cx="22" cy="7" r="4"/><path d="M22 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/></svg>';
-  if (btnS) { const _wasSelectedS = btnS.classList.contains('selected'); btnS.style.display='inline-flex'; btnS.style.alignItems='center'; btnS.style.justifyContent='center'; btnS.style.gap='6px'; btnS.innerHTML = _singleIcon + ' 단식'; if (_wasSelectedS) btnS.classList.add('selected'); }
-  if (btnD) { const _wasSelectedD = btnD.classList.contains('selected'); btnD.style.display='inline-flex'; btnD.style.alignItems='center'; btnD.style.justifyContent='center'; btnD.style.gap='6px'; btnD.innerHTML = _doubleIcon + ' 복식'; if (_wasSelectedD) btnD.classList.add('selected'); }
+  if (btnS) { const _wasSelectedS = btnS.classList.contains('selected'); btnS.style.display='inline-flex'; btnS.style.alignItems='center'; btnS.style.justifyContent='center'; btnS.style.gap='6px'; btnS.innerHTML = _singleIcon + ' <span data-lang="match_singles">' + _t('match_singles') + '</span>'; if (_wasSelectedS) btnS.classList.add('selected'); }
+  if (btnD) { const _wasSelectedD = btnD.classList.contains('selected'); btnD.style.display='inline-flex'; btnD.style.alignItems='center'; btnD.style.justifyContent='center'; btnD.style.gap='6px'; btnD.innerHTML = _doubleIcon + ' <span data-lang="match_doubles">' + _t('match_doubles') + '</span>'; if (_wasSelectedD) btnD.classList.add('selected'); }
 }
 
 // 통계 탭 상단 종목 배지 업데이트
@@ -4659,7 +4513,7 @@ function renderOpponentStats(ms) {
     const tot = d.w + d.l;
     const rate = Math.round(d.w / tot * 100);
     const fillCls = rate >= 60 ? 'good' : rate < 40 ? 'bad' : '';
-    const badge = rate >= 60 ? '<span class="enemy-badge weak">우세</span>' : rate < 40 ? '<span class="enemy-badge strong">열세</span>' : '';
+    const badge = rate >= 60 ? `<span class="enemy-badge weak">${_t('stats_badge_strong')}</span>` : rate < 40 ? `<span class="enemy-badge strong">${_t('stats_badge_disadvantage')}</span>` : '';
     const hasCombos = Object.keys(d.combos).length > 0;
     const comboId = 'opp-combo-' + idx;
     const comboHtml = hasCombos ? Object.values(d.combos).sort((a,b) => (b.w+b.l)-(a.w+a.l)).map(c => {
@@ -4668,10 +4522,10 @@ function renderOpponentStats(ms) {
       return `<div style="display:flex;align-items:flex-start;gap:6px;padding:6px 0;border-bottom:1px solid var(--border);">
         <span style="color:var(--text-muted);font-size: 0.8667rem;flex-shrink:0;">└</span>
         <div style="flex:1;min-width:0;">
-          <div style="font-size: 0.7333rem;color:var(--text-muted);margin-bottom:1px;">상대: <span style="color:var(--text);font-weight:600;">${escHtml(c.oppTeam)}</span></div>
-          <div style="font-size: 0.7333rem;color:var(--text-muted);">내팀: <span style="color:var(--accent);font-weight:600;">${partnerStr}</span></div>
+          <div style="font-size: 0.7333rem;color:var(--text-muted);margin-bottom:1px;">${_t('stats_combo_opp')} <span style="color:var(--text);font-weight:600;">${escHtml(c.oppTeam)}</span></div>
+          <div style="font-size: 0.7333rem;color:var(--text-muted);">${_t('stats_combo_team')} <span style="color:var(--accent);font-weight:600;">${partnerStr}</span></div>
         </div>
-        <div style="font-size: 0.7333rem;font-weight:700;color:${c.w>=c.l?'var(--success)':'var(--danger)'};flex-shrink:0;">${cTotal}전 ${c.w}승 ${c.l}패</div>
+        <div style="font-size: 0.7333rem;font-weight:700;color:${c.w>=c.l?'var(--success)':'var(--danger)'};flex-shrink:0;">${cTotal}${_t('stats_game_count')} ${c.w}${_t('stats_win_suffix')} ${c.l}${_t('stats_lose_suffix')}</div>
       </div>`;
     }).join('') : '';
     return `<div class="matchup-row" style="flex-direction:column;align-items:stretch;cursor:${hasCombos?'pointer':'default'};" ${hasCombos?`onclick="document.getElementById('${comboId}').style.display=document.getElementById('${comboId}').style.display==='none'?'block':'none';this.querySelector('.opp-toggle-arrow').textContent=document.getElementById('${comboId}').style.display==='none'?'▼':'▲'"`:''}>
@@ -4680,19 +4534,19 @@ function renderOpponentStats(ms) {
         <div class="matchup-info" style="flex:1;">
           <div class="matchup-name">${escHtml(name)}${badge}${hasCombos?'<span class="opp-toggle-arrow" style="font-size: 0.6667rem;color:var(--text-muted);margin-left:6px;">▼</span>':''}</div>
           <div class="matchup-bar-wrap"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
-          <div class="matchup-sub">${tot}전 · 내 승률 ${rate}%</div>
+          <div class="matchup-sub">${tot}${_t('stats_game_count')} · ${_t('stats_winrate_label')} ${rate}%</div>
         </div>
         <div class="matchup-score">
-          <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}승 ${d.l}패</div>
+          <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}${_t('stats_win_suffix')} ${d.l}${_t('stats_lose_suffix')}</div>
         </div>
       </div>
       ${hasCombos ? `<div id="${comboId}" style="display:none;margin-top:8px;padding:4px 8px 0;background:rgba(124,106,247,.05);border-radius:8px;border:1px solid var(--border);">${comboHtml}</div>` : ''}
     </div>`;
   }).join('');
   const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
-    ? `<button onclick="window._oppShowAll=true;renderOpponentStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}명 더 보기</button>`
+    ? `<button onclick="window._oppShowAll=true;renderOpponentStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}${_t('stats_show_more_person')}</button>`
     : (showAll && total > OPP_PAGE_SIZE && !searchQ)
-    ? `<button onclick="window._oppShowAll=false;renderOpponentStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">접기 ▲</button>`
+    ? `<button onclick="window._oppShowAll=false;renderOpponentStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">${_t('stats_fold')}</button>`
     : '';
   document.getElementById('opponentCard').innerHTML = cards + moreBtn;
 }
@@ -4753,17 +4607,17 @@ function renderPartnerStats(ms) {
       <div class="matchup-info">
         <div class="matchup-name">${escHtml(name)} ${emoji}</div>
         <div class="matchup-bar-wrap"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
-        <div class="matchup-sub">${tot}경기 함께 · 궁합 ${rate}%</div>
+        <div class="matchup-sub">${tot}${_t('stats_games_together')} · ${_t('stats_chemistry')} ${rate}%</div>
       </div>
       <div class="matchup-score">
-        <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}승 ${d.l}패</div>
+        <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}${_t('stats_win_suffix')} ${d.l}${_t('stats_lose_suffix')}</div>
       </div>
     </div>`;
   }).join('');
   const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
-    ? `<button onclick="window._partnerShowAll=true;renderPartnerStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}명 더 보기</button>`
+    ? `<button onclick="window._partnerShowAll=true;renderPartnerStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}${_t('stats_show_more_person')}</button>`
     : (showAll && total > OPP_PAGE_SIZE && !searchQ)
-    ? `<button onclick="window._partnerShowAll=false;renderPartnerStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">접기 ▲</button>`
+    ? `<button onclick="window._partnerShowAll=false;renderPartnerStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">${_t('stats_fold')}</button>`
     : '';
   document.getElementById('partnerCard').innerHTML = cards + moreBtn;
 }
@@ -4821,26 +4675,26 @@ function renderSinglesStats(ms) {
     const tot = d.w + d.l;
     const rate = Math.round(d.w / tot * 100);
     const fillCls = rate >= 60 ? 'good' : rate < 40 ? 'bad' : '';
-    const badge = rate >= 60 ? '<span class="enemy-badge weak">우세</span>' : rate < 40 ? '<span class="enemy-badge strong">약점</span>' : '';
+    const badge = rate >= 60 ? `<span class="enemy-badge weak">${_t('stats_badge_strong')}</span>` : rate < 40 ? `<span class="enemy-badge strong">${_t('stats_badge_weak')}</span>` : '';
     return `<div class="enemy-team-row">
       <div style="display:flex;gap:4px;flex-shrink:0;">
         <div class="matchup-avatar" style="width:28px;height:28px;font-size: 0.8rem;">${opp.charAt(0)}</div>
       </div>
       <div class="enemy-team-names" style="flex:1;min-width:0;margin:0 8px;">
-        <div style="font-size: 0.6rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;">단식 상대</div>
+        <div style="font-size: 0.6rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;">${_t('stats_singles_opp_label')}</div>
         <div class="enemy-team-main">${escHtml(opp)}${badge}</div>
         <div class="matchup-bar-wrap" style="margin-top:4px;"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
-        <div class="enemy-team-sub">${tot}전 · 내 승률 ${rate}%</div>
+        <div class="enemy-team-sub">${tot}${_t('stats_game_count')} · ${_t('stats_winrate_label')} ${rate}%</div>
       </div>
       <div class="matchup-score">
-        <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}승 ${d.l}패</div>
+        <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}${_t('stats_win_suffix')} ${d.l}${_t('stats_lose_suffix')}</div>
       </div>
     </div>`;
   }).join('');
   const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
-    ? `<button onclick="window._singlesShowAll=true;renderSinglesStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}명 더 보기</button>`
+    ? `<button onclick="window._singlesShowAll=true;renderSinglesStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}${_t('stats_show_more_person')}</button>`
     : (showAll && total > OPP_PAGE_SIZE && !searchQ)
-    ? `<button onclick="window._singlesShowAll=false;renderSinglesStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">접기 ▲</button>`
+    ? `<button onclick="window._singlesShowAll=false;renderSinglesStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">${_t('stats_fold')}</button>`
     : '';
   document.getElementById('singlesCard').innerHTML = cards + moreBtn;
 }
@@ -4898,34 +4752,34 @@ function renderEnemyTeamStats(ms) {
     const tot = d.w + d.l;
     const rate = Math.round(d.w / tot * 100);
     const fillCls = rate >= 60 ? 'good' : rate < 40 ? 'bad' : '';
-    const badge = rate >= 60 ? '<span class="enemy-badge weak">우세</span>' : rate < 40 ? '<span class="enemy-badge strong">약점</span>' : '';
+    const badge = rate >= 60 ? `<span class="enemy-badge weak">${_t('stats_badge_strong')}</span>` : rate < 40 ? `<span class="enemy-badge strong">${_t('stats_badge_weak')}</span>` : '';
     const names = team.split(' & ');
     const partnerEntries = Object.entries(d.partners).sort((a,b) => (b[1].w+b[1].l)-(a[1].w+a[1].l));
     const mainPartner = partnerEntries[0];
     const partnerLabel = mainPartner && mainPartner[0] !== '__none__'
-      ? `내 파트너: <span style="color:var(--accent);font-weight:700;">${escHtml(mainPartner[0])}</span>와 주로 (${mainPartner[1].w+mainPartner[1].l}전)`
-      : `내 파트너: <span style="color:var(--text-muted);">단독 출전</span>`;
+      ? `${_t('stats_partner_main')} <span style="color:var(--accent);font-weight:700;">${escHtml(mainPartner[0])}</span>${_t('stats_partner_mostly')} (${mainPartner[1].w+mainPartner[1].l}${_t('stats_game_count')})`
+      : `${_t('stats_partner_main')} <span style="color:var(--text-muted);">${_t('stats_partner_solo')}</span>`;
     return `<div class="enemy-team-row">
       <div style="display:flex;gap:4px;flex-shrink:0;">
         <div class="matchup-avatar" style="width:28px;height:28px;font-size: 0.8rem;">${names[0].charAt(0)}</div>
         ${names[1] ? `<div class="matchup-avatar" style="width:28px;height:28px;font-size: 0.8rem;">${names[1].charAt(0)}</div>` : ''}
       </div>
       <div class="enemy-team-names" style="flex:1;min-width:0;margin:0 8px;">
-        <div style="font-size: 0.6rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;">상대팀</div>
+        <div style="font-size: 0.6rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;">${_t('stats_enemy_team_label')}</div>
         <div class="enemy-team-main">${escHtml(team)}${badge}</div>
         <div class="matchup-bar-wrap" style="margin-top:4px;"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
-        <div class="enemy-team-sub">${tot}전 · 내 승률 ${rate}%</div>
+        <div class="enemy-team-sub">${tot}${_t('stats_game_count')} · ${_t('stats_winrate_label')} ${rate}%</div>
         <div style="font-size: 0.7333rem;color:var(--text-muted);margin-top:3px;">🤝 ${partnerLabel}</div>
       </div>
       <div class="matchup-score">
-        <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}승 ${d.l}패</div>
+        <div class="matchup-wl" style="color:${d.w >= d.l ? 'var(--success)' : 'var(--danger)'}">${d.w}${_t('stats_win_suffix')} ${d.l}${_t('stats_lose_suffix')}</div>
       </div>
     </div>`;
   }).join('');
   const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
-    ? `<button onclick="window._enemyShowAll=true;renderEnemyTeamStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}팀 더 보기</button>`
+    ? `<button onclick="window._enemyShowAll=true;renderEnemyTeamStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}${_t('stats_show_more_team')}</button>`
     : (showAll && total > OPP_PAGE_SIZE && !searchQ)
-    ? `<button onclick="window._enemyShowAll=false;renderEnemyTeamStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">접기 ▲</button>`
+    ? `<button onclick="window._enemyShowAll=false;renderEnemyTeamStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">${_t('stats_fold')}</button>`
     : '';
   document.getElementById('enemyTeamCard').innerHTML = cards + moreBtn;
 }
@@ -5057,11 +4911,11 @@ function renderStreak() {
 
   const isWin = type === 'win';
   const emoji = isWin ? (streak >= 5 ? '🔥' : '⚡') : (streak >= 5 ? '💧' : '😤');
-  const label = isWin ? `${streak}연승 중!` : `${streak}연패 중`;
+  const label = isWin ? `${streak}${_t('stats_streak_win')}` : `${streak}${_t('stats_streak_lose')}`;
   const cls = isWin ? 'win-streak' : 'lose-streak';
   const msg = isWin
-    ? `최근 ${streak}경기 연속 승리! 🎉`
-    : `최근 ${streak}경기 연속 패배. 파이팅! 💪`;
+    ? `${_t('stats_streak_recent')} ${streak}${_t('stats_streak_games')} ${_t('stats_streak_win_msg')}`
+    : `${_t('stats_streak_recent')} ${streak}${_t('stats_streak_games')} ${_t('stats_streak_lose_msg')}`;
 
   el.innerHTML = `<div class="streak-banner">
     <div class="streak-icon">${emoji}</div>
@@ -5078,7 +4932,7 @@ function renderMonthlyGraph(ms) {
   if (!el) return;
   if (!ms) { const sport = state.sportType||'tennis'; ms = state.matches.filter(m=>(m.sport||'tennis')===sport); }
   if (!ms.length) {
-    el.innerHTML = '<div style="color:var(--text-muted);font-size: 0.8667rem;text-align:center;padding:20px 0;">경기를 입력하면 그래프가 표시됩니다</div>';
+    el.innerHTML = `<div style="color:var(--text-muted);font-size: 0.8667rem;text-align:center;padding:20px 0;">${_t('stats_monthly_empty')}</div>`;
     return;
   }
 
@@ -5102,14 +4956,14 @@ function renderMonthlyGraph(ms) {
       const rate = Math.round(d.w / total * 100);
       const heightPct = Math.round((total / maxTotal) * 100);
       const fillCls = rate >= 60 ? 'full' : rate < 40 ? 'low' : '';
-      const mon = ym.slice(5) + '월';
+      const mon = ym.slice(5) + _t('stats_month_suffix');
       return `<div class="monthly-bar-col">
         <div class="monthly-bar-rate">${rate}%</div>
         <div class="monthly-bar-bg">
           <div class="monthly-bar-fill ${fillCls}" style="height:${heightPct}%"></div>
         </div>
         <div class="monthly-bar-lbl">${mon}</div>
-        <div class="monthly-bar-lbl">${d.w}승${d.l}패</div>
+        <div class="monthly-bar-lbl">${d.w}${_t('stats_win_suffix')}${d.l}${_t('stats_lose_suffix')}</div>
       </div>`;
     }).join('')}
   </div>`;
@@ -5494,9 +5348,9 @@ function showPlayerDetail(playerId) {
     const isDoubles = m.format === 'doubles';
     let doublesInfo = '';
     if (isDoubles) {
-      const partnerStr = m.partner ? `파트너: <span style="color:var(--accent);font-weight:700;">${escHtml(m.partner)}</span>` : '';
+      const partnerStr = m.partner ? `${_t('pd_partner_label')} <span style="color:var(--accent);font-weight:700;">${escHtml(m.partner)}</span>` : '';
       const oppTeam = [m.opponent, m.opponent2].filter(Boolean).map(escHtml).join(' & ');
-      const oppStr = oppTeam ? `상대팀: <span style="color:var(--danger);font-weight:600;">${oppTeam}</span>` : '';
+      const oppStr = oppTeam ? `${_t('pd_opp_team_label')} <span style="color:var(--danger);font-weight:600;">${oppTeam}</span>` : '';
       const parts = [partnerStr, oppStr].filter(Boolean).join(' · ');
       if (parts) doublesInfo = `<div style="font-size: 0.6667rem;color:var(--text-muted);margin-top:2px;">${parts}</div>`;
     }
@@ -5517,10 +5371,10 @@ function showPlayerDetail(playerId) {
         <button id="pd-show-more-btn" onclick="
           var hid=document.getElementById('pd-hidden-matches');
           var btn=document.getElementById('pd-show-more-btn');
-          if(hid.style.display==='none'){hid.style.display='block';btn.textContent='▲ 접기';}
-          else{hid.style.display='none';btn.textContent='▼ 더보기 (${recentMatches.length - MATCH_INIT}개)';}
-        " style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px dashed var(--border);border-radius:8px;color:var(--accent);font-size: 0.8rem;font-weight:600;cursor:pointer;">▼ 더보기 (${recentMatches.length - MATCH_INIT}개)</button>` : ''}`
-    : `<div style="color:var(--text-muted);font-size: 0.8667rem;text-align:center;padding:20px 0;">경기 기록이 없습니다</div>`;
+          if(hid.style.display==='none'){hid.style.display='block';btn.textContent='${_t('pd_fold')}(${recentMatches.length - MATCH_INIT})';}
+          else{hid.style.display='none';btn.textContent='${_t('pd_show_more')}(${recentMatches.length - MATCH_INIT})';}
+        " style="width:100%;margin-top:8px;padding:8px;background:var(--surface2);border:1px dashed var(--border);border-radius:8px;color:var(--accent);font-size: 0.8rem;font-weight:600;cursor:pointer;">${_t('pd_show_more')}(${recentMatches.length - MATCH_INIT})</button>` : ''}`
+    : `<div style="color:var(--text-muted);font-size: 0.8667rem;text-align:center;padding:20px 0;">${_t('pd_no_match')}</div>`;
 
   // 선수 프로필 항목
   const pAge    = player.age    || '';
@@ -5623,15 +5477,15 @@ function showPlayerDetail(playerId) {
       <div class="pd-vs-row">
         <div class="pd-vs-block">
           <div class="pd-vs-num win">${myWin}</div>
-          <div class="pd-vs-sub">승</div>
+          <div class="pd-vs-sub">${_t('stats_win_suffix')}</div>
         </div>
         <div class="pd-vs-sep">VS</div>
         <div class="pd-vs-block">
           <div class="pd-vs-num lose">${myLoss}</div>
-          <div class="pd-vs-sub">패</div>
+          <div class="pd-vs-sub">${_t('stats_lose_suffix')}</div>
         </div>
         <div class="pd-vs-rate" style="color:${myRate>=50?'var(--success)':'var(--danger)'};">
-          ${myRate}%<span>내 승률</span>
+          ${myRate}%<span>${_t('stats_winrate_label')}</span>
         </div>
       </div>
       <div class="pd-rate-bar-bg">
@@ -8785,6 +8639,21 @@ const NIJI_DICT = {
   match_past_title:        { ko: '📋 이전 경기 기록',   en: '📋 Past Records' },
   match_me_label:          { ko: '나',                  en: 'Me' },
   match_opp_label:         { ko: '상대',               en: 'Opp' },
+  match_input_ph:          { ko: '이름 또는 초성',      en: 'Name or initial' },
+  match_memo_ph:           { ko: '경기 메모...',        en: 'Match memo...' },
+  match_new_btn_open:      { ko: '➕ 새 경기 입력',    en: '➕ New Match' },
+  match_form_close:        { ko: '✖ 닫기',             en: '✖ Close' },
+  match_edit_title:        { ko: '✏️ 경기 수정',        en: '✏️ Edit Match' },
+  match_edit_save:         { ko: '수정 저장',           en: 'Save Edit' },
+  match_racket_required:   { ko: '🎾 사용 라켓 (필수)', en: '🎾 Racket (required)' },
+  match_racket_sel_ph:     { ko: '-- 라켓 선택 (필수) --', en: '-- Select Racket (required) --' },
+  match_past_empty:        { ko: '이 달에 경기 기록이 없어요', en: 'No matches this month' },
+  match_count_unit:        { ko: '경기',               en: 'matches' },
+  match_delete_title:      { ko: '경기 삭제',           en: 'Delete Match' },
+  match_delete_desc:       { ko: '이 경기 기록을 삭제하시겠습니까?', en: 'Delete this match record?' },
+  match_delete_done:       { ko: '🗑️ 경기 삭제 완료',  en: '🗑️ Match deleted' },
+  match_old_records:       { ko: '── 6개월 이전 {n}개 기록 (통계에는 반영됨)', en: '── {n} records older than 6mo (included in stats)' },
+  pf_tension_ph:           { ko: '예) 50/52 파운드',   en: 'e.g. 50/52 lbs' },
 
   /* 통계 탭 */
   stats_page_header:       { ko: '통계',               en: 'Stats' },
@@ -8954,7 +8823,37 @@ const NIJI_DICT = {
   stats_hardest_vs:        { ko: '가장 어려운 상대',  en: 'Hardest Opponent' },
   stats_win_suffix:        { ko: '승',               en: 'W' },
   stats_lose_suffix:       { ko: '패',               en: 'L' },
+  match_result_win:        { ko: '승리',             en: 'Win' },
+  match_result_lose:       { ko: '패배',             en: 'Lose' },
   stats_game_count:        { ko: '전',               en: 'G' },
+  stats_winrate_label:     { ko: '내 승률',          en: 'Win%' },
+  stats_show_more_person:  { ko: '명 더 보기',       en: ' more' },
+  stats_show_more_team:    { ko: '팀 더 보기',       en: ' more' },
+  stats_fold:              { ko: '접기 ▲',           en: 'Fold ▲' },
+  stats_badge_strong:      { ko: '우세',             en: '↑' },
+  stats_badge_weak:        { ko: '약점',             en: '↓' },
+  stats_badge_disadvantage:{ ko: '열세',             en: '↓' },
+  stats_singles_opp_label: { ko: '단식 상대',        en: 'Singles Opp.' },
+  stats_enemy_team_label:  { ko: '상대팀',           en: 'Enemy Team' },
+  stats_combo_opp:         { ko: '상대:',            en: 'Opp:' },
+  stats_combo_team:        { ko: '내팀:',            en: 'My Team:' },
+  stats_partner_main:      { ko: '내 파트너:',       en: 'My Partner:' },
+  stats_partner_solo:      { ko: '단독 출전',        en: 'Solo' },
+  stats_partner_mostly:    { ko: '와 주로',          en: 'mostly' },
+  stats_games_together:    { ko: '경기 함께',        en: 'games together' },
+  stats_chemistry:         { ko: '궁합',             en: 'Chemistry' },
+  stats_streak_win:        { ko: '연승 중!',         en: ' Win Streak!' },
+  stats_streak_lose:       { ko: '연패 중',          en: ' Lose Streak' },
+  stats_streak_win_msg:    { ko: '연속 승리! 🎉',   en: ' straight wins! 🎉' },
+  stats_streak_lose_msg:   { ko: '연속 패배. 파이팅! 💪', en: ' straight losses. Keep going! 💪' },
+  stats_streak_recent:     { ko: '최근',             en: 'Last' },
+  stats_streak_games:      { ko: '경기',             en: 'matches' },
+  stats_month_suffix:      { ko: '월',               en: '' },
+  pd_partner_label:        { ko: '파트너:',           en: 'Partner:' },
+  pd_opp_team_label:       { ko: '상대팀:',           en: 'Opp Team:' },
+  pd_show_more:            { ko: '▼ 더보기',          en: '▼ More' },
+  pd_fold:                 { ko: '▲ 접기',            en: '▲ Fold' },
+  pd_no_match:             { ko: '경기 기록이 없습니다', en: 'No match records' },
   stats_enemyteam_empty:   { ko: '복식 경기를 입력하면\n상대팀 데이터가 표시됩니다', en: 'Enter doubles matches to see\nenemy team data' },
   stats_search_empty:      { ko: '검색 결과가 없습니다', en: 'No results found' },
   match_today_empty:       { ko: '아직 경기 기록이 없어요', en: 'No match records yet' },
@@ -8968,6 +8867,109 @@ const NIJI_DICT = {
 
   // 언어 선택 버튼 (프로필 탭 상단)
   pf_lang_section:         { ko: '🌐 언어 / Language', en: '🌐 Language / 언어' },
+
+  // ── 설명서 (manualModal) ─────────────────────────────
+  manual_title:   { ko: '📖 사용 설명서', en: '📖 User Guide' },
+
+  // 1. 프로필
+  manual_s1_title: { ko: '1. 프로필', en: '1. Profile' },
+  manual_s1_1: { ko: '상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요', en: 'Tap the photo area at the top to set your <b>profile picture</b>' },
+  manual_s1_2: { ko: '이름·클럽·나이대·손잡이·구력·스타일 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다', en: 'Tap any field (name, club, age, handedness, experience, style) to edit — changes are <b>auto-saved</b>' },
+  manual_s1_3: { ko: '라켓은 <b>2자루까지</b> 등록할 수 있어요. RACQUET 1·2 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요', en: 'You can register <b>up to 2 racquets</b>. Tap RACQUET 1·2 to expand, then enter the name, string, tension, and restring date' },
+  manual_s1_4: { ko: '<b>스트링 선택</b> — 과거에 입력한 스트링 목록에서 고르거나, 아래 입력창에 직접 타이핑할 수 있어요. 드롭다운에서 선택하면 입력창에도 자동으로 채워져요', en: '<b>String selection</b> — pick from your past strings in the dropdown, or type directly. Selecting from the dropdown auto-fills the input field' },
+  manual_s1_5: { ko: '<b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'Enter a <b>restring date</b> to see D+ days and games played automatically — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
+  manual_s1_6: { ko: '프로필 하단에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼 <b>종목을 설정</b>하세요. 경기기록·통계 탭의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동해요', en: 'Set your <b>sport</b> at the bottom of the profile: 🎾 Tennis / 🏸 Badminton / 🏓 Pickleball. You can also tap <b>[Change Sport →]</b> in the Match or Stats tab' },
+  manual_s1_7: { ko: '상단 🌙/☀️ 버튼으로 <b>다크/라이트 테마</b>를 전환할 수 있어요', en: 'Tap 🌙/☀️ at the top to switch between <b>dark and light theme</b>' },
+
+  // 2. 경기 기록
+  manual_s2_title: { ko: '2. 경기 기록', en: '2. Match Records' },
+  manual_s2_1: { ko: '앱을 열면 <b>날짜가 오늘로 자동 입력</b>됩니다. 과거 날짜로 바꿀 수도 있어요', en: 'When you open the app, <b>today\'s date is filled in automatically</b>. You can change it to a past date' },
+  manual_s2_2: { ko: '단식 / 복식을 선택하세요. 복식이면 <b>파트너·상대2 입력란</b>이 추가됩니다', en: 'Select Singles or Doubles. In doubles mode, <b>partner and 2nd opponent fields</b> appear' },
+  manual_s2_3: { ko: '날짜 · 상대 이름 · 결과(승/패)는 <b>필수</b>, 스코어·메모·사용 라켓은 선택 사항이에요', en: 'Date, opponent name, and result (win/loss) are <b>required</b>. Score, memo, and racquet used are optional' },
+  manual_s2_4: { ko: '이름 입력 시 <b>초성 자동완성</b>을 지원해요. 예: \'ㄱㄷㅎ\' → \'김동현\' 자동 추천', en: '<b>Autocomplete</b> is supported when typing names. Start typing and matching names appear' },
+  manual_s2_5: { ko: '경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수가 따로 카운트돼요', en: 'Selecting a <b>racquet used</b> when logging a match lets you track game count per racquet' },
+  manual_s2_6: { ko: '오늘 경기는 상단에 바로 표시되고, 이전 경기는 <b>📋 이전 경기 기록</b>을 탭해서 확인하세요', en: 'Today\'s matches appear at the top. Tap <b>📋 Previous Records</b> to see past matches' },
+  manual_s2_7: { ko: '저장된 경기는 ✏️ 수정 · 🗑️ 삭제가 가능해요', en: 'Saved matches can be ✏️ edited or 🗑️ deleted' },
+  manual_s2_8: { ko: '🏆 대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다', en: 'Scores entered in the 🏆 Tournament tab are <b>automatically added to match records</b>' },
+
+  // 3. 통계
+  manual_s3_title: { ko: '3. 통계', en: '3. Statistics' },
+  manual_s3_1: { ko: '통계 탭 상단에 현재 선택된 종목이 표시됩니다. <b>[종목 변경 →]</b> 버튼을 누르면 프로필 탭에서 종목을 바꿀 수 있어요', en: 'The current sport is shown at the top. Tap <b>[Change Sport →]</b> to switch sports in the profile tab' },
+  manual_s3_2: { ko: '<b>연승·연패 배너</b> — 현재 연속 기록이 자동으로 표시됩니다', en: '<b>Win/Loss Streak banner</b> — your current streak is shown automatically' },
+  manual_s3_3: { ko: '<b>상세 요약</b> — 이번 달 성적, 단식·복식 승률, 가장 많이 이긴 상대·가장 어려운 상대', en: '<b>Summary</b> — this month\'s record, singles/doubles win rates, best and toughest opponents' },
+  manual_s3_4: { ko: '<b>월별 승률 그래프</b> — 최근 6개월 성적 추이를 바 차트로 확인', en: '<b>Monthly win rate chart</b> — view your last 6 months of performance as a bar chart' },
+  manual_s3_5: { ko: '<b>상대 전적 · 파트너 궁합 · 상대팀 상성</b>을 각각 분석해줘요. 기본 상위 5명만 표시되고, <b>[더보기]</b> 버튼으로 전체를 볼 수 있어요', en: 'Analyzes <b>opponent records, partner chemistry, and rival team matchups</b>. Top 5 shown by default — tap <b>[Show More]</b> for all' },
+  manual_s3_6: { ko: '각 섹션 상단 <b>🔍 검색창</b>에서 이름 또는 초성으로 바로 찾을 수 있어요', en: 'Use the <b>🔍 search bar</b> at the top of each section to find by name' },
+  manual_s3_7: { ko: '각 항목은 탭하면 펼쳐지는 <b>아코디언 방식</b>으로 필요한 것만 열어볼 수 있어요', en: 'Each item uses an <b>accordion style</b> — tap to expand only what you need' },
+
+  // 4. 선수 관리
+  manual_s4_title: { ko: '4. 선수 관리', en: '4. Player Management' },
+  manual_s4_1: { ko: '선수 등록 시 <b>성별·등급·나이대·손잡이·구력·플레이스타일</b>을 함께 입력할 수 있어요', en: 'When adding a player, you can enter <b>gender, level, age group, handedness, experience, and play style</b>' },
+  manual_s4_2: { ko: '이름 입력 시 <b>초성 검색</b>을 지원해요. 예: \'ㄱㄷㅎ\' 입력 → \'김동현\' 검색', en: '<b>Name search with autocomplete</b> is supported. Start typing to find matching players' },
+  manual_s4_3: { ko: '<b>클럽 관리</b>에서 클럽을 만들고 선수에게 배정할 수 있어요. 한 선수가 여러 클럽에 속할 수도 있어요', en: 'Create clubs in <b>Club Management</b> and assign players. A player can belong to multiple clubs' },
+  manual_s4_4: { ko: '선수 이름을 탭하면 <b>상세 전적 페이지</b>로 이동해요 — 나와의 전적·승률·최근 대전 기록 확인 가능', en: 'Tap a player\'s name to open their <b>detail page</b> — see your head-to-head record, win rate, and recent matches' },
+  manual_s4_5: { ko: '이름순·최근 대전순·전적 많은 순·승률 높은 순으로 <b>정렬</b>할 수 있어요', en: '<b>Sort</b> players by name, most recent match, most matches, or highest win rate' },
+  manual_s4_6: { ko: '📝 메모 버튼으로 선수별 특징이나 스타일을 기록해두세요', en: 'Use the 📝 memo button to note each player\'s characteristics or style' },
+
+  // 5. 대회
+  manual_s5_title: { ko: '5. 대회', en: '5. Tournament' },
+  manual_s5_1: { ko: '대회 탭에는 <b>🔄 한울방식</b>과 <b>🏆 토너먼트</b> 두 가지 방식이 있어요', en: 'The Tournament tab has two formats: <b>🔄 Rotation (Hanul)</b> and <b>🏆 Bracket Tournament</b>' },
+  manual_s5_2: { ko: '<b>🔄 한울방식</b> — 매 게임마다 파트너와 상대가 자동으로 바뀌는 <b>순환 복식 대회</b>예요. 참가 인원과 게임 수를 설정하면 모든 조합이 자동으로 짜여요. 예) 8명·4게임이면 모두 골고루 파트너/상대로 만나요', en: '<b>🔄 Rotation (Hanul)</b> — partners and opponents rotate each game in a <b>round-robin doubles</b> format. Set players and game count and all pairings are auto-generated. e.g. 8 players × 4 games means everyone pairs with and faces everyone equally' },
+  manual_s5_3: { ko: '<b>🏆 토너먼트</b> — 단식·복식 <b>KO방식 대진표</b>예요. 이긴 팀만 다음 라운드로 진출하고, 결과 입력 시 다음 경기가 자동으로 채워져요', en: '<b>🏆 Bracket Tournament</b> — single/doubles <b>knockout bracket</b>. Only winners advance, and entering a result automatically fills in the next match' },
+  manual_s5_4: { ko: '<b>복식 파트너 구성</b> — 선수 선택 후 아래 두 가지 중 선택해요<br>· <b>🎲 자동 팀 섞기</b>: 선수 순서대로 1번↔마지막, 2번↔끝에서 2번 방식으로 자동 짝을 맺어요<br>· <b>✋ 직접 파트너 지정</b>: 선수를 2명씩 직접 클릭해서 팀을 만들어요', en: '<b>Doubles partner setup</b> — after selecting players, choose:<br>· <b>🎲 Auto pair</b>: pairs 1st↔last, 2nd↔2nd-last automatically<br>· <b>✋ Manual pair</b>: click players two at a time to form your own teams' },
+  manual_s5_5: { ko: '<b>상대팀 배치 방법</b> — 1라운드 대진을 어떻게 짤지 선택해요<br>· <b>🎲 자동 배치</b>: 선수/팀 순서대로 표준 시드 방식으로 자동 대진이 만들어져요<br>· <b>✋ 직접 대진 지정</b>: 내가 원하는 대로 누가 누구와 1라운드에서 붙을지 직접 클릭해서 대진을 짜요', en: '<b>Bracket draw method</b> — choose how Round 1 matchups are set:<br>· <b>🎲 Auto draw</b>: standard seeded bracket generated automatically<br>· <b>✋ Manual draw</b>: click to decide exactly who faces who in Round 1' },
+  manual_s5_6: { ko: '준결승 패자는 자동으로 <b>3·4위전</b>에 배치됩니다', en: 'Semifinal losers are automatically placed in the <b>3rd place match</b>' },
+  manual_s5_7: { ko: '선수 탭에서 등록한 선수를 바로 불러오거나, 직접 이름을 입력할 수 있어요', en: 'Import players from the Players tab, or type names directly' },
+  manual_s5_8: { ko: '대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다', en: 'Scores entered in tournaments are <b>automatically saved to match records</b>' },
+  manual_s5_9: { ko: '<b>📊 스코어보드</b> — 실제 경기 진행 중 실시간 점수판이에요. <b>폰을 가로로 돌리면</b> 대형 점수 화면이 열려요', en: '<b>📊 Scoreboard</b> — a live scoring display for matches in progress. <b>Rotate your phone to landscape</b> for the full-screen scoreboard' },
+  manual_s5_10: { ko: '스코어보드에서 <b>+POINT</b>로 점수 추가, <b>ACE</b>·<b>FAULT(더블폴트)</b> 버튼으로 특수 상황 입력, <b>↩ UNDO</b>로 되돌리기 가능해요', en: 'On the scoreboard: tap <b>+POINT</b> to score, <b>ACE</b>·<b>FAULT (double fault)</b> for special situations, and <b>↩ UNDO</b> to revert' },
+  manual_s5_11: { ko: '40-40 상황에서 자동으로 <b>DEUCE → AD</b> 처리되며, <b>🔀 타이브레이크</b> 버튼으로 타이브레이크를 시작할 수 있어요', en: 'At 40-40, <b>DEUCE → AD</b> is handled automatically. Use the <b>🔀 Tiebreak</b> button to start a tiebreak' },
+  manual_s5_12: { ko: '하단 <b>SETUP 탭</b>에서 선수 이름과 경기 제목을 직접 입력할 수 있어요', en: 'Enter player names and match title in the <b>SETUP tab</b> at the bottom' },
+
+  // 6. 스트링 관리
+  manual_s6_title: { ko: '6. 스트링 관리', en: '6. String Management' },
+  manual_s6_1: { ko: '프로필 탭 → 라켓 카드에서 <b>스트링명</b>을 입력하세요. 과거에 입력한 스트링은 드롭다운에서 바로 선택할 수 있어요', en: 'Go to Profile → racquet card and enter the <b>string name</b>. Previously used strings appear in the dropdown' },
+  manual_s6_2: { ko: '<b>스트링 교체일</b>을 입력하면 프로필 배너에 D+일수와 교체 후 게임 수가 자동 표시됩니다', en: 'Enter a <b>restring date</b> to see D+ days and post-restring game count in the profile banner' },
+  manual_s6_3: { ko: '배너 색상으로 교체 시기를 한눈에 확인할 수 있어요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'The banner color shows restring status at a glance — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
+  manual_s6_4: { ko: '경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수를 따로 카운트해줘요', en: 'Choose a <b>racquet used</b> when logging a match to track game count per racquet separately' },
+  manual_s6_5: { ko: '<b>스트링 선택이 안 보여요</b> — 스트링 입력 기록이 없으면 직접 입력창만 표시돼요. 기록이 쌓이면 드롭다운이 자동으로 나타납니다', en: '<b>No string dropdown?</b> — The dropdown only appears after you\'ve entered a string at least once. Just type directly until then' },
+
+  // 7. 전술판
+  manual_s7_title: { ko: '7. 전술판', en: '7. Tactics Board' },
+  manual_s7_1: { ko: '<b>대회</b> 탭 상단의 <b>📋 전술판</b> 버튼을 탭하면 전용 화면이 열려요', en: 'Tap <b>📋 Tactics Board</b> at the top of the Tournament tab to open the dedicated screen' },
+  manual_s7_2: { ko: '코트에서 <b>선수(원형 아이콘)를 드래그</b>해서 위치를 자유롭게 움직일 수 있어요', en: '<b>Drag player icons</b> (circles) on the court to freely reposition them' },
+  manual_s7_3: { ko: '선수를 <b>한 번 탭</b>하면 타구각 표시, <b>두 번 탭</b>하면 이름·번호·포지션·색상을 편집할 수 있어요', en: '<b>Single tap</b> a player to show shot angles. <b>Double tap</b> to edit name, number, position, and color' },
+  manual_s7_4: { ko: '상단 버튼으로 <b>기본·양쪽전위·양쪽후위·I포메이션·호주</b> 5가지 대형을 바로 적용할 수 있어요', en: 'Use the top buttons to instantly apply 5 formations: <b>Default, Both Net, Both Back, I-Formation, Australian</b>' },
+  manual_s7_5: { ko: '☰ 버튼(화면 오른쪽 가운데)을 탭하면 조작 버튼이 나타나요', en: 'Tap the ☰ button (middle right of screen) to show the control panel' },
+  manual_s7_6: { ko: '<b>➡️ 화살표</b> — 선수 탭 후 드래그: 이동 화살표 / 빈 곳 드래그: 자유 화살표', en: '<b>➡️ Arrow</b> — tap a player then drag: movement arrow / drag empty space: free arrow' },
+  manual_s7_7: { ko: '<b>✏️ 그리기</b> — 손가락으로 코트 위에 자유롭게 선을 그을 수 있어요', en: '<b>✏️ Draw</b> — draw freely on the court with your finger' },
+  manual_s7_8: { ko: '<b>⭕ 커버존 / 🎾 공 / 📐 타구각</b> — 각각 탭해서 표시/숨기기 전환', en: '<b>⭕ Cover zone / 🎾 Ball / 📐 Shot angle</b> — tap each to toggle show/hide' },
+  manual_s7_9: { ko: '<b>🎨 보드설정</b> — 코트 색상(그린·클레이·하드·다크·잔디), 그리기 색상 변경', en: '<b>🎨 Board settings</b> — change court color (green, clay, hard, dark, grass) and drawing color' },
+  manual_s7_10: { ko: '<b>💾 저장 / 📂 불러오기</b> — 전술판 배치를 이름 붙여 저장하고 나중에 다시 불러올 수 있어요 (최대 20개)', en: '<b>💾 Save / 📂 Load</b> — save your board layout with a name and reload it later (up to 20 saves)' },
+  manual_s7_11: { ko: '<b>🔗 공유</b> — 현재 전술판을 URL 링크로 만들어 카카오톡 등으로 공유할 수 있어요', en: '<b>🔗 Share</b> — generate a URL link of the current board and share it via KakaoTalk or other apps' },
+  manual_s7_12: { ko: '<b>🗑️ 삭제</b>는 화살표·그리기만 지워요. <b>🔄 초기화</b>는 선수 위치까지 원래대로 돌아가요', en: '<b>🗑️ Delete</b> clears only arrows and drawings. <b>🔄 Reset</b> also returns players to their original positions' },
+
+  // 8. 공유 & 백업
+  manual_s8_title: { ko: '8. 공유 & 백업', en: '8. Share & Backup' },
+  manual_s8_1: { ko: '데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 같은 구글 계정으로 로그인하면 그대로 유지돼요', en: 'Data is <b>automatically saved to the cloud (Firebase)</b>. Log in with the same Google account on a new phone to restore everything' },
+  manual_s8_2: { ko: '<b>💾 데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요', en: '<b>💾 Export Data</b> — save all records as a JSON file for an extra backup' },
+  manual_s8_3: { ko: '<b>📂 가져오기</b> — 백업한 JSON 파일을 불러와 데이터를 복원할 수 있어요', en: '<b>📂 Import</b> — load a backed-up JSON file to restore your data' },
+  manual_s8_4: { ko: '🧹 <b>저장공간 정리</b> — 기기 캐시만 삭제돼요. 클라우드 데이터는 안전하게 유지됩니다', en: '🧹 <b>Clear Storage</b> — clears only the device cache. Your cloud data stays safe' },
+  manual_s8_5: { ko: '💬 <b>카카오 오픈채팅</b> — 공유 탭에서 참여해 동호인들과 소통하세요', en: '💬 <b>KakaoTalk Open Chat</b> — join from the Share tab to connect with other players' },
+
+  // 9. 자주 묻는 질문
+  manual_s9_title: { ko: '9. 자주 묻는 질문', en: '9. FAQ' },
+  manual_s9_1: { ko: '<b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요', en: '<b>Matches not showing in stats?</b> — Check that the correct sport (🎾 Tennis, etc.) is selected in your profile. Stats only show for the current sport' },
+  manual_s9_2: { ko: '<b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 \'화면을 가로로 돌려주세요\' 안내가 나와요', en: '<b>Scoreboard not showing?</b> — The scoreboard requires <b>landscape mode</b>. In portrait, a "Please rotate" message appears' },
+  manual_s9_3: { ko: '<b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요', en: '<b>App not updating?</b> — Tap Share tab → Clear Storage, or on iPhone Safari go to Settings → Clear History and Website Data' },
+  manual_s9_4: { ko: '<b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요', en: '<b>App running slowly?</b> — Tap Share tab → Clear Storage to improve performance' },
+  manual_s9_5: { ko: '<b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다', en: '<b>Data disappeared?</b> — Sign out and log back in with the same Google account to restore your data' },
+  manual_s9_6: { ko: '<b>HTML 파일로 직접 열면 오류가 나요</b> — 반드시 인터넷이 연결된 상태에서 <b>웹 주소(URL)</b>로 접속하세요', en: '<b>Error when opening the HTML file directly?</b> — Always access the app via its <b>web URL</b> with an internet connection' },
+
+  // 10. 니지스트링 커뮤니티
+  manual_s10_title: { ko: '10. 니지스트링 커뮤니티', en: '10. NIJI STRING Community' },
+  manual_s10_1: { ko: '공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요', en: 'Join the <b>KakaoTalk Open Chat</b> from the Share tab to connect with fellow players' },
+  manual_s10_2: { ko: '스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요', en: 'Use <b>NIJI STRING</b> professional services: restringing, racquet repair, custom watch strap crafting, and more' },
 };
 
 // ── 글자 크기 변경 ──────────────────────────────────
@@ -9000,10 +9002,15 @@ function setLanguage(lang) {
   localStorage.setItem('niji_language', lang);
 
   // data-lang 속성이 달린 모든 태그 텍스트 교체
+  // manual_ 키는 <b> 태그 포함 → innerHTML, 나머지는 textContent
   document.querySelectorAll('[data-lang]').forEach(function(el) {
     var key = el.getAttribute('data-lang');
     if (NIJI_DICT[key] && NIJI_DICT[key][lang]) {
-      el.textContent = NIJI_DICT[key][lang];
+      if (key.indexOf('manual_') === 0) {
+        el.innerHTML = NIJI_DICT[key][lang];
+      } else {
+        el.textContent = NIJI_DICT[key][lang];
+      }
     }
   });
 
