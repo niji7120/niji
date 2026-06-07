@@ -1678,7 +1678,7 @@
   </div>
 
   <!-- ===== BOTTOM NAV ===== -->
-  <nav class="nav">
+  <nav class="nav" style="display:none">
     <button class="nav-btn active" onclick="showPage('profile')" id="nav-profile">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       <span data-lang="nav_profile">프로필</span>
@@ -2759,6 +2759,10 @@ function clearLocalStorageCache() {
 
 // ===== NAVIGATION =====
 function showPage(name) {
+  // [수정] showPage 호출 시 항상 하단 탭 메뉴가 보이도록 보장 (최초 로그인 시 탭 안 보이는 문제 수정)
+  var navBar = document.querySelector('.nav');
+  if (navBar) navBar.style.display = 'flex';
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const pageEl = document.getElementById('page-' + name);
