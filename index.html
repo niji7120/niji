@@ -2241,11 +2241,12 @@ function load() {
 
   window._firebaseAuth.onAuthStateChanged(function(user) {
     clearTimeout(authTimeout);
-    
-    if (window._appLoaded) return; // 이미 화면이 켜졌다면 중복 실행 방지
-    window._appLoaded = true;
 
     if (user) {
+      // 이미 앱이 켜진 상태면 중복 실행 방지
+      if (window._appLoaded) return;
+      window._appLoaded = true;
+
       window._userId = user.uid;
       window._userDisplayName = user.displayName || '';
       window._userEmail = user.email || '';
@@ -2256,14 +2257,14 @@ function load() {
       _syncPendingData();
       _loadFromFirebase();
 
-      // [추가된 부분] 로그인 후 하단 탭 메뉴들이 정상적으로 잘 보이도록 화면 크기를 다시 맞춰줍니다.
+      // 로그인 후 하단 탭 메뉴들이 정상적으로 잘 보이도록 화면 크기를 다시 맞춰줍니다.
       setTimeout(function() {
         window.dispatchEvent(new Event('resize'));
       }, 300);
 
     } else {
-      // 로그아웃 상태가 되면, 다음에 다시 로그인할 수 있도록 잠금을 풀어줍니다.
-      window._appLoaded = false; 
+      // 로그아웃 상태: 잠금 해제 후 로그인 화면 표시
+      window._appLoaded = false;
       _showLoginScreen();
     }
   });
@@ -2280,6 +2281,11 @@ function _isIOSSafari() {
 function _showLoginScreen() {
   var loadingScreen = document.getElementById('loadingScreen');
   if (!loadingScreen) return;
+
+  // 로그아웃 후 재로그인 시: 로딩화면 다시 표시, 하단 탭 숨김
+  loadingScreen.style.display = 'flex';
+  var navBar = document.querySelector('.nav');
+  if (navBar) navBar.style.display = 'none';
 
   // [추가] iOS Safari에서 localStorage 접근 불가할 때 대비 안전 처리
   if (_isIOSSafari() && window._firebaseAuth) {
