@@ -994,18 +994,25 @@
       padding: 24px 40px;
     }
     .nav {
-      padding: 8px 20px 0;
+      padding: 10px 20px 0;
       justify-content: space-around;
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
     }
     .nav-btn {
       flex: 1;
-      min-width: 70px;
-      font-size: 0.75rem;
-      padding: 10px 4px 14px;
+      min-width: 80px;
+      font-size: 0.85rem;
+      padding: 14px 4px 18px;
+      min-height: 64px;
+      gap: 6px;
     }
     .nav-btn svg {
-      width: 26px;
-      height: 26px;
+      width: 32px;
+      height: 32px;
+    }
+    .nav-btn.active::after {
+      width: 36px;
+      height: 3px;
     }
     .match-card, .card {
       max-width: 800px;
@@ -1076,7 +1083,7 @@
     }
   }
 </style>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6741771168968085"
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6741771168968085"
      crossorigin="anonymous"></script>
 </head>
 <body>
