@@ -980,6 +980,97 @@
   .player-match-info { flex: 1; min-width: 0; }
   .player-match-date { font-size: 0.7333rem; color: var(--text-muted); margin-bottom: 2px; }
   .player-match-score { font-size: 0.8667rem; font-weight: 600; color: var(--text); }
+
+  /* ===== 태블릿 전체화면 대응 (768px 이상) ===== */
+  @media (min-width: 768px) {
+    html { font-size: 17px; }
+    #app {
+      max-width: 100% !important;
+    }
+    .topbar {
+      padding: 20px 40px 16px;
+    }
+    .content {
+      padding: 24px 40px;
+    }
+    .nav {
+      padding: 0 40px;
+      height: 68px;
+    }
+    .nav-item {
+      font-size: 0.82rem;
+    }
+    .nav-icon {
+      font-size: 1.5rem;
+    }
+    .match-card, .card {
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .stat-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .player-list .player-item {
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .modal-wrap {
+      align-items: center;
+    }
+    .modal {
+      max-width: 600px;
+      margin: 0 auto;
+      border-radius: 20px;
+    }
+    #tv-modal-content, #tn-modal-content {
+      max-width: 600px;
+      margin: 0 auto;
+      border-radius: 20px;
+    }
+    .pf-wrap {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .form-input, .form-select {
+      font-size: 1rem !important;
+      padding: 14px 16px;
+    }
+    .btn {
+      padding: 14px 20px;
+      font-size: 1rem;
+    }
+    .topbar-logo {
+      font-size: 1.3rem;
+      letter-spacing: 4px;
+    }
+    .topbar-avatar {
+      width: 44px;
+      height: 44px;
+      font-size: 1.2rem;
+    }
+    .page-header {
+      font-size: 1.3rem;
+    }
+  }
+
+  /* ===== 대형 태블릿/PC 대응 (1024px 이상) ===== */
+  @media (min-width: 1024px) {
+    html { font-size: 18px; }
+    .content {
+      padding: 32px 60px;
+    }
+    .match-card, .card {
+      max-width: 900px;
+    }
+    .pf-wrap {
+      max-width: 800px;
+    }
+    .modal {
+      max-width: 680px;
+    }
+  }
 </style>
 </head>
 <body>
