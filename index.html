@@ -6130,8 +6130,8 @@ function renderScoreboard() {
   #sb-close-btn:active { background:rgba(255,255,255,0.18); }
   #sb-match-title { font-family:'Orbitron',sans-serif; font-size:clamp(12px,2.2vw,20px); color:#ffd84d; letter-spacing:3px; font-weight:700; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   #sb-game-score { display:flex; flex-direction:column; align-items:flex-end; justify-self:end; min-width:0; }
-  #sb-game-score .sb-gs-label { font-family:'Orbitron',sans-serif; font-size:clamp(11px,1.8vw,16px); color:#7a7aaa; letter-spacing:2px; }
-  #sb-game-score .sb-gs-num { font-family:'Bebas Neue',sans-serif; font-size:clamp(44px,10vw,100px); color:#fff; letter-spacing:3px; line-height:1; }
+  #sb-game-score .sb-gs-label { font-family:'Orbitron',sans-serif; font-size:clamp(16px,2.8vw,24px); color:#7a7aaa; letter-spacing:2px; }
+  #sb-game-score .sb-gs-num { font-family:'Bebas Neue',sans-serif; font-size:clamp(64px,14vw,130px); color:#fff; letter-spacing:3px; line-height:1; }
   #sb-game-score .sb-gs-num span { color:#ffd84d; }
   #sb-status-msg { position:absolute; top:17%; left:50%; transform:translateX(-50%); font-family:'Orbitron',sans-serif; font-size:clamp(12px,2vw,18px); color:#ffd84d; letter-spacing:3px; white-space:nowrap; opacity:0; transition:opacity .3s; pointer-events:none; z-index:5; text-shadow:0 0 8px rgba(255,216,77,.6); }
   #sb-status-msg.show { opacity:1; }
@@ -6148,12 +6148,12 @@ function renderScoreboard() {
   #sb-tap-hint { text-align:center; padding:6px 0 8px; font-family:'Orbitron',sans-serif; font-size:clamp(9px,1.5vw,12px); color:#7a7aaa; letter-spacing:2px; background:#050810; animation:sbBlink 2.5s ease-in-out infinite; flex-shrink:0; }
   @keyframes sbBlink { 0%,100%{opacity:.4;}50%{opacity:.9;} }
 
-  /* 컨트롤 패널 */
+  /* 컨트롤 패널 - 아래에서 위로 */
   #sb-ctrl-panel { position:absolute; left:0; right:0; bottom:0; z-index:20; pointer-events:none; }
   #sb-ctrl-backdrop { position:fixed; inset:0; z-index:18; display:none; }
   #sb-ctrl-backdrop.open { display:block; }
   /* 패널 전체: flex column, 탭 고정 + 내용만 스크롤 */
-  #sb-ctrl-box { background:#0a0c1a; border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:0; transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:auto; max-height:42vh; display:flex; flex-direction:column; overflow:hidden; }
+  #sb-ctrl-box { background:#0a0c1a; border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:0; transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:auto; max-height:45vh; display:flex; flex-direction:column; overflow:hidden; }
   #sb-ctrl-box.open { transform:translateY(0); }
   /* 탭 고정 영역 */
   #sb-ctrl-fixed { padding:7px 12px 0; flex-shrink:0; background:#0a0c1a; border-bottom:1px solid #1a1a2e; }
@@ -6366,49 +6366,27 @@ function renderScoreboard() {
 // ===== 선수 이름 입력 팝업 (가로 키보드용 - 회전 밖에 띄움) =====
 function sbOpenInput(fieldId, label) {
   // 기존 팝업 제거
-  var old = document.getElementById('sb-input-popup');
-  if (old) old.remove();
+  var oldPopup = document.getElementById('sb-input-popup');
+  if (oldPopup) oldPopup.remove();
 
   var currentVal = (document.getElementById(fieldId) || {}).value || '';
 
-  // 팝업: sb-overlay 직접 자식으로 붙임 (회전 영향 안 받음)
-  var overlay = document.getElementById('sb-overlay');
-  if (!overlay) return;
-
-  // 현재 세로모드인지 감지
-  var W = window.innerWidth, H = window.innerHeight;
-  var isPortrait = H > W;
+  // sb-score-content(회전된 inner) 안에 팝업 붙임 → 회전 좌표계 그대로 사용
+  var sbContent = document.getElementById('sb-score-content');
+  if (!sbContent) return;
 
   var popup = document.createElement('div');
   popup.id = 'sb-input-popup';
-
-  // 세로모드(JS 90도 회전 중)이면 → 팝업도 반대로 회전해서 실제 가로로 보이게
-  if (isPortrait) {
-    // 팝업을 실제 화면 기준 가로 중앙에 배치 (회전 역보정)
-    popup.style.cssText = [
-      'position:fixed',
-      'top:0','left:0','width:' + W + 'px','height:' + H + 'px',
-      'z-index:99999',
-      'display:flex','align-items:center','justify-content:center',
-      'background:rgba(0,0,0,0.7)',
-    ].join(';');
-  } else {
-    popup.style.cssText = [
-      'position:fixed',
-      'top:0','left:0','width:100%','height:100%',
-      'z-index:99999',
-      'display:flex','align-items:center','justify-content:center',
-      'background:rgba(0,0,0,0.7)',
-    ].join(';');
-  }
+  // 회전된 inner 기준으로 전체 덮기
+  popup.style.cssText = 'position:absolute;inset:0;z-index:99999;display:flex;align-items:flex-start;justify-content:center;padding-top:12%;background:rgba(0,0,0,0.82);';
 
   // 팝업 박스
   var box = document.createElement('div');
-  box.style.cssText = 'background:#0a0c1a;border:2px solid #1a6bff;border-radius:16px;padding:20px 18px 16px;width:88%;max-width:400px;';
+  box.style.cssText = 'background:#0a0c1a;border:2px solid #1a6bff;border-radius:16px;padding:22px 20px 18px;width:88%;max-width:440px;box-shadow:0 8px 32px rgba(0,0,0,0.7);';
 
   // 제목
   var lbl = document.createElement('div');
-  lbl.style.cssText = 'font-family:\'Noto Sans KR\',sans-serif;font-size: 0.9333rem;color:#ffd84d;font-weight:700;margin-bottom:12px;letter-spacing:0.5px;';
+  lbl.style.cssText = 'font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;color:#ffd84d;font-weight:700;margin-bottom:14px;letter-spacing:0.5px;';
   lbl.textContent = label + ' 입력';
   box.appendChild(lbl);
 
@@ -6418,7 +6396,7 @@ function sbOpenInput(fieldId, label) {
   inp.value = currentVal;
   inp.placeholder = '이름 입력 (초성도 가능)';
   inp.autocomplete = 'off';
-  inp.style.cssText = 'width:100%;box-sizing:border-box;background:#050810;border:1px solid #1a6bff;color:#fff;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.2rem;padding:14px 12px;border-radius:8px;outline:none;margin-bottom:10px;';
+  inp.style.cssText = 'width:100%;box-sizing:border-box;background:#050810;border:2px solid #1a6bff;color:#fff;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.4rem;padding:16px 14px;border-radius:10px;outline:none;margin-bottom:10px;letter-spacing:0.5px;';
 
   // 자동완성 목록
   var acList = document.createElement('div');
@@ -6435,7 +6413,7 @@ function sbOpenInput(fieldId, label) {
     if (!matched.length) { acList.style.display='none'; return; }
     matched.forEach(function(p) {
       var it = document.createElement('div');
-      it.style.cssText = 'padding:13px 14px;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.0667rem;color:#fff;cursor:pointer;border-bottom:1px solid #1a1a2e;';
+      it.style.cssText = 'padding:15px 16px;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;color:#fff;cursor:pointer;border-bottom:1px solid #1a1a2e;';
       it.textContent = p.name;
       it.addEventListener('touchstart', function(e) {
         e.preventDefault();
@@ -6461,12 +6439,12 @@ function sbOpenInput(fieldId, label) {
 
   var btnCancel = document.createElement('button');
   btnCancel.textContent = '취소';
-  btnCancel.style.cssText = 'flex:1;padding:14px;background:rgba(255,255,255,0.07);color:#aaa;border:1px solid #2a2a4a;border-radius:8px;font-family:\'Noto Sans KR\',sans-serif;font-size: 1rem;cursor:pointer;';
+  btnCancel.style.cssText = 'flex:1;padding:16px;background:rgba(255,255,255,0.07);color:#aaa;border:1px solid #2a2a4a;border-radius:10px;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;cursor:pointer;';
   btnCancel.addEventListener('click', function() { popup.remove(); });
 
   var btnOk = document.createElement('button');
   btnOk.textContent = '✔ 확인';
-  btnOk.style.cssText = 'flex:2;padding:14px;background:#1a6bff;color:#fff;border:none;border-radius:8px;font-family:\'Noto Sans KR\',sans-serif;font-size: 1rem;font-weight:700;cursor:pointer;';
+  btnOk.style.cssText = 'flex:2;padding:16px;background:#1a6bff;color:#fff;border:none;border-radius:10px;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;font-weight:700;cursor:pointer;';
   btnOk.addEventListener('click', function() {
     var val = inp.value.trim();
     // 숨겨진 input에 값 저장
@@ -6484,9 +6462,13 @@ function sbOpenInput(fieldId, label) {
   btnRow.appendChild(btnOk);
   box.appendChild(btnRow);
   popup.appendChild(box);
-  document.body.appendChild(popup);
+  // 배경 클릭시 닫기
+  popup.addEventListener('click', function(e) {
+    if (e.target === popup) popup.remove();
+  });
+  sbContent.appendChild(popup);
 
-  // 키보드 올라오면 팝업 위로 올리기
+  // 포커스
   setTimeout(function() {
     inp.focus();
     inp.select();
@@ -6514,19 +6496,6 @@ function sbOpenPanel() {
   if (bd)  bd.classList.add('open');
   if (hint) hint.style.display = 'none';
   sbUpdateServeBtns();
-  // 키보드 올라올 때 패널 위치 보정 (visualViewport 지원 환경)
-  if (window.visualViewport) {
-    var _sbVP = function() {
-      var panel = document.getElementById('sb-ctrl-panel');
-      if (panel && _sbPanelOpen) {
-        var offset = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop;
-        panel.style.bottom = Math.max(0, offset) + 'px';
-      }
-    };
-    window.visualViewport.addEventListener('resize', _sbVP);
-    window.visualViewport.addEventListener('scroll', _sbVP);
-    window._sbVPHandler = _sbVP;
-  }
 }
 function sbClosePanel() {
   _sbPanelOpen = false;
@@ -6536,14 +6505,6 @@ function sbClosePanel() {
   if (box) box.classList.remove('open');
   if (bd)  bd.classList.remove('open');
   if (hint) hint.style.display = '';
-  // 키보드 핸들러 해제 및 패널 위치 복원
-  if (window._sbVPHandler && window.visualViewport) {
-    window.visualViewport.removeEventListener('resize', window._sbVPHandler);
-    window.visualViewport.removeEventListener('scroll', window._sbVPHandler);
-    window._sbVPHandler = null;
-  }
-  var panel = document.getElementById('sb-ctrl-panel');
-  if (panel) panel.style.bottom = '0px';
 }
 // 서브 버튼: 서빙하는 선수만 표시
 function sbUpdateServeBtns() {
