@@ -3,6 +3,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6052,11 +6053,35 @@ function openScoreboardOverlay() {
       window.removeEventListener('resize', window._sbResizeHandler);
       window._sbResizeHandler = null;
     }
+    // 셀카리모컨(볼륨키) 리스너 정리
+    if (window._sbVolKeyHandler) {
+      window.removeEventListener('keydown', window._sbVolKeyHandler, true);
+      window._sbVolKeyHandler = null;
+    }
     // 입력 팝업도 정리
     var inputPopup = document.getElementById('sb-input-popup');
     if (inputPopup) inputPopup.remove();
     overlay.remove();
   };
+
+  // ===== 셀카 리모컨(블루투스 볼륨키) 점수 조작 =====
+  // 볼륨 업 = 왼쪽 선수 점수, 볼륨 다운 = 오른쪽 선수 점수
+  if (window._sbVolKeyHandler) {
+    window.removeEventListener('keydown', window._sbVolKeyHandler, true);
+  }
+  window._sbVolKeyHandler = function(e) {
+    if (_sb.over) return;
+    if (e.key === 'AudioVolumeUp' || e.keyCode === 24) {
+      e.preventDefault();
+      e.stopPropagation();
+      sbAddPoint(0);
+    } else if (e.key === 'AudioVolumeDown' || e.keyCode === 25) {
+      e.preventDefault();
+      e.stopPropagation();
+      sbAddPoint(1);
+    }
+  };
+  window.addEventListener('keydown', window._sbVolKeyHandler, true);
 
   // (세로모드 안내 메시지 제거 - JS 90도 회전 방식으로 통합 처리)
 
