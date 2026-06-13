@@ -6064,56 +6064,62 @@ function openScoreboardOverlay() {
     overlay.remove();
   };
 
-  // ===== 셀카 리모컨(볼륨 변화 감지) 점수 조작 =====
-  // 무음을 재생하면서 폰의 실제 볼륨 변화를 감지합니다.
-  // 볼륨 업(증가) = 왼쪽 선수 점수, 볼륨 다운(감소) = 오른쪽 선수 점수
+  // ===== 셀카 리모컨(하드웨어 볼륨키) 점수 조작 =====
+  // 볼륨업 키 = 왼쪽(선수1) 포인트, 볼륨다운 키 = 오른쪽(선수2) 포인트
+  // 길게 누르면(600ms 이상) 포인트 추가 대신 되돌리기(undo) 실행
   if (window._sbVolStopFn) {
     window._sbVolStopFn();
     window._sbVolStopFn = null;
   }
   (function initVolRemote() {
-    try {
-      var audio = new Audio();
-      // 매우 짧은 무음 wav (data URI), 반복 재생
-      audio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
-      audio.loop = true;
-      audio.volume = 0.5;
-      var lastVol = null;
-      var ignoreUntil = 0;
+    var pressTimer = null;
+    var longPressFired = false;
+    var LONG_PRESS_MS = 600;
 
-      function checkVol() {
-        var v = audio.volume;
-        var now = Date.now();
-        if (lastVol !== null && Math.abs(v - lastVol) > 0.001 && now > ignoreUntil) {
-          if (v > lastVol) {
-            sbAddPoint(0); // 볼륨 업 → 왼쪽 선수
-          } else {
-            sbAddPoint(1); // 볼륨 다운 → 오른쪽 선수
-          }
-          ignoreUntil = now + 250; // 연속입력 방지
-        }
-        lastVol = v;
-        // 볼륨이 끝(0 또는 1)에 도달하면 가운데로 되돌려서
-        // 계속 위/아래 변화를 감지할 수 있게 함
-        if (v <= 0.02 || v >= 0.98) {
-          setTimeout(function() {
-            audio.volume = 0.5;
-            lastVol = 0.5;
-          }, 50);
+    function isVolKey(e) {
+      return e.key === 'AudioVolumeUp' || e.key === 'AudioVolumeDown' ||
+             e.keyCode === 175 || e.keyCode === 174 ||
+             e.keyCode === 24 || e.keyCode === 25;
+    }
+    function isVolUp(e) {
+      return e.key === 'AudioVolumeUp' || e.keyCode === 175 || e.keyCode === 24;
+    }
+
+    function onKeyDown(e) {
+      if (!isVolKey(e)) return;
+      e.preventDefault();
+      if (pressTimer) return;
+      longPressFired = false;
+      var which = isVolUp(e) ? 0 : 1;
+      pressTimer = setTimeout(function () {
+        longPressFired = true;
+        sbUndoPoint();
+      }, LONG_PRESS_MS);
+      pressTimer._which = which;
+    }
+
+    function onKeyUp(e) {
+      if (!isVolKey(e)) return;
+      e.preventDefault();
+      if (pressTimer) {
+        var which = pressTimer._which;
+        clearTimeout(pressTimer);
+        pressTimer = null;
+        if (!longPressFired) {
+          sbAddPoint(which);
         }
       }
-
-      audio.play().catch(function(){});
-      var iv = setInterval(checkVol, 100);
-
-      window._sbVolStopFn = function() {
-        clearInterval(iv);
-        audio.pause();
-        audio.src = '';
-      };
-    } catch (err) {
-      // 오디오 초기화 실패 시 무시 (리모컨 기능만 비활성화됨)
+      longPressFired = false;
     }
+
+    window.addEventListener('keydown', onKeyDown, true);
+    window.addEventListener('keyup', onKeyUp, true);
+
+    window._sbVolStopFn = function () {
+      window.removeEventListener('keydown', onKeyDown, true);
+      window.removeEventListener('keyup', onKeyUp, true);
+      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+    };
   })();
 
 
@@ -6169,6 +6175,8 @@ var _sb = {
   faults: 0,
   dfs: 0,
   serving: 0,
+  serverSub: [0, 0],
+  serverSubStarted: [false, false],
   over: false,
   history: []
 };
@@ -6197,10 +6205,15 @@ function renderScoreboard() {
   #sb-score-area { display:grid; grid-template-columns:1fr 3px 1fr; flex:1; min-height:0; }
   .sb-pb { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:16px 8px; background:#050810; position:relative; }
   .sb-pb.serving { background:rgba(173,255,47,0.03); }
+  .sb-pb-press { background:rgba(255,79,79,0.12) !important; transition: background .15s; }
   .sb-serve-dot { width:clamp(16px,2.8vw,28px); height:clamp(16px,2.8vw,28px); border-radius:50%; background:transparent; border:2px solid #7a7aaa; position:static; flex-shrink:0; transition:all .3s; }
   .sb-serve-dot.on { background:radial-gradient(circle at 35% 35%,#ccff00,#88cc00); border-color:transparent; box-shadow:0 0 14px rgba(180,255,0,.8); animation:sbServePulse 1.4s ease-in-out infinite; }
   @keyframes sbServePulse { 0%,100%{box-shadow:0 0 12px rgba(180,255,0,.6);}50%{box-shadow:0 0 28px rgba(180,255,0,1);} }
   .sb-pname { font-family:'Orbitron',sans-serif; font-size:clamp(14px,3.5vw,30px); color:#fff; letter-spacing:2px; font-weight:700; text-align:center; margin-bottom:0; word-break:break-all; }
+  .sb-srv-name { color:#ccff00; text-shadow:0 0 10px rgba(180,255,0,.7); position:relative; }
+  .sb-srv-name::after { content:'🟢'; font-size:0.55em; margin-left:4px; vertical-align:middle; }
+  .sb-sub-name { opacity:.55; }
+  .sb-name-sep { opacity:.4; }
   .sb-pts { font-family:'Bebas Neue',sans-serif; font-size:clamp(180px,48vw,480px); line-height:.88; color:#fff; -webkit-text-stroke:3px #ffd84d; text-shadow:0 0 20px rgba(255,255,255,.8),0 0 40px rgba(255,216,77,.4); letter-spacing:-1px; }
   .sb-pts.deuce-ad { color:#ccff00; -webkit-text-stroke:2px rgba(180,255,0,.4); text-shadow:0 0 20px rgba(180,255,0,.8),0 0 50px rgba(180,255,0,.4); }
   #sb-divider { width:3px; background:linear-gradient(to bottom,transparent,#ffd84d 20%,#ffd84d 80%,transparent); opacity:.5; }
@@ -6212,7 +6225,7 @@ function renderScoreboard() {
   #sb-ctrl-backdrop { position:fixed; inset:0; z-index:18; display:none; }
   #sb-ctrl-backdrop.open { display:block; }
   /* 패널 전체: flex column, 탭 고정 + 내용만 스크롤 */
-  #sb-ctrl-box { background:#0a0c1a; border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:0; transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:auto; max-height:45vh; display:flex; flex-direction:column; overflow:hidden; }
+  #sb-ctrl-box { background:#0a0c1a; border-top:2px solid #1a6bff; border-radius:16px 16px 0 0; padding:0; transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); pointer-events:auto; max-height:62vh; display:flex; flex-direction:column; overflow:hidden; }
   #sb-ctrl-box.open { transform:translateY(0); }
   /* 탭 고정 영역 */
   #sb-ctrl-fixed { padding:7px 12px 0; flex-shrink:0; background:#0a0c1a; border-bottom:1px solid #1a1a2e; }
@@ -6261,8 +6274,9 @@ function renderScoreboard() {
   .sb-ac-item:active { background:#1a6bff; }
   .sb-btn-apply { width:100%; padding:10px; background:#7c6af7; color:#fff; border:none; border-radius:8px; font-family:'Noto Sans KR',sans-serif; font-size: 0.9333rem; font-weight:700; letter-spacing:0; cursor:pointer; margin-top:8px; }
   /* 이름 입력 버튼 */
-  .sb-name-btn { width:100%; background:#050810; border:1px solid #1a1a2e; color:#fff; font-family:'Noto Sans KR',sans-serif; font-size: 0.9333rem; padding:8px 10px; border-radius:6px; cursor:pointer; text-align:left; transition:border-color .2s; }
+  .sb-name-btn { width:100%; background:#050810; border:1px solid #1a1a2e; color:#fff; font-family:'Noto Sans KR',sans-serif; font-size: 1rem; padding:13px 12px; border-radius:8px; cursor:pointer; text-align:left; transition:border-color .2s; min-height:46px; }
   .sb-name-btn:active { border-color:#1a6bff; background:#0a0f1e; }
+  .sb-name-btn .ph { color:#666; }
   #sb-winner { display:none; position:absolute; inset:0; background:linear-gradient(135deg,#0d0022,#1a0040); flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:30; }
   #sb-winner.show { display:flex; }
   .sbw-title { font-family:'Orbitron',sans-serif; font-size: 0.8667rem; color:#ffd84d; letter-spacing:3px; margin-bottom:12px; }
@@ -6278,20 +6292,20 @@ function renderScoreboard() {
   </div>
   <div id="sb-status-msg"></div>
   <div id="sb-score-area">
-    <div class="sb-pb" id="sb-pb1">
+    <div class="sb-pb" id="sb-pb1" onclick="event.stopPropagation();" onpointerdown="sbPlayerPress(event,0)" onpointerup="sbPlayerRelease(event,0)" onpointercancel="sbPlayerCancel(event)" onpointerleave="sbPlayerCancel(event)">
       <div class="sb-serve-dot" id="sb-sdot1"></div>
-      <div class="sb-pname" id="sb-name1-d">${n1}</div>
+      <div class="sb-pname" id="sb-name1-d">${sbNameHTML(0)}</div>
       <div class="sb-pts" id="sb-pts1-d">0</div>
     </div>
     <div id="sb-divider"></div>
-    <div class="sb-pb" id="sb-pb2">
+    <div class="sb-pb" id="sb-pb2" onclick="event.stopPropagation();" onpointerdown="sbPlayerPress(event,1)" onpointerup="sbPlayerRelease(event,1)" onpointercancel="sbPlayerCancel(event)" onpointerleave="sbPlayerCancel(event)">
       <div class="sb-serve-dot" id="sb-sdot2"></div>
-      <div class="sb-pname" id="sb-name2-d">${n2}</div>
+      <div class="sb-pname" id="sb-name2-d">${sbNameHTML(1)}</div>
       <div class="sb-pts" id="sb-pts2-d">0</div>
     </div>
   </div>
 
-  <div id="sb-tap-hint">▲ 화면을 탭하면 점수 입력 메뉴가 열립니다</div>
+  <div id="sb-tap-hint">▲ 선수 영역 탭=포인트 / 길게누름=취소 · 가운데 탭=메뉴</div>
 
   <!-- 컨트롤 패널 -->
   <div id="sb-ctrl-panel">
@@ -6310,6 +6324,9 @@ function renderScoreboard() {
       <div id="sb-ctrl-scroll">
       <!-- 점수 탭 -->
       <div class="sb-tab-content active" id="sb-tab-score">
+        <div id="sb-srvsub-row" style="display:none;margin-bottom:8px;">
+          <button class="sb-btn" style="width:100%;background:rgba(180,255,0,.12);color:#ccff00;border:2px solid rgba(180,255,0,.4);padding:10px;font-size:0.9333rem;" onclick="sbToggleServerSub(_sb.serving);sbUpdateServeBtns()">🟢 서브 선수 교체 (<span id="sb-srvsub-txt"></span>)</button>
+        </div>
         <div class="sb-score-grid">
           <div class="sb-pctrl">
             <div class="sb-pctrl-name" id="sb-cname1">${n1}</div>
@@ -6459,16 +6476,21 @@ function sbOpenInput(fieldId, label) {
 
   // 자동완성 목록
   var acList = document.createElement('div');
-  acList.style.cssText = 'background:#0d1020;border:1px solid #1a6bff;border-radius:8px;max-height:140px;overflow-y:auto;margin-bottom:10px;display:none;';
+  acList.style.cssText = 'background:#0d1020;border:1px solid #1a6bff;border-radius:8px;max-height:220px;overflow-y:auto;margin-bottom:10px;display:none;-webkit-overflow-scrolling:touch;';
 
   function updateAC() {
     var q = inp.value.trim();
     acList.innerHTML = '';
-    if (!q) { acList.style.display='none'; return; }
-    var isChosung = /^[ㄱ-ㅎ]+$/.test(q);
-    var matched = (state.players || []).filter(function(p) {
-      return isChosung ? getChosung(p.name).startsWith(q) : p.name.includes(q);
-    });
+    var pool = state.players || [];
+    var matched;
+    if (!q) {
+      matched = pool; // 비어있으면 전체 등록 선수 목록 표시
+    } else {
+      var isChosung = /^[ㄱ-ㅎ]+$/.test(q);
+      matched = pool.filter(function(p) {
+        return isChosung ? getChosung(p.name).startsWith(q) : p.name.includes(q);
+      });
+    }
     if (!matched.length) { acList.style.display='none'; return; }
     matched.forEach(function(p) {
       var it = document.createElement('div');
@@ -6489,7 +6511,26 @@ function sbOpenInput(fieldId, label) {
     acList.style.display = 'block';
   }
   inp.addEventListener('input', updateAC);
+  inp.addEventListener('focus', updateAC);
   box.appendChild(inp);
+
+  // 안내 문구
+  var hint = document.createElement('div');
+  hint.style.cssText = 'font-family:\'Noto Sans KR\',sans-serif;font-size:0.8rem;color:#7a7aaa;margin:-4px 0 10px;letter-spacing:0;';
+  hint.textContent = '💡 입력칸을 누르면 등록된 선수 목록이 바로 보여요';
+  box.appendChild(hint);
+
+  // 지우기 버튼
+  var btnClear = document.createElement('button');
+  btnClear.textContent = '✕ 입력 지우기';
+  btnClear.style.cssText = 'width:100%;padding:10px;margin:-2px 0 10px;background:rgba(255,79,79,.1);color:#ff7070;border:1px solid rgba(255,79,79,.3);border-radius:8px;font-family:\'Noto Sans KR\',sans-serif;font-size:0.9rem;cursor:pointer;';
+  btnClear.addEventListener('click', function() {
+    inp.value = '';
+    inp.focus();
+    updateAC();
+  });
+  box.appendChild(btnClear);
+
   box.appendChild(acList);
 
   // 버튼 행
@@ -6537,6 +6578,73 @@ function sbOpenInput(fieldId, label) {
 // (sbShowAC 및 sb-ac-1~4 이벤트 리스너 제거 - 미사용 코드)
 
 // 패널 열기/닫기
+// ===== 선수 영역 터치: 짧게=포인트, 길게(600ms)=되돌리기 =====
+var _sbPressTimer = null;
+var _sbLongFired = false;
+var _sbLongPressMs = 600;
+function sbPlayerPress(e, p) {
+  e.preventDefault();
+  e.stopPropagation();
+  if (_sbPanelOpen) return; // 컨트롤 패널 열려있을 땐 무시
+  _sbLongFired = false;
+  var pb = document.getElementById(p === 0 ? 'sb-pb1' : 'sb-pb2');
+  if (pb) pb.classList.add('sb-pb-press');
+  _sbPressTimer = setTimeout(function () {
+    _sbLongFired = true;
+    if (pb) pb.classList.remove('sb-pb-press');
+    sbUndoPoint();
+  }, _sbLongPressMs);
+}
+function sbPlayerRelease(e, p) {
+  e.preventDefault();
+  e.stopPropagation();
+  var pb = document.getElementById(p === 0 ? 'sb-pb1' : 'sb-pb2');
+  if (pb) pb.classList.remove('sb-pb-press');
+  if (_sbPressTimer) {
+    clearTimeout(_sbPressTimer);
+    _sbPressTimer = null;
+  }
+  if (_sbPanelOpen) return;
+  if (!_sbLongFired) {
+    sbAddPoint(p);
+  }
+  _sbLongFired = false;
+}
+function sbPlayerCancel(e) {
+  if (_sbPressTimer) {
+    clearTimeout(_sbPressTimer);
+    _sbPressTimer = null;
+  }
+  document.querySelectorAll('.sb-pb-press').forEach(function (el) {
+    el.classList.remove('sb-pb-press');
+  });
+  _sbLongFired = false;
+}
+
+// 복식일 때 "A / B" 형태 이름에서 서브 선수(subIdx)를 강조 표시
+function sbNameHTML(p) {
+  var name = _sb.names[p] || ('선수 ' + (p+1));
+  if (_sb.format === 'doubles' && name.indexOf(' / ') !== -1) {
+    var parts = name.split(' / ');
+    var subIdx = _sb.serverSub[p] || 0;
+    var isServingTeam = (_sb.serving === p);
+    return parts.map(function(part, i) {
+      if (isServingTeam && i === subIdx) {
+        return '<span class="sb-srv-name">' + part + '</span>';
+      }
+      return '<span class="sb-sub-name">' + part + '</span>';
+    }).join('<span class="sb-name-sep"> / </span>');
+  }
+  return name;
+}
+// 서브 선수 토글 (복식, 서빙 중인 팀의 이름 탭 시)
+function sbToggleServerSub(p) {
+  if (_sb.format !== 'doubles') return;
+  if (_sb.serving !== p) return; // 서빙팀이 아니면 무시
+  _sb.serverSub[p] = 1 - (_sb.serverSub[p] || 0);
+  sbRender();
+}
+
 function sbHandleTap(e) {
   if (_sbPanelOpen) return;
   // 닫기 버튼 클릭은 무시
@@ -6575,6 +6683,23 @@ function sbUpdateServeBtns() {
   if (flt1) flt1.style.display = _sb.serving === 0 ? 'block' : 'none';
   if (ace2) ace2.style.display = _sb.serving === 1 ? 'block' : 'none';
   if (flt2) flt2.style.display = _sb.serving === 1 ? 'block' : 'none';
+  var srvRow = document.getElementById('sb-srvsub-row');
+  var srvTxt = document.getElementById('sb-srvsub-txt');
+  if (srvRow) {
+    if (_sb.format === 'doubles') {
+      var name = _sb.names[_sb.serving] || '';
+      var parts = name.split(' / ');
+      if (parts.length === 2) {
+        srvRow.style.display = 'block';
+        var subIdx = _sb.serverSub[_sb.serving] || 0;
+        if (srvTxt) srvTxt.textContent = '현재: ' + parts[subIdx] + ' → ' + parts[1-subIdx];
+      } else {
+        srvRow.style.display = 'none';
+      }
+    } else {
+      srvRow.style.display = 'none';
+    }
+  }
 }
 
 function sbSwitchTab(name) {
@@ -6604,7 +6729,14 @@ function sbAddPoint(p) {
   sbUpdateFaultDots();
   if (_sb.tb) {
     _sb.tbPts[p]++;
-    if ((_sb.tbPts[0]+_sb.tbPts[1]) % 2 === 1) _sb.serving = 1-_sb.serving;
+    if ((_sb.tbPts[0]+_sb.tbPts[1]) % 2 === 1) {
+      _sb.serving = 1-_sb.serving;
+      if (_sb.serverSubStarted[_sb.serving]) {
+        _sb.serverSub[_sb.serving] = 1 - (_sb.serverSub[_sb.serving] || 0);
+      } else {
+        _sb.serverSubStarted[_sb.serving] = true;
+      }
+    }
     sbCheckTBWin(p);
     sbRender(); return;
   }
@@ -6628,6 +6760,11 @@ function sbWinGame(p) {
   _sb.games[p]++;
   _sb.pts=[0,0]; _sb.deuce=false; _sb.faults=0;
   _sb.serving = 1-_sb.serving;
+  if (_sb.serverSubStarted[_sb.serving]) {
+    _sb.serverSub[_sb.serving] = 1 - (_sb.serverSub[_sb.serving] || 0);
+  } else {
+    _sb.serverSubStarted[_sb.serving] = true;
+  }
   sbCheckSetWin(p);
 }
 
@@ -6808,7 +6945,7 @@ function sbResetMatch() {
   // 점수/게임/상태 전체 초기화
   _sb.pts=[0,0]; _sb.games=[0,0]; _sb.deuce=false;
   _sb.tb=false; _sb.tbPts=[0,0]; _sb.faults=0; _sb.dfs=0;
-  _sb.serving=0; _sb.over=false; _sb.history=[];
+  _sb.serving=0; _sb.over=false; _sb.history=[]; _sb.serverSub=[0,0]; _sb.serverSubStarted=[true,false];
   // 선수 이름/포맷/타이틀도 초기값으로 리셋
   _sb.names=['선수 1','선수 2'];
   _sb.names2=['',''];
@@ -6868,9 +7005,11 @@ function sbApplySetup() {
     n2 = a2 || '선수 2';
     _sb.names2 = ['', ''];
   }
-  _sb.names = [n1, n2]; _sb.title = title;
-  ['sb-name1-d','sb-cname1'].forEach(function(id) { var e=document.getElementById(id); if(e) e.textContent=n1; });
-  ['sb-name2-d','sb-cname2'].forEach(function(id) { var e=document.getElementById(id); if(e) e.textContent=n2; });
+  _sb.names = [n1, n2]; _sb.title = title; _sb.serverSub = [0,0]; _sb.serverSubStarted = [_sb.serving===0, _sb.serving===1];
+  document.querySelectorAll('#sb-cname1').forEach(function(e){ e.textContent=n1; });
+  document.querySelectorAll('#sb-cname2').forEach(function(e){ e.textContent=n2; });
+  var nm1 = document.getElementById('sb-name1-d'); if (nm1) nm1.innerHTML = sbNameHTML(0);
+  var nm2 = document.getElementById('sb-name2-d'); if (nm2) nm2.innerHTML = sbNameHTML(1);
   var mt = document.getElementById('sb-match-title');
   if (mt) mt.textContent = '🎾 ' + title;
   sbFlashStatus('✔ 설정 저장됨', 1000);
@@ -6886,6 +7025,8 @@ function sbRender() {
   s2.className = 'sb-serve-dot' + (_sb.serving===1?' on':'');
   pb1.className = 'sb-pb' + (_sb.serving===0?' serving':'');
   pb2.className = 'sb-pb' + (_sb.serving===1?' serving':'');
+  var nmA = document.getElementById('sb-name1-d'); if (nmA) nmA.innerHTML = sbNameHTML(0);
+  var nmB = document.getElementById('sb-name2-d'); if (nmB) nmB.innerHTML = sbNameHTML(1);
 
   var t0, t1, cls0='sb-pts', cls1='sb-pts';
   if (_sb.tb) {
