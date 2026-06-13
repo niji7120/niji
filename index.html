@@ -6053,97 +6053,11 @@ function openScoreboardOverlay() {
       window.removeEventListener('resize', window._sbResizeHandler);
       window._sbResizeHandler = null;
     }
-    // 셀카리모컨(볼륨감지) 정리
-    if (window._sbVolStopFn) {
-      window._sbVolStopFn();
-      window._sbVolStopFn = null;
-    }
     // 입력 팝업도 정리
     var inputPopup = document.getElementById('sb-input-popup');
     if (inputPopup) inputPopup.remove();
     overlay.remove();
   };
-
-  // ===== 셀카 리모컨(볼륨 변화 감지) 점수 조작 =====
-  // 무음을 재생하면서 폰의 실제 볼륨 변화를 감지합니다 (모바일 호환).
-  // 볼륨 업(증가) = 왼쪽 선수, 볼륨 다운(감소) = 오른쪽 선수
-  // 220ms 내 추가 변화 없으면 짧게누름=포인트, 600ms 이상 유지되면 길게누름=취소
-  if (window._sbVolStopFn) {
-    window._sbVolStopFn();
-    window._sbVolStopFn = null;
-  }
-  (function initVolRemote() {
-    try {
-      var audio = new Audio('data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ4AAACAgICAgICAgICAgICAgA==');
-      audio.loop = true;
-      audio.volume = 0.5;
-      var lastVol = 0.5;
-      var ignoreUntil = 0;
-      var pressTimer = null;
-      var longPressFired = false;
-      var LONG_PRESS_MS = 600;
-      var pendingWhich = null;
-
-      function onVolumeChange() {
-        var v = audio.volume;
-        var now = Date.now();
-        if (Math.abs(v - lastVol) < 0.001) return;
-        if (now < ignoreUntil) { lastVol = v; return; }
-
-        var isUp = v > lastVol;
-        var which = isUp ? 0 : 1;
-
-        // 길게 누름 판정 시작 (버튼 다운으로 간주)
-        if (pressTimer) clearTimeout(pressTimer);
-        longPressFired = false;
-        pendingWhich = which;
-        pressTimer = setTimeout(function () {
-          longPressFired = true;
-          sbUndoPoint();
-        }, LONG_PRESS_MS);
-
-        lastVol = v;
-        ignoreUntil = now + 60;
-
-        // 볼륨이 끝에 도달하면 중앙(0.5)으로 복귀시켜 계속 감지 가능하게 함
-        if (v <= 0.05 || v >= 0.95) {
-          setTimeout(function () {
-            audio.volume = 0.5;
-            lastVol = 0.5;
-          }, 80);
-        }
-      }
-
-      // 버튼을 떼는 시점을 추정: 일정시간(220ms) 동안 추가 변화가 없으면 "짧게 누름"으로 확정
-      var releaseTimer = null;
-      audio.addEventListener('volumechange', function () {
-        onVolumeChange();
-        if (releaseTimer) clearTimeout(releaseTimer);
-        releaseTimer = setTimeout(function () {
-          if (pressTimer) {
-            clearTimeout(pressTimer);
-            pressTimer = null;
-          }
-          if (!longPressFired && pendingWhich !== null) {
-            sbAddPoint(pendingWhich);
-          }
-          longPressFired = false;
-          pendingWhich = null;
-        }, 220);
-      });
-
-      audio.play().catch(function(){});
-
-      window._sbVolStopFn = function () {
-        audio.pause();
-        audio.src = '';
-        if (pressTimer) clearTimeout(pressTimer);
-        if (releaseTimer) clearTimeout(releaseTimer);
-      };
-    } catch (err) {
-      // 오디오 초기화 실패 시 무시
-    }
-  })();
 
 
   // (세로모드 안내 메시지 제거 - JS 90도 회전 방식으로 통합 처리)
@@ -7042,7 +6956,7 @@ function sbApplySetup() {
     n2 = a2 || '선수 2';
     _sb.names2 = ['', ''];
   }
-  _sb.names = [n1, n2]; _sb.title = title; _sb.serverSub = [0,0]; _sb.serverSubStarted = [_sb.serving===0, _sb.serving===1];
+  _sb.names = [n1, n2]; _sb.title = title; _sb.serverSub = [0,0]; _sb.serverSubStarted = [true, false];
   document.querySelectorAll('#sb-cname1').forEach(function(e){ e.textContent=n1; });
   document.querySelectorAll('#sb-cname2').forEach(function(e){ e.textContent=n2; });
   var nm1 = document.getElementById('sb-name1-d'); if (nm1) nm1.innerHTML = sbNameHTML(0);
