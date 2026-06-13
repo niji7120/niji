@@ -6240,7 +6240,7 @@ function renderScoreboard() {
   .sb-pts { font-family:'Bebas Neue',sans-serif; font-size:clamp(180px,48vw,480px); line-height:.88; color:#fff; -webkit-text-stroke:3px #ffd84d; text-shadow:0 0 20px rgba(255,255,255,.8),0 0 40px rgba(255,216,77,.4); letter-spacing:-1px; }
   .sb-pts.deuce-ad { color:#ccff00; -webkit-text-stroke:2px rgba(180,255,0,.4); text-shadow:0 0 20px rgba(180,255,0,.8),0 0 50px rgba(180,255,0,.4); }
   #sb-divider { width:3px; background:linear-gradient(to bottom,transparent,#ffd84d 20%,#ffd84d 80%,transparent); opacity:.5; }
-  #sb-tap-hint { text-align:center; padding:6px 0 8px; font-family:'Orbitron',sans-serif; font-size:clamp(9px,1.5vw,12px); color:#7a7aaa; letter-spacing:2px; background:#050810; animation:sbBlink 2.5s ease-in-out infinite; flex-shrink:0; }
+  #sb-tap-hint { text-align:center; padding:10px 0 12px; font-family:'Orbitron',sans-serif; font-size:clamp(13px,2.4vw,17px); color:#9a9aca; letter-spacing:2px; background:#050810; animation:sbBlink 2.5s ease-in-out infinite; flex-shrink:0; }
   @keyframes sbBlink { 0%,100%{opacity:.4;}50%{opacity:.9;} }
 
   /* 컨트롤 패널 - 아래에서 위로 */
@@ -6252,7 +6252,7 @@ function renderScoreboard() {
   #sb-ctrl-box.open { transform:translateY(0); }
   /* 탭 고정 영역 */
   #sb-ctrl-fixed { padding:7px 12px 0; flex-shrink:0; background:#0a0c1a; border-bottom:1px solid #1a1a2e; }
-  #sb-ctrl-handle { width:36px; height:4px; border-radius:2px; background:#2a2a4a; margin:0 auto 7px; cursor:pointer; }
+  #sb-ctrl-handle { width:80px; height:6px; border-radius:3px; background:#2a2a4a; margin:0 auto; cursor:pointer; padding:14px 0; box-sizing:content-box; background-clip:content-box; }
   .sb-tab-row { display:flex; gap:6px; padding-bottom:7px; margin-bottom:0; }
   /* ★ 탭버튼: 폰트 크게, 잘 보이게 */
   .sb-tab-btn { flex:1; font-family:'Noto Sans KR',sans-serif; font-size: 1rem; font-weight:700; letter-spacing:0; padding:10px 4px; background:#0d0f20; border:1px solid #2a2a4a; color:#8888bb; border-radius:8px; cursor:pointer; transition:all .2s; }
@@ -6470,14 +6470,25 @@ function sbOpenInput(fieldId, label) {
 
   var currentVal = (document.getElementById(fieldId) || {}).value || '';
 
-  // sb-score-content(회전된 inner) 안에 팝업 붙임 → 회전 좌표계 그대로 사용
-  var sbContent = document.getElementById('sb-score-content');
-  if (!sbContent) return;
-
   var popup = document.createElement('div');
   popup.id = 'sb-input-popup';
-  // 회전된 inner 기준으로 전체 덮기
-  popup.style.cssText = 'position:absolute;inset:0;z-index:99999;display:flex;align-items:flex-start;justify-content:center;padding-top:12%;background:rgba(0,0,0,0.82);';
+
+  // 화면이 JS로 90도 회전되어 있는 경우(세로 기기), 팝업은 기기의 실제 방향(세로)에 맞춰
+  // 회전 없이 표시해야 키보드와 화면 방향이 일치함.
+  var inner = document.getElementById('sb-overlay-inner');
+  var isRotated = inner && inner.style.transform && inner.style.transform.indexOf('rotate') !== -1;
+
+  if (isRotated) {
+    // body 기준, 회전 없이 화면 전체를 덮는 세로 레이아웃 팝업
+    popup.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;align-items:flex-start;justify-content:center;padding-top:18%;background:rgba(0,0,0,0.82);';
+    document.body.appendChild(popup);
+  } else {
+    // 가로 기기: 기존처럼 회전된 콘텐츠 안에 부착
+    var sbContent = document.getElementById('sb-score-content');
+    if (!sbContent) return;
+    popup.style.cssText = 'position:absolute;inset:0;z-index:99999;display:flex;align-items:flex-start;justify-content:center;padding-top:12%;background:rgba(0,0,0,0.82);';
+    sbContent.appendChild(popup);
+  }
 
   // 팝업 박스
   var box = document.createElement('div');
@@ -6589,7 +6600,6 @@ function sbOpenInput(fieldId, label) {
   popup.addEventListener('click', function(e) {
     if (e.target === popup) popup.remove();
   });
-  sbContent.appendChild(popup);
 
   // 포커스
   setTimeout(function() {
@@ -7002,6 +7012,8 @@ function sbSetFormat(fmt) {
     if (lbl1) lbl1.textContent='🟡 우리팀 선수 1';
     if (lbl2) lbl2.textContent='🔵 상대팀 선수 1';
     if (box) box.style.maxHeight = '52vh';
+    var scrollEl1 = document.getElementById('sb-ctrl-scroll');
+    if (scrollEl1) scrollEl1.scrollTop = 0;
   } else {
     if (btnS) { btnS.style.background='#1a6bff'; btnS.style.color='#fff'; btnS.style.border='none'; }
     if (btnD) { btnD.style.background='#0d0f20'; btnD.style.color='#8888bb'; btnD.style.border='1px solid #2a2a4a'; }
@@ -7010,6 +7022,8 @@ function sbSetFormat(fmt) {
     if (lbl1) lbl1.textContent='🟡 선수 1';
     if (lbl2) lbl2.textContent='🔵 선수 2';
     if (box) box.style.maxHeight = '42vh';
+    var scrollEl2 = document.getElementById('sb-ctrl-scroll');
+    if (scrollEl2) scrollEl2.scrollTop = 0;
   }
 }
 function sbApplySetup() {
