@@ -6475,6 +6475,18 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
   inp.addEventListener('focus', updateAC);
   box.appendChild(inp);
 
+  // 지우기 버튼 (선수1/필드1)
+  var btnClear = document.createElement('button');
+  btnClear.textContent = '✕ 입력 지우기';
+  btnClear.style.cssText = 'width:100%;padding:10px;margin:-2px 0 10px;background:rgba(255,79,79,.1);color:#ff7070;border:1px solid rgba(255,79,79,.3);border-radius:8px;font-family:\'Noto Sans KR\',sans-serif;font-size:0.9rem;cursor:pointer;';
+  btnClear.addEventListener('click', function() {
+    inp.value = '';
+    inp.focus();
+    updateAC();
+  });
+  box.appendChild(btnClear);
+  box.appendChild(acList);
+
   // ===== 두번째 입력칸 (있을 경우) =====
   var inp2 = null, acList2 = null;
   if (fieldId2) {
@@ -6548,19 +6560,6 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
   hint.style.cssText = 'font-family:\'Noto Sans KR\',sans-serif;font-size:0.8rem;color:#7a7aaa;margin:-4px 0 10px;letter-spacing:0;';
   hint.textContent = '💡 입력칸을 누르면 등록된 선수 목록이 바로 보여요';
   box.appendChild(hint);
-
-  // 지우기 버튼
-  var btnClear = document.createElement('button');
-  btnClear.textContent = '✕ 입력 지우기';
-  btnClear.style.cssText = 'width:100%;padding:10px;margin:-2px 0 10px;background:rgba(255,79,79,.1);color:#ff7070;border:1px solid rgba(255,79,79,.3);border-radius:8px;font-family:\'Noto Sans KR\',sans-serif;font-size:0.9rem;cursor:pointer;';
-  btnClear.addEventListener('click', function() {
-    inp.value = '';
-    inp.focus();
-    updateAC();
-  });
-  box.appendChild(btnClear);
-
-  box.appendChild(acList);
 
   // 버튼 행
   var btnRow = document.createElement('div');
