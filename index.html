@@ -1867,7 +1867,7 @@
   </div>
 
   <!-- ===== BOTTOM NAV ===== -->
-  <nav class="nav" style="display:none">
+  <nav class="nav" style="display:flex">
     <button class="nav-btn active" onclick="showPage('profile')" id="nav-profile">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
       <span data-lang="nav_profile">프로필</span>
@@ -2443,18 +2443,9 @@ function load() {
       var msgEl = document.getElementById('loadingMsg');
       if (msgEl) msgEl.textContent = '데이터 불러오는 중...';
 
-      // [수정] 로그인 감지 즉시 하단 탭을 미리 표시 (첫 실행 시 탭 안 보이는 문제 해결)
-      var navBar = document.querySelector('.nav');
-      if (navBar) navBar.style.display = 'flex';
-
       _migrateOfflineData();
       _syncPendingData();
       _loadFromFirebase();
-
-      // 로그인 후 하단 탭 메뉴들이 정상적으로 잘 보이도록 화면 크기를 다시 맞춰줍니다.
-      setTimeout(function() {
-        window.dispatchEvent(new Event('resize'));
-      }, 300);
 
     } else {
       // 로그아웃 상태: 잠금 해제 후 로그인 화면 표시
@@ -2476,10 +2467,9 @@ function _showLoginScreen() {
   var loadingScreen = document.getElementById('loadingScreen');
   if (!loadingScreen) return;
 
-  // 로그아웃 후 재로그인 시: 로딩화면 다시 표시, 하단 탭 숨김
+  // 로그아웃 후 재로그인 시: 로딩화면 다시 표시
+  // (loadingScreen이 position:fixed; z-index:9999로 nav를 덮으므로 nav를 숨길 필요 없음)
   loadingScreen.style.display = 'flex';
-  var navBar = document.querySelector('.nav');
-  if (navBar) navBar.style.display = 'none';
 
   // [추가] iOS Safari에서 localStorage 접근 불가할 때 대비 안전 처리
   if (_isIOSSafari() && window._firebaseAuth) {
@@ -3003,11 +2993,7 @@ function _initApp() {
   var ls = document.getElementById('loadingScreen');
   if (ls) ls.style.display = 'none';
 
-  // 하단 탭 메뉴 반드시 보이게 (로그아웃→재로그인 시 탭이 안 보이는 문제 수정)
-  var navBar = document.querySelector('.nav');
-  if (navBar) navBar.style.display = 'flex';
-
-  // 저장된 언어 설정 복원 (로그인 후 영어 설정이 한국어로 초기화되는 문제 수정)
+  // 저장된 언어 설정 복원
   var savedLang = localStorage.getItem('niji_language') || 'ko';
   if (typeof setLanguage === 'function') setLanguage(savedLang);
 
@@ -3035,8 +3021,22 @@ function _initApp() {
     if (emojiEl) emojiEl.style.display = 'none';
   }
 
-  // 프로필 탭을 기본 화면으로 표시 (로그아웃→재로그인 후 탭이 안 보이는 문제 수정)
-  showPage('profile');
+  // 하단 탭 반드시 표시 + 프로필 페이지 진입
+  // setTimeout 0으로 DOM paint 완료 후 실행해 확실히 보이게 함
+  function _showNavAndProfile() {
+    var navBar = document.querySelector('.nav');
+    if (navBar) {
+      navBar.style.display = 'flex';
+      navBar.style.visibility = 'visible';
+      navBar.style.opacity = '1';
+    }
+    showPage('profile');
+    // 혹시 레이아웃이 밀렸을 경우를 위해 resize 이벤트로 재계산
+    window.dispatchEvent(new Event('resize'));
+  }
+  setTimeout(_showNavAndProfile, 0);
+  // 100ms 후 한 번 더 보장 (Firebase 비동기 렌더 완료 후 대비)
+  setTimeout(_showNavAndProfile, 100);
 }
 
 // ===== 저장공간 정리 =====
