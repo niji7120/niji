@@ -6412,11 +6412,11 @@ function renderScoreboard() {
 function sbOpenInputPair(team) {
   if (_sb.format === 'doubles') {
     if (team === 0) {
-      var lbl_our1 = _t('niji_language')==='en' ? '🟡 Our Team P1' : '🟡 우리팀 선수 1';
+      var lbl_our1 = _t('sb_dbl_our1');
       var lbl_our2 = _t('sb_dbl_p1');
       sbOpenInput('sb-in-name1', lbl_our1, 'sb-in-name3', lbl_our2);
     } else {
-      var lbl_opp1 = _t('niji_language')==='en' ? '🔵 Opp. Team P1' : '🔵 상대팀 선수 1';
+      var lbl_opp1 = _t('sb_dbl_opp1');
       var lbl_opp2 = _t('sb_dbl_p2');
       sbOpenInput('sb-in-name2', lbl_opp1, 'sb-in-name4', lbl_opp2);
     }
@@ -6459,14 +6459,14 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
   // 제목
   var lbl = document.createElement('div');
   lbl.style.cssText = 'font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;color:#ffd84d;font-weight:700;margin-bottom:14px;letter-spacing:0.5px;';
-  lbl.textContent = label + ' 입력';
+  lbl.textContent = label + (localStorage.getItem('niji_language')==='en' ? '' : ' 입력');
   box.appendChild(lbl);
 
   // 입력창
   var inp = document.createElement('input');
   inp.type = 'text';
   inp.value = currentVal;
-  inp.placeholder = '이름 입력 (초성도 가능)';
+  inp.placeholder = localStorage.getItem('niji_language')==='en' ? 'Enter name' : '이름 입력 (초성도 가능)';
   inp.autocomplete = 'off';
   inp.style.cssText = 'width:100%;box-sizing:border-box;background:#050810;border:2px solid #1a6bff;color:#fff;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.4rem;padding:16px 14px;border-radius:10px;outline:none;margin-bottom:10px;letter-spacing:0.5px;';
 
@@ -6512,7 +6512,7 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
 
   // 지우기 버튼 (선수1/필드1)
   var btnClear = document.createElement('button');
-  btnClear.textContent = '✕ 입력 지우기';
+  btnClear.textContent = localStorage.getItem('niji_language')==='en' ? '✕ Clear' : '✕ 입력 지우기';
   btnClear.style.cssText = 'width:100%;padding:10px;margin:-2px 0 10px;background:rgba(255,79,79,.1);color:#ff7070;border:1px solid rgba(255,79,79,.3);border-radius:8px;font-family:\'Noto Sans KR\',sans-serif;font-size:0.9rem;cursor:pointer;';
   btnClear.addEventListener('click', function() {
     inp.value = '';
@@ -6529,13 +6529,13 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
 
     var lbl2El = document.createElement('div');
     lbl2El.style.cssText = 'font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;color:#7ad1ff;font-weight:700;margin:14px 0 14px;letter-spacing:0.5px;';
-    lbl2El.textContent = label2 + ' 입력';
+    lbl2El.textContent = label2 + (localStorage.getItem('niji_language')==='en' ? '' : ' 입력');
     box.appendChild(lbl2El);
 
     inp2 = document.createElement('input');
     inp2.type = 'text';
     inp2.value = currentVal2;
-    inp2.placeholder = '이름 입력 (초성도 가능)';
+    inp2.placeholder = localStorage.getItem('niji_language')==='en' ? 'Enter name' : '이름 입력 (초성도 가능)';
     inp2.autocomplete = 'off';
     inp2.style.cssText = 'width:100%;box-sizing:border-box;background:#050810;border:2px solid #7ad1ff;color:#fff;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.4rem;padding:16px 14px;border-radius:10px;outline:none;margin-bottom:10px;letter-spacing:0.5px;';
 
@@ -6579,7 +6579,7 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
     box.appendChild(inp2);
 
     var btnClear2 = document.createElement('button');
-    btnClear2.textContent = '✕ 입력 지우기';
+    btnClear2.textContent = localStorage.getItem('niji_language')==='en' ? '✕ Clear' : '✕ 입력 지우기';
     btnClear2.style.cssText = 'width:100%;padding:10px;margin:-2px 0 10px;background:rgba(255,79,79,.1);color:#ff7070;border:1px solid rgba(255,79,79,.3);border-radius:8px;font-family:\'Noto Sans KR\',sans-serif;font-size:0.9rem;cursor:pointer;';
     btnClear2.addEventListener('click', function() {
       inp2.value = '';
@@ -6593,7 +6593,7 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
   // 안내 문구
   var hint = document.createElement('div');
   hint.style.cssText = 'font-family:\'Noto Sans KR\',sans-serif;font-size:0.8rem;color:#7a7aaa;margin:-4px 0 10px;letter-spacing:0;';
-  hint.textContent = '💡 입력칸을 누르면 등록된 선수 목록이 바로 보여요';
+  hint.textContent = localStorage.getItem('niji_language')==='en' ? '💡 Tap the field to see registered players' : '💡 입력칸을 누르면 등록된 선수 목록이 바로 보여요';
   box.appendChild(hint);
 
   // 버튼 행
@@ -6601,12 +6601,12 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
   btnRow.style.cssText = 'display:flex;gap:10px;';
 
   var btnCancel = document.createElement('button');
-  btnCancel.textContent = '취소';
+  btnCancel.textContent = localStorage.getItem('niji_language')==='en' ? 'Cancel' : '취소';
   btnCancel.style.cssText = 'flex:1;padding:16px;background:rgba(255,255,255,0.07);color:#aaa;border:1px solid #2a2a4a;border-radius:10px;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;cursor:pointer;';
   btnCancel.addEventListener('click', function() { popup.remove(); });
 
   var btnOk = document.createElement('button');
-  btnOk.textContent = '✔ 확인';
+  btnOk.textContent = localStorage.getItem('niji_language')==='en' ? '✔ OK' : '✔ 확인';
   btnOk.style.cssText = 'flex:2;padding:16px;background:#1a6bff;color:#fff;border:none;border-radius:10px;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;font-weight:700;cursor:pointer;';
   btnOk.addEventListener('click', function() {
     var val = inp.value.trim();
@@ -7049,8 +7049,8 @@ function sbSetFormat(fmt) {
     if (btnD) { btnD.style.background='#1a6bff'; btnD.style.color='#fff'; btnD.style.border='none'; }
     if (d1) d1.style.display='';
     if (d2) d2.style.display='';
-    if (lbl1) lbl1.textContent=(localStorage.getItem('niji_language')==='en') ? '🟡 Our Team P1' : '🟡 우리팀 선수 1';
-    if (lbl2) lbl2.textContent=(localStorage.getItem('niji_language')==='en') ? '🔵 Opp. Team P1' : '🔵 상대팀 선수 1';
+    if (lbl1) lbl1.textContent=_t('sb_dbl_our1');
+    if (lbl2) lbl2.textContent=_t('sb_dbl_opp1');
     if (box) box.style.maxHeight = '52vh';
     var scrollEl1 = document.getElementById('sb-ctrl-scroll');
     if (scrollEl1) scrollEl1.scrollTop = 0;
@@ -8601,11 +8601,11 @@ history.pushState(null, '', location.href);
   };
 
   const PRESETS={
-    basic:{desc:"💡 전위/후위 기본 대형",M1:{x:CX_L-50,y:CB-60},M2:{x:CX_L+50,y:SVC_B+30},O1:{x:CX_L+50,y:CT+60},O2:{x:CX_L-50,y:SVC_T-30}},
-    bothUp:{desc:"💡 둘 다 네트 앞으로",M1:{x:CX_L-55,y:SVC_B+40},M2:{x:CX_L+55,y:SVC_B+40},O1:{x:CX_L+55,y:SVC_T-40},O2:{x:CX_L-55,y:SVC_T-40}},
-    bothBack:{desc:"💡 둘 다 베이스라인 수비",M1:{x:CX_L-60,y:CB-40},M2:{x:CX_L+60,y:CB-40},O1:{x:CX_L+60,y:CT+40},O2:{x:CX_L-60,y:CT+40}},
-    iForm:{desc:"💡 서버+전위 센터에 겹치기",M1:{x:CX_L,y:CB-50},M2:{x:CX_L,y:SVC_B+30},O1:{x:CX_L+60,y:CT+50},O2:{x:CX_L-50,y:SVC_T-30}},
-    aus:{desc:"💡 서버+전위 같은 사이드",M1:{x:CX_L-60,y:CB-50},M2:{x:CX_L-60,y:SVC_B+30},O1:{x:CX_L+60,y:CT+50},O2:{x:CX_L+60,y:SVC_T-30}},
+    basic:{desc:{ko:"💡 전위/후위 기본 대형",en:"💡 Net & Back formation"},M1:{x:CX_L-50,y:CB-60},M2:{x:CX_L+50,y:SVC_B+30},O1:{x:CX_L+50,y:CT+60},O2:{x:CX_L-50,y:SVC_T-30}},
+    bothUp:{desc:{ko:"💡 둘 다 네트 앞으로",en:"💡 Both at the net"},M1:{x:CX_L-55,y:SVC_B+40},M2:{x:CX_L+55,y:SVC_B+40},O1:{x:CX_L+55,y:SVC_T-40},O2:{x:CX_L-55,y:SVC_T-40}},
+    bothBack:{desc:{ko:"💡 둘 다 베이스라인 수비",en:"💡 Both at baseline"},M1:{x:CX_L-60,y:CB-40},M2:{x:CX_L+60,y:CB-40},O1:{x:CX_L+60,y:CT+40},O2:{x:CX_L-60,y:CT+40}},
+    iForm:{desc:{ko:"💡 서버+전위 센터에 겹치기",en:"💡 I-Formation center stack"},M1:{x:CX_L,y:CB-50},M2:{x:CX_L,y:SVC_B+30},O1:{x:CX_L+60,y:CT+50},O2:{x:CX_L-50,y:SVC_T-30}},
+    aus:{desc:{ko:"💡 서버+전위 같은 사이드",en:"💡 Australian same side"},M1:{x:CX_L-60,y:CB-50},M2:{x:CX_L-60,y:SVC_B+30},O1:{x:CX_L+60,y:CT+50},O2:{x:CX_L+60,y:SVC_T-30}},
   };
 
   function shadeHex(hex,amt){let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);r=Math.max(0,Math.min(255,r+amt));g=Math.max(0,Math.min(255,g+amt));b=Math.max(0,Math.min(255,b+amt));return"#"+[r,g,b].map(x=>x.toString(16).padStart(2,"0")).join("");}
@@ -8641,7 +8641,8 @@ history.pushState(null, '', location.href);
     const p=PRESETS[key];
     TC.KEYS.forEach(k=>{TC.players[k]={x:p[k].x,y:p[k].y};});
     TC.arrows=[];TC.arrowDraw=null;TC.drawPaths=[];
-    document.getElementById("tc-descBox").textContent=p.desc;
+    const lang=localStorage.getItem('niji_language')||'ko';
+    document.getElementById("tc-descBox").textContent=typeof p.desc==='object'?p.desc[lang]||p.desc.ko:p.desc;
     document.querySelectorAll(".tc-preset-btn").forEach(b=>b.classList.toggle("tc-active",b.dataset.preset===key));
     tcDraw();
   }
@@ -8762,7 +8763,8 @@ history.pushState(null, '', location.href);
     ctx.shadowBlur=10;ctx.shadowColor="rgba(255,255,255,0.7)";ctx.strokeStyle="white";ctx.lineWidth=3;line(0,NET_Y,LW,NET_Y);ctx.shadowBlur=0;
     ctx.fillStyle="#c8a05a";ctx.fillRect(px(CL-8),py(NET_Y-14),px(10),py(28));ctx.fillRect(px(CR-2),py(NET_Y-14),px(10),py(28));
     ctx.fillStyle="rgba(255,255,255,0.3)";ctx.font=`${py(8)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="alphabetic";ctx.fillText("NET",px(CX_L),py(NET_Y-8));
-    ctx.font=`bold ${py(9)}px sans-serif`;ctx.fillStyle=T.l1;ctx.fillText("우리팀 코트",px(CX_L),py(CB-10));ctx.fillStyle=T.l2;ctx.fillText("상대팀 코트",px(CX_L),py(CT+20));
+    const isEnLang=localStorage.getItem('niji_language')==='en';
+    ctx.font=`bold ${py(9)}px sans-serif`;ctx.fillStyle=T.l1;ctx.fillText(isEnLang?"Our Court":"우리팀 코트",px(CX_L),py(CB-10));ctx.fillStyle=T.l2;ctx.fillText(isEnLang?"Opp. Court":"상대팀 코트",px(CX_L),py(CT+20));
     drawFreeLinesTC();
     TC.arrows.forEach(a=>drawArrowTC(a.x1,a.y1,a.x2,a.y2,a.color,!a.fromKey));
     if(TC.arrowDraw)drawArrowTC(TC.arrowDraw.x1,TC.arrowDraw.y1,TC.mousePos.x,TC.mousePos.y,TC.arrowDraw.color,!TC.arrowDraw.fromKey);
@@ -8832,9 +8834,11 @@ history.pushState(null, '', location.href);
       TC.initialized=true;
     }
     setTimeout(()=>{tcLayoutCanvas();},50);
+    // 언어 적용 (영어 상태에서 열 때 data-lang 텍스트 갱신)
+    if(typeof applyLang === 'function') applyLang();
     // URL에서 공유 데이터 체크
     const p=new URLSearchParams(location.search),s=p.get("tc");
-    if(s){try{tcLoadState(JSON.parse(decodeURIComponent(escape(atob(s)))));tcShowToast("공유된 전술판을 불러왔어요! 🔗");}catch(e){}}
+    if(s){try{tcLoadState(JSON.parse(decodeURIComponent(escape(atob(s)))));tcShowToast(localStorage.getItem('niji_language')==='en'?"Shared tactics board loaded! 🔗":"공유된 전술판을 불러왔어요! 🔗");}catch(e){}}
   };
   window.closeTacticsBoard=function(){
     document.getElementById("tacticsModal").style.display="none";
@@ -8849,20 +8853,21 @@ history.pushState(null, '', location.href);
   window.tcSetMode=function(m){
     if(TC.mode===m)TC.mode="drag"; else TC.mode=m;
     TC.arrowDraw=null;
+    const isEn=localStorage.getItem('niji_language')==='en';
     const ba=document.getElementById("tc-btnArrow"),bd=document.getElementById("tc-btnDraw");
     ba.classList.toggle("tc-arrow-on",TC.mode==="arrow");bd.classList.toggle("tc-draw-on",TC.mode==="draw");
-    ba.textContent=TC.mode==="arrow"?"✏️ 화살표 ON":"➡️ 화살표";
-    bd.textContent=TC.mode==="draw"?"✏️ 그리기 ON":"✏️ 그리기";
+    ba.textContent=TC.mode==="arrow"?(isEn?"✏️ Arrow ON":"✏️ 화살표 ON"):(isEn?"➡️ Arrow":"➡️ 화살표");
+    bd.textContent=TC.mode==="draw"?(isEn?"✏️ Draw ON":"✏️ 그리기 ON"):(isEn?"✏️ Draw":"✏️ 그리기");
     const g=document.getElementById("tc-guide");
-    if(TC.mode==="arrow")g.innerHTML="선수 탭→드래그: 이동 화살표 &nbsp;·&nbsp; 빈 곳 드래그: 자유 화살표";
-    else if(TC.mode==="draw")g.innerHTML="손가락으로 자유롭게 그리세요 &nbsp;·&nbsp; 삭제 버튼으로 지우기";
-    else g.innerHTML="선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동";
+    if(TC.mode==="arrow")g.innerHTML=isEn?"Player tap→drag: move arrow &nbsp;·&nbsp; Empty drag: free arrow":"선수 탭→드래그: 이동 화살표 &nbsp;·&nbsp; 빈 곳 드래그: 자유 화살표";
+    else if(TC.mode==="draw")g.innerHTML=isEn?"Draw freely with your finger &nbsp;·&nbsp; Use Delete to erase":"손가락으로 자유롭게 그리세요 &nbsp;·&nbsp; 삭제 버튼으로 지우기";
+    else g.innerHTML=isEn?"Player tap → select (shot angle) &nbsp;·&nbsp; Double-tap → edit &nbsp;·&nbsp; Drag → move":"선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동";
   };
-  window.tcToggleCover=function(){TC.showCover=!TC.showCover;const b=document.getElementById("tc-btnCover");b.textContent=TC.showCover?"⭕ 커버존 ON":"⭕ 커버존 OFF";b.classList.toggle("tc-cover-on",TC.showCover);tcDraw();};
-  window.tcToggleBall=function(){TC.showBall=!TC.showBall;const b=document.getElementById("tc-btnBall");b.textContent=TC.showBall?"🎾 공 ON":"🎾 공 OFF";b.classList.toggle("tc-ball-on",TC.showBall);tcDraw();};
-  window.tcToggleAngle=function(){TC.showAngle=!TC.showAngle;const b=document.getElementById("tc-btnAngle");b.textContent=TC.showAngle?"📐 타구각 ON":"📐 타구각 OFF";b.classList.toggle("tc-angle-on",TC.showAngle);tcDraw();};
-  window.tcDelDrawings=function(){TC.arrows=[];TC.arrowDraw=null;TC.drawPaths=[];tcDraw();tcShowToast("화살표·그리기 삭제됨");};
-  window.tcReset=function(){TC.selectedKeys.clear();tcApplyPreset(TC.activePreset);TC.ball={x:CX_L,y:NET_Y+60};TC.arrows=[];TC.drawPaths=[];tcDraw();tcShowToast("초기화 완료");};
+  window.tcToggleCover=function(){TC.showCover=!TC.showCover;const isEn=localStorage.getItem('niji_language')==='en';const b=document.getElementById("tc-btnCover");b.textContent=TC.showCover?(isEn?"⭕ Cover ON":"⭕ 커버존 ON"):(isEn?"⭕ Cover OFF":"⭕ 커버존 OFF");b.classList.toggle("tc-cover-on",TC.showCover);tcDraw();};
+  window.tcToggleBall=function(){TC.showBall=!TC.showBall;const isEn=localStorage.getItem('niji_language')==='en';const b=document.getElementById("tc-btnBall");b.textContent=TC.showBall?(isEn?"🎾 Ball ON":"🎾 공 ON"):(isEn?"🎾 Ball OFF":"🎾 공 OFF");b.classList.toggle("tc-ball-on",TC.showBall);tcDraw();};
+  window.tcToggleAngle=function(){TC.showAngle=!TC.showAngle;const isEn=localStorage.getItem('niji_language')==='en';const b=document.getElementById("tc-btnAngle");b.textContent=TC.showAngle?(isEn?"📐 Angle ON":"📐 타구각 ON"):(isEn?"📐 Angle OFF":"📐 타구각 OFF");b.classList.toggle("tc-angle-on",TC.showAngle);tcDraw();};
+  window.tcDelDrawings=function(){const isEn=localStorage.getItem('niji_language')==='en';TC.arrows=[];TC.arrowDraw=null;TC.drawPaths=[];tcDraw();tcShowToast(isEn?"Arrows & drawings cleared":"화살표·그리기 삭제됨");};
+  window.tcReset=function(){const isEn=localStorage.getItem('niji_language')==='en';TC.selectedKeys.clear();tcApplyPreset(TC.activePreset);TC.ball={x:CX_L,y:NET_Y+60};TC.arrows=[];TC.drawPaths=[];tcDraw();tcShowToast(isEn?"Reset complete":"초기화 완료");};
 
   function tcOpenPlayerEdit(key){
     TC.editingKey=key;const p=TC.PINFO[key];
@@ -8884,7 +8889,7 @@ history.pushState(null, '', location.href);
     const sel=document.querySelector("#tc-colorSwatches .tc-color-swatch.tc-sel");
     if(sel){p.main=sel.style.background;updateDarkTC(key);}
     document.getElementById("tc-modalPlayer").style.display="none";
-    tcDraw();tcShowToast("선수 정보 저장됨 ✓");
+    tcDraw();tcShowToast(localStorage.getItem('niji_language')==='en'?"Player saved ✓":"선수 정보 저장됨 ✓");
   };
 
   window.tcOpenBoardStyle=function(){
@@ -8901,7 +8906,7 @@ history.pushState(null, '', location.href);
   window.tcBoardOk=function(){
     const sel=document.querySelector(".tc-theme-chip.tc-theme-sel");if(sel)TC.currentTheme=sel.dataset.theme;
     const dc=document.querySelector("#tc-drawColorSwatches .tc-color-swatch.tc-sel");if(dc)TC.drawColor=dc.style.background;
-    document.getElementById("tc-modalBoard").style.display="none";tcDraw();tcShowToast("보드 설정 적용됨 ✓");
+    document.getElementById("tc-modalBoard").style.display="none";tcDraw();tcShowToast(localStorage.getItem('niji_language')==='en'?"Board settings applied ✓":"보드 설정 적용됨 ✓");
   };
 
   function tcGetState(){return{players:JSON.parse(JSON.stringify(TC.players)),ball:{...TC.ball},arrows:JSON.parse(JSON.stringify(TC.arrows)),drawPaths:JSON.parse(JSON.stringify(TC.drawPaths)),PINFO:JSON.parse(JSON.stringify(TC.PINFO)),currentTheme:TC.currentTheme,activePreset:TC.activePreset,showCover:TC.showCover,showBall:TC.showBall,showAngle:TC.showAngle,drawColor:TC.drawColor};}
@@ -8909,7 +8914,8 @@ history.pushState(null, '', location.href);
 
   window.tcSave=function(){document.getElementById("tc-saveNameInput").value="";document.getElementById("tc-modalSave").style.display="flex";setTimeout(()=>document.getElementById("tc-saveNameInput").focus(),100);};
   window.tcSaveOk=function(){
-    const name=document.getElementById("tc-saveNameInput").value.trim()||"전술판";
+    const isEn=localStorage.getItem('niji_language')==='en';
+    const name=document.getElementById("tc-saveNameInput").value.trim()||(isEn?"Tactics":"전술판");
     const newEntry={name,date:new Date().toLocaleString("ko-KR"),state:tcGetState()};
 
     // Firebase 저장 (로그인된 경우)
@@ -8939,21 +8945,22 @@ history.pushState(null, '', location.href);
       localStorage.setItem("niji_tactics_saves",JSON.stringify(saves));
     }
     document.getElementById("tc-modalSave").style.display="none";
-    tcShowToast(`"${name}" 저장 완료! 💾`);
+    tcShowToast(isEn?`"${name}" saved! 💾`:`"${name}" 저장 완료! 💾`);
   };
 
   window.tcLoad=function(){
     const list=document.getElementById("tc-slotList");
-    list.innerHTML="<div style='text-align:center;color:#7a7a95;font-size: 0.8rem;padding:20px;'>불러오는 중...</div>";
+    const isEn=localStorage.getItem('niji_language')==='en';
+    list.innerHTML=`<div style='text-align:center;color:#7a7a95;font-size: 0.8rem;padding:20px;'>${isEn?'Loading...':'불러오는 중...'}</div>`;
     document.getElementById("tc-modalLoad").style.display="flex";
 
     function renderTcSaveList(saves){
       list.innerHTML="";
-      if(!saves||saves.length===0){list.innerHTML="<div style='text-align:center;color:#7a7a95;font-size: 0.8rem;padding:20px;'>저장된 전술판이 없어요</div>";return;}
+      if(!saves||saves.length===0){list.innerHTML=`<div style='text-align:center;color:#7a7a95;font-size: 0.8rem;padding:20px;'>${isEn?'No saved tactics boards':'저장된 전술판이 없어요'}</div>`;return;}
       saves.forEach(s=>{
         const row=document.createElement("div");
         row.style.cssText="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.05);margin-bottom:6px;cursor:pointer;";
-        row.innerHTML=`<div style="flex:1;"><div style="font-size: 0.8667rem;color:#ddf0f8;">${s.name}</div><div style="font-size: 0.6667rem;color:#4e7a8a;">${s.date}</div></div><button style="padding:2px 8px;border-radius:8px;border:none;background:rgba(248,113,113,0.15);color:#f87171;font-size: 0.7333rem;cursor:pointer;" data-key="${s.key||''}" data-i="${s.localIdx!==undefined?s.localIdx:''}">삭제</button>`;
+        row.innerHTML=`<div style="flex:1;"><div style="font-size: 0.8667rem;color:#ddf0f8;">${s.name}</div><div style="font-size: 0.6667rem;color:#4e7a8a;">${s.date}</div></div><button style="padding:2px 8px;border-radius:8px;border:none;background:rgba(248,113,113,0.15);color:#f87171;font-size: 0.7333rem;cursor:pointer;" data-key="${s.key||''}" data-i="${s.localIdx!==undefined?s.localIdx:''}">${isEn?'Del':'삭제'}</button>`;
         row.addEventListener("click",e=>{
           const delBtn=e.target.closest("button[data-key],button[data-i]");
           if(delBtn){
@@ -8969,7 +8976,7 @@ history.pushState(null, '', location.href);
             }
             return;
           }
-          tcLoadState(s.state);document.getElementById("tc-modalLoad").style.display="none";tcShowToast(`"${s.name}" 불러오기 완료! 📂`);
+          tcLoadState(s.state);document.getElementById("tc-modalLoad").style.display="none";tcShowToast(isEn?`"${s.name}" loaded! 📂`:`"${s.name}" 불러오기 완료! 📂`);
         });list.appendChild(row);
       });
     }
@@ -9595,6 +9602,8 @@ const NIJI_DICT = {
   sb_doubles:     { ko: '🤝 복식',            en: '🤝 Doubles' },
   sb_player1:     { ko: '🟡 선수 1',          en: '🟡 Player 1' },
   sb_player2:     { ko: '🔵 선수 2',          en: '🔵 Player 2' },
+  sb_dbl_our1:    { ko: '🟡 우리팀 선수 1',  en: '🟡 Our Team P1' },
+  sb_dbl_opp1:    { ko: '🔵 상대팀 선수 1',  en: '🔵 Opp. Team P1' },
   sb_dbl_p1:      { ko: '🟡 우리팀 선수 2',  en: '🟡 Our Team P2' },
   sb_dbl_p2:      { ko: '🔵 상대팀 선수 2',  en: '🔵 Opp. Team P2' },
   sb_match_title: { ko: '경기 제목',          en: 'Match Title' },
