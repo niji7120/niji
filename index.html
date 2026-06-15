@@ -1608,7 +1608,10 @@
     <!-- ===== PLAYERS PAGE ===== -->
     <div class="page" id="page-players">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
-        <div class="page-header" style="margin-bottom:0;" data-lang="players_page_header">선수 목록</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="page-header" style="margin-bottom:0;" data-lang="players_page_header">선수 목록</div>
+          <span id="playerCountBadge" style="background:var(--accent);color:#fff;font-size:0.75rem;font-weight:700;padding:2px 9px;border-radius:20px;display:none;">0명</span>
+        </div>
         <select class="form-select" id="playerSortSelect" onchange="setPlayerSort(this.value)"
           style="width:auto;font-size: 0.8rem;padding:5px 10px;background:var(--surface2);">
           <option value="name" data-lang="players_sort_name">이름순</option>
@@ -5539,8 +5542,26 @@ function renderPlayers() {
 
   if (!filtered.length) {
     el.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">${state.playerClubFilter === '전체' || state.playerClubFilter === _t('player_all_filter') ? _t('player_add_placeholder') : _t('player_no_club')}</div></div>`;
+    // 선수 수 뱃지 업데이트
+    const badge = document.getElementById('playerCountBadge');
+    if (badge) {
+      const total = state.players.length;
+      const lang = localStorage.getItem('niji_language') || 'ko';
+      badge.textContent = lang === 'en' ? total + ' players' : total + '명';
+      badge.style.display = total > 0 ? 'inline-block' : 'none';
+    }
     return;
   }
+  // 선수 수 뱃지 업데이트
+  (function() {
+    const badge = document.getElementById('playerCountBadge');
+    if (badge) {
+      const total = state.players.length;
+      const lang = localStorage.getItem('niji_language') || 'ko';
+      badge.textContent = lang === 'en' ? total + ' players' : total + '명';
+      badge.style.display = total > 0 ? 'inline-block' : 'none';
+    }
+  })();
   el.innerHTML = filtered.map(p => {
     const initial = p.name.charAt(0);
     const memoPreview = p.memo ? `<div class="player-memo-preview">📝 메모: ${p.memo}</div>` : '';
@@ -6102,10 +6123,10 @@ function openScoreboardOverlay() {
 
 // ===== 스코어보드 기능 (v3 - 오류수정·코드정리) =====
 var _sb = {
-  names: ['선수 1', '선수 2'],
+  names: ['', ''],
   names2: ['', ''],
   format: 'singles',
-  title: '테니스 경기',
+  title: '',
   pts: [0, 0],
   games: [0, 0],
   deuce: false,
@@ -6119,6 +6140,13 @@ var _sb = {
   over: false,
   history: []
 };
+// _sb 초기 기본값은 renderScoreboard 시점에 _t()로 세팅
+function _sbInitDefaults() {
+  var lang = localStorage.getItem('niji_language') || 'ko';
+  if (!_sb.names[0]) _sb.names[0] = lang==='en' ? 'Player 1' : '선수 1';
+  if (!_sb.names[1]) _sb.names[1] = lang==='en' ? 'Player 2' : '선수 2';
+  if (!_sb.title)    _sb.title    = lang==='en' ? 'Tennis Match' : '테니스 경기';
+}
 var _sbPTXT = ['0','15','30','40'];
 var _sbStatusTimer = null;
 var _sbPanelOpen = false;
@@ -6126,6 +6154,7 @@ var _sbPanelOpen = false;
 function renderScoreboard() {
   var el = document.getElementById('sb-score-content') || document.getElementById('score-root');
   if (!el) return;
+  _sbInitDefaults();
   var n1 = _sb.names[0], n2 = _sb.names[1];
   el.innerHTML = `
 <style>
@@ -6225,7 +6254,7 @@ function renderScoreboard() {
 </style>
 <div id="sb-wrap" onclick="sbHandleTap(event)">
   <div id="sb-topbar">
-    <button id="sb-close-btn" onclick="event.stopPropagation();if(window._sbOverlayClose)window._sbOverlayClose();">✕ 닫기</button>
+    <button id="sb-close-btn" onclick="event.stopPropagation();if(window._sbOverlayClose)window._sbOverlayClose();">${_t('sb_close')}</button>
     <div id="sb-match-title">🎾 ${_sb.title}</div>
     <div id="sb-game-score"><div class="sb-gs-label">GAMES</div><div class="sb-gs-num"><span id="sb-gs1">0</span> - <span id="sb-gs2">0</span></div></div>
   </div>
@@ -6244,7 +6273,7 @@ function renderScoreboard() {
     </div>
   </div>
 
-  <div id="sb-tap-hint">▲ 선수 영역 탭=포인트 / 길게누름=취소 · 가운데 탭=메뉴</div>
+  <div id="sb-tap-hint">${_t('sb_tap_hint')}</div>
 
   <!-- 컨트롤 패널 -->
   <div id="sb-ctrl-panel">
@@ -6254,9 +6283,9 @@ function renderScoreboard() {
       <div id="sb-ctrl-fixed">
         <div id="sb-ctrl-handle" onclick="sbClosePanel()"></div>
         <div class="sb-tab-row">
-          <button class="sb-tab-btn active" onclick="sbSwitchTab('score')">🎾 점수</button>
-          <button class="sb-tab-btn" onclick="sbSwitchTab('fault')">✖ 폴트</button>
-          <button class="sb-tab-btn" onclick="sbSwitchTab('setup')">⚙ 설정</button>
+          <button class="sb-tab-btn active" onclick="sbSwitchTab('score')">${_t('sb_tab_score')}</button>
+          <button class="sb-tab-btn" onclick="sbSwitchTab('fault')">${_t('sb_tab_fault')}</button>
+          <button class="sb-tab-btn" onclick="sbSwitchTab('setup')">${_t('sb_tab_setup')}</button>
         </div>
       </div>
       <!-- 스크롤되는 내용 영역 -->
@@ -6264,87 +6293,87 @@ function renderScoreboard() {
       <!-- 점수 탭 -->
       <div class="sb-tab-content active" id="sb-tab-score">
         <div id="sb-srvsub-row" style="display:none;margin-bottom:8px;">
-          <button class="sb-btn" style="width:100%;background:rgba(180,255,0,.12);color:#ccff00;border:2px solid rgba(180,255,0,.4);padding:10px;font-size:0.9333rem;" onclick="sbToggleServerSub(_sb.serving);sbUpdateServeBtns()">🟢 서브 선수 교체 (<span id="sb-srvsub-txt"></span>)</button>
+          <button class="sb-btn" style="width:100%;background:rgba(180,255,0,.12);color:#ccff00;border:2px solid rgba(180,255,0,.4);padding:10px;font-size:0.9333rem;" onclick="sbToggleServerSub(_sb.serving);sbUpdateServeBtns()">${_t('sb_srvsub')} (<span id="sb-srvsub-txt"></span>)</button>
         </div>
         <div class="sb-score-grid">
           <div class="sb-pctrl">
             <div class="sb-pctrl-name" id="sb-cname1">${n1}</div>
             <div class="sb-btn-group">
-              <button class="sb-btn sb-btn-pt" onclick="sbAddPoint(0);sbClosePanel()">⚡ 포인트</button>
-              <button class="sb-btn sb-btn-ace" onclick="sbAddAce(0);sbClosePanel()" id="sb-srv-ace-1" style="display:none">🎯 에이스</button>
-              <button class="sb-btn sb-btn-flt" onclick="sbAddFault(0);sbClosePanel()" id="sb-srv-flt-1" style="display:none">✖ 폴트</button>
+              <button class="sb-btn sb-btn-pt" onclick="sbAddPoint(0);sbClosePanel()">${_t('sb_point')}</button>
+              <button class="sb-btn sb-btn-ace" onclick="sbAddAce(0);sbClosePanel()" id="sb-srv-ace-1" style="display:none">${_t('sb_ace')}</button>
+              <button class="sb-btn sb-btn-flt" onclick="sbAddFault(0);sbClosePanel()" id="sb-srv-flt-1" style="display:none">${_t('sb_fault_btn')}</button>
             </div>
           </div>
           <div class="sb-pctrl">
             <div class="sb-pctrl-name b" id="sb-cname2">${n2}</div>
             <div class="sb-btn-group">
-              <button class="sb-btn sb-btn-pt" onclick="sbAddPoint(1);sbClosePanel()">⚡ 포인트</button>
-              <button class="sb-btn sb-btn-ace" onclick="sbAddAce(1);sbClosePanel()" id="sb-srv-ace-2" style="display:none">🎯 에이스</button>
-              <button class="sb-btn sb-btn-flt" onclick="sbAddFault(1);sbClosePanel()" id="sb-srv-flt-2" style="display:none">✖ 폴트</button>
+              <button class="sb-btn sb-btn-pt" onclick="sbAddPoint(1);sbClosePanel()">${_t('sb_point')}</button>
+              <button class="sb-btn sb-btn-ace" onclick="sbAddAce(1);sbClosePanel()" id="sb-srv-ace-2" style="display:none">${_t('sb_ace')}</button>
+              <button class="sb-btn sb-btn-flt" onclick="sbAddFault(1);sbClosePanel()" id="sb-srv-flt-2" style="display:none">${_t('sb_fault_btn')}</button>
             </div>
           </div>
         </div>
         <div class="sb-bottom-btns">
-          <button class="sb-btn sb-btn-undo" onclick="sbUndoPoint();sbClosePanel()">↩ 되돌리기</button>
-          <button class="sb-btn sb-btn-tb" onclick="sbSetTiebreak();sbClosePanel()">🔀 타이브레이크</button>
-          <button class="sb-btn sb-btn-rst" onclick="sbResetMatch();sbClosePanel()">↺ 초기화</button>
+          <button class="sb-btn sb-btn-undo" onclick="sbUndoPoint();sbClosePanel()">${_t('sb_undo')}</button>
+          <button class="sb-btn sb-btn-tb" onclick="sbSetTiebreak();sbClosePanel()">${_t('sb_tiebreak')}</button>
+          <button class="sb-btn sb-btn-rst" onclick="sbResetMatch();sbClosePanel()">${_t('sb_reset')}</button>
         </div>
       </div>
       <!-- 폴트 탭 -->
       <div class="sb-tab-content" id="sb-tab-fault">
         <div class="sb-fault-info">
-          <span>현재 폴트</span>
+          <span>${_t('sb_cur_fault')}</span>
           <div class="sb-fd">
             <div class="sb-fd-dot" id="sb-fd1"></div>
             <div class="sb-fd-dot" id="sb-fd2"></div>
           </div>
-          <span>더블폴트: <span id="sb-df-cnt" style="color:#ff4f4f">0</span>회</span>
+          <span>${_t('sb_double_fault')}: <span id="sb-df-cnt" style="color:#ff4f4f">0</span>${_t('sb_fault_times')}</span>
         </div>
         <div class="sb-btn-group">
-          <button class="sb-btn sb-btn-flt" style="flex:1;padding:12px;font-size: 0.9333rem" onclick="sbAddFaultAuto()">서버 폴트</button>
+          <button class="sb-btn sb-btn-flt" style="flex:1;padding:12px;font-size: 0.9333rem" onclick="sbAddFaultAuto()">${_t('sb_srv_fault')}</button>
         </div>
-        <div style="font-family:'Noto Sans KR',sans-serif;font-size: 0.8667rem;color:#aaa;text-align:center;margin-top:4px;letter-spacing:0.5px;">폴트는 서브하는 선수에게 자동 적용됩니다</div>
-        <button class="sb-btn sb-btn-undo" style="width:100%;padding:10px;margin-top:6px;" onclick="sbResetFaults()">폴트 초기화</button>
+        <div style="font-family:'Noto Sans KR',sans-serif;font-size: 0.8667rem;color:#aaa;text-align:center;margin-top:4px;letter-spacing:0.5px;">${_t('sb_fault_auto')}</div>
+        <button class="sb-btn sb-btn-undo" style="width:100%;padding:10px;margin-top:6px;" onclick="sbResetFaults()">${_t('sb_fault_reset')}</button>
       </div>
       <!-- 설정 탭 -->
       <div class="sb-tab-content" id="sb-tab-setup">
         <!-- 단식/복식 선택 -->
         <div style="display:flex;gap:6px;margin-bottom:6px;">
           <button id="sb-fmt-singles" onclick="sbSetFormat('singles')"
-            style="flex:1;padding:8px;border:none;border-radius:6px;font-family:'Noto Sans KR',sans-serif;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#1a6bff;color:#fff;">🎾 단식</button>
+            style="flex:1;padding:8px;border:none;border-radius:6px;font-family:'Noto Sans KR',sans-serif;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#1a6bff;color:#fff;">${_t('sb_singles')}</button>
           <button id="sb-fmt-doubles" onclick="sbSetFormat('doubles')"
-            style="flex:1;padding:8px;border:none;border-radius:6px;font-family:'Noto Sans KR',sans-serif;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#050810;color:#7a7aaa;border:1px solid #1a1a2e;">🤝 복식</button>
+            style="flex:1;padding:8px;border:none;border-radius:6px;font-family:'Noto Sans KR',sans-serif;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#050810;color:#7a7aaa;border:1px solid #1a1a2e;">${_t('sb_doubles')}</button>
         </div>
         <!-- 선수 이름 / 경기 제목: 버튼 터치 → 오버레이 밖 팝업에서 입력 (가로 키보드) -->
         <div class="sb-setup-grid">
           <div class="sb-setup-item" id="sb-setup-s1">
-            <label>🟡 선수 1</label>
+            <label>${_t('sb_player1')}</label>
             <button class="sb-name-btn" id="sb-nbtn-1" onclick="sbOpenInputPair(0)">
-              <span id="sb-nbtn-1-txt">${n1||'터치하여 입력'}</span>
+              <span id="sb-nbtn-1-txt">${n1||_t('sb_touch_input')}</span>
             </button>
           </div>
           <div class="sb-setup-item" id="sb-setup-s2">
-            <label>🔵 선수 2</label>
+            <label>${_t('sb_player2')}</label>
             <button class="sb-name-btn" id="sb-nbtn-2" onclick="sbOpenInputPair(1)">
-              <span id="sb-nbtn-2-txt">${n2||'터치하여 입력'}</span>
+              <span id="sb-nbtn-2-txt">${n2||_t('sb_touch_input')}</span>
             </button>
           </div>
           <div class="sb-setup-item" id="sb-setup-d1" style="display:none;">
-            <label>🟡 우리팀 선수 2</label>
+            <label>${_t('sb_dbl_p1')}</label>
             <button class="sb-name-btn" id="sb-nbtn-3" onclick="sbOpenInputPair(0)">
-              <span id="sb-nbtn-3-txt">${_sb.names2[0]||'터치하여 입력'}</span>
+              <span id="sb-nbtn-3-txt">${_sb.names2[0]||_t('sb_touch_input')}</span>
             </button>
           </div>
           <div class="sb-setup-item" id="sb-setup-d2" style="display:none;">
-            <label>🔵 상대팀 선수 2</label>
+            <label>${_t('sb_dbl_p2')}</label>
             <button class="sb-name-btn" id="sb-nbtn-4" onclick="sbOpenInputPair(1)">
-              <span id="sb-nbtn-4-txt">${_sb.names2[1]||'터치하여 입력'}</span>
+              <span id="sb-nbtn-4-txt">${_sb.names2[1]||_t('sb_touch_input')}</span>
             </button>
           </div>
           <div class="sb-setup-item" style="grid-column:1/-1">
-            <label>경기 제목</label>
-            <button class="sb-name-btn" id="sb-nbtn-title" onclick="sbOpenInput('sb-in-title','경기 제목')">
-              <span id="sb-nbtn-title-txt">${_sb.title||'터치하여 입력'}</span>
+            <label>${_t('sb_match_title')}</label>
+            <button class="sb-name-btn" id="sb-nbtn-title" onclick="sbOpenInput('sb-in-title',_t('sb_match_title'))">
+              <span id="sb-nbtn-title-txt">${_sb.title||_t('sb_touch_input')}</span>
             </button>
           </div>
         </div>
@@ -6354,7 +6383,7 @@ function renderScoreboard() {
         <input type="hidden" id="sb-in-name3" value="${_sb.names2[0]||''}">
         <input type="hidden" id="sb-in-name4" value="${_sb.names2[1]||''}">
         <input type="hidden" id="sb-in-title" value="${_sb.title}">
-        <button class="sb-btn-apply" onclick="sbApplySetup();sbClosePanel()">✔ 적용하기</button>
+        <button class="sb-btn-apply" onclick="sbApplySetup();sbClosePanel()">${_t('sb_apply')}</button>
       </div>
       </div><!-- /sb-ctrl-scroll -->
     </div><!-- /sb-ctrl-box -->
@@ -6362,11 +6391,11 @@ function renderScoreboard() {
 
   <!-- 위너 화면 -->
   <div id="sb-winner">
-    <div class="sbw-title">🏆 경기 승자</div>
+    <div class="sbw-title">${_t('sb_winner_title')}</div>
     <div class="sbw-name" id="sbw-name">-</div>
     <div class="sbw-score" id="sbw-score"></div>
-    <button class="sbw-new" onclick="sbResetMatch()">↺ 새 경기 시작</button>
-    <button onclick="event.stopPropagation();if(window._sbOverlayClose)window._sbOverlayClose();" style="margin-top:12px;padding:10px 28px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#aaa;font-family:'Noto Sans KR',sans-serif;font-size: 0.9333rem;cursor:pointer;">✕ 닫기</button>
+    <button class="sbw-new" onclick="sbResetMatch()">${_t('sb_new_match')}</button>
+    <button onclick="event.stopPropagation();if(window._sbOverlayClose)window._sbOverlayClose();" style="margin-top:12px;padding:10px 28px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#aaa;font-family:'Noto Sans KR',sans-serif;font-size: 0.9333rem;cursor:pointer;">${_t('sb_close')}</button>
   </div>
 </div>
   `;
@@ -6383,12 +6412,16 @@ function renderScoreboard() {
 function sbOpenInputPair(team) {
   if (_sb.format === 'doubles') {
     if (team === 0) {
-      sbOpenInput('sb-in-name1','🟡 우리팀 선수 1','sb-in-name3','🟡 우리팀 선수 2');
+      var lbl_our1 = _t('niji_language')==='en' ? '🟡 Our Team P1' : '🟡 우리팀 선수 1';
+      var lbl_our2 = _t('sb_dbl_p1');
+      sbOpenInput('sb-in-name1', lbl_our1, 'sb-in-name3', lbl_our2);
     } else {
-      sbOpenInput('sb-in-name2','🔵 상대팀 선수 1','sb-in-name4','🔵 상대팀 선수 2');
+      var lbl_opp1 = _t('niji_language')==='en' ? '🔵 Opp. Team P1' : '🔵 상대팀 선수 1';
+      var lbl_opp2 = _t('sb_dbl_p2');
+      sbOpenInput('sb-in-name2', lbl_opp1, 'sb-in-name4', lbl_opp2);
     }
   } else {
-    sbOpenInput('sb-in-name1','🟡 선수 1','sb-in-name2','🔵 선수 2');
+    sbOpenInput('sb-in-name1', _t('sb_player1'), 'sb-in-name2', _t('sb_player2'));
   }
 }
 
@@ -6987,10 +7020,10 @@ function sbResetMatch() {
   _sb.tb=false; _sb.tbPts=[0,0]; _sb.faults=0; _sb.dfs=0;
   _sb.serving=0; _sb.over=false; _sb.history=[]; _sb.serverSub=[0,0]; _sb.serverSubStarted=[true,false];
   // 선수 이름/포맷/타이틀도 초기값으로 리셋
-  _sb.names=['선수 1','선수 2'];
+  _sb.names=['',''];
   _sb.names2=['',''];
   _sb.format='singles';
-  _sb.title='테니스 경기';
+  _sb.title='';
   _sbPanelOpen = false;
   // visualViewport 핸들러 정리
   if (window._sbVPHandler && window.visualViewport) {
@@ -7016,8 +7049,8 @@ function sbSetFormat(fmt) {
     if (btnD) { btnD.style.background='#1a6bff'; btnD.style.color='#fff'; btnD.style.border='none'; }
     if (d1) d1.style.display='';
     if (d2) d2.style.display='';
-    if (lbl1) lbl1.textContent='🟡 우리팀 선수 1';
-    if (lbl2) lbl2.textContent='🔵 상대팀 선수 1';
+    if (lbl1) lbl1.textContent=(localStorage.getItem('niji_language')==='en') ? '🟡 Our Team P1' : '🟡 우리팀 선수 1';
+    if (lbl2) lbl2.textContent=(localStorage.getItem('niji_language')==='en') ? '🔵 Opp. Team P1' : '🔵 상대팀 선수 1';
     if (box) box.style.maxHeight = '52vh';
     var scrollEl1 = document.getElementById('sb-ctrl-scroll');
     if (scrollEl1) scrollEl1.scrollTop = 0;
@@ -7026,8 +7059,8 @@ function sbSetFormat(fmt) {
     if (btnD) { btnD.style.background='#0d0f20'; btnD.style.color='#8888bb'; btnD.style.border='1px solid #2a2a4a'; }
     if (d1) d1.style.display='none';
     if (d2) d2.style.display='none';
-    if (lbl1) lbl1.textContent='🟡 선수 1';
-    if (lbl2) lbl2.textContent='🔵 선수 2';
+    if (lbl1) lbl1.textContent=_t('sb_player1');
+    if (lbl2) lbl2.textContent=_t('sb_player2');
     if (box) box.style.maxHeight = '42vh';
     var scrollEl2 = document.getElementById('sb-ctrl-scroll');
     if (scrollEl2) scrollEl2.scrollTop = 0;
@@ -7038,15 +7071,16 @@ function sbApplySetup() {
   var a2 = ((document.getElementById('sb-in-name2')||{}).value || '').trim();
   var b1 = ((document.getElementById('sb-in-name3')||{}).value || '').trim();
   var b2 = ((document.getElementById('sb-in-name4')||{}).value || '').trim();
-  var title = ((document.getElementById('sb-in-title')||{}).value || '').trim() || '테니스 경기';
+  var lang = localStorage.getItem('niji_language') || 'ko';
+  var title = ((document.getElementById('sb-in-title')||{}).value || '').trim() || (lang==='en' ? 'Tennis Match' : '테니스 경기');
   var n1, n2;
   if (_sb.format === 'doubles') {
-    n1 = a1 ? (b1 ? a1 + ' / ' + b1 : a1) : '우리팀';
-    n2 = a2 ? (b2 ? a2 + ' / ' + b2 : a2) : '상대팀';
+    n1 = a1 ? (b1 ? a1 + ' / ' + b1 : a1) : (lang==='en' ? 'Our Team' : '우리팀');
+    n2 = a2 ? (b2 ? a2 + ' / ' + b2 : a2) : (lang==='en' ? 'Opp. Team' : '상대팀');
     _sb.names2 = [b1, b2];
   } else {
-    n1 = a1 || '선수 1';
-    n2 = a2 || '선수 2';
+    n1 = a1 || (lang==='en' ? 'Player 1' : '선수 1');
+    n2 = a2 || (lang==='en' ? 'Player 2' : '선수 2');
     _sb.names2 = ['', ''];
   }
   _sb.names = [n1, n2]; _sb.title = title; _sb.serverSub = [0,0]; _sb.serverSubStarted = [true, false];
@@ -7056,7 +7090,7 @@ function sbApplySetup() {
   var nm2 = document.getElementById('sb-name2-d'); if (nm2) nm2.innerHTML = sbNameHTML(1);
   var mt = document.getElementById('sb-match-title');
   if (mt) mt.textContent = '🎾 ' + title;
-  sbFlashStatus('✔ 설정 저장됨', 1000);
+  sbFlashStatus(lang==='en' ? '✔ Settings Saved' : '✔ 설정 저장됨', 1000);
 }
 
 function sbRender() {
@@ -8383,8 +8417,8 @@ history.pushState(null, '', location.href);
 <div id="tacticsModal" style="display:none;position:fixed;inset:0;z-index:9999;background:#05111f;flex-direction:column;">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(5,17,31,0.97);border-bottom:1px solid rgba(56,217,245,0.15);flex-shrink:0;">
     <div style="display:flex;align-items:center;gap:10px;">
-      <button onclick="closeTacticsBoard()" style="background:rgba(255,255,255,0.08);border:none;color:#7aacbf;font-size: 0.8667rem;font-weight:700;padding:7px 14px;border-radius:18px;cursor:pointer;">← 돌아가기</button>
-      <span style="font-size: 0.9333rem;font-weight:900;color:#fff;letter-spacing:1px;">🎾 복식 전술판</span>
+      <button onclick="closeTacticsBoard()" style="background:rgba(255,255,255,0.08);border:none;color:#7aacbf;font-size: 0.8667rem;font-weight:700;padding:7px 14px;border-radius:18px;cursor:pointer;" data-lang="tc_back">← 돌아가기</button>
+      <span style="font-size: 0.9333rem;font-weight:900;color:#fff;letter-spacing:1px;" data-lang="tc_title">🎾 복식 전술판</span>
     </div>
     <button id="tc-toggleHint" onclick="tcToggleUI()" style="background:rgba(56,217,245,0.18);border:none;color:#38d9f5;font-size: 0.9333rem;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;">☰</button>
   </div>
@@ -8392,11 +8426,11 @@ history.pushState(null, '', location.href);
   <!-- 프리셋 및 설명 -->
   <div id="tc-topUI" style="padding:8px 10px;background:rgba(5,17,31,0.95);flex-shrink:0;display:none;">
     <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:6px;" id="tc-presets">
-      <button class="tc-preset-btn tc-active" data-preset="basic">기본</button>
-      <button class="tc-preset-btn" data-preset="bothUp">양쪽전위</button>
-      <button class="tc-preset-btn" data-preset="bothBack">양쪽후위</button>
-      <button class="tc-preset-btn" data-preset="iForm">I포메이션</button>
-      <button class="tc-preset-btn" data-preset="aus">호주</button>
+      <button class="tc-preset-btn tc-active" data-preset="basic" data-lang="tc_preset_basic">기본</button>
+      <button class="tc-preset-btn" data-preset="bothUp" data-lang="tc_preset_bothup">양쪽전위</button>
+      <button class="tc-preset-btn" data-preset="bothBack" data-lang="tc_preset_bothback">양쪽후위</button>
+      <button class="tc-preset-btn" data-preset="iForm" data-lang="tc_preset_iform">I포메이션</button>
+      <button class="tc-preset-btn" data-preset="aus" data-lang="tc_preset_aus">호주</button>
     </div>
     <div id="tc-descBox" style="background:rgba(56,217,245,0.07);border:1px solid rgba(56,217,245,0.14);border-radius:8px;padding:4px 12px;text-align:center;font-size: 0.7333rem;color:#7fc8de;">💡 전위/후위 기본 대형</div>
   </div>
@@ -8409,35 +8443,35 @@ history.pushState(null, '', location.href);
   <!-- 컨트롤 패널 -->
   <div id="tc-bottomUI" style="padding:8px 8px 12px;background:rgba(5,17,31,0.97);border-top:1px solid rgba(56,217,245,0.15);flex-shrink:0;display:none;">
     <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:4px;">
-      <button class="tc-ctrl-btn" id="tc-btnArrow" onclick="tcSetMode('arrow')">➡️ 화살표</button>
-      <button class="tc-ctrl-btn" id="tc-btnDraw" onclick="tcSetMode('draw')">✏️ 그리기</button>
-      <button class="tc-ctrl-btn tc-cover-on" id="tc-btnCover" onclick="tcToggleCover()">⭕ 커버존</button>
-      <button class="tc-ctrl-btn tc-ball-on" id="tc-btnBall" onclick="tcToggleBall()">🎾 공</button>
-      <button class="tc-ctrl-btn tc-angle-on" id="tc-btnAngle" onclick="tcToggleAngle()">📐 타구각</button>
-      <button class="tc-ctrl-btn tc-del" onclick="tcDelDrawings()">🗑️ 삭제</button>
-      <button class="tc-ctrl-btn tc-reset" onclick="tcReset()">🔄 초기화</button>
+      <button class="tc-ctrl-btn" id="tc-btnArrow" onclick="tcSetMode('arrow')" data-lang="tc_btn_arrow">➡️ 화살표</button>
+      <button class="tc-ctrl-btn" id="tc-btnDraw" onclick="tcSetMode('draw')" data-lang="tc_btn_draw">✏️ 그리기</button>
+      <button class="tc-ctrl-btn tc-cover-on" id="tc-btnCover" onclick="tcToggleCover()" data-lang="tc_btn_cover">⭕ 커버존</button>
+      <button class="tc-ctrl-btn tc-ball-on" id="tc-btnBall" onclick="tcToggleBall()" data-lang="tc_btn_ball">🎾 공</button>
+      <button class="tc-ctrl-btn tc-angle-on" id="tc-btnAngle" onclick="tcToggleAngle()" data-lang="tc_btn_angle">📐 타구각</button>
+      <button class="tc-ctrl-btn tc-del" onclick="tcDelDrawings()" data-lang="tc_btn_del">🗑️ 삭제</button>
+      <button class="tc-ctrl-btn tc-reset" onclick="tcReset()" data-lang="tc_btn_reset">🔄 초기화</button>
     </div>
     <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:4px;">
-      <button class="tc-ctrl-btn" onclick="tcOpenBoardStyle()">🎨 보드설정</button>
-      <button class="tc-ctrl-btn" onclick="tcSave()">💾 저장</button>
-      <button class="tc-ctrl-btn" onclick="tcLoad()">📂 불러오기</button>
-      <button class="tc-ctrl-btn" onclick="tcShare()">🔗 공유</button>
+      <button class="tc-ctrl-btn" onclick="tcOpenBoardStyle()" data-lang="tc_btn_board">🎨 보드설정</button>
+      <button class="tc-ctrl-btn" onclick="tcSave()" data-lang="tc_btn_save">💾 저장</button>
+      <button class="tc-ctrl-btn" onclick="tcLoad()" data-lang="tc_btn_load">📂 불러오기</button>
+      <button class="tc-ctrl-btn" onclick="tcShare()" data-lang="tc_btn_share">🔗 공유</button>
     </div>
-    <div id="tc-guide" style="font-size: 0.6667rem;color:#3e5f70;text-align:center;line-height:1.5;">선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동</div>
+    <div id="tc-guide" style="font-size: 0.6667rem;color:#3e5f70;text-align:center;line-height:1.5;" data-lang="tc_guide">선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동</div>
   </div>
 </div>
 
 <!-- 전술판 선수 편집 모달 -->
 <div id="tc-modalPlayer" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
-    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;">✏️ 선수 편집</div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;">이름</div><input id="tc-editName" maxlength="6" placeholder="이름 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;">등번호</div><input id="tc-editNumber" type="number" min="0" max="99" placeholder="번호" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;">포지션</div><input id="tc-editPosition" maxlength="6" placeholder="포지션 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;">선수 색상</div><div id="tc-colorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
+    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_edit_title">✏️ 선수 편집</div>
+    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_name">이름</div><input id="tc-editName" maxlength="6" placeholder="이름 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
+    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_number">등번호</div><input id="tc-editNumber" type="number" min="0" max="99" placeholder="번호" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
+    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_position">포지션</div><input id="tc-editPosition" maxlength="6" placeholder="포지션 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
+    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_color">선수 색상</div><div id="tc-colorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
     <div style="display:flex;gap:8px;margin-top:14px;">
-      <button onclick="document.getElementById('tc-modalPlayer').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;">취소</button>
-      <button onclick="tcEditOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;">확인</button>
+      <button onclick="document.getElementById('tc-modalPlayer').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_cancel">취소</button>
+      <button onclick="tcEditOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;" data-lang="tc_ok">확인</button>
     </div>
   </div>
 </div>
@@ -8445,20 +8479,20 @@ history.pushState(null, '', location.href);
 <!-- 보드 설정 모달 -->
 <div id="tc-modalBoard" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;">
-    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;">🎨 보드 설정</div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;">코트 테마</div>
+    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_board_title">🎨 보드 설정</div>
+    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_board_theme">코트 테마</div>
       <div id="tc-themeRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
-        <button class="tc-theme-chip tc-theme-sel" data-theme="green">🟩 그린</button>
-        <button class="tc-theme-chip" data-theme="clay">🧱 클레이</button>
-        <button class="tc-theme-chip" data-theme="hard">🔵 하드</button>
-        <button class="tc-theme-chip" data-theme="dark">⚫ 다크</button>
-        <button class="tc-theme-chip" data-theme="grass">🌿 잔디</button>
+        <button class="tc-theme-chip tc-theme-sel" data-theme="green" data-lang="tc_theme_green">🟩 그린</button>
+        <button class="tc-theme-chip" data-theme="clay" data-lang="tc_theme_clay">🧱 클레이</button>
+        <button class="tc-theme-chip" data-theme="hard" data-lang="tc_theme_hard">🔵 하드</button>
+        <button class="tc-theme-chip" data-theme="dark" data-lang="tc_theme_dark">⚫ 다크</button>
+        <button class="tc-theme-chip" data-theme="grass" data-lang="tc_theme_grass">🌿 잔디</button>
       </div>
     </div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;">그리기 색상</div><div id="tc-drawColorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
+    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_board_drawcolor">그리기 색상</div><div id="tc-drawColorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
     <div style="display:flex;gap:8px;margin-top:14px;">
-      <button onclick="document.getElementById('tc-modalBoard').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;">닫기</button>
-      <button onclick="tcBoardOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;">적용</button>
+      <button onclick="document.getElementById('tc-modalBoard').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_close">닫기</button>
+      <button onclick="tcBoardOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;" data-lang="tc_apply">적용</button>
     </div>
   </div>
 </div>
@@ -8466,12 +8500,12 @@ history.pushState(null, '', location.href);
 <!-- 저장 이름 모달 -->
 <div id="tc-modalSave" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;">
-    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;">💾 전술판 저장</div>
-    <div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;">저장 이름</div>
+    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_save_title">💾 전술판 저장</div>
+    <div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_save_label">저장 이름</div>
     <input id="tc-saveNameInput" placeholder="예: 서브 후 전술" maxlength="20" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;">
     <div style="display:flex;gap:8px;margin-top:14px;">
-      <button onclick="document.getElementById('tc-modalSave').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;">취소</button>
-      <button onclick="tcSaveOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;">저장</button>
+      <button onclick="document.getElementById('tc-modalSave').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_cancel">취소</button>
+      <button onclick="tcSaveOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;" data-lang="tc_save_ok">저장</button>
     </div>
   </div>
 </div>
@@ -8479,21 +8513,21 @@ history.pushState(null, '', location.href);
 <!-- 불러오기 모달 -->
 <div id="tc-modalLoad" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:320px;max-width:92vw;">
-    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;">📂 저장된 전술판</div>
+    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_load_title">📂 저장된 전술판</div>
     <div id="tc-slotList" style="max-height:260px;overflow-y:auto;"></div>
-    <button onclick="document.getElementById('tc-modalLoad').style.display='none'" style="width:100%;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;margin-top:14px;">닫기</button>
+    <button onclick="document.getElementById('tc-modalLoad').style.display='none'" style="width:100%;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;margin-top:14px;" data-lang="tc_close">닫기</button>
   </div>
 </div>
 
 <!-- 공유 모달 -->
 <div id="tc-modalShare" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;">
-    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;">🔗 보드 공유</div>
-    <div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:6px;line-height:1.6;">현재 전술판이 URL에 담겼어요.<br>복사해서 카카오톡으로 보내세요!</div>
+    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_share_title">🔗 보드 공유</div>
+    <div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:6px;line-height:1.6;" data-lang="tc_share_desc">현재 전술판이 URL에 담겼어요.<br>복사해서 카카오톡으로 보내세요!</div>
     <div id="tc-shareLinkBox" style="background:rgba(255,255,255,0.05);border:1px solid rgba(56,217,245,0.2);border-radius:8px;padding:8px 10px;font-size: 0.7333rem;color:#7aacbf;word-break:break-all;margin-bottom:8px;max-height:80px;overflow-y:auto;">—</div>
     <div style="display:flex;gap:8px;">
-      <button onclick="document.getElementById('tc-modalShare').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;">닫기</button>
-      <button onclick="tcCopyShare()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;">📋 링크 복사</button>
+      <button onclick="document.getElementById('tc-modalShare').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_close">닫기</button>
+      <button onclick="tcCopyShare()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;" data-lang="tc_share_copy">📋 링크 복사</button>
     </div>
   </div>
 </div>
@@ -9537,6 +9571,82 @@ const NIJI_DICT = {
   manual_s10_title: { ko: '10. 니지스트링 커뮤니티', en: '10. NIJI STRING Community' },
   manual_s10_1: { ko: '공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요', en: 'Join the <b>KakaoTalk Open Chat</b> from the Share tab to connect with fellow players' },
   manual_s10_2: { ko: '스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요', en: 'Use <b>NIJI STRING</b> professional services: restringing, racquet repair, custom watch strap crafting, and more' },
+
+  // ── 스코어보드 UI ──
+  sb_close:       { ko: '✕ 닫기',            en: '✕ Close' },
+  sb_tap_hint:    { ko: '▲ 선수 영역 탭=포인트 / 길게누름=취소 · 가운데 탭=메뉴', en: '▲ Tap player=Point / Hold=Undo · Center tap=Menu' },
+  sb_tab_score:   { ko: '🎾 점수',            en: '🎾 Score' },
+  sb_tab_fault:   { ko: '✖ 폴트',            en: '✖ Fault' },
+  sb_tab_setup:   { ko: '⚙ 설정',            en: '⚙ Setup' },
+  sb_srvsub:      { ko: '🟢 서브 선수 교체',  en: '🟢 Switch Server' },
+  sb_point:       { ko: '⚡ 포인트',          en: '⚡ Point' },
+  sb_ace:         { ko: '🎯 에이스',          en: '🎯 Ace' },
+  sb_fault_btn:   { ko: '✖ 폴트',            en: '✖ Fault' },
+  sb_undo:        { ko: '↩ 되돌리기',         en: '↩ Undo' },
+  sb_tiebreak:    { ko: '🔀 타이브레이크',    en: '🔀 Tiebreak' },
+  sb_reset:       { ko: '↺ 초기화',           en: '↺ Reset' },
+  sb_cur_fault:   { ko: '현재 폴트',          en: 'Current Fault' },
+  sb_double_fault:{ ko: '더블폴트',           en: 'Double Fault' },
+  sb_fault_times: { ko: '회',                 en: '' },
+  sb_srv_fault:   { ko: '서버 폴트',          en: 'Server Fault' },
+  sb_fault_auto:  { ko: '폴트는 서브하는 선수에게 자동 적용됩니다', en: 'Fault is automatically applied to the serving player' },
+  sb_fault_reset: { ko: '폴트 초기화',        en: 'Reset Faults' },
+  sb_singles:     { ko: '🎾 단식',            en: '🎾 Singles' },
+  sb_doubles:     { ko: '🤝 복식',            en: '🤝 Doubles' },
+  sb_player1:     { ko: '🟡 선수 1',          en: '🟡 Player 1' },
+  sb_player2:     { ko: '🔵 선수 2',          en: '🔵 Player 2' },
+  sb_dbl_p1:      { ko: '🟡 우리팀 선수 2',  en: '🟡 Our Team P2' },
+  sb_dbl_p2:      { ko: '🔵 상대팀 선수 2',  en: '🔵 Opp. Team P2' },
+  sb_match_title: { ko: '경기 제목',          en: 'Match Title' },
+  sb_touch_input: { ko: '터치하여 입력',      en: 'Tap to enter' },
+  sb_apply:       { ko: '✔ 적용하기',         en: '✔ Apply' },
+  sb_winner_title:{ ko: '🏆 경기 승자',       en: '🏆 Match Winner' },
+  sb_new_match:   { ko: '↺ 새 경기 시작',    en: '↺ New Match' },
+
+  // ── 전술판 ──
+  tc_back:           { ko: '← 돌아가기',         en: '← Back' },
+  tc_title:          { ko: '🎾 복식 전술판',      en: '🎾 Doubles Tactics Board' },
+  tc_preset_basic:   { ko: '기본',               en: 'Basic' },
+  tc_preset_bothup:  { ko: '양쪽전위',            en: 'Both Up' },
+  tc_preset_bothback:{ ko: '양쪽후위',            en: 'Both Back' },
+  tc_preset_iform:   { ko: 'I포메이션',           en: 'I-Formation' },
+  tc_preset_aus:     { ko: '호주',               en: 'Australian' },
+  tc_btn_arrow:      { ko: '➡️ 화살표',           en: '➡️ Arrow' },
+  tc_btn_draw:       { ko: '✏️ 그리기',           en: '✏️ Draw' },
+  tc_btn_cover:      { ko: '⭕ 커버존',           en: '⭕ Cover Zone' },
+  tc_btn_ball:       { ko: '🎾 공',              en: '🎾 Ball' },
+  tc_btn_angle:      { ko: '📐 타구각',           en: '📐 Shot Angle' },
+  tc_btn_del:        { ko: '🗑️ 삭제',            en: '🗑️ Delete' },
+  tc_btn_reset:      { ko: '🔄 초기화',           en: '🔄 Reset' },
+  tc_btn_board:      { ko: '🎨 보드설정',         en: '🎨 Board Setup' },
+  tc_btn_save:       { ko: '💾 저장',            en: '💾 Save' },
+  tc_btn_load:       { ko: '📂 불러오기',         en: '📂 Load' },
+  tc_btn_share:      { ko: '🔗 공유',            en: '🔗 Share' },
+  tc_guide:          { ko: '선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동', en: 'Player tab → select (shot angle) &nbsp;·&nbsp; Double-tap → edit &nbsp;·&nbsp; Drag → move' },
+  tc_edit_title:     { ko: '✏️ 선수 편집',        en: '✏️ Edit Player' },
+  tc_edit_name:      { ko: '이름',               en: 'Name' },
+  tc_edit_number:    { ko: '등번호',              en: 'Number' },
+  tc_edit_position:  { ko: '포지션',              en: 'Position' },
+  tc_edit_color:     { ko: '선수 색상',           en: 'Player Color' },
+  tc_cancel:         { ko: '취소',               en: 'Cancel' },
+  tc_ok:             { ko: '확인',               en: 'OK' },
+  tc_close:          { ko: '닫기',               en: 'Close' },
+  tc_apply:          { ko: '적용',               en: 'Apply' },
+  tc_board_title:    { ko: '🎨 보드 설정',        en: '🎨 Board Settings' },
+  tc_board_theme:    { ko: '코트 테마',           en: 'Court Theme' },
+  tc_theme_green:    { ko: '🟩 그린',            en: '🟩 Green' },
+  tc_theme_clay:     { ko: '🧱 클레이',           en: '🧱 Clay' },
+  tc_theme_hard:     { ko: '🔵 하드',            en: '🔵 Hard' },
+  tc_theme_dark:     { ko: '⚫ 다크',            en: '⚫ Dark' },
+  tc_theme_grass:    { ko: '🌿 잔디',            en: '🌿 Grass' },
+  tc_board_drawcolor:{ ko: '그리기 색상',         en: 'Drawing Color' },
+  tc_save_title:     { ko: '💾 전술판 저장',      en: '💾 Save Tactics Board' },
+  tc_save_label:     { ko: '저장 이름',           en: 'Save Name' },
+  tc_save_ok:        { ko: '저장',               en: 'Save' },
+  tc_load_title:     { ko: '📂 저장된 전술판',    en: '📂 Saved Boards' },
+  tc_share_title:    { ko: '🔗 보드 공유',        en: '🔗 Share Board' },
+  tc_share_desc:     { ko: '현재 전술판이 URL에 담겼어요.<br>복사해서 카카오톡으로 보내세요!', en: 'The current tactics board has been encoded into a URL.<br>Copy and share it via KakaoTalk!' },
+  tc_share_copy:     { ko: '📋 링크 복사',        en: '📋 Copy Link' },
 };
 
 // ── 글자 크기 변경 ──────────────────────────────────
@@ -9573,7 +9683,7 @@ function setLanguage(lang) {
   document.querySelectorAll('[data-lang]').forEach(function(el) {
     var key = el.getAttribute('data-lang');
     if (NIJI_DICT[key] && NIJI_DICT[key][lang]) {
-      if (key.indexOf('manual_') === 0) {
+      if (key.indexOf('manual_') === 0 || key === 'tc_guide' || key === 'tc_share_desc') {
         el.innerHTML = NIJI_DICT[key][lang];
       } else {
         el.textContent = NIJI_DICT[key][lang];
@@ -9618,6 +9728,13 @@ function setLanguage(lang) {
     btn.style.boxShadow   = on ? '0 0 0 2px var(--accent)' : '';
     btn.style.fontWeight  = on ? '700'           : '';
   });
+
+  // 선수 수 뱃지 언어 갱신
+  var badge = document.getElementById('playerCountBadge');
+  if (badge && badge.style.display !== 'none' && typeof state !== 'undefined') {
+    var total = state.players ? state.players.length : 0;
+    badge.textContent = lang === 'en' ? total + ' players' : total + '명';
+  }
 }
 
 // ── 앱 시작 시 저장된 설정 자동 복원 ───────────────
