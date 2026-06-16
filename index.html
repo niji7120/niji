@@ -134,7 +134,6 @@
   body.light-theme .confirm-desc { color: #555577; }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
   :root { --app-font-size: 15px; }
   html { font-size: var(--app-font-size); }
   body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 1rem; overflow: hidden; }
@@ -3435,8 +3434,13 @@ function tvScore(tid, ri, gi, team, val) {
   else t.rounds[ri].games[gi].scoreB = v;
 
   // 양쪽 스코어 다 입력됐으면 경기기록에 자동 반영
-  const game = t.rounds[ri].games[gi];
-  if (game.scoreA !== null && game.scoreB !== null) {
+  const game2 = t.rounds[ri].games[gi];
+  if (game2.scoreA !== null && game2.scoreB !== null) {
+    if (Number(game2.scoreA) === Number(game2.scoreB)) {
+      showToast('⚠️ 동점은 인정되지 않아요. 스코어를 다시 확인해주세요!');
+      save();
+      return;
+    }
     tvSyncToMatch(t, ri, gi);
   }
   save();
@@ -3462,11 +3466,11 @@ function tvSyncToMatch(t, ri, gi) {
   const opponent = oppTeam[0] || '';
   const opponent2 = oppTeam[1] || '';
 
-  const result = Number(myScore) > Number(oppScore) ? 'win' : Number(myScore) < Number(oppScore) ? 'lose' : 'win'; // 동점은 승으로 처리(변경 불가시 현행유지)
+  const result = Number(myScore) > Number(oppScore) ? 'win' : 'lose';
 
-  // 기존 대회 기록 찾기 (같은 대회+라운드+게임)
-  const matchMemo = `[${t.name}] ${t.rounds[ri].gameNum}게임`;
-  const existIdx = state.matches.findIndex(m => m.memo && m.memo === matchMemo && m.partner === partner);
+  // 기존 대회 기록 찾기 (라운드+게임 인덱스로 정확히 식별 → 중복 방지)
+  const matchMemo = `[${t.name}] ${t.rounds[ri].gameNum}게임 R${ri}G${gi}`;
+  const existIdx = state.matches.findIndex(m => m.memo && m.memo === matchMemo);
 
   const matchData = {
     id: existIdx >= 0 ? state.matches[existIdx].id : state.nextMatchId++,
@@ -6031,6 +6035,8 @@ function renderTournamentSection() {
     setTimeout(renderTournamentSection, 50);
     return;
   }
+  // 대회 탭 진입 시 스코어 탭이 선택된 상태면 한울방식으로 초기화 (자동 스코어보드 열림 방지)
+  if (_contestTab === 'score') _contestTab = 'hanul';
   switchContestTab(_contestTab);
 }
 
@@ -8306,16 +8312,30 @@ function tnSyncToMatch(t, ri, gi) {
   const inB = t.format === 'singles' ? bName === myName : bName.includes(myName);
   if (!inA && !inB) return;
   const result = (inA && game.winner === 'a') || (inB && game.winner === 'b') ? 'win' : 'lose';
-  const opponent = inA ? bName : aName;
+
+  // 복식: "니지/파트너" 형태에서 파트너·상대 분리
+  let partner = '', opponent = '', opponent2 = '';
+  if (t.format === 'doubles') {
+    const myTeamStr = inA ? aName : bName;
+    const oppTeamStr = inA ? bName : aName;
+    const myTeamArr = myTeamStr.split('/').map(function(s){return s.trim();});
+    const oppTeamArr = oppTeamStr.split('/').map(function(s){return s.trim();});
+    partner = myTeamArr.find(function(p){return p !== myName;}) || '';
+    opponent = oppTeamArr[0] || '';
+    opponent2 = oppTeamArr[1] || '';
+  } else {
+    opponent = inA ? bName : aName;
+  }
+
   const memo = `[${t.name}] ${t.bracket[ri].name} #${gi+1}`;
   const matchData = {
     id: 0,
     date: t.date,
     format: t.format,
     sport: state.sportType || 'tennis',
-    partner: '',
+    partner,
     opponent,
-    opponent2: '',
+    opponent2,
     result,
     myScore: inA ? (game.scoreA !== '' ? String(game.scoreA) : '') : (game.scoreB !== '' ? String(game.scoreB) : ''),
     oppScore: inA ? (game.scoreB !== '' ? String(game.scoreB) : '') : (game.scoreA !== '' ? String(game.scoreA) : ''),
@@ -8466,7 +8486,6 @@ history.pushState(null, '', location.href);
   <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
     <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_edit_title">✏️ 선수 편집</div>
     <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_name">이름</div><input id="tc-editName" maxlength="6" placeholder="이름 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_number">등번호</div><input id="tc-editNumber" type="number" min="0" max="99" placeholder="번호" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
     <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_position">포지션</div><input id="tc-editPosition" maxlength="6" placeholder="포지션 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
     <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_color">선수 색상</div><div id="tc-colorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
     <div style="display:flex;gap:8px;margin-top:14px;">
@@ -8872,7 +8891,7 @@ history.pushState(null, '', location.href);
   function tcOpenPlayerEdit(key){
     TC.editingKey=key;const p=TC.PINFO[key];
     document.getElementById("tc-editName").value=p.name||"";
-    document.getElementById("tc-editNumber").value=p.number||"";
+
     document.getElementById("tc-editPosition").value=p.position||"";
     const sw=document.getElementById("tc-colorSwatches");sw.innerHTML="";
     COLOR_PALETTE.forEach(col=>{
@@ -8884,7 +8903,7 @@ history.pushState(null, '', location.href);
   window.tcEditOk=function(){
     const key=TC.editingKey,p=TC.PINFO[key];
     p.name=document.getElementById("tc-editName").value.trim();
-    p.number=document.getElementById("tc-editNumber").value.trim();
+
     p.position=document.getElementById("tc-editPosition").value.trim();
     const sel=document.querySelector("#tc-colorSwatches .tc-color-swatch.tc-sel");
     if(sel){p.main=sel.style.background;updateDarkTC(key);}
