@@ -8486,7 +8486,13 @@ history.pushState(null, '', location.href);
   <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
     <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_edit_title">✏️ 선수 편집</div>
     <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_name">이름</div><input id="tc-editName" maxlength="6" placeholder="이름 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_position">포지션</div><input id="tc-editPosition" maxlength="6" placeholder="포지션 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
+    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:6px;" data-lang="tc_edit_position">포지션</div>
+    <div style="display:flex;gap:8px;">
+      <button id="tc-pos-fh" onclick="tcSelectPosition('포핸드')" style="flex:1;padding:10px;border:2px solid rgba(56,217,245,0.3);border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#7aacbf;transition:all .15s;">🎾 포핸드</button>
+      <button id="tc-pos-bh" onclick="tcSelectPosition('백핸드')" style="flex:1;padding:10px;border:2px solid rgba(56,217,245,0.3);border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#7aacbf;transition:all .15s;">🔄 백핸드</button>
+      <button id="tc-pos-none" onclick="tcSelectPosition('')" style="flex:1;padding:10px;border:2px solid rgba(56,217,245,0.3);border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#7aacbf;transition:all .15s;">없음</button>
+    </div>
+    <input type="hidden" id="tc-editPosition" value=""></div>
     <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_color">선수 색상</div><div id="tc-colorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
     <div style="display:flex;gap:8px;margin-top:14px;">
       <button onclick="document.getElementById('tc-modalPlayer').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_cancel">취소</button>
@@ -8671,40 +8677,202 @@ history.pushState(null, '', location.href);
 
   function drawPersonTC(key,pos){
     const c=TC.PINFO[key];
-    const S=py(28)*(c.size||1);
+    const S=py(38)*(c.size||1); // 캐릭터 크기 대폭 확대
     const isSel=TC.selectedKeys.has(key);
     const cx=px(pos.x),cy=py(pos.y);
     const volley=isNearNetTC(key,pos);
     ctx.save();
-    if(isSel){ctx.shadowBlur=28;ctx.shadowColor=c.shadow;ctx.strokeStyle=c.main;ctx.lineWidth=px(3.5);ctx.beginPath();ctx.ellipse(cx,cy-S*0.6,S*0.78,S*1.18,0,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;}
-    ctx.fillStyle="rgba(0,0,0,0.25)";ctx.beginPath();ctx.ellipse(cx+px(2),cy+py(2),S*0.5,S*0.18,0,0,Math.PI*2);ctx.fill();
-    // 몸통
-    ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=px(1.5);ctx.shadowBlur=10;ctx.shadowColor=c.shadow;
-    if(volley){
-      ctx.beginPath();ctx.moveTo(cx-S*0.40,cy-S*0.62);ctx.lineTo(cx+S*0.30,cy-S*0.68);ctx.lineTo(cx+S*0.20,cy-S*0.20);ctx.lineTo(cx-S*0.20,cy-S*0.18);ctx.closePath();ctx.fill();ctx.stroke();
-    }else{
-      ctx.beginPath();ctx.moveTo(cx-S*0.40,cy-S*0.68);ctx.lineTo(cx+S*0.36,cy-S*0.65);ctx.lineTo(cx+S*0.24,cy-S*0.22);ctx.lineTo(cx-S*0.24,cy-S*0.22);ctx.closePath();ctx.fill();ctx.stroke();
+
+    // 선택 시 외곽 글로우
+    if(isSel){
+      ctx.shadowBlur=32;ctx.shadowColor=c.shadow;
+      ctx.strokeStyle=c.main;ctx.lineWidth=px(3);
+      ctx.beginPath();ctx.ellipse(cx,cy-S*0.55,S*0.72,S*1.15,0,0,Math.PI*2);ctx.stroke();
+      ctx.shadowBlur=0;
     }
+
+    // 그림자
+    ctx.fillStyle="rgba(0,0,0,0.22)";
+    ctx.beginPath();ctx.ellipse(cx+px(1.5),cy+py(1.5),S*0.48,S*0.16,0,0,Math.PI*2);ctx.fill();
+
+    const lw=px(1.8);
+    const skin="#f5c8a0",skinD="#e0a87a",hair="#5a3210",headband=c.main;
+
+    // ── 다리 ──
+    ctx.lineWidth=lw;
+    // 왼쪽 다리
+    ctx.fillStyle=c.dark;ctx.strokeStyle=c.dark;
+    ctx.beginPath();
+    ctx.moveTo(cx-S*0.18,cy-S*0.08);
+    ctx.lineTo(cx-S*0.28,cy+S*0.30);
+    ctx.lineTo(cx-S*0.12,cy+S*0.30);
+    ctx.lineTo(cx-S*0.06,cy-S*0.08);
+    ctx.closePath();ctx.fill();ctx.stroke();
+    // 오른쪽 다리
+    ctx.beginPath();
+    ctx.moveTo(cx+S*0.06,cy-S*0.08);
+    ctx.lineTo(cx+S*0.12,cy+S*0.30);
+    ctx.lineTo(cx+S*0.28,cy+S*0.30);
+    ctx.lineTo(cx+S*0.18,cy-S*0.08);
+    ctx.closePath();ctx.fill();ctx.stroke();
+
+    // 신발 (흰색)
+    ctx.fillStyle="#ffffff";ctx.strokeStyle="#aaaaaa";ctx.lineWidth=lw*0.8;
+    ctx.beginPath();ctx.ellipse(cx-S*0.20,cy+S*0.33,S*0.14,S*0.07,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.ellipse(cx+S*0.20,cy+S*0.33,S*0.14,S*0.07,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+
+    // ── 몸통 (유니폼) ──
+    ctx.shadowBlur=8;ctx.shadowColor=c.shadow;
+    // 메인 상의
+    ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=lw;
+    ctx.beginPath();
+    ctx.moveTo(cx-S*0.38,cy-S*0.52);
+    ctx.lineTo(cx+S*0.38,cy-S*0.52);
+    ctx.lineTo(cx+S*0.28,cy-S*0.08);
+    ctx.lineTo(cx-S*0.28,cy-S*0.08);
+    ctx.closePath();ctx.fill();ctx.stroke();
     ctx.shadowBlur=0;
-    // 머리
-    ctx.shadowBlur=8;ctx.shadowColor=c.shadow;ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=px(2);
-    const hcy=volley?cy-S*0.95:cy-S*0.92;
-    const hcx=volley?cx-S*0.05:cx;
-    ctx.beginPath();ctx.arc(hcx,hcy,S*0.28,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;
-    // 번호
-    const lw=py(20),lh=py(12);
-    ctx.fillStyle="rgba(0,0,0,0.5)";ctx.beginPath();ctx.roundRect(hcx-lw/2,hcy-lh/2,lw,lh,3);ctx.fill();
-    ctx.fillStyle=c.main;ctx.font=`900 ${py(11)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";
-    ctx.fillText(getLabelTC(key),hcx,hcy);
-    // 이름
+    // 흰 앞판
+    ctx.fillStyle="#ffffff";ctx.strokeStyle="rgba(200,200,200,0.4)";ctx.lineWidth=lw*0.6;
+    ctx.beginPath();
+    ctx.moveTo(cx-S*0.14,cy-S*0.52);
+    ctx.lineTo(cx+S*0.14,cy-S*0.52);
+    ctx.lineTo(cx+S*0.10,cy-S*0.10);
+    ctx.lineTo(cx-S*0.10,cy-S*0.10);
+    ctx.closePath();ctx.fill();ctx.stroke();
+    // 소매
+    ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=lw;
+    // 왼쪽 소매
+    ctx.beginPath();
+    ctx.moveTo(cx-S*0.38,cy-S*0.52);
+    ctx.lineTo(cx-S*0.52,cy-S*0.32);
+    ctx.lineTo(cx-S*0.38,cy-S*0.24);
+    ctx.lineTo(cx-S*0.28,cy-S*0.42);
+    ctx.closePath();ctx.fill();ctx.stroke();
+    // 오른쪽 소매
+    ctx.beginPath();
+    ctx.moveTo(cx+S*0.38,cy-S*0.52);
+    ctx.lineTo(cx+S*0.52,cy-S*0.32);
+    ctx.lineTo(cx+S*0.38,cy-S*0.24);
+    ctx.lineTo(cx+S*0.28,cy-S*0.42);
+    ctx.closePath();ctx.fill();ctx.stroke();
+
+    // ── 팔 / 손목밴드 ──
+    // 왼팔 (피부)
+    ctx.fillStyle=skin;ctx.strokeStyle=skinD;ctx.lineWidth=lw*0.8;
+    ctx.beginPath();ctx.ellipse(cx-S*0.50,cy-S*0.20,S*0.09,S*0.10,Math.PI*0.1,0,Math.PI*2);ctx.fill();ctx.stroke();
+    // 오른팔 (라켓 잡은 팔 - 약간 앞으로)
+    ctx.beginPath();ctx.ellipse(cx+S*0.50,cy-S*0.22,S*0.09,S*0.11,-Math.PI*0.15,0,Math.PI*2);ctx.fill();ctx.stroke();
+    // 손목밴드 (우)
+    ctx.fillStyle="#ffffff";ctx.strokeStyle="#cccccc";ctx.lineWidth=lw*0.6;
+    ctx.beginPath();ctx.roundRect(cx+S*0.42,cy-S*0.30,S*0.16,S*0.09,3);ctx.fill();ctx.stroke();
+
+    // ── 테니스 라켓 (오른손) ──
+    ctx.save();
+    // 라켓 손잡이 그립
+    const rx=cx+S*0.58,ry=cy-S*0.18;
+    const angle=-Math.PI*0.30; // 라켓 기울기
+    ctx.translate(rx,ry);
+    ctx.rotate(angle);
+    // 그립 (손잡이)
+    ctx.fillStyle="#8B4513";ctx.strokeStyle="#5a2d00";ctx.lineWidth=lw*0.8;
+    ctx.beginPath();ctx.roundRect(-S*0.05,-S*0.02,S*0.10,S*0.36,3);ctx.fill();ctx.stroke();
+    // 그립 테이프 라인
+    ctx.strokeStyle="rgba(255,255,255,0.4)";ctx.lineWidth=lw*0.4;
+    for(let i=0;i<3;i++){
+      ctx.beginPath();ctx.moveTo(-S*0.05,S*0.06+i*S*0.08);ctx.lineTo(S*0.05,S*0.06+i*S*0.08);ctx.stroke();
+    }
+    // 목(shaft)
+    ctx.fillStyle="#888888";ctx.strokeStyle="#555555";ctx.lineWidth=lw*0.7;
+    ctx.beginPath();ctx.roundRect(-S*0.03,-S*0.12,S*0.06,S*0.14,2);ctx.fill();ctx.stroke();
+    // 라켓 헤드 프레임 (타원)
+    const headW=S*0.30,headH=S*0.38;
+    ctx.strokeStyle="#1a1a1a";ctx.lineWidth=lw*1.4;
+    ctx.beginPath();ctx.ellipse(0,-S*0.38,headW*0.5,headH*0.5,0,0,Math.PI*2);ctx.stroke();
+    // 라켓 프레임 색상 (안쪽)
+    ctx.strokeStyle=c.main;ctx.lineWidth=lw*0.9;
+    ctx.beginPath();ctx.ellipse(0,-S*0.38,headW*0.5-lw*0.5,headH*0.5-lw*0.5,0,0,Math.PI*2);ctx.stroke();
+    // 스트링 (세로)
+    ctx.strokeStyle="rgba(200,230,255,0.75)";ctx.lineWidth=lw*0.35;
+    const strCount=5;
+    for(let i=-strCount;i<=strCount;i++){
+      const sx=i*(headW*0.5/strCount);
+      const halfH=Math.sqrt(Math.max(0,(headH*0.5)*(headH*0.5)*(1-(sx*sx)/((headW*0.5)*(headW*0.5)))));
+      ctx.beginPath();ctx.moveTo(sx,-S*0.38-halfH);ctx.lineTo(sx,-S*0.38+halfH);ctx.stroke();
+    }
+    // 스트링 (가로)
+    for(let i=-strCount;i<=strCount;i++){
+      const sy=i*(headH*0.5/strCount);
+      const halfW=Math.sqrt(Math.max(0,(headW*0.5)*(headW*0.5)*(1-(sy*sy)/((headH*0.5)*(headH*0.5)))));
+      ctx.beginPath();ctx.moveTo(-halfW,-S*0.38+sy);ctx.lineTo(halfW,-S*0.38+sy);ctx.stroke();
+    }
+    ctx.restore();
+
+    // ── 머리 ──
+    const hcx=cx,hcy=cy-S*0.75;
+    // 목
+    ctx.fillStyle=skin;ctx.strokeStyle=skinD;ctx.lineWidth=lw*0.8;
+    ctx.beginPath();ctx.roundRect(hcx-S*0.08,hcy+S*0.22,S*0.16,S*0.12,2);ctx.fill();ctx.stroke();
+    // 얼굴
+    ctx.shadowBlur=6;ctx.shadowColor=c.shadow;
+    ctx.fillStyle=skin;ctx.strokeStyle=skinD;ctx.lineWidth=lw;
+    ctx.beginPath();ctx.ellipse(hcx,hcy,S*0.26,S*0.30,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.shadowBlur=0;
+    // 머리카락
+    ctx.fillStyle=hair;ctx.strokeStyle=hair;ctx.lineWidth=lw*0.5;
+    ctx.beginPath();ctx.ellipse(hcx,hcy-S*0.10,S*0.26,S*0.20,0,Math.PI,0);ctx.fill();
+    ctx.beginPath();ctx.ellipse(hcx-S*0.24,hcy-S*0.06,S*0.06,S*0.12,Math.PI*0.2,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.ellipse(hcx+S*0.24,hcy-S*0.06,S*0.06,S*0.12,-Math.PI*0.2,0,Math.PI*2);ctx.fill();
+    // 헤드밴드
+    ctx.fillStyle=headband;ctx.strokeStyle=c.dark;ctx.lineWidth=lw*0.8;
+    ctx.beginPath();ctx.ellipse(hcx,hcy-S*0.08,S*0.26,S*0.09,-0.1,Math.PI+0.3,Math.PI*2-0.3);ctx.fill();ctx.stroke();
+    // 눈 (두 점)
+    ctx.fillStyle="#2a2a2a";
+    ctx.beginPath();ctx.arc(hcx-S*0.09,hcy+S*0.02,S*0.04,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(hcx+S*0.09,hcy+S*0.02,S*0.04,0,Math.PI*2);ctx.fill();
+    // 눈썹 (강한 표정)
+    ctx.strokeStyle="#2a2a2a";ctx.lineWidth=lw*1.2;ctx.lineCap="round";
+    ctx.beginPath();ctx.moveTo(hcx-S*0.14,hcy-S*0.07);ctx.lineTo(hcx-S*0.04,hcy-S*0.05);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(hcx+S*0.14,hcy-S*0.07);ctx.lineTo(hcx+S*0.04,hcy-S*0.05);ctx.stroke();
+    ctx.lineCap="butt";
+
+    // ── 번호 배지 (가슴) ──
+    const bw=py(22),bh=py(14);
+    ctx.fillStyle="rgba(0,0,0,0.55)";
+    ctx.beginPath();ctx.roundRect(cx-bw/2,cy-S*0.34-bh/2,bw,bh,4);ctx.fill();
+    ctx.fillStyle="#ffffff";ctx.font=`900 ${py(11)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.fillText(getLabelTC(key),cx,cy-S*0.34);
+
+    // ── 이름/포지션 태그 ──
     const name=c.name||"",pos2=c.position||"";
     if(name||pos2){
-      const iy=hcy+S*0.42;const iw=py(name?46:32),ih=py(name&&pos2?22:13);
-      ctx.fillStyle="rgba(0,0,0,0.55)";ctx.beginPath();ctx.roundRect(hcx-iw/2,iy-ih/2,iw,ih,4);ctx.fill();
+      const nameFontSize=py(13),posFontSize=py(11),lineGap=py(3);
+      ctx.font=`700 ${nameFontSize}px sans-serif`;
+      const nameW=name?ctx.measureText(name).width:0;
+      ctx.font=`${posFontSize}px sans-serif`;
+      const posW=pos2?ctx.measureText(pos2).width:0;
+      const iw=Math.max(nameW,posW)+py(16);
+      const ih=name&&pos2?nameFontSize+posFontSize+lineGap+py(8):Math.max(nameFontSize,posFontSize)+py(8);
+      const iy=cy+S*0.46;
+      // 태그 배경
+      ctx.fillStyle="rgba(0,0,0,0.70)";
+      ctx.beginPath();ctx.roundRect(cx-iw/2,iy-ih/2,iw,ih,6);ctx.fill();
+      // 왼쪽 색상 바
       ctx.fillStyle=c.main;
-      if(name&&pos2){ctx.font=`700 ${py(9)}px sans-serif`;ctx.fillText(name,hcx,iy-py(5));ctx.fillStyle="rgba(255,255,255,0.6)";ctx.font=`${py(8)}px sans-serif`;ctx.fillText(pos2,hcx,iy+py(5));}
-      else if(name){ctx.font=`700 ${py(9)}px sans-serif`;ctx.fillText(name,hcx,iy);}
-      else{ctx.fillStyle="rgba(255,255,255,0.7)";ctx.font=`${py(8)}px sans-serif`;ctx.fillText(pos2,hcx,iy);}
+      ctx.beginPath();ctx.roundRect(cx-iw/2,iy-ih/2,py(4),ih,[6,0,0,6]);ctx.fill();
+      ctx.textAlign="center";ctx.textBaseline="middle";
+      if(name&&pos2){
+        ctx.fillStyle=c.main;ctx.font=`700 ${nameFontSize}px sans-serif`;
+        ctx.fillText(name,cx,iy-posFontSize/2-lineGap/2);
+        ctx.fillStyle="rgba(255,255,255,0.82)";ctx.font=`${posFontSize}px sans-serif`;
+        ctx.fillText(pos2,cx,iy+nameFontSize/2+lineGap/2);
+      }else if(name){
+        ctx.fillStyle=c.main;ctx.font=`700 ${nameFontSize}px sans-serif`;
+        ctx.fillText(name,cx,iy);
+      }else{
+        ctx.fillStyle="rgba(255,255,255,0.85)";ctx.font=`${posFontSize}px sans-serif`;
+        ctx.fillText(pos2,cx,iy);
+      }
     }
     ctx.restore();
   }
@@ -8892,7 +9060,16 @@ history.pushState(null, '', location.href);
     TC.editingKey=key;const p=TC.PINFO[key];
     document.getElementById("tc-editName").value=p.name||"";
 
-    document.getElementById("tc-editPosition").value=p.position||"";
+    const savedPos=p.position||"";
+    document.getElementById("tc-editPosition").value=savedPos;
+    // 포지션 버튼 상태 반영
+    ["tc-pos-fh","tc-pos-bh","tc-pos-none"].forEach(id=>{
+      const btn=document.getElementById(id);
+      if(btn){btn.style.background="rgba(255,255,255,0.07)";btn.style.borderColor="rgba(56,217,245,0.3)";btn.style.color="#7aacbf";}
+    });
+    if(savedPos==="포핸드"){const b=document.getElementById("tc-pos-fh");if(b){b.style.background="rgba(56,217,245,0.25)";b.style.borderColor="#38d9f5";b.style.color="#38d9f5";}}
+    else if(savedPos==="백핸드"){const b=document.getElementById("tc-pos-bh");if(b){b.style.background="rgba(56,217,245,0.25)";b.style.borderColor="#38d9f5";b.style.color="#38d9f5";}}
+    else{const b=document.getElementById("tc-pos-none");if(b){b.style.background="rgba(56,217,245,0.25)";b.style.borderColor="#38d9f5";b.style.color="#38d9f5";}}
     const sw=document.getElementById("tc-colorSwatches");sw.innerHTML="";
     COLOR_PALETTE.forEach(col=>{
       const d=document.createElement("div");d.className="tc-color-swatch"+(col===p.main?" tc-sel":"");d.style.background=col;
@@ -8900,6 +9077,16 @@ history.pushState(null, '', location.href);
     });
     document.getElementById("tc-modalPlayer").style.display="flex";
   }
+  window.tcSelectPosition=function(val){
+    document.getElementById("tc-editPosition").value=val;
+    ["tc-pos-fh","tc-pos-bh","tc-pos-none"].forEach(id=>{
+      const btn=document.getElementById(id);
+      if(btn){btn.style.background="rgba(255,255,255,0.07)";btn.style.borderColor="rgba(56,217,245,0.3)";btn.style.color="#7aacbf";}
+    });
+    const target=val==="포핸드"?"tc-pos-fh":val==="백핸드"?"tc-pos-bh":"tc-pos-none";
+    const selBtn=document.getElementById(target);
+    if(selBtn){selBtn.style.background="rgba(56,217,245,0.25)";selBtn.style.borderColor="#38d9f5";selBtn.style.color="#38d9f5";}
+  };
   window.tcEditOk=function(){
     const key=TC.editingKey,p=TC.PINFO[key];
     p.name=document.getElementById("tc-editName").value.trim();
