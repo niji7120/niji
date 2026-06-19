@@ -2252,7 +2252,7 @@
           <span class="manual-sec-title" data-lang="manual_s5_title">5. 대회</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_1">대회 탭에는 <b>🔄 한울방식</b>과 <b>🏆 토너먼트</b> 두 가지 방식이 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_1">대회 탭에는 <b>🔄 한울방식 · 🏆 토너먼트 · 🎾 스코어</b> 세 가지 메뉴가 있어요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_2"><b>🔄 한울방식</b> — 매 게임마다 파트너와 상대가 자동으로 바뀌는 <b>순환 복식 대회</b>예요. 참가 인원과 게임 수를 설정하면 모든 조합이 자동으로 짜여요. 예) 8명·4게임이면 모두 골고루 파트너/상대로 만나요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_3"><b>🏆 토너먼트</b> — 단식·복식 <b>KO방식 대진표</b>예요. 이긴 팀만 다음 라운드로 진출하고, 결과 입력 시 다음 경기가 자동으로 채워져요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_4"><b>복식 파트너 구성</b> — 선수 선택 후 아래 두 가지 중 선택해요<br>· <b>🎲 자동 팀 섞기</b>: 선수 순서대로 1번↔마지막, 2번↔끝에서 2번 방식으로 자동 짝을 맺어요<br>· <b>✋ 직접 파트너 지정</b>: 선수를 2명씩 직접 클릭해서 팀을 만들어요</span></div>
@@ -2264,6 +2264,7 @@
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_10">스코어보드에서 <b>+POINT</b>로 점수 추가, <b>ACE</b>·<b>FAULT(더블폴트)</b> 버튼으로 특수 상황 입력, <b>↩ UNDO</b>로 되돌리기 가능해요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_11">40-40 상황에서 자동으로 <b>DEUCE → AD</b> 처리되며, <b>🔀 타이브레이크</b> 버튼으로 타이브레이크를 시작할 수 있어요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_12">하단 <b>SETUP 탭</b>에서 선수 이름과 경기 제목을 직접 입력할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s5_13"><b>🎾 스코어</b> 버튼은 한울방식·토너먼트 설정 없이 <b>바로 스코어보드만 빠르게</b> 열고 싶을 때 사용해요. 친선경기나 즉석 게임 점수 기록에 편리해요</span></div>
         </div>
       </div>
 
@@ -5325,14 +5326,14 @@ function renderStringing() {
   const s2ten  = document.getElementById('str2-tension');
   const s2date = document.getElementById('str2-date');
   const s2int  = document.getElementById('str2-interval');
-  if (s1str)  s1str.value  = p.string    || '';
-  if (s1ten)  s1ten.value  = p.tension   || '';
-  if (s1date) s1date.value = p.stringDate || '';
-  if (s1int)  s1int.value  = state.stringInterval  || 3;
-  if (s2str)  s2str.value  = p.string2   || '';
-  if (s2ten)  s2ten.value  = p.tension2  || '';
-  if (s2date) s2date.value = p.stringDate2 || '';
-  if (s2int)  s2int.value  = state.stringInterval2 || 3;
+  if (s1str  && document.activeElement !== s1str)  s1str.value  = p.string    || '';
+  if (s1ten  && document.activeElement !== s1ten)  s1ten.value  = p.tension   || '';
+  if (s1date && document.activeElement !== s1date) s1date.value = p.stringDate || '';
+  if (s1int  && document.activeElement !== s1int)  s1int.value  = state.stringInterval  || 3;
+  if (s2str  && document.activeElement !== s2str)  s2str.value  = p.string2   || '';
+  if (s2ten  && document.activeElement !== s2ten)  s2ten.value  = p.tension2  || '';
+  if (s2date && document.activeElement !== s2date) s2date.value = p.stringDate2 || '';
+  if (s2int  && document.activeElement !== s2int)  s2int.value  = state.stringInterval2 || 3;
 
   // 오늘 날짜 기본값
   const today = getTodayStr();
@@ -9849,7 +9850,7 @@ const NIJI_DICT = {
 
   // 5. 대회
   manual_s5_title: { ko: '5. 대회', en: '5. Tournament' },
-  manual_s5_1: { ko: '대회 탭에는 <b>🔄 한울방식</b>과 <b>🏆 토너먼트</b> 두 가지 방식이 있어요', en: 'The Tournament tab has two formats: <b>🔄 Rotation (Hanul)</b> and <b>🏆 Bracket Tournament</b>' },
+  manual_s5_1: { ko: '대회 탭에는 <b>🔄 한울방식 · 🏆 토너먼트 · 🎾 스코어</b> 세 가지 메뉴가 있어요', en: 'The Tournament tab has three menus: <b>🔄 Rotation (Hanul)</b>, <b>🏆 Bracket Tournament</b>, and <b>🎾 Score</b>' },
   manual_s5_2: { ko: '<b>🔄 한울방식</b> — 매 게임마다 파트너와 상대가 자동으로 바뀌는 <b>순환 복식 대회</b>예요. 참가 인원과 게임 수를 설정하면 모든 조합이 자동으로 짜여요. 예) 8명·4게임이면 모두 골고루 파트너/상대로 만나요', en: '<b>🔄 Rotation (Hanul)</b> — partners and opponents rotate each game in a <b>round-robin doubles</b> format. Set players and game count and all pairings are auto-generated. e.g. 8 players × 4 games means everyone pairs with and faces everyone equally' },
   manual_s5_3: { ko: '<b>🏆 토너먼트</b> — 단식·복식 <b>KO방식 대진표</b>예요. 이긴 팀만 다음 라운드로 진출하고, 결과 입력 시 다음 경기가 자동으로 채워져요', en: '<b>🏆 Bracket Tournament</b> — single/doubles <b>knockout bracket</b>. Only winners advance, and entering a result automatically fills in the next match' },
   manual_s5_4: { ko: '<b>복식 파트너 구성</b> — 선수 선택 후 아래 두 가지 중 선택해요<br>· <b>🎲 자동 팀 섞기</b>: 선수 순서대로 1번↔마지막, 2번↔끝에서 2번 방식으로 자동 짝을 맺어요<br>· <b>✋ 직접 파트너 지정</b>: 선수를 2명씩 직접 클릭해서 팀을 만들어요', en: '<b>Doubles partner setup</b> — after selecting players, choose:<br>· <b>🎲 Auto pair</b>: pairs 1st↔last, 2nd↔2nd-last automatically<br>· <b>✋ Manual pair</b>: click players two at a time to form your own teams' },
@@ -9861,6 +9862,7 @@ const NIJI_DICT = {
   manual_s5_10: { ko: '스코어보드에서 <b>+POINT</b>로 점수 추가, <b>ACE</b>·<b>FAULT(더블폴트)</b> 버튼으로 특수 상황 입력, <b>↩ UNDO</b>로 되돌리기 가능해요', en: 'On the scoreboard: tap <b>+POINT</b> to score, <b>ACE</b>·<b>FAULT (double fault)</b> for special situations, and <b>↩ UNDO</b> to revert' },
   manual_s5_11: { ko: '40-40 상황에서 자동으로 <b>DEUCE → AD</b> 처리되며, <b>🔀 타이브레이크</b> 버튼으로 타이브레이크를 시작할 수 있어요', en: 'At 40-40, <b>DEUCE → AD</b> is handled automatically. Use the <b>🔀 Tiebreak</b> button to start a tiebreak' },
   manual_s5_12: { ko: '하단 <b>SETUP 탭</b>에서 선수 이름과 경기 제목을 직접 입력할 수 있어요', en: 'Enter player names and match title in the <b>SETUP tab</b> at the bottom' },
+  manual_s5_13: { ko: '<b>🎾 스코어</b> 버튼은 한울방식·토너먼트 설정 없이 <b>바로 스코어보드만 빠르게</b> 열고 싶을 때 사용해요. 친선경기나 즉석 게임 점수 기록에 편리해요', en: '<b>🎾 Score</b> opens the scoreboard <b>instantly without setting up</b> a Rotation or Bracket tournament — handy for friendly matches or quick on-the-spot scoring' },
 
   // 6. 스트링 관리
   manual_s6_title: { ko: '6. 스트링 관리', en: '6. String Management' },
