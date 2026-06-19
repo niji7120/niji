@@ -1757,6 +1757,9 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         🛠️ 교체 인증하기 (공유)
       </button>
+      <button class="string-cert-btn" style="background:var(--surface2);color:var(--text);margin-top:8px;" onclick="playStringReplaceVoice()">
+        🔊 알림음 미리듣기
+      </button>
 
       <!-- ===== 라켓 1 카드 ===== -->
       <div class="card" style="margin-bottom:14px;">
@@ -3128,6 +3131,10 @@ function _initApp() {
   updateMatchSportBadge();
   renderPlayers();
   renderStringing();
+
+  // 스트링 교체 음성 알림 (하루 1회, 첫 터치/클릭 시 재생 - 모바일 자동재생 제한 대응)
+  document.addEventListener('click', _firstTouchStringVoiceAlert, { once: true });
+  document.addEventListener('touchstart', _firstTouchStringVoiceAlert, { once: true });
 
   // 구글 계정 정보 표시
   var nameEl = document.getElementById('googleDisplayName');
@@ -5307,6 +5314,84 @@ function toggleAcc(id) {
   }
 }
 
+
+// ===== 스트링 교체 음성 알림 (하루 1회) =====
+function _firstTouchStringVoiceAlert() {
+  checkStringReplaceVoiceAlert();
+}
+
+function checkStringReplaceVoiceAlert() {
+  try {
+    const p = state.profile || {};
+
+    function isDue(dateStr, intervalMonths) {
+      if (!dateStr) return false;
+      const parts = dateStr.split('-').map(Number);
+      const last = new Date(parts[0], parts[1] - 1, parts[2]);
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const diffDays = Math.floor((today - last) / 86400000);
+      const intervalDays = (intervalMonths || 3) * 30;
+      return diffDays >= intervalDays; // 교체 기한 초과(🔴) 상태
+    }
+
+    const due1 = isDue(p.stringDate, state.stringInterval);
+    const due2 = isDue(p.stringDate2, state.stringInterval2);
+    if (!due1 && !due2) return; // 교체 권장 상태 아니면 알림 없음
+
+    const todayStr = getTodayStr();
+    const lastPlayedKey = 'niji_string_voice_alert_date';
+    if (localStorage.getItem(lastPlayedKey) === todayStr) return; // 오늘 이미 알림 보냄
+
+    localStorage.setItem(lastPlayedKey, todayStr);
+
+    let msg = '스트링 교체하세요';
+    if (due1 && due2) msg = '라켓 1, 라켓 2 스트링 교체하세요';
+    else if (due1) msg = '라켓 1 스트링 교체하세요';
+    else if (due2) msg = '라켓 2 스트링 교체하세요';
+
+    playStringReplaceVoice(msg);
+  } catch (e) {
+    console.warn('스트링 음성 알림 오류:', e);
+  }
+}
+
+function playStringReplaceVoice(msg) {
+  // 카톡 스타일 경쾌한 3음 차임 (솔-도-미)
+  try {
+    const Actx = window.AudioContext || window.webkitAudioContext;
+    if (Actx) {
+      const ctx = new Actx();
+      const notes = [784, 1047, 1319]; // 솔5 - 도6 - 미6
+      notes.forEach(function (freq, i) {
+        const startTime = ctx.currentTime + i * 0.13;
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0.0001, startTime);
+        g.gain.exponentialRampToValueAtTime(0.22, startTime + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.22);
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start(startTime);
+        o.stop(startTime + 0.25);
+      });
+    }
+  } catch (e) { /* 비프음 실패는 무시 */ }
+
+  // 음성 안내
+  try {
+    if ('speechSynthesis' in window) {
+      const utter = new SpeechSynthesisUtterance(msg || '스트링 교체하세요');
+      utter.lang = 'ko-KR';
+      utter.rate = 0.95;
+      setTimeout(function () {
+        window.speechSynthesis.speak(utter);
+      }, 480);
+    }
+  } catch (e) { /* 음성 실패는 무시 */ }
+}
 
 function renderStringing() {
   const p = state.profile || {};
