@@ -324,6 +324,49 @@
     padding: 5px; border-radius: 6px; display: flex; transition: color .2s;
   }
   .match-edit-btn:hover { color: var(--accent); }
+  .match-share-btn {
+    background: none; border: none; color: var(--text-muted);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    border-radius: 8px; transition: color .2s;
+  }
+  .match-share-btn:hover { color: var(--success); }
+
+  /* 공유 카드 모달 */
+  #nijiShareModal {
+    display:none; position:fixed; inset:0; z-index:9999;
+    background:rgba(0,0,0,.75); align-items:center; justify-content:center;
+  }
+  #nijiShareModal.open { display:flex; }
+  #nijiShareCard {
+    background:#1a1a2e; border-radius:20px; padding:24px 20px 20px;
+    width:88vw; max-width:360px; box-shadow:0 8px 40px rgba(0,0,0,.6);
+    display:flex; flex-direction:column; gap:14px; position:relative;
+  }
+  #nijiShareCard .sc-badge {
+    display:inline-block; padding:3px 12px; border-radius:20px;
+    font-size: 0.75rem; font-weight:700; letter-spacing:.5px;
+  }
+  #nijiShareCard .sc-score {
+    font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900;
+    text-align:center; letter-spacing:2px; color:#fff;
+  }
+  #nijiShareCard .sc-footer {
+    font-size: 0.65rem; color:#888; text-align:center; margin-top:4px;
+  }
+  .niji-share-action-btn {
+    width:100%; padding:13px; border:none; border-radius:12px;
+    font-size: 0.95rem; font-weight:700; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+
+  /* 스트링 인증 버튼 */
+  .string-cert-btn {
+    width:100%; padding:13px; margin-top:10px;
+    background:linear-gradient(135deg,#7c6af7,#f76ac8);
+    color:#fff; border:none; border-radius:12px;
+    font-size: 0.95rem; font-weight:700; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
   .match-edit-mode-banner {
     background: rgba(124,106,247,.12); border: 1px solid rgba(124,106,247,.3);
     border-radius: 10px; padding: 8px 12px; margin-bottom: 14px;
@@ -1237,6 +1280,13 @@
       </div>
       <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
 
+      <!-- 스트링 관리 바로가기 버튼 -->
+      <div style="padding:10px 16px 0;">
+        <button onclick="showPage('stringing')" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:14px;border:2px solid var(--accent);background:rgba(124,106,247,0.10);color:var(--accent);font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all .2s;">
+          🛠️ 스트링 관리
+        </button>
+      </div>
+
       <!-- 종목 선택 카드 -->
       <div style="padding:14px 16px 0;">
         <div class="card" style="padding:14px 16px;">
@@ -1700,38 +1750,105 @@
     <!-- ===== STRINGING PAGE ===== -->
     <div class="page" id="page-stringing">
       <div class="page-header">🎾 스트링 관리</div>
-      <div class="page-sub">교체 주기와 장비 히스토리를 관리하세요</div>
+      <div class="page-sub">라켓별 스트링 교체 주기를 관리하세요</div>
 
-      <!-- 교체 알림 -->
-      <div id="stringingAlert"></div>
+      <!-- 스트링 교체 인증 공유 버튼 -->
+      <button class="string-cert-btn" onclick="shareStringCert()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        🛠️ 교체 인증하기 (공유)
+      </button>
 
-      <!-- 마지막 교체일 설정 -->
-      <div class="card" style="margin-bottom:12px;">
-        <div class="card-title" style="margin-bottom:10px;">📅 마지막 스트링 교체일</div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input type="date" class="form-input" id="lastStringDate" style="flex:1;" onchange="saveLastStringDate(this.value)">
-          <button class="btn btn-primary btn-sm" onclick="saveLastStringDate(document.getElementById('lastStringDate').value)" style="white-space:nowrap;padding:0 16px;">저장</button>
+      <!-- ===== 라켓 1 카드 ===== -->
+      <div class="card" style="margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <span style="background:var(--accent);color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET 1</span>
+          <input class="form-input" id="str-r1-name" placeholder="예) 윌슨 블레이드 98" style="flex:1;font-size:0.88rem;padding:6px 10px;" oninput="saveStrR1Field('racket',this.value)">
         </div>
-        <div style="margin-top:10px;">
-          <label class="form-label">교체 권장 주기 (개월)</label>
-          <select class="form-select" id="stringInterval" onchange="saveStringInterval(this.value)" style="margin-top:4px;">
-            <option value="1">1개월</option>
-            <option value="2">2개월</option>
-            <option value="3" selected>3개월</option>
-            <option value="6">6개월</option>
-            <option value="12">12개월</option>
-          </select>
+        <!-- 알림 배너 -->
+        <div id="stringingAlert1" style="margin-bottom:10px;"></div>
+        <!-- 스트링 정보 입력 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div>
+            <label class="form-label" style="font-size:0.72rem;">스트링명</label>
+            <input class="form-input" id="str1-string" placeholder="예) VS Touch 130" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR1Field('string',this.value)">
+          </div>
+          <div>
+            <label class="form-label" style="font-size:0.72rem;">텐션 (lb)</label>
+            <input class="form-input" id="str1-tension" placeholder="예) 52" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR1Field('tension',this.value)">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+          <div style="flex:1;">
+            <label class="form-label" style="font-size:0.72rem;">마지막 교체일</label>
+            <input type="date" class="form-input" id="str1-date" style="font-size:0.85rem;padding:7px 10px;" onchange="saveStrR1Field('stringDate',this.value)">
+          </div>
+          <div style="min-width:100px;">
+            <label class="form-label" style="font-size:0.72rem;">교체 주기</label>
+            <select class="form-select" id="str1-interval" style="font-size:0.85rem;padding:7px 10px;" onchange="saveStrR1Interval(this.value)">
+              <option value="1">1개월</option>
+              <option value="2">2개월</option>
+              <option value="3" selected>3개월</option>
+              <option value="6">6개월</option>
+              <option value="12">12개월</option>
+            </select>
+          </div>
+        </div>
+        <!-- 히스토리 -->
+        <div style="border-top:1px solid var(--border);padding-top:10px;">
+          <div class="card-title" style="font-size:0.82rem;margin-bottom:8px;">📋 교체 이력 (라켓 1)</div>
+          <div id="stringingHistoryList1"></div>
+          <div class="stringing-add-row" style="margin-top:8px;">
+            <input class="form-input" id="newStringName1" placeholder="스트링명·텐션 입력" style="font-size:0.85rem;padding:7px 10px;">
+            <input type="date" class="form-input" id="newStringDate1" style="max-width:130px;font-size:0.85rem;padding:7px 10px;">
+            <button class="btn btn-primary btn-sm" onclick="addStringingHistory(1)" style="font-size:0.8rem;">+ 추가</button>
+          </div>
         </div>
       </div>
 
-      <!-- 장비 히스토리 -->
-      <div class="card">
-        <div class="card-title" style="margin-bottom:10px;">📋 장비 교체 히스토리</div>
-        <div id="stringingHistoryList"></div>
-        <div class="stringing-add-row">
-          <input class="form-input" id="newStringName" placeholder="스트링명 · 텐션 입력">
-          <input type="date" class="form-input" id="newStringDate" style="max-width:140px;">
-          <button class="btn btn-primary btn-sm" onclick="addStringingHistory()">+ 추가</button>
+      <!-- ===== 라켓 2 카드 ===== -->
+      <div class="card" style="margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <span style="background:var(--accent2);color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET 2</span>
+          <input class="form-input" id="str-r2-name" placeholder="예) 요넥스 VCORE 98" style="flex:1;font-size:0.88rem;padding:6px 10px;" oninput="saveStrR2Field('racket2',this.value)">
+        </div>
+        <!-- 알림 배너 -->
+        <div id="stringingAlert2" style="margin-bottom:10px;"></div>
+        <!-- 스트링 정보 입력 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div>
+            <label class="form-label" style="font-size:0.72rem;">스트링명</label>
+            <input class="form-input" id="str2-string" placeholder="예) Yonex BG65" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR2Field('string2',this.value)">
+          </div>
+          <div>
+            <label class="form-label" style="font-size:0.72rem;">텐션 (lb)</label>
+            <input class="form-input" id="str2-tension" placeholder="예) 24" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR2Field('tension2',this.value)">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+          <div style="flex:1;">
+            <label class="form-label" style="font-size:0.72rem;">마지막 교체일</label>
+            <input type="date" class="form-input" id="str2-date" style="font-size:0.85rem;padding:7px 10px;" onchange="saveStrR2Field('stringDate2',this.value)">
+          </div>
+          <div style="min-width:100px;">
+            <label class="form-label" style="font-size:0.72rem;">교체 주기</label>
+            <select class="form-select" id="str2-interval" style="font-size:0.85rem;padding:7px 10px;" onchange="saveStrR2Interval(this.value)">
+              <option value="1">1개월</option>
+              <option value="2">2개월</option>
+              <option value="3" selected>3개월</option>
+              <option value="6">6개월</option>
+              <option value="12">12개월</option>
+            </select>
+          </div>
+        </div>
+        <!-- 히스토리 -->
+        <div style="border-top:1px solid var(--border);padding-top:10px;">
+          <div class="card-title" style="font-size:0.82rem;margin-bottom:8px;">📋 교체 이력 (라켓 2)</div>
+          <div id="stringingHistoryList2"></div>
+          <div class="stringing-add-row" style="margin-top:8px;">
+            <input class="form-input" id="newStringName2" placeholder="스트링명·텐션 입력" style="font-size:0.85rem;padding:7px 10px;">
+            <input type="date" class="form-input" id="newStringDate2" style="max-width:130px;font-size:0.85rem;padding:7px 10px;">
+            <button class="btn btn-primary btn-sm" onclick="addStringingHistory(2)" style="font-size:0.8rem;">+ 추가</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2088,6 +2205,7 @@
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_6">오늘 경기는 상단에 바로 표시되고, 이전 경기는 <b>📋 이전 경기 기록</b>을 탭해서 확인하세요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_7">저장된 경기는 ✏️ 수정 · 🗑️ 삭제가 가능해요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_8">🏆 대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s2_9">경기 카드 오른쪽 <b>📤 공유 버튼</b>을 탭하면 결과 공유 팝업이 열려요 — 카카오톡·문자·밴드 등 폰 기본 공유창으로 자랑하거나, <b>텍스트 복사</b> 후 붙여넣기 할 수 있어요</span></div>
         </div>
       </div>
 
@@ -2162,6 +2280,7 @@
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_3">배너 색상으로 교체 시기를 한눈에 확인할 수 있어요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_4">경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수를 따로 카운트해줘요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_5"><b>스트링 선택이 안 보여요</b> — 스트링 입력 기록이 없으면 직접 입력창만 표시돼요. 기록이 쌓이면 드롭다운이 자동으로 나타납니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_6">스트링 관리 탭 상단 <b>🛠️ 교체 인증하기</b> 버튼을 탭하면, 라켓·스트링·텐션·교체일 정보가 자동으로 문구로 만들어져서 카카오톡 등으로 바로 공유할 수 있어요</span></div>
         </div>
       </div>
 
@@ -2271,7 +2390,8 @@ let state = {
   playerSort: 'name',
   lastStringDate: '',
   stringInterval: 3,
-  stringingHistory: [], // { id, name, date }
+  stringInterval2: 3,
+  stringingHistory: [], // { id, name, date, racket: 1|2 }
   tnTournaments: [],  // 토너먼트 데이터
 };
 
@@ -2908,6 +3028,7 @@ function _applyFirebaseData(parsed) {
     state.playerSort    = parsed.playerSort    || 'name';
     state.lastStringDate = parsed.lastStringDate || '';
     state.stringInterval = parsed.stringInterval || 3;
+    state.stringInterval2 = parsed.stringInterval2 || 3;
 
     // 배열 데이터 (Firebase 객체→배열 변환 포함)
     state.matches          = _toArray(parsed.matches);
@@ -3774,86 +3895,6 @@ function renderProfile() {
     html += '</div>';
   });
 
-  // 라켓 1 카드 (라켓명 + 스트링 + 텐션 한 블록)
-  const racketIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><ellipse cx="11" cy="9" rx="6" ry="8" transform="rotate(-45 11 9)"/><line x1="16" y1="16" x2="21" y2="21"/><line x1="8" y1="11" x2="11" y2="8"/></svg>';
-  const stringIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/></svg>';
-  const tensionIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>';
-
-  // 장비 섹션 타이틀
-  html += `<div style="margin:12px 0 6px;font-size: 0.6667rem;font-weight:700;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;">${_t('pf_equipment')}</div>`;
-
-  // 라켓 드롭다운 카드 생성 함수
-  function racketAccordion(num, rKey, sKey, tKey, dKey, rPh) {
-    const rVal  = p[rKey]  || '';
-    const sVal  = p[sKey]  || '';
-    const tVal  = p[tKey]  || '';
-    const dVal  = p[dKey]  || '';
-    const isOpen = false; // 기본 항상 닫힘
-    const summaryText = rVal
-      ? `<span style="font-size: 0.8rem;font-weight:700;color:var(--text);margin-left:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;">${escHtml(rVal)}</span>`
-      : `<span style="font-size: 0.7333rem;color:var(--text-muted);margin-left:6px;">${_t('pf_not_entered')}</span>`;
-
-    return `
-    <div class="pf-item" style="flex-direction:column;align-items:stretch;padding:0;overflow:hidden;">
-      <!-- 헤더 (탭으로 열고 닫기) -->
-      <div onclick="pfToggleRacket(${num})"
-        style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;user-select:none;">
-        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
-          <div style="color:var(--accent);">${racketIcon}</div>
-          <span style="font-size: 0.6667rem;font-weight:700;letter-spacing:1px;color:var(--accent);text-transform:uppercase;">RACQUET ${num}</span>
-          ${summaryText}
-        </div>
-        <div id="pf-racket-arrow-${num}" style="color:var(--text-muted);font-size: 0.8rem;transition:transform .25s;transform:${isOpen?'rotate(180deg)':'rotate(0deg)'};">▼</div>
-      </div>
-      <!-- 펼쳐지는 내용 -->
-      <div id="pf-racket-body-${num}" style="display:${isOpen?'flex':'none'};flex-direction:column;gap:0;border-top:1px solid var(--border);">
-        <!-- 라켓명 -->
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);">
-          <div class="pf-item-icon">${racketIcon}</div>
-          <div class="pf-item-body" style="flex:1;">
-            <div class="pf-item-lbl">[${_t('pf_racket_name')}]</div>
-            <input class="pf-item-input" value="${escHtml(rVal)}" placeholder="${rPh}"
-              oninput="pfDebounceSave('${rKey}',this.value);pfUpdateRacketSummary(${num},'${rKey}')"
-              onkeydown="if(event.key==='Enter')this.blur()">
-          </div>
-        </div>
-        <!-- 스트링 -->
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);">
-          <div class="pf-item-icon">${stringIcon}</div>
-          <div class="pf-item-body" style="flex:1;">
-            <div class="pf-item-lbl">[${_t('pf_string_label')}]</div>
-            ${stringSelectInput(sKey, sVal)}
-          </div>
-        </div>
-        <!-- 텐션 -->
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);">
-          <div class="pf-item-icon">${tensionIcon}</div>
-          <div class="pf-item-body" style="flex:1;">
-            <div class="pf-item-lbl">[${_t('pf_tension_label')}]</div>
-            <input class="pf-item-input" value="${escHtml(tVal)}" placeholder="${_t('pf_tension_ph')}"
-              oninput="pfDebounceSave('${tKey}',this.value)"
-              onkeydown="if(event.key==='Enter')this.blur()">
-          </div>
-        </div>
-        <!-- 교체일 -->
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;">
-          <div class="pf-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M9 4v5M15 4v5"/></svg></div>
-          <div class="pf-item-body" style="flex:1;">
-            <div class="pf-item-lbl">[${_t('pf_string_date')}]</div>
-            <input type="date" class="pf-item-input" value="${escHtml(dVal)}"
-              style="cursor:pointer;"
-              onclick="try{this.showPicker()}catch(e){}"
-              onchange="saveProfileField('${dKey}',this.value);saveProfileField('${dKey}Time',new Date().toISOString());renderStringBanner()">
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  html += racketAccordion(1, 'racket','string','tension','stringDate', '예) 윌슨 블레이드 98');
-  html += `<div style="height:8px;"></div>`;
-  html += racketAccordion(2, 'racket2','string2','tension2','stringDate2', '예) 요넥스 VCORE 98');
-
   grid.innerHTML = html;
 
   // ===== 스트링 상태 배너 =====
@@ -3963,60 +4004,6 @@ function renderStringBanner() {
 // 프로필 입력 디바운스 (모바일에서 oninput 과도한 저장 방지)
 let _pfDebounceTimer = null;
 // 라켓 드롭다운 열고 닫기
-function pfToggleRacket(num) {
-  const body  = document.getElementById('pf-racket-body-' + num);
-  const arrow = document.getElementById('pf-racket-arrow-' + num);
-  if (!body) return;
-  const isOpen = body.style.display !== 'none';
-  body.style.display  = isOpen ? 'none' : 'flex';
-  if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-}
-
-// 라켓명 입력 시 헤더 요약 실시간 갱신
-function pfUpdateRacketSummary(num, key) {
-  // 입력 필드에서 현재 값 읽기
-  const body = document.getElementById('pf-racket-body-' + num);
-  if (!body) return;
-  const input = body.querySelector('input.pf-item-input');
-  if (!input) return;
-  const val = input.value.trim();
-
-  // state.profile 즉시 반영 (배너가 최신 값 참조하도록)
-  if (state.profile) state.profile[key] = val;
-
-  // 헤더 안의 요약 텍스트 찾기 (RACQUET 텍스트 다음 span)
-  const header = body.previousElementSibling;
-  if (!header) return;
-  const spans = header.querySelectorAll('span');
-  // 마지막 span이 요약(라켓명 or 미입력)
-  const summarySpan = spans[spans.length - 1];
-  if (!summarySpan) return;
-
-  if (val) {
-    summarySpan.style.fontSize = '12px';
-    summarySpan.style.fontWeight = '700';
-    summarySpan.style.color = 'var(--text)';
-    summarySpan.style.marginLeft = '6px';
-    summarySpan.style.overflow = 'hidden';
-    summarySpan.style.textOverflow = 'ellipsis';
-    summarySpan.style.whiteSpace = 'nowrap';
-    summarySpan.style.maxWidth = '160px';
-    summarySpan.textContent = val;
-  } else {
-    summarySpan.style.fontSize = '11px';
-    summarySpan.style.fontWeight = '';
-    summarySpan.style.color = 'var(--text-muted)';
-    summarySpan.style.marginLeft = '6px';
-    summarySpan.style.overflow = '';
-    summarySpan.style.textOverflow = '';
-    summarySpan.style.whiteSpace = '';
-    summarySpan.style.maxWidth = '';
-    summarySpan.textContent = _t('pf_not_entered');
-  }
-
-  // 배너도 즉시 갱신
-  renderStringBanner();
-}
 
 function pfDebounceSave(key, value) {
   clearTimeout(_pfDebounceTimer);
@@ -4211,6 +4198,9 @@ function _matchCardHTML(m) {
         <span class="format-badge">${sportIcon} ${fmtLabel}${pickleLabel}</span>
       </div>
       <div class="match-item-actions">
+        <button class="match-share-btn" onclick="openShareModal(${m.id})" title="공유" style="min-width:36px;min-height:36px;padding:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
         <button class="match-edit-btn" onclick="editMatch(${m.id})" title="수정" style="min-width:36px;min-height:36px;padding:8px;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
@@ -5318,78 +5308,319 @@ function toggleAcc(id) {
 
 
 function renderStringing() {
-  // 날짜/인터벌 폼 채우기
-  const lsdEl = document.getElementById('lastStringDate');
-  const siEl  = document.getElementById('stringInterval');
-  const nsdEl = document.getElementById('newStringDate');
-  if (lsdEl) lsdEl.value = state.lastStringDate || '';
-  if (siEl)  siEl.value  = state.stringInterval || 3;
-  // 새 교체 날짜 기본값 (항상 오늘로 설정)
-  if (nsdEl) {
-    nsdEl.value = getTodayStr();
-  }
+  const p = state.profile || {};
 
-  // 알림 렌더링
-  const alertEl = document.getElementById('stringingAlert');
-  if (!alertEl) return;
-  if (state.lastStringDate) {
-    // 날짜 파싱을 KST 기준으로 정확히
-    const [ly, lm, ld] = state.lastStringDate.split('-').map(Number);
-    const last = new Date(ly, lm - 1, ld);
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24));
-    const intervalDays = (state.stringInterval || 3) * 30;
-    const remaining = intervalDays - diffDays;
+  // ---- 라켓명 표시 (input value) ----
+  const r1name = document.getElementById('str-r1-name');
+  const r2name = document.getElementById('str-r2-name');
+  if (r1name && document.activeElement !== r1name) r1name.value = p.racket  || '';
+  if (r2name && document.activeElement !== r2name) r2name.value = p.racket2 || '';
 
-    let alertClass = 'ok', alertIcon = '✅', alertTitle = '', alertSub = '';
-    if (remaining <= 0) {
-      alertClass = 'danger'; alertIcon = '🔴';
-      alertTitle = `교체 기한 ${Math.abs(remaining)}일 초과!`;
-      alertSub = '스트링이 오래됐어요. 빠른 교체를 권장합니다.';
-    } else if (remaining <= 14) {
-      alertClass = ''; alertIcon = '⚠️';
-      alertTitle = `교체까지 ${remaining}일 남았어요`;
-      alertSub = '슬슬 교체를 준비해보세요.';
-    } else {
-      alertTitle = `교체까지 ${remaining}일 남았어요`;
-      alertSub = `마지막 교체: ${state.lastStringDate} · ${diffDays}일 경과`;
+  // ---- 폼 값 채우기 ----
+  const s1str  = document.getElementById('str1-string');
+  const s1ten  = document.getElementById('str1-tension');
+  const s1date = document.getElementById('str1-date');
+  const s1int  = document.getElementById('str1-interval');
+  const s2str  = document.getElementById('str2-string');
+  const s2ten  = document.getElementById('str2-tension');
+  const s2date = document.getElementById('str2-date');
+  const s2int  = document.getElementById('str2-interval');
+  if (s1str)  s1str.value  = p.string    || '';
+  if (s1ten)  s1ten.value  = p.tension   || '';
+  if (s1date) s1date.value = p.stringDate || '';
+  if (s1int)  s1int.value  = state.stringInterval  || 3;
+  if (s2str)  s2str.value  = p.string2   || '';
+  if (s2ten)  s2ten.value  = p.tension2  || '';
+  if (s2date) s2date.value = p.stringDate2 || '';
+  if (s2int)  s2int.value  = state.stringInterval2 || 3;
+
+  // 오늘 날짜 기본값
+  const today = getTodayStr();
+  const nd1 = document.getElementById('newStringDate1');
+  const nd2 = document.getElementById('newStringDate2');
+  if (nd1 && !nd1.value) nd1.value = today;
+  if (nd2 && !nd2.value) nd2.value = today;
+
+  // ---- 알림 배너 렌더링 (공통 함수) ----
+  function renderAlert(elId, dateStr, intervalMonths) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (!dateStr) {
+      el.innerHTML = `<div class="stringing-alert" style="margin-bottom:4px;">
+        <div class="stringing-alert-icon">ℹ️</div>
+        <div class="stringing-alert-text">
+          <div class="stringing-alert-title">교체일을 입력하세요</div>
+          <div class="stringing-alert-sub">교체 주기 알림을 받을 수 있어요</div>
+        </div></div>`;
+      return;
     }
+    const [ly,lm,ld] = dateStr.split('-').map(Number);
+    const last = new Date(ly, lm-1, ld);
+    const now  = new Date();
+    const todayD = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diffDays = Math.floor((todayD - last) / 86400000);
+    const intervalDays = (intervalMonths || 3) * 30;
+    const remaining = intervalDays - diffDays;
+    let cls='ok', icon='✅', title='', sub='';
+    if (remaining <= 0) {
+      cls='danger'; icon='🔴';
+      title=`교체 기한 ${Math.abs(remaining)}일 초과!`;
+      sub='스트링이 오래됐어요. 빠른 교체를 권장합니다.';
+    } else if (remaining <= 14) {
+      cls=''; icon='⚠️';
+      title=`교체까지 ${remaining}일 남았어요`;
+      sub='슬슬 교체를 준비해보세요.';
+    } else {
+      title=`교체까지 ${remaining}일 남았어요`;
+      sub=`마지막 교체: ${dateStr} · ${diffDays}일 경과`;
+    }
+    el.innerHTML = `<div class="stringing-alert ${cls}" style="margin-bottom:4px;">
+      <div class="stringing-alert-icon">${icon}</div>
+      <div class="stringing-alert-text">
+        <div class="stringing-alert-title">${title}</div>
+        <div class="stringing-alert-sub">${sub}</div>
+      </div></div>`;
+  }
+  renderAlert('stringingAlert1', p.stringDate  || '', state.stringInterval  || 3);
+  renderAlert('stringingAlert2', p.stringDate2 || '', state.stringInterval2 || 3);
 
-    alertEl.innerHTML = `<div class="stringing-alert ${alertClass}" style="margin-bottom:12px;">
-      <div class="stringing-alert-icon">${alertIcon}</div>
-      <div class="stringing-alert-text">
-        <div class="stringing-alert-title">${alertTitle}</div>
-        <div class="stringing-alert-sub">${alertSub}</div>
-      </div>
-    </div>`;
+  // ---- 히스토리 렌더링 (라켓 1 / 2 분리) ----
+  function renderHistList(elId, racketNum) {
+    const listEl = document.getElementById(elId);
+    if (!listEl) return;
+    const hist = [...(state.stringingHistory || [])]
+      .filter(h => h && h.date && (h.racket == racketNum || (!h.racket && racketNum === 1)))
+      .sort((a,b) => b.date.localeCompare(a.date));
+    if (!hist.length) {
+      listEl.innerHTML = `<div style="color:var(--text-muted);font-size:0.8rem;padding:8px 0 4px;">교체 이력이 없습니다</div>`;
+    } else {
+      listEl.innerHTML = hist.map(h => `
+        <div class="stringing-history-row">
+          <div class="stringing-dot"></div>
+          <div class="stringing-history-info">
+            <div class="stringing-history-name">${escHtml(h.name)}</div>
+            <div class="stringing-history-meta">${h.date}</div>
+          </div>
+          <button class="stringing-history-del" onclick="deleteStringingHistory(${h.id})">🗑️</button>
+        </div>`).join('');
+    }
+  }
+  renderHistList('stringingHistoryList1', 1);
+  renderHistList('stringingHistoryList2', 2);
+}
+
+// ===================================================
+// ===== 경기 결과 공유 기능 =====
+// ===================================================
+let _shareMatchId = null;
+
+function openShareModal(matchId) {
+  const m = (state.matches || []).find(x => x.id === matchId);
+  if (!m) return;
+  _shareMatchId = matchId;
+
+  const win = m.result === 'win';
+  const sportIcon = m.sport === 'pickleball' ? '🥒' : (m.sport === 'tennis' ? '🎾' : '🏸');
+  const sportName = m.sport === 'pickleball' ? '피클볼' : (m.sport === 'tennis' ? '테니스' : '배드민턴');
+  const fmtLabel = m.format === 'doubles' ? '복식' : '단식';
+  const opps = [m.opponent, m.opponent2].filter(Boolean).join(', ');
+  const myName = state.profile.name || '나';
+
+  // 종목 뱃지 색상
+  const sportColor = m.sport === 'tennis' ? '#4ade80' : m.sport === 'pickleball' ? '#fbbf24' : '#7c6af7';
+
+  document.getElementById('sc-sport').textContent = sportIcon + ' ' + sportName;
+  document.getElementById('sc-sport').style.background = sportColor + '22';
+  document.getElementById('sc-sport').style.color = sportColor;
+
+  document.getElementById('sc-format').textContent = fmtLabel;
+  document.getElementById('sc-date').textContent = m.date || '';
+
+  const badge = document.getElementById('sc-result-badge');
+  badge.textContent = win ? '🏆 승리!' : '💪 패배';
+  badge.style.background = win ? '#4ade8022' : '#f8717122';
+  badge.style.color = win ? '#4ade80' : '#f87171';
+
+  document.getElementById('sc-myname').textContent = myName;
+  document.getElementById('sc-oppname').textContent = opps || '상대';
+
+  const myScoreEl = document.getElementById('sc-myscore');
+  const oppScoreEl = document.getElementById('sc-oppscore');
+
+  if (m.myScore !== '' && m.oppScore !== '') {
+    myScoreEl.textContent = m.myScore;
+    oppScoreEl.textContent = m.oppScore;
+    myScoreEl.style.color = win ? '#4ade80' : '#f87171';
+    oppScoreEl.style.color = win ? '#f87171' : '#4ade80';
   } else {
-    alertEl.innerHTML = `<div class="stringing-alert" style="margin-bottom:12px;">
-      <div class="stringing-alert-icon">ℹ️</div>
-      <div class="stringing-alert-text">
-        <div class="stringing-alert-title">마지막 교체일을 입력해주세요</div>
-        <div class="stringing-alert-sub">교체 주기 알림을 받을 수 있어요</div>
-      </div>
-    </div>`;
+    myScoreEl.textContent = '-';
+    oppScoreEl.textContent = '-';
+    myScoreEl.style.color = '#aaa';
+    oppScoreEl.style.color = '#aaa';
   }
 
-  // 히스토리 렌더링
-  const listEl = document.getElementById('stringingHistoryList');
-  if (!listEl) return;
-  const hist = [...(state.stringingHistory || [])].filter(h => h && h.date).sort((a,b) => b.date.localeCompare(a.date));
-  if (!hist.length) {
-    listEl.innerHTML = '<div style="color:var(--text-muted);font-size: 0.8667rem;padding:12px 0 8px;">교체 이력이 없습니다</div>';
+  const tbEl = document.getElementById('sc-tiebreak');
+  if (m.myTiebreak && m.oppTiebreak) {
+    tbEl.textContent = `타이브레이크 ${m.myTiebreak}-${m.oppTiebreak}`;
+    tbEl.style.display = 'block';
   } else {
-    listEl.innerHTML = hist.map(h => `
-      <div class="stringing-history-row">
-        <div class="stringing-dot"></div>
-        <div class="stringing-history-info">
-          <div class="stringing-history-name">${escHtml(h.name)}</div>
-          <div class="stringing-history-meta">${h.date}</div>
-        </div>
-        <button class="stringing-history-del" onclick="deleteStringingHistory(${h.id})">🗑️</button>
-      </div>`).join('');
+    tbEl.style.display = 'none';
   }
+
+  const memoEl = document.getElementById('sc-memo');
+  if (m.memo) {
+    memoEl.textContent = '📝 ' + m.memo;
+    memoEl.style.display = 'block';
+  } else {
+    memoEl.style.display = 'none';
+  }
+
+  document.getElementById('nijiShareModal').classList.add('open');
+}
+
+function closeShareModal() {
+  document.getElementById('nijiShareModal').classList.remove('open');
+  _shareMatchId = null;
+}
+
+function _buildShareText(matchId) {
+  const m = (state.matches || []).find(x => x.id === matchId);
+  if (!m) return '';
+  const win = m.result === 'win';
+  const sportIcon = m.sport === 'pickleball' ? '🥒' : (m.sport === 'tennis' ? '🎾' : '🏸');
+  const sportName = m.sport === 'pickleball' ? '피클볼' : (m.sport === 'tennis' ? '테니스' : '배드민턴');
+  const opps = [m.opponent, m.opponent2].filter(Boolean).join(', ');
+  const myName = state.profile.name || '나';
+  const fmtLabel = m.format === 'doubles' ? '복식' : '단식';
+  const resultWord = win ? '승리 🏆' : '패배 💪';
+  const scoreStr = (m.myScore !== '' && m.oppScore !== '') ? `${m.myScore} : ${m.oppScore}` : '';
+  const tbStr = (m.myTiebreak && m.oppTiebreak) ? ` (타이브레이크 ${m.myTiebreak}-${m.oppTiebreak})` : '';
+
+  let txt = `${sportIcon} ${sportName} ${fmtLabel} 경기 결과\n`;
+  txt += `━━━━━━━━━━━━━━━━\n`;
+  txt += `📅 날짜: ${m.date}\n`;
+  txt += `🎯 결과: ${resultWord}\n`;
+  if (scoreStr) txt += `📊 스코어: ${scoreStr}${tbStr}\n`;
+  txt += `🆚 상대: ${opps || '?'}\n`;
+  if (myName) txt += `👤 내 이름: ${myName}\n`;
+  if (m.memo) txt += `📝 ${m.memo}\n`;
+  txt += `━━━━━━━━━━━━━━━━\n`;
+  txt += `#NIJI_STRING #${sportName}`;
+  return txt;
+}
+
+function doShareMatch(type) {
+  if (!_shareMatchId) return;
+  const text = _buildShareText(_shareMatchId);
+  if (!text) return;
+
+  if (type === 'native' && navigator.share) {
+    navigator.share({ title: 'NIJI STRING 경기 결과', text: text })
+      .catch(() => {}); // 사용자가 취소해도 무시
+  } else {
+    // 클립보드 복사 (native 지원 안 될 때도 copy로 fallback)
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('📋 결과가 복사되었어요! 카카오톡에 붙여넣기 하세요 😊');
+        closeShareModal();
+      }).catch(() => _fallbackCopy(text));
+    } else {
+      _fallbackCopy(text);
+    }
+  }
+}
+
+function _fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); showToast('📋 결과가 복사되었어요! 카카오톡에 붙여넣기 하세요 😊'); closeShareModal(); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+// ===== 스트링 교체 인증 공유 =====
+function shareStringCert() {
+  const p = state.profile || {};
+  const racket1 = p.racket || '';
+  const string1 = p.string || '';
+  const tension1 = p.tension || '';
+  const date1 = p.stringDate || state.lastStringDate || '';
+  const racket2 = p.racket2 || '';
+  const string2 = p.string2 || '';
+  const tension2 = p.tension2 || '';
+  const date2 = p.stringDate2 || '';
+
+  let txt = `🛠️ 스트링 교체 완료!\n`;
+  txt += `━━━━━━━━━━━━━━━━\n`;
+  if (racket1 || string1 || date1) {
+    txt += `[RACQUET 1]\n`;
+    if (racket1) txt += `🎾 라켓: ${racket1}\n`;
+    if (string1) txt += `📌 스트링: ${string1}\n`;
+    if (tension1) txt += `💪 텐션: ${tension1}lb\n`;
+    if (date1) txt += `📅 교체일: ${date1}\n`;
+  }
+  if (racket2 || string2 || date2) {
+    if (racket1 || string1 || date1) txt += `\n`;
+    txt += `[RACQUET 2]\n`;
+    if (racket2) txt += `🎾 라켓: ${racket2}\n`;
+    if (string2) txt += `📌 스트링: ${string2}\n`;
+    if (tension2) txt += `💪 텐션: ${tension2}lb\n`;
+    if (date2) txt += `📅 교체일: ${date2}\n`;
+  }
+  txt += `━━━━━━━━━━━━━━━━\n`;
+  txt += `새 스트링으로 더 강하게! 💥\n`;
+  txt += `#NIJI_STRING #스트링교체 #라켓`;
+
+  if (navigator.share) {
+    navigator.share({ title: 'NIJI STRING 스트링 교체 인증', text: txt }).catch(() => {});
+  } else if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(() => {
+      showToast('📋 교체 인증 문구가 복사됐어요! 카카오톡에 붙여넣기 하세요 😊');
+    }).catch(() => { showToast('복사에 실패했어요. 직접 선택해서 복사해 주세요.'); });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); showToast('📋 교체 인증 문구가 복사됐어요! 카카오톡에 붙여넣기 하세요 😊'); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+}
+// ===================================================
+
+// ===== 라켓1 필드 저장 =====
+function saveStrR1Field(key, val) {
+  state.profile[key] = val;
+  // stringDate 변경 시 lastStringDate 동기화 (기존 호환)
+  if (key === 'stringDate') {
+    state.lastStringDate = val;
+  }
+  save();
+  renderStringBanner();
+  renderStringing();
+}
+
+// ===== 라켓2 필드 저장 =====
+function saveStrR2Field(key, val) {
+  state.profile[key] = val;
+  save();
+  renderStringBanner();
+  renderStringing();
+}
+
+// ===== 교체 주기 저장 (라켓 1) =====
+function saveStrR1Interval(val) {
+  state.stringInterval = parseInt(val);
+  save();
+  renderStringing();
+}
+
+// ===== 교체 주기 저장 (라켓 2) =====
+function saveStrR2Interval(val) {
+  state.stringInterval2 = parseInt(val);
+  save();
+  renderStringing();
 }
 
 function saveLastStringDate(val) {
@@ -5407,35 +5638,57 @@ function saveStringInterval(val) {
   renderStringing();
 }
 
-function addStringingHistory() {
-  const name = document.getElementById('newStringName').value.trim();
-  const date = document.getElementById('newStringDate').value;
+function addStringingHistory(racketNum) {
+  // racketNum: 1 또는 2
+  const rn = racketNum || 1;
+  const nameEl = document.getElementById('newStringName' + rn);
+  const dateEl = document.getElementById('newStringDate' + rn);
+  if (!nameEl || !dateEl) return;
+  const name = nameEl.value.trim();
+  const date = dateEl.value;
   if (!name) { showToast('⚠️ 스트링명을 입력하세요'); return; }
   if (!date) { showToast('⚠️ 날짜를 선택하세요'); return; }
   if (!state.stringingHistory) state.stringingHistory = [];
   const id = Date.now();
-  state.stringingHistory.push({ id, name, date });
-  // 가장 최근 교체일 자동 갱신 (프로필 stringDate도 동기화)
-  const latest = [...state.stringingHistory].sort((a,b) => b.date.localeCompare(a.date))[0];
-  state.lastStringDate = latest.date;
-  state.profile.stringDate = latest.date;
+  state.stringingHistory.push({ id, name, date, racket: rn });
+  // 해당 라켓의 교체일 자동 업데이트
+  const histForRacket = [...state.stringingHistory]
+    .filter(h => h.racket == rn || (!h.racket && rn === 1))
+    .sort((a,b) => b.date.localeCompare(a.date));
+  if (histForRacket.length) {
+    const latest = histForRacket[0];
+    if (rn === 1) {
+      state.lastStringDate = latest.date;
+      state.profile.stringDate = latest.date;
+    } else {
+      state.profile.stringDate2 = latest.date;
+    }
+  }
   save();
-  document.getElementById('newStringName').value = '';
+  nameEl.value = '';
   renderStringing();
   renderStringBanner();
-  showToast('✅ 장비 이력 추가 완료!');
+  showToast('✅ 교체 이력 추가 완료!');
 }
 
 function deleteStringingHistory(id) {
+  const target = (state.stringingHistory || []).find(h => h.id === id);
+  const rn = target ? (target.racket || 1) : 1;
   state.stringingHistory = state.stringingHistory.filter(h => h.id !== id);
-  // 최근 교체일 재계산 (프로필도 동기화)
-  if (state.stringingHistory.length) {
-    const latest = [...state.stringingHistory].sort((a,b) => b.date.localeCompare(a.date))[0];
-    state.lastStringDate = latest.date;
-    state.profile.stringDate = latest.date;
+  // 해당 라켓 최근 교체일 재계산
+  const histForRacket = [...state.stringingHistory]
+    .filter(h => (h.racket == rn) || (!h.racket && rn === 1))
+    .sort((a,b) => b.date.localeCompare(a.date));
+  if (rn === 1) {
+    if (histForRacket.length) {
+      state.lastStringDate = histForRacket[0].date;
+      state.profile.stringDate = histForRacket[0].date;
+    } else {
+      state.lastStringDate = '';
+      state.profile.stringDate = '';
+    }
   } else {
-    state.lastStringDate = '';
-    state.profile.stringDate = '';
+    state.profile.stringDate2 = histForRacket.length ? histForRacket[0].date : '';
   }
   save();
   renderStringing();
@@ -8486,13 +8739,7 @@ history.pushState(null, '', location.href);
   <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
     <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_edit_title">✏️ 선수 편집</div>
     <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_name">이름</div><input id="tc-editName" maxlength="6" placeholder="이름 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:6px;" data-lang="tc_edit_position">포지션</div>
-    <div style="display:flex;gap:8px;">
-      <button id="tc-pos-fh" onclick="tcSelectPosition('포핸드')" style="flex:1;padding:10px;border:2px solid rgba(56,217,245,0.3);border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#7aacbf;transition:all .15s;">🎾 포핸드</button>
-      <button id="tc-pos-bh" onclick="tcSelectPosition('백핸드')" style="flex:1;padding:10px;border:2px solid rgba(56,217,245,0.3);border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#7aacbf;transition:all .15s;">🔄 백핸드</button>
-      <button id="tc-pos-none" onclick="tcSelectPosition('')" style="flex:1;padding:10px;border:2px solid rgba(56,217,245,0.3);border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.07);color:#7aacbf;transition:all .15s;">없음</button>
-    </div>
-    <input type="hidden" id="tc-editPosition" value=""></div>
+    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_position">포지션</div><input id="tc-editPosition" maxlength="6" placeholder="포지션 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
     <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_color">선수 색상</div><div id="tc-colorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
     <div style="display:flex;gap:8px;margin-top:14px;">
       <button onclick="document.getElementById('tc-modalPlayer').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_cancel">취소</button>
@@ -8677,202 +8924,40 @@ history.pushState(null, '', location.href);
 
   function drawPersonTC(key,pos){
     const c=TC.PINFO[key];
-    const S=py(38)*(c.size||1); // 캐릭터 크기 대폭 확대
+    const S=py(28)*(c.size||1);
     const isSel=TC.selectedKeys.has(key);
     const cx=px(pos.x),cy=py(pos.y);
     const volley=isNearNetTC(key,pos);
     ctx.save();
-
-    // 선택 시 외곽 글로우
-    if(isSel){
-      ctx.shadowBlur=32;ctx.shadowColor=c.shadow;
-      ctx.strokeStyle=c.main;ctx.lineWidth=px(3);
-      ctx.beginPath();ctx.ellipse(cx,cy-S*0.55,S*0.72,S*1.15,0,0,Math.PI*2);ctx.stroke();
-      ctx.shadowBlur=0;
+    if(isSel){ctx.shadowBlur=28;ctx.shadowColor=c.shadow;ctx.strokeStyle=c.main;ctx.lineWidth=px(3.5);ctx.beginPath();ctx.ellipse(cx,cy-S*0.6,S*0.78,S*1.18,0,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;}
+    ctx.fillStyle="rgba(0,0,0,0.25)";ctx.beginPath();ctx.ellipse(cx+px(2),cy+py(2),S*0.5,S*0.18,0,0,Math.PI*2);ctx.fill();
+    // 몸통
+    ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=px(1.5);ctx.shadowBlur=10;ctx.shadowColor=c.shadow;
+    if(volley){
+      ctx.beginPath();ctx.moveTo(cx-S*0.40,cy-S*0.62);ctx.lineTo(cx+S*0.30,cy-S*0.68);ctx.lineTo(cx+S*0.20,cy-S*0.20);ctx.lineTo(cx-S*0.20,cy-S*0.18);ctx.closePath();ctx.fill();ctx.stroke();
+    }else{
+      ctx.beginPath();ctx.moveTo(cx-S*0.40,cy-S*0.68);ctx.lineTo(cx+S*0.36,cy-S*0.65);ctx.lineTo(cx+S*0.24,cy-S*0.22);ctx.lineTo(cx-S*0.24,cy-S*0.22);ctx.closePath();ctx.fill();ctx.stroke();
     }
-
-    // 그림자
-    ctx.fillStyle="rgba(0,0,0,0.22)";
-    ctx.beginPath();ctx.ellipse(cx+px(1.5),cy+py(1.5),S*0.48,S*0.16,0,0,Math.PI*2);ctx.fill();
-
-    const lw=px(1.8);
-    const skin="#f5c8a0",skinD="#e0a87a",hair="#5a3210",headband=c.main;
-
-    // ── 다리 ──
-    ctx.lineWidth=lw;
-    // 왼쪽 다리
-    ctx.fillStyle=c.dark;ctx.strokeStyle=c.dark;
-    ctx.beginPath();
-    ctx.moveTo(cx-S*0.18,cy-S*0.08);
-    ctx.lineTo(cx-S*0.28,cy+S*0.30);
-    ctx.lineTo(cx-S*0.12,cy+S*0.30);
-    ctx.lineTo(cx-S*0.06,cy-S*0.08);
-    ctx.closePath();ctx.fill();ctx.stroke();
-    // 오른쪽 다리
-    ctx.beginPath();
-    ctx.moveTo(cx+S*0.06,cy-S*0.08);
-    ctx.lineTo(cx+S*0.12,cy+S*0.30);
-    ctx.lineTo(cx+S*0.28,cy+S*0.30);
-    ctx.lineTo(cx+S*0.18,cy-S*0.08);
-    ctx.closePath();ctx.fill();ctx.stroke();
-
-    // 신발 (흰색)
-    ctx.fillStyle="#ffffff";ctx.strokeStyle="#aaaaaa";ctx.lineWidth=lw*0.8;
-    ctx.beginPath();ctx.ellipse(cx-S*0.20,cy+S*0.33,S*0.14,S*0.07,0,0,Math.PI*2);ctx.fill();ctx.stroke();
-    ctx.beginPath();ctx.ellipse(cx+S*0.20,cy+S*0.33,S*0.14,S*0.07,0,0,Math.PI*2);ctx.fill();ctx.stroke();
-
-    // ── 몸통 (유니폼) ──
-    ctx.shadowBlur=8;ctx.shadowColor=c.shadow;
-    // 메인 상의
-    ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=lw;
-    ctx.beginPath();
-    ctx.moveTo(cx-S*0.38,cy-S*0.52);
-    ctx.lineTo(cx+S*0.38,cy-S*0.52);
-    ctx.lineTo(cx+S*0.28,cy-S*0.08);
-    ctx.lineTo(cx-S*0.28,cy-S*0.08);
-    ctx.closePath();ctx.fill();ctx.stroke();
     ctx.shadowBlur=0;
-    // 흰 앞판
-    ctx.fillStyle="#ffffff";ctx.strokeStyle="rgba(200,200,200,0.4)";ctx.lineWidth=lw*0.6;
-    ctx.beginPath();
-    ctx.moveTo(cx-S*0.14,cy-S*0.52);
-    ctx.lineTo(cx+S*0.14,cy-S*0.52);
-    ctx.lineTo(cx+S*0.10,cy-S*0.10);
-    ctx.lineTo(cx-S*0.10,cy-S*0.10);
-    ctx.closePath();ctx.fill();ctx.stroke();
-    // 소매
-    ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=lw;
-    // 왼쪽 소매
-    ctx.beginPath();
-    ctx.moveTo(cx-S*0.38,cy-S*0.52);
-    ctx.lineTo(cx-S*0.52,cy-S*0.32);
-    ctx.lineTo(cx-S*0.38,cy-S*0.24);
-    ctx.lineTo(cx-S*0.28,cy-S*0.42);
-    ctx.closePath();ctx.fill();ctx.stroke();
-    // 오른쪽 소매
-    ctx.beginPath();
-    ctx.moveTo(cx+S*0.38,cy-S*0.52);
-    ctx.lineTo(cx+S*0.52,cy-S*0.32);
-    ctx.lineTo(cx+S*0.38,cy-S*0.24);
-    ctx.lineTo(cx+S*0.28,cy-S*0.42);
-    ctx.closePath();ctx.fill();ctx.stroke();
-
-    // ── 팔 / 손목밴드 ──
-    // 왼팔 (피부)
-    ctx.fillStyle=skin;ctx.strokeStyle=skinD;ctx.lineWidth=lw*0.8;
-    ctx.beginPath();ctx.ellipse(cx-S*0.50,cy-S*0.20,S*0.09,S*0.10,Math.PI*0.1,0,Math.PI*2);ctx.fill();ctx.stroke();
-    // 오른팔 (라켓 잡은 팔 - 약간 앞으로)
-    ctx.beginPath();ctx.ellipse(cx+S*0.50,cy-S*0.22,S*0.09,S*0.11,-Math.PI*0.15,0,Math.PI*2);ctx.fill();ctx.stroke();
-    // 손목밴드 (우)
-    ctx.fillStyle="#ffffff";ctx.strokeStyle="#cccccc";ctx.lineWidth=lw*0.6;
-    ctx.beginPath();ctx.roundRect(cx+S*0.42,cy-S*0.30,S*0.16,S*0.09,3);ctx.fill();ctx.stroke();
-
-    // ── 테니스 라켓 (오른손) ──
-    ctx.save();
-    // 라켓 손잡이 그립
-    const rx=cx+S*0.58,ry=cy-S*0.18;
-    const angle=-Math.PI*0.30; // 라켓 기울기
-    ctx.translate(rx,ry);
-    ctx.rotate(angle);
-    // 그립 (손잡이)
-    ctx.fillStyle="#8B4513";ctx.strokeStyle="#5a2d00";ctx.lineWidth=lw*0.8;
-    ctx.beginPath();ctx.roundRect(-S*0.05,-S*0.02,S*0.10,S*0.36,3);ctx.fill();ctx.stroke();
-    // 그립 테이프 라인
-    ctx.strokeStyle="rgba(255,255,255,0.4)";ctx.lineWidth=lw*0.4;
-    for(let i=0;i<3;i++){
-      ctx.beginPath();ctx.moveTo(-S*0.05,S*0.06+i*S*0.08);ctx.lineTo(S*0.05,S*0.06+i*S*0.08);ctx.stroke();
-    }
-    // 목(shaft)
-    ctx.fillStyle="#888888";ctx.strokeStyle="#555555";ctx.lineWidth=lw*0.7;
-    ctx.beginPath();ctx.roundRect(-S*0.03,-S*0.12,S*0.06,S*0.14,2);ctx.fill();ctx.stroke();
-    // 라켓 헤드 프레임 (타원)
-    const headW=S*0.30,headH=S*0.38;
-    ctx.strokeStyle="#1a1a1a";ctx.lineWidth=lw*1.4;
-    ctx.beginPath();ctx.ellipse(0,-S*0.38,headW*0.5,headH*0.5,0,0,Math.PI*2);ctx.stroke();
-    // 라켓 프레임 색상 (안쪽)
-    ctx.strokeStyle=c.main;ctx.lineWidth=lw*0.9;
-    ctx.beginPath();ctx.ellipse(0,-S*0.38,headW*0.5-lw*0.5,headH*0.5-lw*0.5,0,0,Math.PI*2);ctx.stroke();
-    // 스트링 (세로)
-    ctx.strokeStyle="rgba(200,230,255,0.75)";ctx.lineWidth=lw*0.35;
-    const strCount=5;
-    for(let i=-strCount;i<=strCount;i++){
-      const sx=i*(headW*0.5/strCount);
-      const halfH=Math.sqrt(Math.max(0,(headH*0.5)*(headH*0.5)*(1-(sx*sx)/((headW*0.5)*(headW*0.5)))));
-      ctx.beginPath();ctx.moveTo(sx,-S*0.38-halfH);ctx.lineTo(sx,-S*0.38+halfH);ctx.stroke();
-    }
-    // 스트링 (가로)
-    for(let i=-strCount;i<=strCount;i++){
-      const sy=i*(headH*0.5/strCount);
-      const halfW=Math.sqrt(Math.max(0,(headW*0.5)*(headW*0.5)*(1-(sy*sy)/((headH*0.5)*(headH*0.5)))));
-      ctx.beginPath();ctx.moveTo(-halfW,-S*0.38+sy);ctx.lineTo(halfW,-S*0.38+sy);ctx.stroke();
-    }
-    ctx.restore();
-
-    // ── 머리 ──
-    const hcx=cx,hcy=cy-S*0.75;
-    // 목
-    ctx.fillStyle=skin;ctx.strokeStyle=skinD;ctx.lineWidth=lw*0.8;
-    ctx.beginPath();ctx.roundRect(hcx-S*0.08,hcy+S*0.22,S*0.16,S*0.12,2);ctx.fill();ctx.stroke();
-    // 얼굴
-    ctx.shadowBlur=6;ctx.shadowColor=c.shadow;
-    ctx.fillStyle=skin;ctx.strokeStyle=skinD;ctx.lineWidth=lw;
-    ctx.beginPath();ctx.ellipse(hcx,hcy,S*0.26,S*0.30,0,0,Math.PI*2);ctx.fill();ctx.stroke();
-    ctx.shadowBlur=0;
-    // 머리카락
-    ctx.fillStyle=hair;ctx.strokeStyle=hair;ctx.lineWidth=lw*0.5;
-    ctx.beginPath();ctx.ellipse(hcx,hcy-S*0.10,S*0.26,S*0.20,0,Math.PI,0);ctx.fill();
-    ctx.beginPath();ctx.ellipse(hcx-S*0.24,hcy-S*0.06,S*0.06,S*0.12,Math.PI*0.2,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.ellipse(hcx+S*0.24,hcy-S*0.06,S*0.06,S*0.12,-Math.PI*0.2,0,Math.PI*2);ctx.fill();
-    // 헤드밴드
-    ctx.fillStyle=headband;ctx.strokeStyle=c.dark;ctx.lineWidth=lw*0.8;
-    ctx.beginPath();ctx.ellipse(hcx,hcy-S*0.08,S*0.26,S*0.09,-0.1,Math.PI+0.3,Math.PI*2-0.3);ctx.fill();ctx.stroke();
-    // 눈 (두 점)
-    ctx.fillStyle="#2a2a2a";
-    ctx.beginPath();ctx.arc(hcx-S*0.09,hcy+S*0.02,S*0.04,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.arc(hcx+S*0.09,hcy+S*0.02,S*0.04,0,Math.PI*2);ctx.fill();
-    // 눈썹 (강한 표정)
-    ctx.strokeStyle="#2a2a2a";ctx.lineWidth=lw*1.2;ctx.lineCap="round";
-    ctx.beginPath();ctx.moveTo(hcx-S*0.14,hcy-S*0.07);ctx.lineTo(hcx-S*0.04,hcy-S*0.05);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(hcx+S*0.14,hcy-S*0.07);ctx.lineTo(hcx+S*0.04,hcy-S*0.05);ctx.stroke();
-    ctx.lineCap="butt";
-
-    // ── 번호 배지 (가슴) ──
-    const bw=py(22),bh=py(14);
-    ctx.fillStyle="rgba(0,0,0,0.55)";
-    ctx.beginPath();ctx.roundRect(cx-bw/2,cy-S*0.34-bh/2,bw,bh,4);ctx.fill();
-    ctx.fillStyle="#ffffff";ctx.font=`900 ${py(11)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";
-    ctx.fillText(getLabelTC(key),cx,cy-S*0.34);
-
-    // ── 이름/포지션 태그 ──
+    // 머리
+    ctx.shadowBlur=8;ctx.shadowColor=c.shadow;ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=px(2);
+    const hcy=volley?cy-S*0.95:cy-S*0.92;
+    const hcx=volley?cx-S*0.05:cx;
+    ctx.beginPath();ctx.arc(hcx,hcy,S*0.28,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;
+    // 번호
+    const lw=py(20),lh=py(12);
+    ctx.fillStyle="rgba(0,0,0,0.5)";ctx.beginPath();ctx.roundRect(hcx-lw/2,hcy-lh/2,lw,lh,3);ctx.fill();
+    ctx.fillStyle=c.main;ctx.font=`900 ${py(11)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.fillText(getLabelTC(key),hcx,hcy);
+    // 이름
     const name=c.name||"",pos2=c.position||"";
     if(name||pos2){
-      const nameFontSize=py(13),posFontSize=py(11),lineGap=py(3);
-      ctx.font=`700 ${nameFontSize}px sans-serif`;
-      const nameW=name?ctx.measureText(name).width:0;
-      ctx.font=`${posFontSize}px sans-serif`;
-      const posW=pos2?ctx.measureText(pos2).width:0;
-      const iw=Math.max(nameW,posW)+py(16);
-      const ih=name&&pos2?nameFontSize+posFontSize+lineGap+py(8):Math.max(nameFontSize,posFontSize)+py(8);
-      const iy=cy+S*0.46;
-      // 태그 배경
-      ctx.fillStyle="rgba(0,0,0,0.70)";
-      ctx.beginPath();ctx.roundRect(cx-iw/2,iy-ih/2,iw,ih,6);ctx.fill();
-      // 왼쪽 색상 바
+      const iy=hcy+S*0.42;const iw=py(name?46:32),ih=py(name&&pos2?22:13);
+      ctx.fillStyle="rgba(0,0,0,0.55)";ctx.beginPath();ctx.roundRect(hcx-iw/2,iy-ih/2,iw,ih,4);ctx.fill();
       ctx.fillStyle=c.main;
-      ctx.beginPath();ctx.roundRect(cx-iw/2,iy-ih/2,py(4),ih,[6,0,0,6]);ctx.fill();
-      ctx.textAlign="center";ctx.textBaseline="middle";
-      if(name&&pos2){
-        ctx.fillStyle=c.main;ctx.font=`700 ${nameFontSize}px sans-serif`;
-        ctx.fillText(name,cx,iy-posFontSize/2-lineGap/2);
-        ctx.fillStyle="rgba(255,255,255,0.82)";ctx.font=`${posFontSize}px sans-serif`;
-        ctx.fillText(pos2,cx,iy+nameFontSize/2+lineGap/2);
-      }else if(name){
-        ctx.fillStyle=c.main;ctx.font=`700 ${nameFontSize}px sans-serif`;
-        ctx.fillText(name,cx,iy);
-      }else{
-        ctx.fillStyle="rgba(255,255,255,0.85)";ctx.font=`${posFontSize}px sans-serif`;
-        ctx.fillText(pos2,cx,iy);
-      }
+      if(name&&pos2){ctx.font=`700 ${py(9)}px sans-serif`;ctx.fillText(name,hcx,iy-py(5));ctx.fillStyle="rgba(255,255,255,0.6)";ctx.font=`${py(8)}px sans-serif`;ctx.fillText(pos2,hcx,iy+py(5));}
+      else if(name){ctx.font=`700 ${py(9)}px sans-serif`;ctx.fillText(name,hcx,iy);}
+      else{ctx.fillStyle="rgba(255,255,255,0.7)";ctx.font=`${py(8)}px sans-serif`;ctx.fillText(pos2,hcx,iy);}
     }
     ctx.restore();
   }
@@ -9060,16 +9145,7 @@ history.pushState(null, '', location.href);
     TC.editingKey=key;const p=TC.PINFO[key];
     document.getElementById("tc-editName").value=p.name||"";
 
-    const savedPos=p.position||"";
-    document.getElementById("tc-editPosition").value=savedPos;
-    // 포지션 버튼 상태 반영
-    ["tc-pos-fh","tc-pos-bh","tc-pos-none"].forEach(id=>{
-      const btn=document.getElementById(id);
-      if(btn){btn.style.background="rgba(255,255,255,0.07)";btn.style.borderColor="rgba(56,217,245,0.3)";btn.style.color="#7aacbf";}
-    });
-    if(savedPos==="포핸드"){const b=document.getElementById("tc-pos-fh");if(b){b.style.background="rgba(56,217,245,0.25)";b.style.borderColor="#38d9f5";b.style.color="#38d9f5";}}
-    else if(savedPos==="백핸드"){const b=document.getElementById("tc-pos-bh");if(b){b.style.background="rgba(56,217,245,0.25)";b.style.borderColor="#38d9f5";b.style.color="#38d9f5";}}
-    else{const b=document.getElementById("tc-pos-none");if(b){b.style.background="rgba(56,217,245,0.25)";b.style.borderColor="#38d9f5";b.style.color="#38d9f5";}}
+    document.getElementById("tc-editPosition").value=p.position||"";
     const sw=document.getElementById("tc-colorSwatches");sw.innerHTML="";
     COLOR_PALETTE.forEach(col=>{
       const d=document.createElement("div");d.className="tc-color-swatch"+(col===p.main?" tc-sel":"");d.style.background=col;
@@ -9077,16 +9153,6 @@ history.pushState(null, '', location.href);
     });
     document.getElementById("tc-modalPlayer").style.display="flex";
   }
-  window.tcSelectPosition=function(val){
-    document.getElementById("tc-editPosition").value=val;
-    ["tc-pos-fh","tc-pos-bh","tc-pos-none"].forEach(id=>{
-      const btn=document.getElementById(id);
-      if(btn){btn.style.background="rgba(255,255,255,0.07)";btn.style.borderColor="rgba(56,217,245,0.3)";btn.style.color="#7aacbf";}
-    });
-    const target=val==="포핸드"?"tc-pos-fh":val==="백핸드"?"tc-pos-bh":"tc-pos-none";
-    const selBtn=document.getElementById(target);
-    if(selBtn){selBtn.style.background="rgba(56,217,245,0.25)";selBtn.style.borderColor="#38d9f5";selBtn.style.color="#38d9f5";}
-  };
   window.tcEditOk=function(){
     const key=TC.editingKey,p=TC.PINFO[key];
     p.name=document.getElementById("tc-editName").value.trim();
@@ -9257,6 +9323,61 @@ history.pushState(null, '', location.href);
   });
 })();
 </script>
+
+<!-- ===== 경기 결과 공유 모달 ===== -->
+<div id="nijiShareModal" onclick="if(event.target===this)closeShareModal()">
+  <div id="nijiShareCard">
+    <!-- 닫기 버튼 -->
+    <button onclick="closeShareModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:#888;font-size:1.4rem;cursor:pointer;line-height:1;">✕</button>
+
+    <!-- 헤더: 앱 이름 -->
+    <div style="text-align:center;padding-top:4px;">
+      <span style="font-family:'Orbitron',sans-serif;font-size: 0.75rem;font-weight:900;color:#7c6af7;letter-spacing:2px;">NIJI STRING</span>
+    </div>
+
+    <!-- 종목 + 포맷 -->
+    <div style="display:flex;gap:8px;align-items:center;justify-content:center;">
+      <span id="sc-sport" class="sc-badge"></span>
+      <span id="sc-format" style="font-size: 0.75rem;color:#aaa;"></span>
+      <span id="sc-date" style="font-size: 0.75rem;color:#666;margin-left:4px;"></span>
+    </div>
+
+    <!-- 점수 표시 영역 -->
+    <div style="background:rgba(255,255,255,.05);border-radius:14px;padding:16px 10px;">
+      <!-- 승패 뱃지 -->
+      <div style="text-align:center;margin-bottom:8px;">
+        <span id="sc-result-badge" class="sc-badge"></span>
+      </div>
+      <!-- 이름 + 스코어 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+        <div style="flex:1;text-align:center;">
+          <div id="sc-myname" style="font-size: 0.8rem;font-weight:700;color:#fff;margin-bottom:4px;"></div>
+          <div id="sc-myscore" style="font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;"></div>
+        </div>
+        <div style="font-size: 0.8rem;color:#666;font-weight:700;">VS</div>
+        <div style="flex:1;text-align:center;">
+          <div id="sc-oppname" style="font-size: 0.8rem;font-weight:700;color:#fff;margin-bottom:4px;"></div>
+          <div id="sc-oppscore" style="font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;"></div>
+        </div>
+      </div>
+      <!-- 타이브레이크 -->
+      <div id="sc-tiebreak" style="text-align:center;font-size: 0.7rem;color:#888;margin-top:4px;"></div>
+      <!-- 메모 -->
+      <div id="sc-memo" style="text-align:center;font-size: 0.75rem;color:#aaa;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08);display:none;"></div>
+    </div>
+
+    <!-- 공유 버튼들 -->
+    <button class="niji-share-action-btn" onclick="doShareMatch('native')"
+      style="background:linear-gradient(135deg,#7c6af7,#f76ac8);color:#fff;">
+      📤 공유하기 (카카오톡·문자·밴드 등)
+    </button>
+    <button class="niji-share-action-btn" onclick="doShareMatch('copy')"
+      style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);">
+      📋 텍스트 복사
+    </button>
+    <div class="sc-footer">#NIJI_STRING 🎾</div>
+  </div>
+</div>
 </body>
 <div id="niji-exit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center; font-family: sans-serif;">
   <div style="background: white; padding: 24px; border-radius: 12px; width: 280px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
@@ -9705,6 +9826,7 @@ const NIJI_DICT = {
   manual_s2_6: { ko: '오늘 경기는 상단에 바로 표시되고, 이전 경기는 <b>📋 이전 경기 기록</b>을 탭해서 확인하세요', en: 'Today\'s matches appear at the top. Tap <b>📋 Previous Records</b> to see past matches' },
   manual_s2_7: { ko: '저장된 경기는 ✏️ 수정 · 🗑️ 삭제가 가능해요', en: 'Saved matches can be ✏️ edited or 🗑️ deleted' },
   manual_s2_8: { ko: '🏆 대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다', en: 'Scores entered in the 🏆 Tournament tab are <b>automatically added to match records</b>' },
+  manual_s2_9: { ko: '경기 카드 오른쪽 <b>📤 공유 버튼</b>을 탭하면 결과 공유 팝업이 열려요 — 카카오톡·문자·밴드 등 폰 기본 공유창으로 자랑하거나, <b>텍스트 복사</b> 후 붙여넣기 할 수 있어요', en: 'Tap the <b>📤 share button</b> on a match card to open the share popup — share via KakaoTalk, SMS, Band, or <b>copy the text</b> and paste anywhere' },
 
   // 3. 통계
   manual_s3_title: { ko: '3. 통계', en: '3. Statistics' },
@@ -9747,6 +9869,7 @@ const NIJI_DICT = {
   manual_s6_3: { ko: '배너 색상으로 교체 시기를 한눈에 확인할 수 있어요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'The banner color shows restring status at a glance — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
   manual_s6_4: { ko: '경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수를 따로 카운트해줘요', en: 'Choose a <b>racquet used</b> when logging a match to track game count per racquet separately' },
   manual_s6_5: { ko: '<b>스트링 선택이 안 보여요</b> — 스트링 입력 기록이 없으면 직접 입력창만 표시돼요. 기록이 쌓이면 드롭다운이 자동으로 나타납니다', en: '<b>No string dropdown?</b> — The dropdown only appears after you\'ve entered a string at least once. Just type directly until then' },
+  manual_s6_6: { ko: '스트링 관리 탭 상단 <b>🛠️ 교체 인증하기</b> 버튼을 탭하면, 라켓·스트링·텐션·교체일 정보가 자동으로 문구로 만들어져서 카카오톡 등으로 바로 공유할 수 있어요', en: 'Tap <b>🛠️ Share Restring</b> at the top of the String Management tab to instantly generate and share your racquet, string, tension, and restring date via KakaoTalk or any app' },
 
   // 7. 전술판
   manual_s7_title: { ko: '7. 전술판', en: '7. Tactics Board' },
