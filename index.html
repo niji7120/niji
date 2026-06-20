@@ -740,9 +740,15 @@
     overflow: hidden; cursor: pointer; flex-shrink: 0;
     background: linear-gradient(135deg, #1a0a2e, #0a1520);
   }
+  .pf-bg-img-blur {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    filter: blur(18px) brightness(0.55);
+    transform: scale(1.15);
+  }
   .pf-bg-img {
-    width: 100%; height: 100%;
-    object-fit: cover; object-position: center top;
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: contain; object-position: center center;
   }
   .pf-divider { height: 1px; background: var(--border); margin: 10px 0; }
   .pf-bg-initial {
@@ -1261,6 +1267,7 @@
       <div class="pf-wrap">
         <!-- 배경 사진 -->
         <div class="pf-bg" onclick="document.getElementById('photoUpload').click()">
+          <img id="avatarImageBlur" class="pf-bg-img-blur" style="display:none;">
           <img id="avatarImage" class="pf-bg-img" style="display:none;">
           <div class="pf-bg-initial" id="avatarInitial">A</div>
           <div class="pf-bg-dim"></div>
@@ -3808,15 +3815,21 @@ function renderProfile() {
   // 배경 사진 / 이니셜
   const avatarInitial = document.getElementById('avatarInitial');
   const avatarImage   = document.getElementById('avatarImage');
+  const avatarImageBlur = document.getElementById('avatarImageBlur');
   if (avatarInitial && avatarImage) {
     if (p.photo) {
       avatarInitial.style.display = 'none';
       avatarImage.src = p.photo;
       avatarImage.style.display = 'block';
+      if (avatarImageBlur) {
+        avatarImageBlur.src = p.photo;
+        avatarImageBlur.style.display = 'block';
+      }
     } else {
       avatarInitial.textContent = initial;
       avatarInitial.style.display = 'flex';
       avatarImage.style.display = 'none';
+      if (avatarImageBlur) avatarImageBlur.style.display = 'none';
     }
   }
 
