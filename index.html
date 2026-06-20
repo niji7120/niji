@@ -2463,7 +2463,7 @@ function save() {
     // 사진은 localStorage에 저장 (500KB 이하만 - 저장공간 절약)
     if (photo && photo.length > 10) {
       try {
-        if (photo.length < 500000) {
+        if (photo.length < 1300000) {
           localStorage.setItem('nijiPhoto_' + (window._userId || 'local'), photo);
         } else {
           showToast('⚠️ 사진이 너무 커서 저장 안됐어요. 더 작은 사진을 써주세요.');
@@ -4111,8 +4111,9 @@ function uploadPhoto(input) {
   reader.onload = e => {
     const img = new Image();
     img.onload = () => {
-      // Canvas로 최대 400px 리사이즈 + 강한 압축 (저장공간 절약)
-      const MAX = 400;
+      // 화질 우선: 최대 800px, 고화질(0.85)로 시작하고
+      // 용량이 너무 클 때만 화질/크기를 단계적으로 살짝씩 낮춤
+      const MAX = 800;
       let w = img.width, h = img.height;
       if (w > MAX || h > MAX) {
         const r = Math.min(MAX/w, MAX/h);
@@ -4120,18 +4121,32 @@ function uploadPhoto(input) {
       }
       const canvas = document.createElement('canvas');
       canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      const compressed = canvas.toDataURL('image/jpeg', 0.6);
-      // 압축 후 크기 확인 (500KB 초과시 더 압축)
-      if (compressed.length > 500000) {
-        const canvas2 = document.createElement('canvas');
-        canvas2.width = Math.round(w*0.7); canvas2.height = Math.round(h*0.7);
-        canvas2.getContext('2d').drawImage(img, 0, 0, canvas2.width, canvas2.height);
-        const compressed2 = canvas2.toDataURL('image/jpeg', 0.5);
-        state.profile.photo = compressed2;
-      } else {
-        state.profile.photo = compressed;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, w, h);
+
+      const TARGET = 900000; // 약 0.9MB 목표
+      let quality = 0.85;
+      let dataUrl = canvas.toDataURL('image/jpeg', quality);
+      let tries = 0;
+      while (dataUrl.length > TARGET && tries < 6) {
+        if (quality > 0.55) {
+          quality -= 0.1; // 먼저 화질만 살짝 낮춰보기
+        } else {
+          // 화질을 너무 낮추기보단 크기를 살짝 줄임
+          w = Math.round(w * 0.88); h = Math.round(h * 0.88);
+          canvas.width = w; canvas.height = h;
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, w, h);
+          quality = 0.8;
+        }
+        dataUrl = canvas.toDataURL('image/jpeg', quality);
+        tries++;
       }
+
+      state.profile.photo = dataUrl;
       state.profile.photoPosY = 50; // 새 사진은 가운데부터 시작
       save(); renderProfile();
       showToast('📷 사진 업로드 완료! 위아래로 드래그해서 위치를 조정할 수 있어요');
