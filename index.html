@@ -736,25 +736,32 @@
   /* 상단 사진 영역 */
   .pf-bg {
     position: relative;
-    width: 100%; height: 36vw; min-height: 150px; max-height: 210px;
+    width: min(62vw, 270px); aspect-ratio: 3 / 4;
+    margin: 22px auto 0; align-self: center;
+    border-radius: 24px;
     overflow: hidden; cursor: pointer; flex-shrink: 0;
     background: linear-gradient(135deg, #1a0a2e, #0a1520);
-  }
-  .pf-bg-img-blur {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover;
-    filter: blur(18px) brightness(0.55);
-    transform: scale(1.15);
+    box-shadow: 0 16px 32px rgba(0,0,0,.4), 0 0 0 1px var(--border);
   }
   .pf-bg-img {
     position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: contain; object-position: center center;
+    object-fit: cover; object-position: center 50%;
+    touch-action: none;
+  }
+  .pf-bg.has-photo { cursor: grab; }
+  .pf-bg.has-photo:active { cursor: grabbing; }
+  .pf-drag-hint {
+    position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+    background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.2);
+    border-radius: 20px; padding: 3px 10px; font-size: 0.7rem;
+    color: #fff; pointer-events: none; backdrop-filter: blur(6px);
+    white-space: nowrap; z-index: 2;
   }
   .pf-divider { height: 1px; background: var(--border); margin: 10px 0; }
   .pf-bg-initial {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: 7.3333rem; font-weight: 900;
+    font-size: 4.6667rem; font-weight: 900;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
@@ -1266,12 +1273,12 @@
       <!-- 전체화면 프로필 -->
       <div class="pf-wrap">
         <!-- 배경 사진 -->
-        <div class="pf-bg" onclick="document.getElementById('photoUpload').click()">
-          <img id="avatarImageBlur" class="pf-bg-img-blur" style="display:none;">
+        <div class="pf-bg" onclick="pfBgClick()" onpointerdown="pfBgPointerDown(event)" onpointermove="pfBgPointerMove(event)" onpointerup="pfBgPointerUp(event)" onpointercancel="pfBgPointerUp(event)">
           <img id="avatarImage" class="pf-bg-img" style="display:none;">
           <div class="pf-bg-initial" id="avatarInitial">A</div>
           <div class="pf-bg-dim"></div>
           <div class="pf-camera-btn">📷</div>
+          <div class="pf-drag-hint" id="pfDragHint" style="display:none;">↕ 드래그해서 위치 조정</div>
         </div>
 
         <!-- 하단 오버레이 콘텐츠 -->
@@ -3815,21 +3822,22 @@ function renderProfile() {
   // 배경 사진 / 이니셜
   const avatarInitial = document.getElementById('avatarInitial');
   const avatarImage   = document.getElementById('avatarImage');
-  const avatarImageBlur = document.getElementById('avatarImageBlur');
+  const pfBgEl = document.querySelector('.pf-bg');
+  const pfDragHint = document.getElementById('pfDragHint');
   if (avatarInitial && avatarImage) {
     if (p.photo) {
       avatarInitial.style.display = 'none';
       avatarImage.src = p.photo;
       avatarImage.style.display = 'block';
-      if (avatarImageBlur) {
-        avatarImageBlur.src = p.photo;
-        avatarImageBlur.style.display = 'block';
-      }
+      avatarImage.style.objectPosition = `center ${p.photoPosY != null ? p.photoPosY : 50}%`;
+      if (pfBgEl) pfBgEl.classList.add('has-photo');
+      if (pfDragHint) pfDragHint.style.display = 'block';
     } else {
       avatarInitial.textContent = initial;
       avatarInitial.style.display = 'flex';
       avatarImage.style.display = 'none';
-      if (avatarImageBlur) avatarImageBlur.style.display = 'none';
+      if (pfBgEl) pfBgEl.classList.remove('has-photo');
+      if (pfDragHint) pfDragHint.style.display = 'none';
     }
   }
 
@@ -4052,6 +4060,50 @@ function saveProfileField(key, value) {
   if (key === 'stringDate' || key === 'stringDate2' || key === 'racket' || key === 'racket2') renderStringBanner();
 }
 
+// ===== 프로필 사진: 드래그로 위치 조정 =====
+let _pfDragState = null;
+let _pfWasDragged = false;
+
+function pfBgPointerDown(e) {
+  if (!state.profile || !state.profile.photo) return; // 사진 있을 때만 드래그 가능
+  const bg = e.currentTarget;
+  try { bg.setPointerCapture(e.pointerId); } catch (err) {}
+  _pfDragState = {
+    startY: e.clientY,
+    startPercent: state.profile.photoPosY != null ? state.profile.photoPosY : 50,
+    boxHeight: bg.offsetHeight,
+    currentPercent: null
+  };
+  _pfWasDragged = false;
+}
+
+function pfBgPointerMove(e) {
+  if (!_pfDragState) return;
+  const deltaY = e.clientY - _pfDragState.startY;
+  if (Math.abs(deltaY) > 4) _pfWasDragged = true;
+  if (_pfWasDragged) {
+    let newPercent = _pfDragState.startPercent - (deltaY / _pfDragState.boxHeight) * 150;
+    newPercent = Math.max(0, Math.min(100, newPercent));
+    const avatarImage = document.getElementById('avatarImage');
+    if (avatarImage) avatarImage.style.objectPosition = `center ${newPercent}%`;
+    _pfDragState.currentPercent = newPercent;
+  }
+}
+
+function pfBgPointerUp(e) {
+  if (!_pfDragState) return;
+  if (_pfWasDragged && _pfDragState.currentPercent != null) {
+    state.profile.photoPosY = Math.round(_pfDragState.currentPercent);
+    save();
+  }
+  _pfDragState = null;
+}
+
+function pfBgClick() {
+  if (_pfWasDragged) { _pfWasDragged = false; return; } // 방금 드래그했으면 업로드창 열지 않음
+  document.getElementById('photoUpload').click();
+}
+
 function uploadPhoto(input) {
   const file = input.files[0]; if (!file) return;
   if (file.size > 15*1024*1024) { showToast('⚠️ 사진 크기는 15MB 이하여야 합니다'); return; }
@@ -4080,8 +4132,9 @@ function uploadPhoto(input) {
       } else {
         state.profile.photo = compressed;
       }
+      state.profile.photoPosY = 50; // 새 사진은 가운데부터 시작
       save(); renderProfile();
-      showToast('📷 사진 업로드 완료!');
+      showToast('📷 사진 업로드 완료! 위아래로 드래그해서 위치를 조정할 수 있어요');
     };
     img.src = e.target.result;
   };
