@@ -724,7 +724,7 @@
   .stringing-add-row .form-input { flex: 1; min-width: 0; font-size: 1.0667rem; padding: 8px 12px; }
   .stringing-add-row .btn { white-space: nowrap; font-size: 0.8rem; padding: 0 14px; }
 
-  /* ===== PROFILE DESIGN ===== */
+  /* ===== PROFILE DESIGN (카드형 대시보드) ===== */
   .profile-page { padding: 0 !important; }
 
   .pf-wrap {
@@ -733,15 +733,25 @@
     display: flex; flex-direction: column;
   }
 
-  /* 상단 사진 영역 */
+  /* ── 상단 히어로: 그라디언트 배너 + 원형 아바타 ── */
+  .pf-hero { position: relative; padding-bottom: 14px; }
+  .pf-hero-banner {
+    height: 108px; width: 100%;
+    background:
+      radial-gradient(120% 140% at 15% 0%, rgba(247,106,200,.55), transparent 55%),
+      radial-gradient(120% 140% at 90% 100%, rgba(124,106,247,.6), transparent 55%),
+      linear-gradient(135deg, #6f5cf0, #9b6cf2 45%, #f76ac8 100%);
+  }
+
   .pf-bg {
     position: relative;
-    width: min(62vw, 270px); aspect-ratio: 3 / 4;
-    margin: 22px auto 0; align-self: center;
-    border-radius: 24px;
+    width: 92px; height: 92px;
+    margin: -50px auto 0;
+    border-radius: 50%;
     overflow: hidden; cursor: pointer; flex-shrink: 0;
     background: linear-gradient(135deg, #1a0a2e, #0a1520);
-    box-shadow: 0 16px 32px rgba(0,0,0,.4), 0 0 0 1px var(--border);
+    border: 4px solid var(--bg);
+    box-shadow: 0 8px 20px rgba(0,0,0,.35);
   }
   .pf-bg-img {
     position: absolute; inset: 0; width: 100%; height: 100%;
@@ -751,89 +761,83 @@
   .pf-bg.has-photo { cursor: grab; }
   .pf-bg.has-photo:active { cursor: grabbing; }
   .pf-drag-hint {
-    position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
-    background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.2);
-    border-radius: 20px; padding: 3px 10px; font-size: 0.7rem;
-    color: #fff; pointer-events: none; backdrop-filter: blur(6px);
-    white-space: nowrap; z-index: 2;
+    text-align: center;
+    font-size: 0.6667rem; color: var(--text-muted);
+    margin-top: 6px;
   }
   .pf-divider { height: 1px; background: var(--border); margin: 10px 0; }
   .pf-bg-initial {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: 4.6667rem; font-weight: 900;
+    font-size: 2.4rem; font-weight: 900;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
-  .pf-bg-dim {
-    position: absolute; inset: 0;
-    background: linear-gradient(to bottom,
-      rgba(0,0,0,0) 50%,
-      rgba(8,8,18,.9) 100%);
-  }
   .pf-camera-btn {
-    position: absolute; top: 10px; right: 10px;
-    background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.2);
-    border-radius: 20px; padding: 4px 10px;
-    font-size: 0.8rem; backdrop-filter: blur(6px);
+    position: absolute; right: -2px; bottom: -2px;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent); border: 2px solid var(--bg);
+    border-radius: 50%;
+    font-size: 0.7333rem;
     pointer-events: none; color: #fff;
   }
 
-  /* 하단 콘텐츠 */
-  .pf-content {
-    background: var(--bg);
-    padding: 14px 12px 20px;
-    flex: 1;
-  }
-
-  /* 이름 */
-  .pf-name-row { margin-bottom: 12px; }
+  /* 이름 / 클럽 */
+  .pf-name-row { text-align: center; margin-top: 10px; padding: 0 16px; }
   .pf-club-tag {
-    font-size: 0.6667rem; font-weight: 700; letter-spacing: 2px;
+    display: inline-block;
+    font-size: 0.6667rem; font-weight: 700; letter-spacing: 1px;
     text-transform: uppercase; color: var(--accent);
-    display: block; margin-bottom: 3px;
+    background: rgba(124,106,247,.14);
+    border: 1px solid rgba(124,106,247,.3);
+    border-radius: 20px; padding: 3px 10px;
+    margin-bottom: 6px;
   }
+  .pf-club-tag:empty { display: none; }
   .pf-name-text {
-    font-size: 1.8667rem; font-weight: 900; color: var(--text);
-    line-height: 1.1;
+    display: block;
+    font-size: 1.4667rem; font-weight: 900; color: var(--text);
+    line-height: 1.2;
   }
 
-  /* ===== 스트링 상태 배너 ===== */
-  .string-banner {
+  /* 하단 콘텐츠 래퍼 */
+  .pf-content { background: var(--bg); padding: 0 16px 18px; }
+
+  /* ===== 스트링 상태: 게이지 링 카드 ===== */
+  .pf-string-row {
     display: flex; align-items: center; gap: 12px;
-    border-radius: 12px; padding: 11px 14px; margin-bottom: 10px;
-    border: 1px solid;
+    padding: 8px 0;
   }
-  .string-banner.green  { background: rgba(74,222,128,.08);  border-color: rgba(74,222,128,.3); }
-  .string-banner.yellow { background: rgba(251,191,36,.08);  border-color: rgba(251,191,36,.3); }
-  .string-banner.red    { background: rgba(248,113,113,.10); border-color: rgba(248,113,113,.35); }
-  .string-banner.none   { background: var(--surface); border-color: var(--border); }
-  .string-banner-icon { font-size: 1.3333rem; flex-shrink: 0; }
-  .string-banner-body { flex: 1; min-width: 0; }
-  .string-banner-title {
-    font-size: 0.8rem; font-weight: 700; letter-spacing: .5px;
-    color: var(--text-muted); text-transform: uppercase; margin-bottom: 3px;
-  }
-  .string-banner-main {
-    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
-    width: 100%;
-  }
-  .string-banner-day {
+  .pf-string-row + .pf-string-row { border-top: 1px solid var(--border); }
+  .pf-gauge { flex-shrink: 0; position: relative; width: 52px; height: 52px; }
+  .pf-gauge svg { transform: rotate(-90deg); }
+  .pf-gauge-pct {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.3333rem; font-weight: 900; line-height: 1;
+    font-size: 0.7333rem; font-weight: 900; color: var(--text);
   }
-  .string-banner.green  .string-banner-day { color: #4ade80; }
-  .string-banner.yellow .string-banner-day { color: #fbbf24; }
-  .string-banner.red    .string-banner-day { color: #f87171; }
-  .string-banner.none   .string-banner-day { color: var(--text-muted); }
-  .string-banner-games {
-    font-size: 0.8667rem; font-weight: 700; color: var(--text-muted);
-    letter-spacing: .3px;
+  .pf-string-body { flex: 1; min-width: 0; }
+  .pf-string-name {
+    font-size: 0.8667rem; font-weight: 700; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .string-banner-games span {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1rem; font-weight: 900; color: var(--text);
-    margin-right: 2px;
+  .pf-string-meta {
+    font-size: 0.7333rem; color: var(--text-muted); margin-top: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .pf-string-side { text-align: right; flex-shrink: 0; }
+  .pf-string-status {
+    font-size: 0.6667rem; font-weight: 700; letter-spacing: .5px;
+    text-transform: uppercase; padding: 2px 8px; border-radius: 8px;
+    display: inline-block;
+  }
+  .pf-string-status.green  { color: #4ade80; background: rgba(74,222,128,.12); }
+  .pf-string-status.yellow { color: #fbbf24; background: rgba(251,191,36,.12); }
+  .pf-string-status.red    { color: #f87171; background: rgba(248,113,113,.12); }
+  .pf-string-games {
+    font-size: 0.6667rem; color: var(--text-muted); margin-top: 4px;
   }
 
   /* 정보 그리드 */
@@ -844,13 +848,13 @@
 
   /* 카드 */
   .pf-item {
-    background: var(--surface); border: 1px solid var(--border);
+    background: var(--surface2); border: 1px solid var(--border);
     border-radius: 12px; padding: 10px 14px;
     display: flex; align-items: center; gap: 12px;
   }
   .pf-item.full { grid-column: 1 / -1; }
   .pf-item-icon {
-    color: var(--text-muted); flex-shrink: 0;
+    color: var(--accent); flex-shrink: 0;
   }
   .pf-item-body { flex: 1; min-width: 0; }
   .pf-item-lbl {
@@ -876,6 +880,17 @@
   }
   .pf-item-select.unset { color: var(--text-muted); font-size: 0.8rem; font-weight: 400; font-style: italic; }
   .pf-item-select option { background: var(--surface); color: var(--text); }
+
+  /* ===== 종목 선택 필 ===== */
+  .pf-sport-pills { display: flex; gap: 8px; }
+  .pf-sport-pill {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 4px; border-radius: 999px;
+    border: 2px solid var(--border); background: var(--surface2);
+    cursor: pointer; transition: all .2s; color: var(--text-muted);
+  }
+  .pf-sport-pill svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .pf-sport-pill span { font-size: 0.7333rem; font-weight: 700; letter-spacing: .3px; }
 
   /* ===== PLAYER DETAIL REDESIGN ===== */
   .pd-hero {
@@ -1270,46 +1285,57 @@
         </button>
       </div>
 
-      <!-- 전체화면 프로필 -->
+      <!-- 상단 히어로: 배너 + 원형 아바타 + 이름 -->
       <div class="pf-wrap">
-        <!-- 배경 사진 -->
-        <div class="pf-bg" onclick="pfBgClick()" onpointerdown="pfBgPointerDown(event)" onpointermove="pfBgPointerMove(event)" onpointerup="pfBgPointerUp(event)" onpointercancel="pfBgPointerUp(event)">
-          <img id="avatarImage" class="pf-bg-img" style="display:none;">
-          <div class="pf-bg-initial" id="avatarInitial">A</div>
-          <div class="pf-bg-dim"></div>
-          <div class="pf-camera-btn">📷</div>
+        <div class="pf-hero">
+          <div class="pf-hero-banner"></div>
+          <div class="pf-bg" onclick="pfBgClick()" onpointerdown="pfBgPointerDown(event)" onpointermove="pfBgPointerMove(event)" onpointerup="pfBgPointerUp(event)" onpointercancel="pfBgPointerUp(event)">
+            <img id="avatarImage" class="pf-bg-img" style="display:none;">
+            <div class="pf-bg-initial" id="avatarInitial">A</div>
+            <div class="pf-camera-btn">📷</div>
+          </div>
           <div class="pf-drag-hint" id="pfDragHint" style="display:none;">↕ 드래그해서 위치 조정</div>
-        </div>
-
-        <!-- 하단 오버레이 콘텐츠 -->
-        <div class="pf-content" onclick="event.stopPropagation()">
           <div class="pf-name-row" id="profileNameBig">
             <span class="pf-club-tag" id="profileClubBig"></span>
             <span class="pf-name-text">선수</span>
           </div>
-          <div class="pf-divider"></div>
-          <div id="stringStatusBanner"></div>
-          <div class="pf-stat-row" id="profileInfoGrid"></div>
+        </div>
+
+        <!-- 하단 콘텐츠 (카드들) -->
+        <div class="pf-content" onclick="event.stopPropagation()">
+
+          <!-- 스트링 상태 카드 -->
+          <div class="card" style="margin-top:14px;">
+            <div class="card-title">🎾 <span data-lang="pf_string_status_title">스트링 상태</span></div>
+            <div id="stringStatusBanner"></div>
+          </div>
+
+          <!-- 플레이어 정보 카드 -->
+          <div class="card">
+            <div class="card-title">👤 <span data-lang="pf_player_info_title">플레이어 정보</span></div>
+            <div class="pf-stat-row" id="profileInfoGrid"></div>
+          </div>
+
         </div>
       </div>
       <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
 
       <!-- 스트링 관리 바로가기 버튼 -->
-      <div style="padding:10px 16px 0;">
+      <div style="padding:0 16px 0;">
         <button onclick="showPage('stringing')" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:14px;border:2px solid var(--accent);background:rgba(124,106,247,0.10);color:var(--accent);font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all .2s;">
           🛠️ 스트링 관리
         </button>
       </div>
 
       <!-- 종목 선택 카드 -->
-      <div style="padding:14px 16px 0;">
-        <div class="card" style="padding:14px 16px;">
-          <div class="card-title" style="margin-bottom:10px;">🎮 <span data-lang="pf_sport_title">종목 선택</span></div>
-          <div style="display:flex;gap:8px;">
+      <div style="padding:14px 16px 16px;">
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-title">🎮 <span data-lang="pf_sport_title">종목 선택</span></div>
+          <div class="pf-sport-pills">
 
             <!-- 테니스 -->
-            <button id="pf-tab-tennis" onclick="selectSportTab('tennis')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;color:var(--text-muted);">
-              <svg width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <button id="pf-tab-tennis" class="pf-sport-pill" onclick="selectSportTab('tennis')">
+              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <ellipse cx="14" cy="13" rx="11" ry="12" stroke="currentColor" stroke-width="2.2" fill="none"/>
                 <line x1="4"  y1="9"  x2="24" y2="9"  stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
                 <line x1="3"  y1="12" x2="25" y2="12" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
@@ -1323,12 +1349,12 @@
                 <circle cx="5" cy="31" r="3" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.8"/>
                 <path d="M3 29.5 Q5 31 7 29.5" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/>
               </svg>
-              <span style="font-size: 0.7333rem;font-weight:700;letter-spacing:.3px;" data-lang="pf_tennis">테니스</span>
+              <span data-lang="pf_tennis">테니스</span>
             </button>
 
             <!-- 배드민턴 -->
-            <button id="pf-tab-badminton" onclick="selectSportTab('badminton')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;color:var(--text-muted);">
-              <svg width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <button id="pf-tab-badminton" class="pf-sport-pill" onclick="selectSportTab('badminton')">
+              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <ellipse cx="13" cy="13" rx="10" ry="10" stroke="currentColor" stroke-width="2.2" fill="none"/>
                 <line x1="4" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
                 <line x1="4" y1="13" x2="22" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.6"/>
@@ -1342,12 +1368,12 @@
                 <line x1="5" y1="27.8" x2="5"  y2="21" stroke="currentColor" stroke-width="1" opacity="0.5"/>
                 <line x1="5" y1="27.8" x2="7"  y2="22" stroke="currentColor" stroke-width="1" opacity="0.5"/>
               </svg>
-              <span style="font-size: 0.7333rem;font-weight:700;letter-spacing:.3px;" data-lang="pf_badminton">배드민턴</span>
+              <span data-lang="pf_badminton">배드민턴</span>
             </button>
 
             <!-- 피클볼 -->
-            <button id="pf-tab-pickleball" onclick="selectSportTab('pickleball')" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:14px;border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;color:var(--text-muted);">
-              <svg width="32" height="32" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <button id="pf-tab-pickleball" class="pf-sport-pill" onclick="selectSportTab('pickleball')">
+              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="4" y="4" width="22" height="18" rx="5" stroke="currentColor" stroke-width="2.2" fill="none"/>
                 <line x1="4"  y1="9"  x2="26" y2="9"  stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
                 <line x1="4"  y1="13" x2="26" y2="13" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
@@ -1361,7 +1387,7 @@
                 <circle cx="31" cy="11" r="0.8" fill="currentColor" opacity="0.6"/>
                 <circle cx="30" cy="12" r="0.8" fill="currentColor" opacity="0.6"/>
               </svg>
-              <span style="font-size: 0.7333rem;font-weight:700;letter-spacing:.3px;" data-lang="pf_pickleball">피클볼</span>
+              <span data-lang="pf_pickleball">피클볼</span>
             </button>
 
           </div>
@@ -3935,6 +3961,8 @@ function renderStringBanner() {
   if (!banner) return;
 
   const p = state.profile || {};
+  const lang = localStorage.getItem('niji_language') || 'ko';
+  const isEn = lang === 'en';
 
   // D+일수 및 색상 계산 함수
   function calcDiff(dateStr) {
@@ -3947,9 +3975,18 @@ function renderStringBanner() {
   }
 
   function colorClass(d) { return d <= 30 ? 'green' : d <= 90 ? 'yellow' : 'red'; }
-  function colorIcon(d)  { return d <= 30 ? '🟢' : d <= 90 ? '🟡' : '🔴'; }
   function dayColor(cls) {
     return cls === 'green' ? '#4ade80' : cls === 'yellow' ? '#fbbf24' : '#f87171';
+  }
+  function statusLabel(cls) {
+    if (cls === 'green')  return isEn ? 'GOOD'    : '좋음';
+    if (cls === 'yellow') return isEn ? 'CAUTION' : '주의';
+    return isEn ? 'REPLACE' : '교체 필요';
+  }
+  // 교체 후 경과일을 0~100% 신선도로 환산 (0일=100%, 90일 이상=0%)
+  function freshnessPct(d) {
+    if (d == null) return null;
+    return Math.max(0, Math.min(100, Math.round(100 - (d / 90) * 100)));
   }
 
   const date1 = p.stringDate  || '';
@@ -3990,41 +4027,58 @@ function renderStringBanner() {
   const games1 = date1 ? countGamesAfter(date1, p.stringDateTime  || '', 'racket1') : 0;
   const games2 = date2 ? countGamesAfter(date2, p.stringDate2Time || '', 'racket2') : 0;
 
-  // 라켓 한 줄 생성: 라켓명 + D+일수 + 게임수
-  function racketRow(num, racket, diff, games) {
-    const hasData = racket || diff !== null;
+  // 라켓 한 줄 생성: 게이지 링 + 라켓/스트링 정보 + 상태뱃지
+  function racketRow(num, racket, string, tension, diff, games) {
+    const hasData = racket || string || tension || diff !== null;
     if (!hasData) return '';
     const name = racket || `${_t('pf_racket_name')} ${num}`;
     const cls  = diff !== null ? colorClass(diff) : 'none';
-    const dColor = diff !== null ? dayColor(cls) : 'var(--text-muted)';
-    const dot = cls === 'green' ? '#4ade80' : cls === 'yellow' ? '#fbbf24' : cls === 'red' ? '#f87171' : 'var(--text-muted)';
-    const diffLabel = diff !== null
-      ? `<span style="font-family:'Orbitron',sans-serif;font-size: 0.8rem;font-weight:900;color:${dColor};">D+${diff}</span>`
+    const dColor = diff !== null ? dayColor(cls) : 'var(--border)';
+    const pct = freshnessPct(diff);
+
+    // 메타 라인: 스트링 · 텐션
+    const metaParts = [string, tension].filter(Boolean);
+    const meta = metaParts.length ? escHtml(metaParts.join(' · ')) : (isEn ? 'No string info' : '스트링 정보 없음');
+
+    // 게이지 링 SVG (r=22, circumference≈138.2)
+    const R = 22, C = 2 * Math.PI * R;
+    const offset = pct !== null ? C - (C * pct / 100) : 0;
+    const ringStroke = pct !== null ? dColor : 'var(--border)';
+    const gauge = `
+      <div class="pf-gauge">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle cx="26" cy="26" r="${R}" fill="none" stroke="var(--surface2)" stroke-width="5"/>
+          ${pct !== null ? `<circle cx="26" cy="26" r="${R}" fill="none" stroke="${ringStroke}" stroke-width="5"
+            stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${offset}"/>` : ''}
+        </svg>
+        <div class="pf-gauge-pct">${pct !== null ? pct + '%' : '–'}</div>
+      </div>`;
+
+    const sideHtml = diff !== null
+      ? `<span class="pf-string-status ${cls}">${statusLabel(cls)}</span>
+         <div class="pf-string-games">D+${diff} · ${games}${_t('contest_games')}</div>`
       : `<span style="font-size: 0.6667rem;color:var(--text-muted);">${_t('pf_not_entered')}</span>`;
-    const gamesLabel = diff !== null
-      ? `<span style="font-size: 0.6667rem;color:var(--text-muted);margin-left:4px;">${games}${_t('contest_games')}</span>`
-      : '';
-    return `<div style="display:flex;align-items:center;gap:6px;padding:4px 0;">
-      <span style="width:6px;height:6px;border-radius:50%;background:${dot};flex-shrink:0;"></span>
-      <span style="font-size: 0.7333rem;font-weight:700;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">R${num} ${escHtml(name)}</span>
-      ${diffLabel}${gamesLabel}
+
+    return `<div class="pf-string-row">
+      ${gauge}
+      <div class="pf-string-body">
+        <div class="pf-string-name">R${num} ${escHtml(name)}</div>
+        <div class="pf-string-meta">${meta}</div>
+      </div>
+      <div class="pf-string-side">${sideHtml}</div>
     </div>`;
   }
 
-  const row1 = racketRow(1, racket1, diff1, games1);
-  const row2 = racketRow(2, racket2, diff2, games2);
+  const row1 = racketRow(1, racket1, string1, tension1, diff1, games1);
+  const row2 = racketRow(2, racket2, string2, tension2, diff2, games2);
   const hasAny = row1 || row2;
 
   if (!hasAny) {
-    banner.innerHTML = `<div style="font-size: 0.8rem;color:var(--text-muted);padding:8px 2px;">${_t('pf_no_racket')}</div>`;
+    banner.innerHTML = `<div style="font-size: 0.8rem;color:var(--text-muted);padding:4px 2px;">${_t('pf_no_racket')}</div>`;
     return;
   }
 
-  banner.innerHTML = `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;">
-      <div style="font-size: 0.6rem;font-weight:700;letter-spacing:1px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">🎾 String Status</div>
-      ${row1}${row2 ? (row1 ? `<div style="height:1px;background:var(--border);margin:3px 0;"></div>` : '') + row2 : ''}
-    </div>`;
+  banner.innerHTML = `${row1}${row2}`;
 
   // lastStringDate 동기화 (라켓1 교체일 기준 유지)
   if (date1) state.lastStringDate = date1;
@@ -9914,6 +9968,8 @@ const NIJI_DICT = {
   pf_default_name:         { ko: '선수',            en: 'Player' },
   pf_select_string:        { ko: '📋 과거 스트링 중 선택', en: '📋 Select from history' },
   pf_string_input_ph:      { ko: '직접 입력 또는 위에서 선택', en: 'Type or select above' },
+  pf_string_status_title:  { ko: '스트링 상태',     en: 'String Status' },
+  pf_player_info_title:    { ko: '플레이어 정보',   en: 'Player Info' },
 
   // 통계 탭 동적 렌더 텍스트
   stats_this_month:        { ko: '이번 달',         en: 'This Month' },
