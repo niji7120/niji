@@ -6450,6 +6450,39 @@ function renderTournamentSection() {
   switchContestTab(_contestTab);
 }
 
+// ===== 블루투스 셀카 리모컨 (볼륨 키 → 점수 연동) =====
+function sbInitRemoteControl() {
+  // 이전에 등록된 핸들러가 있으면 먼저 제거 (중복 방지)
+  if (window._sbVolumeHandler) {
+    document.removeEventListener('keydown', window._sbVolumeHandler, { capture: true });
+    window._sbVolumeHandler = null;
+  }
+
+  window._sbVolumeHandler = function(e) {
+    // 입력창(INPUT, TEXTAREA)에 포커스가 있을 때는 리모컨 작동 제외
+    var tag = document.activeElement ? document.activeElement.tagName : '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+    // 볼륨 올리기 = 1번 선수 점수, 볼륨 내리기 = 2번 선수 점수
+    if (e.code === 'VolumeUp' || e.key === 'VolumeUp' || e.keyCode === 175) {
+      e.preventDefault();
+      e.stopPropagation();
+      // 입력창 포커스 강제 해제
+      if (document.activeElement) document.activeElement.blur();
+      sbAddPoint(0);
+    } else if (e.code === 'VolumeDown' || e.key === 'VolumeDown' || e.keyCode === 174) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (document.activeElement) document.activeElement.blur();
+      sbAddPoint(1);
+    }
+  };
+
+  // capture: true → 브라우저보다 먼저 이벤트를 낚아챔
+  // passive: false → preventDefault() 사용 가능 (볼륨바 차단)
+  document.addEventListener('keydown', window._sbVolumeHandler, { capture: true, passive: false });
+}
+
 // ===== 스코어보드 전체화면 오버레이 =====
 function openScoreboardOverlay() {
   // 가로모드 강제 고정
@@ -6482,6 +6515,11 @@ function openScoreboardOverlay() {
 
   // 닫기 함수 전역 등록
   window._sbOverlayClose = function() {
+    // 블루투스 리모컨 이벤트 리스너 완전 해제 (스마트폰 볼륨 기능 복원)
+    if (window._sbVolumeHandler) {
+      document.removeEventListener('keydown', window._sbVolumeHandler, { capture: true });
+      window._sbVolumeHandler = null;
+    }
     // 가로모드 잠금 해제 (세로 자유 회전으로 복원)
     if (screen.orientation && screen.orientation.unlock) {
       screen.orientation.unlock();
@@ -6533,7 +6571,10 @@ function openScoreboardOverlay() {
   window._sbResizeHandler = applyLayout;
   window.addEventListener('resize', applyLayout);
 
-  setTimeout(function() { renderScoreboard(); }, 30);
+  setTimeout(function() {
+    renderScoreboard();
+    sbInitRemoteControl(); // 블루투스 리모컨 활성화
+  }, 30);
 }
 
 
@@ -10282,5 +10323,36 @@ function setLanguage(lang) {
     });
   }
 })();
+</script>
+
+<!-- 셀카 리모컨 점수 입력 기능 추가 스크립트 -->
+<script>
+  // 예시용 점수 변수 (현재 대시보드 구조에 맞게 연동 필요)
+  let teamAScore = 0;
+  let teamBScore = 0;
+
+  // 키보드 입력(리모컨 신호)을 감지하는 이벤트 리스너
+  window.addEventListener('keydown', function(event) {
+    
+    // 1. 볼륨 업 버튼이 눌렸을 때 (Team A 점수 증가로 가정)
+    if (event.key === 'AudioVolumeUp' || event.keyCode === 175) {
+      event.preventDefault(); // 스마트폰 기본 볼륨 조절 창이 뜨는 것을 막습니다.
+      
+      teamAScore++;
+      alert('A팀 점수 증가: ' + teamAScore); // 테스트용 알림 (실제 적용시 화면의 점수 텍스트를 바꾸도록 수정)
+      
+      // TODO: 현재 화면의 Score Input 값을 업데이트하는 함수 호출 필요
+    }
+    
+    // 2. 볼륨 다운 버튼이 눌렸을 때 (Team B 점수 증가로 가정)
+    if (event.key === 'AudioVolumeDown' || event.keyCode === 174) {
+      event.preventDefault(); // 스마트폰 기본 볼륨 조절 창이 뜨는 것을 막습니다.
+      
+      teamBScore++;
+      alert('B팀 점수 증가: ' + teamBScore); // 테스트용 알림
+      
+      // TODO: 현재 화면의 Score Input 값을 업데이트하는 함수 호출 필요
+    }
+  }, { passive: false }); // preventDefault가 잘 작동하도록 설정
 </script>
 </html>
