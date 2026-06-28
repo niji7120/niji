@@ -6502,6 +6502,13 @@ function sbInitRemoteControl() {
 
 // ===== 스코어보드 전체화면 오버레이 =====
 function openScoreboardOverlay() {
+  // 화면 꺼짐 방지 (Wake Lock)
+  if ('wakeLock' in navigator) {
+    navigator.wakeLock.request('screen').then(function(lock) {
+      window._sbWakeLock = lock;
+    }).catch(function(){});
+  }
+
   // 가로모드 강제 고정
   if (screen.orientation && screen.orientation.lock) {
     screen.orientation.lock('landscape').catch(function(){});
@@ -6538,6 +6545,11 @@ function openScoreboardOverlay() {
       window._sbVolumeHandler = null;
     }
     // 가로모드 잠금 해제 (세로 자유 회전으로 복원)
+    // 화면 꺼짐 방지 해제
+    if (window._sbWakeLock) {
+      window._sbWakeLock.release().catch(function(){});
+      window._sbWakeLock = null;
+    }
     if (screen.orientation && screen.orientation.unlock) {
       screen.orientation.unlock();
     }
