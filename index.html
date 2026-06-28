@@ -1666,14 +1666,14 @@
         <div id="playerFormBody" style="display:none;">
           <div class="card" style="margin-top:0;border-radius:0 0 12px 12px;">
             <div class="form-group" style="margin-bottom:8px;">
-              <input class="form-input" id="newPlayerName" placeholder="이름 (필수)" onkeydown="if(event.key==='Enter')addPlayer()" style="font-size: 1.0667rem;">
+              <input class="form-input" id="newPlayerName" placeholder="이름 (필수)" onkeydown="if(event.key==='Enter'){document.getElementById('newPlayerGrade').focus();document.getElementById('newPlayerGrade').select();}" style="font-size: 1.0667rem;">
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
               <select class="form-select" id="newPlayerGender">
                 <option value="" data-lang="players_gender_lbl">성별</option>
                 <option data-lang="players_gender_m">남자</option><option data-lang="players_gender_f">여자</option>
               </select>
-              <input class="form-input" id="newPlayerGrade" placeholder="등급 (예: 14)" inputmode="numeric" style="font-size: 1.0667rem;">
+              <input class="form-input" id="newPlayerGrade" placeholder="등급 (예: 14)" inputmode="numeric" onkeydown="if(event.key==='Enter')addPlayer()" style="font-size: 1.0667rem;">
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
               <select class="form-select" id="newPlayerAge">
@@ -1741,7 +1741,7 @@
       <div class="card" style="margin-bottom:14px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
           <span style="background:var(--accent);color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET 1</span>
-          <input class="form-input" id="str-r1-name" placeholder="예) 윌슨 블레이드 98" style="flex:1;font-size:0.88rem;padding:6px 10px;" oninput="saveStrR1Field('racket',this.value)">
+          <input class="form-input" id="str-r1-name" placeholder="예) 윌슨 블레이드 98" style="flex:1;font-size:0.88rem;padding:6px 10px;" oninput="saveStrR1Field('racket',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-string');if(n){n.focus();n.select();}}">
         </div>
         <!-- 알림 배너 -->
         <div id="stringingAlert1" style="margin-bottom:10px;"></div>
@@ -1749,11 +1749,11 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
           <div>
             <label class="form-label" style="font-size:0.72rem;">스트링명</label>
-            <input class="form-input" id="str1-string" placeholder="예) VS Touch 130" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR1Field('string',this.value)">
+            <input class="form-input" id="str1-string" placeholder="예) VS Touch 130" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR1Field('string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-tension');if(n){n.focus();n.select();}}">
           </div>
           <div>
             <label class="form-label" style="font-size:0.72rem;">텐션 (lb)</label>
-            <input class="form-input" id="str1-tension" placeholder="예) 52" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR1Field('tension',this.value)">
+            <input class="form-input" id="str1-tension" placeholder="예) 52" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR1Field('tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-date');if(n)n.focus();}">
           </div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
@@ -1777,8 +1777,8 @@
           <div class="card-title" style="font-size:0.82rem;margin-bottom:8px;">📋 교체 이력 (라켓 1)</div>
           <div id="stringingHistoryList1"></div>
           <div class="stringing-add-row" style="margin-top:8px;">
-            <input class="form-input" id="newStringName1" placeholder="스트링명·텐션 입력" style="font-size:0.85rem;padding:7px 10px;">
-            <input type="date" class="form-input" id="newStringDate1" style="max-width:130px;font-size:0.85rem;padding:7px 10px;">
+            <input class="form-input" id="newStringName1" placeholder="스트링명·텐션 입력" style="font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter'){document.getElementById('newStringDate1').focus();}">
+            <input type="date" class="form-input" id="newStringDate1" style="max-width:130px;font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter')addStringingHistory(1)">
             <button class="btn btn-primary btn-sm" onclick="addStringingHistory(1)" style="font-size:0.8rem;">+ 추가</button>
           </div>
         </div>
@@ -1788,7 +1788,7 @@
       <div class="card" style="margin-bottom:14px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
           <span style="background:var(--accent2);color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET 2</span>
-          <input class="form-input" id="str-r2-name" placeholder="예) 요넥스 VCORE 98" style="flex:1;font-size:0.88rem;padding:6px 10px;" oninput="saveStrR2Field('racket2',this.value)">
+          <input class="form-input" id="str-r2-name" placeholder="예) 요넥스 VCORE 98" style="flex:1;font-size:0.88rem;padding:6px 10px;" oninput="saveStrR2Field('racket2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-string');if(n){n.focus();n.select();}}">
         </div>
         <!-- 알림 배너 -->
         <div id="stringingAlert2" style="margin-bottom:10px;"></div>
@@ -1796,11 +1796,11 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
           <div>
             <label class="form-label" style="font-size:0.72rem;">스트링명</label>
-            <input class="form-input" id="str2-string" placeholder="예) Yonex BG65" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR2Field('string2',this.value)">
+            <input class="form-input" id="str2-string" placeholder="예) Yonex BG65" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR2Field('string2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-tension');if(n){n.focus();n.select();}}">
           </div>
           <div>
             <label class="form-label" style="font-size:0.72rem;">텐션 (lb)</label>
-            <input class="form-input" id="str2-tension" placeholder="예) 24" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR2Field('tension2',this.value)">
+            <input class="form-input" id="str2-tension" placeholder="예) 24" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR2Field('tension2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-date');if(n)n.focus();}">
           </div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
@@ -1824,8 +1824,8 @@
           <div class="card-title" style="font-size:0.82rem;margin-bottom:8px;">📋 교체 이력 (라켓 2)</div>
           <div id="stringingHistoryList2"></div>
           <div class="stringing-add-row" style="margin-top:8px;">
-            <input class="form-input" id="newStringName2" placeholder="스트링명·텐션 입력" style="font-size:0.85rem;padding:7px 10px;">
-            <input type="date" class="form-input" id="newStringDate2" style="max-width:130px;font-size:0.85rem;padding:7px 10px;">
+            <input class="form-input" id="newStringName2" placeholder="스트링명·텐션 입력" style="font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter'){document.getElementById('newStringDate2').focus();}">
+            <input type="date" class="form-input" id="newStringDate2" style="max-width:130px;font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter')addStringingHistory(2)">
             <button class="btn btn-primary btn-sm" onclick="addStringingHistory(2)" style="font-size:0.8rem;">+ 추가</button>
           </div>
         </div>
@@ -4424,6 +4424,23 @@ function selectPlayerAC(inputId, listId, name) {
   const list = document.getElementById(listId);
   if (inp) inp.value = name;
   if (list) list.style.display = 'none';
+  // 자동완성 선택 후 → 다음 입력 필드로 자동 이동
+  setTimeout(function() {
+    var fmt = (document.getElementById('matchFormat') || {}).value || '';
+    var flow = fmt === 'doubles'
+      ? ['matchPartner','matchOpponent1','matchOpponent2','myScore','oppScore','myTiebreak','oppTiebreak','matchMemo']
+      : ['matchOpponent','myScore','oppScore','myTiebreak','oppTiebreak','matchMemo'];
+    var idx = flow.indexOf(inputId);
+    if (idx < 0) return;
+    for (var i = idx + 1; i < flow.length; i++) {
+      var nextEl = document.getElementById(flow[i]);
+      if (nextEl && nextEl.offsetParent !== null) {
+        nextEl.focus();
+        if (nextEl.select) nextEl.select();
+        break;
+      }
+    }
+  }, 100);
 }
 document.addEventListener('click', function(e) {
   ['ac-partner','ac-opponent','ac-opponent1','ac-opponent2'].forEach(id => {
@@ -10272,6 +10289,96 @@ function setLanguage(lang) {
 
   var savedLang = localStorage.getItem('niji_language') || 'ko';
   setLanguage(savedLang);
+})();
+
+// ── 자동 커서 이동 (Tab/Enter 키 또는 숫자 입력 후 자동 이동) ────────────
+(function autoNextInput() {
+
+  // 경기 입력 폼 순서 정의
+  var MATCH_FLOW_SINGLES = ['matchOpponent', 'myScore', 'oppScore', 'myTiebreak', 'oppTiebreak', 'matchMemo'];
+  var MATCH_FLOW_DOUBLES = ['matchPartner', 'matchOpponent1', 'matchOpponent2', 'myScore', 'oppScore', 'myTiebreak', 'oppTiebreak', 'matchMemo'];
+
+  // 스트링 탭 입력 순서
+  var STRING_FLOW_R1 = ['str-r1-name', 'str1-string', 'str1-tension', 'str1-date'];
+  var STRING_FLOW_R2 = ['str-r2-name', 'str2-string', 'str2-tension', 'str2-date'];
+
+  // 다음 입력 필드로 포커스 이동
+  function focusNext(currentId, flowList) {
+    var idx = flowList.indexOf(currentId);
+    if (idx < 0) return false;
+    for (var i = idx + 1; i < flowList.length; i++) {
+      var nextEl = document.getElementById(flowList[i]);
+      if (nextEl && nextEl.offsetParent !== null) { // 보이는 필드만
+        setTimeout(function(el) { el.focus(); el.select && el.select(); }, 80, nextEl);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // 현재 입력 필드가 속한 플로우 반환
+  function getFlow(id) {
+    var fmt = (document.getElementById('matchFormat') || {}).value || '';
+    if (fmt === 'doubles' && MATCH_FLOW_DOUBLES.indexOf(id) >= 0) return MATCH_FLOW_DOUBLES;
+    if (MATCH_FLOW_SINGLES.indexOf(id) >= 0) return MATCH_FLOW_SINGLES;
+    if (STRING_FLOW_R1.indexOf(id) >= 0) return STRING_FLOW_R1;
+    if (STRING_FLOW_R2.indexOf(id) >= 0) return STRING_FLOW_R2;
+    return null;
+  }
+
+  document.addEventListener('keydown', function(e) {
+    var el = document.activeElement;
+    if (!el) return;
+    var id = el.id;
+    var tag = el.tagName;
+
+    // Enter 키: textarea 제외, 자동완성 목록이 열려있으면 제외
+    if (e.key === 'Enter' && tag !== 'TEXTAREA') {
+      var ac = document.querySelector('.player-ac-list[style*="block"]');
+      if (ac) return; // 자동완성 사용 중이면 Enter는 자동완성 선택으로 처리
+      var flow = getFlow(id);
+      if (flow) {
+        var moved = focusNext(id, flow);
+        if (moved) e.preventDefault();
+      }
+    }
+  }, true);
+
+  // 숫자 입력 필드: 2자리 입력 시 자동 이동 (스코어 칸)
+  var SCORE_IDS = ['myScore', 'oppScore', 'myTiebreak', 'oppTiebreak'];
+  document.addEventListener('input', function(e) {
+    var el = e.target;
+    if (!el || !el.id) return;
+    if (SCORE_IDS.indexOf(el.id) < 0) return;
+    var val = el.value.replace(/[^0-9]/g, '');
+    if (val.length >= 2) {
+      var flow = getFlow(el.id);
+      if (flow) focusNext(el.id, flow);
+    }
+  }, true);
+
+  // 선수 자동완성 선택 후 → 다음 필드로 이동
+  // showPlayerAC 함수가 정의된 후 패치
+  var _origAcSelect = window.selectPlayerAC;
+  function _patchAcSelect() {
+    if (typeof window.selectPlayerAC === 'function' && window.selectPlayerAC !== _patchedAcSelect) {
+      window._origSelectPlayerAC = window.selectPlayerAC;
+      window.selectPlayerAC = _patchedAcSelect;
+    }
+  }
+  function _patchedAcSelect(inputEl, name) {
+    window._origSelectPlayerAC(inputEl, name);
+    var id = inputEl.id || (inputEl.target && inputEl.target.id);
+    if (!id && inputEl.nodeType === 1) id = inputEl.id;
+    setTimeout(function() {
+      var flow = getFlow(id);
+      if (flow) focusNext(id, flow);
+    }, 120);
+  }
+  // DOM 로드 완료 후 패치 시도 (함수가 나중에 정의됨)
+  setTimeout(_patchAcSelect, 1000);
+  setTimeout(_patchAcSelect, 2000);
+
 })();
 
 // ── 모바일 키보드 대응: 입력창 포커스 시 스크롤 허용 ──────────
