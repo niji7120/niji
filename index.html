@@ -150,6 +150,16 @@
   /* ===== APP SHELL ===== */
   #app { display: flex; flex-direction: column; height: 100%; height: 100dvh; max-width: 480px; margin: 0 auto; position: relative; }
 
+  /* 태블릿 대응: 768px 이상에서는 더 넓게 표시 */
+  @media (min-width: 768px) {
+    #app { max-width: 640px; }
+    html { font-size: var(--app-font-size) !important; }
+    body { font-size: var(--app-font-size) !important; }
+  }
+  @media (min-width: 1024px) {
+    #app { max-width: 760px; }
+  }
+
   /* ===== TOP BAR ===== */
   .topbar {
     display: flex; align-items: center; justify-content: space-between;
@@ -1426,12 +1436,12 @@
                 <div class="form-label" style="margin-bottom:4px;" data-lang="match_score_lbl">스코어 (선택)</div>
                 <div style="display:flex;align-items:center;gap:4px;">
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
-                    <input type="number" class="form-input" id="myScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
+                    <input type="number" class="form-input" id="myScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
                     <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_me_label">나</span>
                   </div>
                   <span style="font-size: 0.7333rem;color:var(--text-muted);font-weight:700;">:</span>
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
-                    <input type="number" class="form-input" id="oppScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
+                    <input type="number" class="form-input" id="oppScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
                     <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_opp_label">상대</span>
                   </div>
                 </div>
@@ -1440,12 +1450,12 @@
                 <div class="form-label" style="margin-bottom:4px;" data-lang="match_tiebreak_lbl">타이브레이크 (선택)</div>
                 <div style="display:flex;align-items:center;gap:4px;">
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
-                    <input type="number" class="form-input" id="myTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
+                    <input type="number" class="form-input" id="myTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
                     <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_me_label">나</span>
                   </div>
                   <span style="font-size: 0.7333rem;color:var(--text-muted);font-weight:700;">:</span>
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
-                    <input type="number" class="form-input" id="oppTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
+                    <input type="number" class="form-input" id="oppTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
                     <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_opp_label">상대</span>
                   </div>
                 </div>
@@ -2354,6 +2364,50 @@
 <div class="toast" id="toast"></div>
 
 <script>
+/* ════════════════════════════════════════════════════════════════
+   📍 NIJI STRING 코드 지도 (CODE MAP) — 여기서 줄 번호 찾고 Ctrl+F로 이동
+   ════════════════════════════════════════════════════════════════
+   기능을 고치거나 추가할 때, 아래에서 해당 구역 이름을 찾아
+   그 줄번호 근처로 가면 빠르게 찾을 수 있어요.
+   (※ 코드를 수정하면 줄번호가 달라질 수 있으니, 키워드로 Ctrl+F 검색 추천)
+
+   [상태/저장]
+     - STATE (앱 전체 데이터 구조)              ......... state = {...}
+     - STORAGE (저장/불러오기, Firebase 동기화)  ......... save(), load()
+     - 로그인 (구글/이메일 로그인)               ......... signInWithGoogle 등
+
+   [경기 기록 탭]
+     - MATCH (경기 저장/수정/삭제)               ......... saveMatch(), editMatch()
+     - 종목별 승패 자동판정                      ......... autoDetectResult()
+     - 초성 자동완성 (상대/파트너 이름 입력)      ......... showPlayerAC()
+
+   [통계 탭]
+     - STATS (통계 계산 전체)                    ......... renderStats()
+     - 상대전적 / 파트너궁합 / 단식상성           ......... renderOpponentStats() 등
+
+   [선수 탭]
+     - 선수 등록/수정/삭제                       ......... addPlayer(), deletePlayer()
+     - CLUBS (클럽 관리)                         ......... addClub(), deleteClub()
+     - 선수 상세 페이지                          ......... showPlayerDetail()
+
+   [프로필 탭]
+     - PROFILE (프로필 정보 저장/표시)           ......... renderProfile()
+     - 스트링 관리 (라켓1/2, 교체 알림)          ......... renderStringing()
+
+   [대회 탭]
+     - 한울방식 (순환 복식 대회)                 ......... genHanul(), tvCreate()
+     - 토너먼트 (대진표)                         ......... tnCreate(), tnBuildBracket()
+     - 스코어보드 (실시간 점수판, 전체화면)       ......... openScoreboardOverlay()
+     - 전술판                                    ......... (showTacticsBoard 관련)
+
+   [공유 탭]
+     - 경기결과 공유 / 데이터 백업·복원          ......... exportData(), importData()
+
+   [공통 설정]
+     - 글자 크기 / 언어(한국어·영어) 전환        ......... setFontSize(), setLanguage()
+     - 자동 커서 이동 (입력폼 다음칸 이동)       ......... 파일 맨 아래쪽 (autoNextInput)
+   ════════════════════════════════════════════════════════════════ */
+
 // ===== STATE =====
 let state = {
   profile: { name: '', age: '', career: '', hand: '', style: '', photo: '' },
@@ -2554,6 +2608,7 @@ function load() {
   });
 }
 
+// ===== 로그인 (구글 + 이메일) =====
 // 로그인 화면 (구글 + 이메일)
 // [수정] iOS Safari 환경 감지 헬퍼 - 쿠키/스토리지 제한 기기 식별용
 function _isIOSSafari() {
@@ -4165,6 +4220,66 @@ function setResult(r) {
   document.getElementById('winBtn').className = 'winner-btn' + (r === 'win' ? ' selected-win' : '');
   document.getElementById('loseBtn').className = 'winner-btn' + (r === 'lose' ? ' selected-lose' : '');
 }
+
+// ===== 종목별 스코어로 승/패 자동 판정 =====
+function autoDetectResult() {
+  const myScoreEl = document.getElementById('myScore');
+  const oppScoreEl = document.getElementById('oppScore');
+  const myTbEl = document.getElementById('myTiebreak');
+  const oppTbEl = document.getElementById('oppTiebreak');
+  if (!myScoreEl || !oppScoreEl) return;
+
+  const myScore = myScoreEl.value.trim();
+  const oppScore = oppScoreEl.value.trim();
+  // 둘 다 입력되지 않으면 판정 안 함 (사용자가 직접 버튼으로 선택)
+  if (myScore === '' || oppScore === '') return;
+
+  const my = Number(myScore);
+  const opp = Number(oppScore);
+  if (isNaN(my) || isNaN(opp)) return;
+
+  const myTb = myTbEl ? Number(myTbEl.value) : NaN;
+  const oppTb = oppTbEl ? Number(oppTbEl.value) : NaN;
+  const hasTiebreak = !isNaN(myTb) && !isNaN(oppTb) && myTbEl.value.trim() !== '' && oppTbEl.value.trim() !== '';
+
+  const sport = state.sportType || 'tennis';
+  let result = null;
+
+  if (sport === 'tennis') {
+    // 테니스(동호인 룰): 5게임씩 동률이면 타이브레이크를 치고,
+    // 이긴 쪽 게임 스코어는 6:5로 기록합니다 (예: 6:5, 타이브레이크 7:4).
+    // 즉 게임 스코어 자체가 이미 승패를 나타내므로 큰 쪽이 승리.
+    if (my > opp) result = 'win';
+    else if (opp > my) result = 'lose';
+    else if (my === opp && hasTiebreak) {
+      // 혹시 5:5처럼 동률로 입력된 경우에만 타이브레이크로 보정 판정
+      // (정상적인 동호인 표기는 6:5이므로 이 경우는 거의 발생하지 않음)
+      if (myTb > oppTb) result = 'win';
+      else if (oppTb > myTb) result = 'lose';
+    }
+  } else if (sport === 'badminton') {
+    // 배드민턴: 21점 라리포인트, 듀스 시 2점차 승리 (최대 30점)
+    if (my >= 21 || opp >= 21) {
+      if (my >= 30) result = 'win';
+      else if (opp >= 30) result = 'lose';
+      else if (my - opp >= 2 && my >= 21) result = 'win';
+      else if (opp - my >= 2 && opp >= 21) result = 'lose';
+    }
+  } else if (sport === 'pickleball') {
+    // 피클볼: 11점(또는 15점) 게임, 최소 2점차로 승리
+    const targets = [11, 15, 21];
+    const reached = targets.some(t => my >= t || opp >= t);
+    if (reached) {
+      if (my > opp && my - opp >= 2) result = 'win';
+      else if (opp > my && opp - my >= 2) result = 'lose';
+      else if (my > opp) result = 'win'; // 점수 캡 초과 등 예외 상황 보정
+      else if (opp > my) result = 'lose';
+    }
+  }
+
+  if (result) setResult(result);
+}
+
 function saveMatch() {
   const date = document.getElementById('matchDate').value;
   const format = document.getElementById('matchFormat').value;
@@ -4440,7 +4555,7 @@ function selectPlayerAC(inputId, listId, name) {
         break;
       }
     }
-  }, 100);
+  }, 150);
 }
 document.addEventListener('click', function(e) {
   ['ac-partner','ac-opponent','ac-opponent1','ac-opponent2'].forEach(id => {
@@ -6502,13 +6617,6 @@ function sbInitRemoteControl() {
 
 // ===== 스코어보드 전체화면 오버레이 =====
 function openScoreboardOverlay() {
-  // 화면 꺼짐 방지 (Wake Lock)
-  if ('wakeLock' in navigator) {
-    navigator.wakeLock.request('screen').then(function(lock) {
-      window._sbWakeLock = lock;
-    }).catch(function(){});
-  }
-
   // 가로모드 강제 고정
   if (screen.orientation && screen.orientation.lock) {
     screen.orientation.lock('landscape').catch(function(){});
@@ -6545,11 +6653,6 @@ function openScoreboardOverlay() {
       window._sbVolumeHandler = null;
     }
     // 가로모드 잠금 해제 (세로 자유 회전으로 복원)
-    // 화면 꺼짐 방지 해제
-    if (window._sbWakeLock) {
-      window._sbWakeLock.release().catch(function(){});
-      window._sbWakeLock = null;
-    }
     if (screen.orientation && screen.orientation.unlock) {
       screen.orientation.unlock();
     }
@@ -10209,6 +10312,9 @@ const NIJI_DICT = {
 function setFontSize(px) {
   // html 태그의 font-size CSS 변수를 바꿈 → rem 단위 전체 비율 변경
   document.documentElement.style.setProperty('--app-font-size', px + 'px');
+  // 태블릿 등 다양한 기기에서도 확실히 적용되도록 직접 설정
+  document.documentElement.style.fontSize = px + 'px';
+  document.body.style.fontSize = px + 'px';
   localStorage.setItem('niji_font_size', String(px));
 
   // 버튼 강조 (선택된 버튼 = 보라색, 나머지 = 기본)
@@ -10369,27 +10475,7 @@ function setLanguage(lang) {
     }
   }, true);
 
-  // 선수 자동완성 선택 후 → 다음 필드로 이동
-  // showPlayerAC 함수가 정의된 후 패치
-  var _origAcSelect = window.selectPlayerAC;
-  function _patchAcSelect() {
-    if (typeof window.selectPlayerAC === 'function' && window.selectPlayerAC !== _patchedAcSelect) {
-      window._origSelectPlayerAC = window.selectPlayerAC;
-      window.selectPlayerAC = _patchedAcSelect;
-    }
-  }
-  function _patchedAcSelect(inputEl, name) {
-    window._origSelectPlayerAC(inputEl, name);
-    var id = inputEl.id || (inputEl.target && inputEl.target.id);
-    if (!id && inputEl.nodeType === 1) id = inputEl.id;
-    setTimeout(function() {
-      var flow = getFlow(id);
-      if (flow) focusNext(id, flow);
-    }, 120);
-  }
-  // DOM 로드 완료 후 패치 시도 (함수가 나중에 정의됨)
-  setTimeout(_patchAcSelect, 1000);
-  setTimeout(_patchAcSelect, 2000);
+  // selectPlayerAC 함수 내부에서 직접 다음 필드로 이동하므로 별도 패치 불필요
 
 })();
 
