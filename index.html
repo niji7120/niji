@@ -2322,7 +2322,7 @@
         </div>
         <div class="manual-items">
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_1"><b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_2"><b>스코어보드가 안 보여요</b> — 대회탭에서 스코어보드 영역을 탭하면 세로 화면 그대로 전체화면 점수판이 열립니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_2"><b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 '화면을 가로로 돌려주세요' 안내가 나와요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_3"><b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_4"><b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_5"><b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다</span></div>
@@ -6617,9 +6617,9 @@ function sbInitRemoteControl() {
 
 // ===== 스코어보드 전체화면 오버레이 =====
 function openScoreboardOverlay() {
-  // 세로모드 고정 (스코어보드를 세로 버전으로 표시)
+  // 가로모드 강제 고정 (지원하는 기기에서는 OS 레벨로도 시도)
   if (screen.orientation && screen.orientation.lock) {
-    screen.orientation.lock('portrait').catch(function(){});
+    screen.orientation.lock('landscape').catch(function(){});
   }
 
   // 기존 오버레이 + 이벤트 완전 제거
@@ -6627,6 +6627,7 @@ function openScoreboardOverlay() {
   if (old) old.remove();
   if (window._sbResizeHandler) {
     window.removeEventListener('resize', window._sbResizeHandler);
+    window.removeEventListener('orientationchange', window._sbResizeHandler);
     window._sbResizeHandler = null;
   }
 
@@ -6652,12 +6653,13 @@ function openScoreboardOverlay() {
       document.removeEventListener('keydown', window._sbVolumeHandler, { capture: true });
       window._sbVolumeHandler = null;
     }
-    // 화면 잠금 해제 (자유 회전으로 복원)
+    // 가로모드 잠금 해제 (세로 자유 회전으로 복원)
     if (screen.orientation && screen.orientation.unlock) {
       screen.orientation.unlock();
     }
     if (window._sbResizeHandler) {
       window.removeEventListener('resize', window._sbResizeHandler);
+      window.removeEventListener('orientationchange', window._sbResizeHandler);
       window._sbResizeHandler = null;
     }
     // 입력 팝업도 정리
@@ -6675,21 +6677,37 @@ function openScoreboardOverlay() {
   overlay.appendChild(inner);
   document.body.appendChild(overlay);
 
-  // 항상 화면 방향 그대로 표시 (세로 버전) - 회전 처리 없음
+  // 가로/세로 자동 감지 → 세로이면 JS로 90도 회전해서 강제 가로 표시
   function applyLayout() {
     var W = window.innerWidth;
     var H = window.innerHeight;
+    var isPortrait = H > W;
     overlay.style.display = 'block';
-    inner.style.width = W + 'px';
-    inner.style.height = H + 'px';
-    inner.style.top = '0px';
-    inner.style.left = '0px';
-    inner.style.transform = 'none';
+    if (isPortrait) {
+      // 세로 모드: 화면을 90도 돌려서 가로처럼 보이게
+      inner.style.width = H + 'px';
+      inner.style.height = W + 'px';
+      inner.style.top = ((H - W) / 2) + 'px';
+      inner.style.left = (-(H - W) / 2) + 'px';
+      inner.style.transform = 'rotate(90deg)';
+      inner.style.transformOrigin = 'center center';
+    } else {
+      // 가로 모드: 그대로
+      inner.style.width = W + 'px';
+      inner.style.height = H + 'px';
+      inner.style.top = '0px';
+      inner.style.left = '0px';
+      inner.style.transform = 'none';
+    }
   }
 
   applyLayout();
   window._sbResizeHandler = applyLayout;
   window.addEventListener('resize', applyLayout);
+  window.addEventListener('orientationchange', applyLayout);
+  // 일부 기기는 오버레이가 뜬 직후 한 박자 늦게 실제 화면 크기가 갱신되므로 재확인
+  setTimeout(applyLayout, 150);
+  setTimeout(applyLayout, 400);
 
   setTimeout(function() {
     renderScoreboard();
@@ -7012,22 +7030,11 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
   var popup = document.createElement('div');
   popup.id = 'sb-input-popup';
 
-  // 화면이 JS로 90도 회전되어 있는 경우(세로 기기), 팝업은 기기의 실제 방향(세로)에 맞춰
-  // 회전 없이 표시해야 키보드와 화면 방향이 일치함.
-  var inner = document.getElementById('sb-overlay-inner');
-  var isRotated = inner && inner.style.transform && inner.style.transform.indexOf('rotate') !== -1;
-
-  if (isRotated) {
-    // body 기준, 회전 없이 화면 전체를 덮는 세로 레이아웃 팝업
-    popup.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;align-items:flex-start;justify-content:center;padding-top:6%;background:rgba(0,0,0,0.82);';
-    document.body.appendChild(popup);
-  } else {
-    // 가로 기기: 기존처럼 회전된 콘텐츠 안에 부착
-    var sbContent = document.getElementById('sb-score-content');
-    if (!sbContent) return;
-    popup.style.cssText = 'position:absolute;inset:0;z-index:99999;display:flex;align-items:flex-start;justify-content:center;padding-top:4%;background:rgba(0,0,0,0.82);';
-    sbContent.appendChild(popup);
-  }
+  // 입력 팝업도 스코어보드와 동일하게 항상 가로 방향(회전된 콘텐츠 내부)에 부착
+  var sbContent = document.getElementById('sb-score-content');
+  if (!sbContent) return;
+  popup.style.cssText = 'position:absolute;inset:0;z-index:99999;display:flex;align-items:flex-start;justify-content:center;padding-top:4%;background:rgba(0,0,0,0.82);';
+  sbContent.appendChild(popup);
 
   // 팝업 박스
   var box = document.createElement('div');
@@ -10174,7 +10181,7 @@ const NIJI_DICT = {
   manual_s5_6: { ko: '준결승 패자는 자동으로 <b>3·4위전</b>에 배치됩니다', en: 'Semifinal losers are automatically placed in the <b>3rd place match</b>' },
   manual_s5_7: { ko: '선수 탭에서 등록한 선수를 바로 불러오거나, 직접 이름을 입력할 수 있어요', en: 'Import players from the Players tab, or type names directly' },
   manual_s5_8: { ko: '대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다', en: 'Scores entered in tournaments are <b>automatically saved to match records</b>' },
-  manual_s5_9: { ko: '<b>📊 스코어보드</b> — 실제 경기 진행 중 실시간 점수판이에요. <b>대회탭에서 스코어보드를 탭하면</b> 세로 화면 그대로 대형 점수판이 열려요', en: '<b>📊 Scoreboard</b> — a live scoring display for matches in progress. <b>Tap the scoreboard</b> to open it in portrait full-screen' },
+  manual_s5_9: { ko: '<b>📊 스코어보드</b> — 실제 경기 진행 중 실시간 점수판이에요. <b>폰을 가로로 돌리면</b> 대형 점수 화면이 열려요', en: '<b>📊 Scoreboard</b> — a live scoring display for matches in progress. <b>Rotate your phone to landscape</b> for the full-screen scoreboard' },
   manual_s5_10: { ko: '스코어보드에서 <b>+POINT</b>로 점수 추가, <b>ACE</b>·<b>FAULT(더블폴트)</b> 버튼으로 특수 상황 입력, <b>↩ UNDO</b>로 되돌리기 가능해요', en: 'On the scoreboard: tap <b>+POINT</b> to score, <b>ACE</b>·<b>FAULT (double fault)</b> for special situations, and <b>↩ UNDO</b> to revert' },
   manual_s5_11: { ko: '40-40 상황에서 자동으로 <b>DEUCE → AD</b> 처리되며, <b>🔀 타이브레이크</b> 버튼으로 타이브레이크를 시작할 수 있어요', en: 'At 40-40, <b>DEUCE → AD</b> is handled automatically. Use the <b>🔀 Tiebreak</b> button to start a tiebreak' },
   manual_s5_12: { ko: '하단 <b>SETUP 탭</b>에서 선수 이름과 경기 제목을 직접 입력할 수 있어요', en: 'Enter player names and match title in the <b>SETUP tab</b> at the bottom' },
@@ -10215,7 +10222,7 @@ const NIJI_DICT = {
   // 9. 자주 묻는 질문
   manual_s9_title: { ko: '9. 자주 묻는 질문', en: '9. FAQ' },
   manual_s9_1: { ko: '<b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요', en: '<b>Matches not showing in stats?</b> — Check that the correct sport (🎾 Tennis, etc.) is selected in your profile. Stats only show for the current sport' },
-  manual_s9_2: { ko: '<b>스코어보드가 안 보여요</b> — 대회탭에서 스코어보드 영역을 탭하면 세로 화면 그대로 전체화면 점수판이 열립니다', en: '<b>Scoreboard not showing?</b> — Tap the scoreboard area in the Competition tab to open it full-screen in portrait' },
+  manual_s9_2: { ko: '<b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 \'화면을 가로로 돌려주세요\' 안내가 나와요', en: '<b>Scoreboard not showing?</b> — The scoreboard requires <b>landscape mode</b>. In portrait, a "Please rotate" message appears' },
   manual_s9_3: { ko: '<b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요', en: '<b>App not updating?</b> — Tap Share tab → Clear Storage, or on iPhone Safari go to Settings → Clear History and Website Data' },
   manual_s9_4: { ko: '<b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요', en: '<b>App running slowly?</b> — Tap Share tab → Clear Storage to improve performance' },
   manual_s9_5: { ko: '<b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다', en: '<b>Data disappeared?</b> — Sign out and log back in with the same Google account to restore your data' },
