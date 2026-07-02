@@ -4879,10 +4879,12 @@ function updateSportType() {
 
 function getRolling12MonthsCutoff() {
   const now = new Date(new Date().getTime() + 9*60*60*1000); // KST
-  const y = now.getFullYear();
-  const m = now.getMonth(); // 0-based
-  // 12개월 전 같은 날
-  const cutoff = new Date(y - 1, m, now.getDate());
+  // UTC 게터 사용: 기기 시간대와 무관하게 항상 정확한 KST 날짜를 읽음
+  const y = now.getUTCFullYear();
+  const m = now.getUTCMonth(); // 0-based
+  const d = now.getUTCDate();
+  // 12개월 전 같은 날 (UTC 기준으로 계산해야 시간대 영향을 받지 않음)
+  const cutoff = new Date(Date.UTC(y - 1, m, d));
   return cutoff.toISOString().slice(0,10); // YYYY-MM-DD
 }
 
@@ -6620,6 +6622,29 @@ function sbInitRemoteControl() {
   document.addEventListener('keydown', window._sbVolumeHandler, { capture: true, passive: false });
 }
 
+// ===== 화면 꺼짐 방지 (Wake Lock) =====
+var _sbWakeLock = null;
+async function sbRequestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      _sbWakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch (e) { /* 일부 기기/브라우저 미지원 - 무시하고 계속 진행 */ }
+}
+function sbReleaseWakeLock() {
+  if (_sbWakeLock) {
+    _sbWakeLock.release().catch(function(){});
+    _sbWakeLock = null;
+  }
+}
+// 앱을 잠깐 전환했다가 돌아오면 잠금이 풀리므로, 스코어보드가 열려있으면 다시 요청
+function sbHandleVisibilityChange() {
+  if (document.visibilityState === 'visible' && document.getElementById('sb-overlay')) {
+    sbRequestWakeLock();
+  }
+}
+document.addEventListener('visibilitychange', sbHandleVisibilityChange);
+
 // ===== 스코어보드 전체화면 오버레이 =====
 function openScoreboardOverlay() {
   // 가로모드 강제 고정 (지원하는 기기에서는 OS 레벨로도 시도)
@@ -6653,6 +6678,8 @@ function openScoreboardOverlay() {
 
   // 닫기 함수 전역 등록
   window._sbOverlayClose = function() {
+    // 화면 꺼짐 방지 해제
+    sbReleaseWakeLock();
     // 블루투스 리모컨 이벤트 리스너 완전 해제 (스마트폰 볼륨 기능 복원)
     if (window._sbVolumeHandler) {
       document.removeEventListener('keydown', window._sbVolumeHandler, { capture: true });
@@ -6717,6 +6744,7 @@ function openScoreboardOverlay() {
   setTimeout(function() {
     renderScoreboard();
     sbInitRemoteControl(); // 블루투스 리모컨 활성화
+    sbRequestWakeLock(); // 화면 꺼짐 방지 시작
   }, 30);
 }
 
@@ -6738,7 +6766,10 @@ var _sb = {
   serverSub: [0, 0],
   serverSubStarted: [false, false],
   over: false,
-  history: []
+  history: [],
+  stats: {},
+  _winnerIdx: -1,
+  _serverSubTouched: false
 };
 // _sb 초기 기본값은 renderScoreboard 시점에 _t()로 세팅
 function _sbInitDefaults() {
@@ -6782,8 +6813,15 @@ function renderScoreboard() {
   .sb-srv-name::after { content:'🟢'; font-size:0.55em; margin-left:4px; vertical-align:middle; }
   .sb-sub-name { opacity:.55; }
   .sb-name-sep { opacity:.4; }
+  .sb-swap-hint { opacity:.5; font-size:0.75em; }
   .sb-pts { font-family:'Bebas Neue',sans-serif; font-size:clamp(180px,48vw,480px); line-height:.88; color:#fff; -webkit-text-stroke:3px #c9a961; text-shadow:0 0 20px rgba(255,255,255,.8),0 0 40px rgba(255,216,77,.4); letter-spacing:-1px; }
   .sb-pts.deuce-ad { color:#ccff00; -webkit-text-stroke:2px rgba(180,255,0,.4); text-shadow:0 0 20px rgba(180,255,0,.8),0 0 50px rgba(180,255,0,.4); }
+  .sb-quickbtns { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:none; gap:8px; z-index:3; }
+  .sb-quickbtns.show { display:flex; }
+  .sb-qbtn { font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:clamp(11px,1.8vw,15px); padding:6px 14px; border-radius:20px; cursor:pointer; letter-spacing:0; white-space:nowrap; }
+  .sb-qbtn:active { transform:scale(.92); opacity:.85; }
+  .sb-qbtn-ace { background:rgba(0,166,81,.25); color:#00e070; border:1.5px solid #00a651; }
+  .sb-qbtn-flt { background:rgba(255,79,79,.22); color:#ff7070; border:1.5px solid #ff4f4f; }
   #sb-divider { width:3px; background:linear-gradient(to bottom,transparent,#c9a961 20%,#c9a961 80%,transparent); opacity:.5; }
   #sb-tap-hint { text-align:center; padding:10px 0 12px; font-family:'Cormorant Garamond',serif; font-size:clamp(13px,2.4vw,17px); color:#8a998f; letter-spacing:2px; background:#08120e; animation:sbBlink 2.5s ease-in-out infinite; flex-shrink:0; }
   @keyframes sbBlink { 0%,100%{opacity:.4;}50%{opacity:.9;} }
@@ -6824,6 +6862,12 @@ function renderScoreboard() {
   .sb-btn-undo { background:rgba(255,255,255,.08); color:#dde; border:1px solid #3a3a5a; padding:9px 4px; font-size: 0.8667rem; }
   .sb-btn-rst { background:rgba(255,79,79,.1); color:#ff7070; border:2px solid rgba(255,79,79,.4); padding:9px 4px; font-size: 0.8667rem; }
   .sb-btn-tb { background:rgba(201,168,76,.15); color:#c9a961; border:2px solid rgba(201,168,76,.5); padding:9px 4px; font-size: 0.8667rem; }
+  .sb-srvsub-row { }
+  .sb-srvsub-label { font-family:'Noto Sans KR',sans-serif; font-size: 0.7333rem; font-weight:700; color:#8a998f; letter-spacing:0; margin-bottom:4px; padding-left:2px; }
+  .sb-srvsub-picks { display:flex; gap:6px; }
+  .sb-srvsub-pick { flex:1; min-width:0; padding:9px 6px; border-radius:8px; font-family:'Noto Sans KR',sans-serif; font-size: 0.8rem; font-weight:700; background:#14231c; border:1.5px solid #26392f; color:#8a998f; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:all .15s; }
+  .sb-srvsub-pick:active { transform:scale(.96); }
+  .sb-srvsub-pick.active { background:rgba(0,166,81,.2); border-color:#00a651; color:#00e070; }
   /* 폴트탭 */
   .sb-fault-info { font-family:'Noto Sans KR',sans-serif; font-size: 0.8667rem; font-weight:600; color:#aaa; letter-spacing:0; margin-bottom:7px; display:flex; align-items:center; gap:10px; }
   .sb-fd { display:flex; gap:6px; }
@@ -6850,6 +6894,10 @@ function renderScoreboard() {
   .sbw-title { font-family:'Cormorant Garamond',serif; font-size: 0.8667rem; color:#c9a961; letter-spacing:3px; margin-bottom:12px; }
   .sbw-name { font-family:'Cormorant Garamond',serif; font-size:clamp(22px,5vw,40px); color:#fff; font-weight:900; letter-spacing:2px; margin-bottom:8px; }
   .sbw-score { font-family:'Bebas Neue',sans-serif; font-size: 2.4rem; color:#c9a961; letter-spacing:3px; margin-bottom:24px; }
+  #sbw-stats { width:82%; max-height:22vh; overflow-y:auto; margin-bottom:10px; font-family:'Noto Sans KR',sans-serif; }
+  #sbw-stats .sbw-stat-row { display:flex; justify-content:space-between; align-items:center; padding:7px 12px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; margin-bottom:6px; font-size:0.8rem; color:#ddd; }
+  #sbw-stats .sbw-stat-name { font-weight:700; color:#c9a961; }
+  #sbw-stats .sbw-stat-nums { color:#aaa; font-size:0.7333rem; white-space:nowrap; }
   .sbw-new { background:#c9a961; color:#fff; border:none; border-radius:10px; padding:14px 32px; font-family:'Cormorant Garamond',serif; font-size: 0.8667rem; font-weight:700; letter-spacing:1px; cursor:pointer; }
 </style>
 <div id="sb-wrap" onclick="sbHandleTap(event)">
@@ -6862,14 +6910,22 @@ function renderScoreboard() {
   <div id="sb-score-area">
     <div class="sb-pb" id="sb-pb1" onclick="event.stopPropagation();" onpointerdown="sbPlayerPress(event,0)" onpointerup="sbPlayerRelease(event,0)" onpointercancel="sbPlayerCancel(event)" onpointerleave="sbPlayerCancel(event)">
       <div class="sb-serve-dot" id="sb-sdot1"></div>
-      <div class="sb-pname" id="sb-name1-d">${sbNameHTML(0)}</div>
+      <div class="sb-pname" id="sb-name1-d" onclick="event.stopPropagation();sbSwapTeamOrder(0);" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();">${sbNameHTML(0)}</div>
       <div class="sb-pts" id="sb-pts1-d">0</div>
+      <div class="sb-quickbtns" id="sb-qb1">
+        <button class="sb-qbtn sb-qbtn-ace" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();" onclick="event.stopPropagation();sbAddAce(0);">${_t('sb_ace')}</button>
+        <button class="sb-qbtn sb-qbtn-flt" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();" onclick="event.stopPropagation();sbAddFault(0);">${_t('sb_fault_btn')}</button>
+      </div>
     </div>
     <div id="sb-divider"></div>
     <div class="sb-pb" id="sb-pb2" onclick="event.stopPropagation();" onpointerdown="sbPlayerPress(event,1)" onpointerup="sbPlayerRelease(event,1)" onpointercancel="sbPlayerCancel(event)" onpointerleave="sbPlayerCancel(event)">
       <div class="sb-serve-dot" id="sb-sdot2"></div>
-      <div class="sb-pname" id="sb-name2-d">${sbNameHTML(1)}</div>
+      <div class="sb-pname" id="sb-name2-d" onclick="event.stopPropagation();sbSwapTeamOrder(1);" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();">${sbNameHTML(1)}</div>
       <div class="sb-pts" id="sb-pts2-d">0</div>
+      <div class="sb-quickbtns" id="sb-qb2">
+        <button class="sb-qbtn sb-qbtn-ace" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();" onclick="event.stopPropagation();sbAddAce(1);">${_t('sb_ace')}</button>
+        <button class="sb-qbtn sb-qbtn-flt" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();" onclick="event.stopPropagation();sbAddFault(1);">${_t('sb_fault_btn')}</button>
+      </div>
     </div>
   </div>
 
@@ -6892,9 +6948,6 @@ function renderScoreboard() {
       <div id="sb-ctrl-scroll">
       <!-- 점수 탭 -->
       <div class="sb-tab-content active" id="sb-tab-score">
-        <div id="sb-srvsub-row" style="display:none;margin-bottom:8px;">
-          <button class="sb-btn" style="width:100%;background:rgba(180,255,0,.12);color:#ccff00;border:2px solid rgba(180,255,0,.4);padding:10px;font-size:0.9333rem;" onclick="sbToggleServerSub(_sb.serving);sbUpdateServeBtns()">${_t('sb_srvsub')} (<span id="sb-srvsub-txt"></span>)</button>
-        </div>
         <div class="sb-score-grid">
           <div class="sb-pctrl">
             <div class="sb-pctrl-name" id="sb-cname1">${n1}</div>
@@ -6974,6 +7027,8 @@ function renderScoreboard() {
             </button>
           </div>
         </div>
+        <!-- 서브 시작 선수는 코트 화면에서 이름을 탭해 좌우로 바꾸면 됩니다 -->
+        <div style="font-family:'Noto Sans KR',sans-serif;font-size:0.7333rem;color:#7a998f;text-align:center;margin-top:6px;letter-spacing:0;">🎾 코트 화면의 선수 이름을 탭하면 서브 순서가 바뀌어요</div>
         <!-- 경기 제목 (단식/복식 공통) -->
         <div class="sb-setup-grid" style="margin-top:5px;">
           <div class="sb-setup-item" style="grid-column:1/-1">
@@ -7000,7 +7055,9 @@ function renderScoreboard() {
     <div class="sbw-title">${_t('sb_winner_title')}</div>
     <div class="sbw-name" id="sbw-name">-</div>
     <div class="sbw-score" id="sbw-score"></div>
+    <div id="sbw-stats"></div>
     <button class="sbw-new" onclick="sbResetMatch()">${_t('sb_new_match')}</button>
+    <button onclick="event.stopPropagation();sbShareStats();" style="margin-top:10px;padding:12px 28px;background:rgba(201,168,76,.15);border:2px solid #c9a961;border-radius:10px;color:#c9a961;font-family:'Noto Sans KR',sans-serif;font-size: 0.8667rem;font-weight:700;cursor:pointer;">📤 개인 기록 공유</button>
     <button onclick="event.stopPropagation();if(window._sbOverlayClose)window._sbOverlayClose();" style="margin-top:12px;padding:10px 28px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.2);border-radius:10px;color:#aaa;font-family:'Noto Sans KR',sans-serif;font-size: 0.9333rem;cursor:pointer;">${_t('sb_close')}</button>
   </div>
 </div>
@@ -7320,21 +7377,37 @@ function sbNameHTML(p) {
     var parts = name.split(' / ');
     var subIdx = _sb.serverSub[p] || 0;
     var isServingTeam = (_sb.serving === p);
-    return parts.map(function(part, i) {
+    var html = parts.map(function(part, i) {
       if (isServingTeam && i === subIdx) {
         return '<span class="sb-srv-name">' + part + '</span>';
       }
       return '<span class="sb-sub-name">' + part + '</span>';
     }).join('<span class="sb-name-sep"> / </span>');
+    return html + ' <span class="sb-swap-hint">⇄</span>';
   }
   return name;
 }
-// 서브 선수 토글 (복식, 서빙 중인 팀의 이름 탭 시)
-function sbToggleServerSub(p) {
+// 팀의 서브 시작 선수를 직접 지정 (idx: 0=첫번째 이름, 1=두번째 이름)
+// 지금 서빙 중이 아닌 팀도 미리 정해둘 수 있음 (예: 애드코트 선수가 먼저 서브 넣는 경우)
+function sbSetServerSub(team, idx) {
   if (_sb.format !== 'doubles') return;
-  if (_sb.serving !== p) return; // 서빙팀이 아니면 무시
-  _sb.serverSub[p] = 1 - (_sb.serverSub[p] || 0);
+  _sb.serverSub[team] = idx;
+  _sb._serverSubTouched = true;
   sbRender();
+  sbUpdateServeBtns();
+}
+
+// 코트 화면에서 선수 이름을 탭하면 좌우 순서를 바꿔서(서브 순서도 함께 바뀜) 간단하게 지정
+function sbSwapTeamOrder(team) {
+  if (_sb.format !== 'doubles') return;
+  var name = _sb.names[team] || '';
+  var parts = name.split(' / ');
+  if (parts.length !== 2 || !parts[0] || !parts[1]) return;
+  _sb.names[team] = parts[1] + ' / ' + parts[0];
+  _sb.serverSub[team] = 0; // 항상 왼쪽(앞)에 표시된 선수가 서브 담당
+  _sb._serverSubTouched = true;
+  sbRender();
+  sbFlashStatus('🔄 서브 순서 변경', 1000);
 }
 
 function sbHandleTap(e) {
@@ -7375,23 +7448,6 @@ function sbUpdateServeBtns() {
   if (flt1) flt1.style.display = _sb.serving === 0 ? 'block' : 'none';
   if (ace2) ace2.style.display = _sb.serving === 1 ? 'block' : 'none';
   if (flt2) flt2.style.display = _sb.serving === 1 ? 'block' : 'none';
-  var srvRow = document.getElementById('sb-srvsub-row');
-  var srvTxt = document.getElementById('sb-srvsub-txt');
-  if (srvRow) {
-    if (_sb.format === 'doubles') {
-      var name = _sb.names[_sb.serving] || '';
-      var parts = name.split(' / ');
-      if (parts.length === 2) {
-        srvRow.style.display = 'block';
-        var subIdx = _sb.serverSub[_sb.serving] || 0;
-        if (srvTxt) srvTxt.textContent = '현재: ' + parts[subIdx] + ' → ' + parts[1-subIdx];
-      } else {
-        srvRow.style.display = 'none';
-      }
-    } else {
-      srvRow.style.display = 'none';
-    }
-  }
 }
 
 function sbSwitchTab(name) {
@@ -7403,6 +7459,24 @@ function sbSwitchTab(name) {
     var el = document.getElementById('sb-tab-' + t);
     if (el) el.classList.toggle('active', t === name);
   });
+  if (name === 'score') sbUpdateServeBtns();
+}
+
+// 현재 서브 넣는 실제 개인 선수 이름 (복식이면 팀 내 서브 담당자, 단식이면 팀 이름 그대로)
+function sbGetActingServerName(teamIdx) {
+  var name = _sb.names[teamIdx] || '';
+  if (_sb.format === 'doubles' && name.indexOf(' / ') !== -1) {
+    var parts = name.split(' / ');
+    var subIdx = _sb.serverSub[teamIdx] || 0;
+    return (parts[subIdx] || name).trim();
+  }
+  return name.trim();
+}
+function sbStatInc(name, field) {
+  if (!name) return;
+  if (!_sb.stats) _sb.stats = {};
+  if (!_sb.stats[name]) _sb.stats[name] = { aces: 0, faults: 0, dfs: 0 };
+  _sb.stats[name][field]++;
 }
 
 function sbSaveHist() {
@@ -7410,7 +7484,8 @@ function sbSaveHist() {
     serving:_sb.serving, pts:[..._sb.pts],
     games:[..._sb.games], deuce:_sb.deuce,
     tb:_sb.tb, tbPts:[..._sb.tbPts],
-    faults:_sb.faults, dfs:_sb.dfs, over:_sb.over
+    faults:_sb.faults, dfs:_sb.dfs, over:_sb.over,
+    stats: JSON.parse(JSON.stringify(_sb.stats || {}))
   }));
 }
 
@@ -7486,6 +7561,7 @@ function sbCheckTBWin(p) {
 
 function sbEndMatch(p) {
   _sb.over=true;
+  _sb._winnerIdx = p;
   var wn = document.getElementById('sb-winner');
   var wname = document.getElementById('sbw-name');
   var wscore = document.getElementById('sbw-score');
@@ -7493,9 +7569,75 @@ function sbEndMatch(p) {
   if (wname) wname.textContent = _sb.names[p];
   if (wscore) wscore.textContent = _sb.games[p] + ' - ' + _sb.games[1-p];
   wn.classList.add('show');
+  sbRenderWinnerStats();
 
   // ===== 경기기록 자동 저장 =====
   sbTrySaveToRecord(p);
+}
+
+// 위너 화면에 선수별 에이스/폴트/더블폴트 기록 표시
+function sbRenderWinnerStats() {
+  var box = document.getElementById('sbw-stats');
+  if (!box) return;
+  var names = Object.keys(_sb.stats || {});
+  if (!names.length) { box.innerHTML = ''; return; }
+  var html = '';
+  names.forEach(function(n) {
+    var s = _sb.stats[n];
+    html += '<div class="sbw-stat-row"><span class="sbw-stat-name">' + n + '</span>' +
+      '<span class="sbw-stat-nums">🎯 에이스 ' + s.aces + ' · 폴트 ' + s.faults + ' · 더블폴트 ' + s.dfs + '</span></div>';
+  });
+  box.innerHTML = html;
+}
+
+// ===== 경기 개인 기록 공유 (카카오톡/문자 등) =====
+function sbBuildStatsText() {
+  var sportIcon = state.sportType === 'pickleball' ? '🥒' : (state.sportType === 'badminton' ? '🏸' : '🎾');
+  var title = _sb.title || '경기';
+  var fmtLabel = _sb.format === 'doubles' ? '복식' : '단식';
+  var winnerIdx = _sb._winnerIdx >= 0 ? _sb._winnerIdx : (_sb.games[0] > _sb.games[1] ? 0 : 1);
+  var winnerName = _sb.names[winnerIdx] || '';
+  var scoreStr = _sb.games[0] + ' - ' + _sb.games[1];
+
+  var txt = sportIcon + ' ' + title + ' (' + fmtLabel + ') 결과\n';
+  txt += '━━━━━━━━━━━━━━━━\n';
+  if (winnerName) txt += '🏆 승자: ' + winnerName + '\n';
+  txt += '📊 스코어: ' + scoreStr + '\n';
+  txt += '━━━━━━━━━━━━━━━━\n';
+  txt += '👤 개인 기록\n';
+  var names = Object.keys(_sb.stats || {});
+  if (names.length) {
+    names.forEach(function(n) {
+      var s = _sb.stats[n];
+      txt += n + ' - 에이스 ' + s.aces + ' · 폴트 ' + s.faults + ' · 더블폴트 ' + s.dfs + '\n';
+    });
+  } else {
+    txt += '(기록 없음)\n';
+  }
+  txt += '━━━━━━━━━━━━━━━━\n';
+  txt += '#NIJI_STRING #' + fmtLabel;
+  return txt;
+}
+
+function sbShareStats() {
+  var txt = sbBuildStatsText();
+  if (navigator.share) {
+    navigator.share({ title: 'NIJI STRING 경기 기록', text: txt }).catch(function(){});
+  } else if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(function(){
+      showToast('📋 경기 기록이 복사됐어요! 카카오톡에 붙여넣기 하세요 😊');
+    }).catch(function(){ _sbFallbackCopyStats(txt); });
+  } else {
+    _sbFallbackCopyStats(txt);
+  }
+}
+
+function _sbFallbackCopyStats(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { document.execCommand('copy'); showToast('📋 경기 기록이 복사됐어요! 카카오톡에 붙여넣기 하세요 😊'); } catch (e) {}
+  document.body.removeChild(ta);
 }
 
 function sbTrySaveToRecord(winnerIdx) {
@@ -7596,10 +7738,13 @@ function sbTrySaveToRecord(winnerIdx) {
 function sbAddFaultAuto() { sbAddFault(_sb.serving); sbClosePanel(); }
 
 function sbAddFault(p) {
+  var srvName = sbGetActingServerName(p);
   sbSaveHist(); _sb.faults++;
+  sbStatInc(srvName, 'faults');
   sbUpdateFaultDots();
   if (_sb.faults >= 2) {
     _sb.dfs++;
+    sbStatInc(srvName, 'dfs');
     var df = document.getElementById('sb-df-cnt');
     if (df) df.textContent = _sb.dfs;
     sbFlashStatus('⚡ 더블 폴트!', 1800);
@@ -7610,7 +7755,11 @@ function sbAddFault(p) {
   }
 }
 
-function sbAddAce(p) { sbFlashStatus('🎯 에이스!', 1200); sbAddPoint(p); }
+function sbAddAce(p) {
+  sbStatInc(sbGetActingServerName(p), 'aces');
+  sbFlashStatus('🎯 에이스!', 1200);
+  sbAddPoint(p);
+}
 
 function sbSetTiebreak() {
   if (_sb.tb || _sb.over) return;
@@ -7624,6 +7773,7 @@ function sbUndoPoint() {
   var hist = _sb.history;
   Object.assign(_sb, prev);
   _sb.games = [...prev.games];
+  _sb.stats = prev.stats || {};
   _sb.history = hist;
   sbRender(); sbUpdateFaultDots(); sbUpdateServeBtns();
   var df = document.getElementById('sb-df-cnt');
@@ -7638,6 +7788,7 @@ function sbResetMatch() {
   _sb.pts=[0,0]; _sb.games=[0,0]; _sb.deuce=false;
   _sb.tb=false; _sb.tbPts=[0,0]; _sb.faults=0; _sb.dfs=0;
   _sb.serving=0; _sb.over=false; _sb.history=[]; _sb.serverSub=[0,0]; _sb.serverSubStarted=[true,false];
+  _sb.stats={}; _sb._winnerIdx=-1; _sb._serverSubTouched=false;
   // 선수 이름/포맷/타이틀도 초기값으로 리셋
   _sb.names=['',''];
   _sb.names2=['',''];
@@ -7674,6 +7825,7 @@ function sbSetFormat(fmt) {
   }
   var scrollEl = document.getElementById('sb-ctrl-scroll');
   if (scrollEl) scrollEl.scrollTop = 0;
+  sbUpdateServeBtns();
 }
 function sbApplySetup() {
   var a1 = ((document.getElementById('sb-in-name1')||{}).value || '').trim();
@@ -7692,13 +7844,20 @@ function sbApplySetup() {
     n2 = a2 || (lang==='en' ? 'Player 2' : '선수 2');
     _sb.names2 = ['', ''];
   }
-  _sb.names = [n1, n2]; _sb.title = title; _sb.serverSub = [0,0]; _sb.serverSubStarted = [true, false];
+  _sb.names = [n1, n2]; _sb.title = title;
+  // 이미 골라둔 서브 시작 선수(serverSub)는 유지하고, 경기 시작 전 상태(serverSubStarted)만 정리
+  // → "적용"을 다시 눌러도 서브권자 선택이 원위치로 돌아가지 않음
+  if (!_sb._serverSubTouched) {
+    _sb.serverSub = [0, 0];
+  }
+  _sb.serverSubStarted = [true, false];
   document.querySelectorAll('#sb-cname1').forEach(function(e){ e.textContent=n1; });
   document.querySelectorAll('#sb-cname2').forEach(function(e){ e.textContent=n2; });
   var nm1 = document.getElementById('sb-name1-d'); if (nm1) nm1.innerHTML = sbNameHTML(0);
   var nm2 = document.getElementById('sb-name2-d'); if (nm2) nm2.innerHTML = sbNameHTML(1);
   var mt = document.getElementById('sb-match-title');
   if (mt) mt.textContent = '🎾 ' + title;
+  sbUpdateServeBtns();
   sbFlashStatus(lang==='en' ? '✔ Settings Saved' : '✔ 설정 저장됨', 1000);
 }
 
@@ -7712,6 +7871,10 @@ function sbRender() {
   s2.className = 'sb-serve-dot' + (_sb.serving===1?' on':'');
   pb1.className = 'sb-pb' + (_sb.serving===0?' serving':'');
   pb2.className = 'sb-pb' + (_sb.serving===1?' serving':'');
+  var qb1 = document.getElementById('sb-qb1');
+  var qb2 = document.getElementById('sb-qb2');
+  if (qb1) qb1.classList.toggle('show', _sb.serving===0 && !_sb.over);
+  if (qb2) qb2.classList.toggle('show', _sb.serving===1 && !_sb.over);
   var nmA = document.getElementById('sb-name1-d'); if (nmA) nmA.innerHTML = sbNameHTML(0);
   var nmB = document.getElementById('sb-name2-d'); if (nmB) nmB.innerHTML = sbNameHTML(1);
 
