@@ -730,23 +730,30 @@ function _t(key) {
   .topbar-avatar::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid transparent; background: linear-gradient(135deg, var(--accent), var(--accent2)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; }
 
   /* ===== CONTENT ===== */
-  .content { flex: 1; height: 0; min-height: 0; overflow-y: auto; overflow-x: auto; padding: 16px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+  .content { flex: 1; height: 0; min-height: 0; overflow-y: auto; overflow-x: auto; padding: 16px; padding-bottom: calc(16px + 70px + env(safe-area-inset-bottom)); scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
   .content::-webkit-scrollbar { width: 4px; }
   .content::-webkit-scrollbar-track { background: transparent; }
   .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  /* 프로필 페이지는 패딩 제거 */
-  .content:has(#page-profile.active) { padding: 0; }
+  /* 프로필 페이지는 패딩 제거 (단, 하단 네비 가림 방지용 여백은 유지) */
+  .content:has(#page-profile.active) { padding: 0; padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
 
-  /* ===== BOTTOM NAV ===== */
+  /* ===== BOTTOM NAV =====
+     항상 화면(=#app) 맨 아래에 고정되도록 position:fixed 사용.
+     예전에는 flex 레이아웃 흐름에 맡겨서, 입력 폼/셀렉트 포커스 시
+     body.keyboard-open → #app{height:auto} 로 바뀌면 탭이 아래로 밀려버리는 문제가 있었음.
+     position:fixed + #app과 동일한 max-width 로 고정시켜 어떤 경우에도 화면 하단에 붙어있게 함. */
   .nav {
     display: flex; background: var(--surface); border-top: 1px solid var(--border);
     padding: 8px 0 0;
     padding-bottom: max(12px, env(safe-area-inset-bottom));
-    flex-shrink: 0;
+    position: fixed; left: 0; right: 0; bottom: 0;
+    max-width: 480px; margin: 0 auto;
+    z-index: 40;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
+
   .nav::-webkit-scrollbar { display: none; }
   .nav-btn {
     flex: 0 0 auto; min-width: 60px; display: flex; flex-direction: column; align-items: center; gap: 2px;
@@ -1616,8 +1623,10 @@ function _t(key) {
     }
     .content {
       padding: 24px 40px;
+      padding-bottom: calc(24px + 76px + env(safe-area-inset-bottom));
     }
     .nav {
+      max-width: 100% !important;
       padding: 10px 20px 0;
       justify-content: space-around;
       padding-bottom: max(20px, env(safe-area-inset-bottom));
@@ -1695,6 +1704,7 @@ function _t(key) {
     html { font-size: 18px; }
     .content {
       padding: 32px 60px;
+      padding-bottom: calc(32px + 84px + env(safe-area-inset-bottom));
     }
     .match-card, .card {
       max-width: 900px;
@@ -10632,51 +10642,52 @@ function setLanguage(lang) {
 
 })();
 
-// ── 모바일 키보드 대응: 입력창 포커스 시 스크롤 허용 ──────────
+// ── 모바일 키보드 대응: 입력창 포커스 시 스크롤 허용 (통합 버전) ──────────
 (function mobileKeyboardFix() {
   var initialWindowHeight = window.innerHeight;
+  var hasVisualViewport = !!window.visualViewport;
 
-  // input/textarea 포커스될 때 (키보드 올라옴)
+  // ⚠️ SELECT(드롭다운)는 실제 키보드를 띄우지 않으므로 제외.
+  //    예전 코드는 SELECT도 포함시켜서, "이전 경기기록" 월 선택 같은 드롭다운을
+  //    클릭하기만 해도 keyboard-open 모드로 들어가 #app 높이가 깨지고
+  //    하단 탭바가 화면 맨 밑으로 밀려나는 버그가 있었음.
+  function isTextField(el) {
+    var tag = el && el.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA';
+  }
+
+  // 입력창 포커스 시: 화면에 보이도록 스크롤
   document.addEventListener('focusin', function(e) {
-    var tag = e.target.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
-      document.body.classList.add('keyboard-open');
-      // 입력창이 화면에 보이도록 자동 스크롤 (약간 딜레이 후 실행)
-      setTimeout(function() {
-        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 350);
-    }
+    if (!isTextField(e.target)) return;
+    // visualViewport를 지원하는 기기는 resize 이벤트로 keyboard-open을 관리하므로 여기선 생략
+    if (!hasVisualViewport) document.body.classList.add('keyboard-open');
+    setTimeout(function() {
+      e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 350);
   });
 
-  // 포커스가 사라질 때 (키보드 내려감)
+  // 포커스가 사라질 때 (키보드 내려감) - visualViewport 미지원 기기용 폴백
   document.addEventListener('focusout', function(e) {
-    var tag = e.target.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
-      setTimeout(function() {
-        var focused = document.activeElement;
-        var ft = focused ? focused.tagName : '';
-        if (ft !== 'INPUT' && ft !== 'TEXTAREA' && ft !== 'SELECT') {
-          document.body.classList.remove('keyboard-open');
-          // iOS에서 화면이 올라간 채 고정되는 현상 방지
-          window.scrollTo(0, 0);
-        }
-      }, 200);
-    }
+    if (!isTextField(e.target)) return;
+    if (hasVisualViewport) return;
+    setTimeout(function() {
+      if (!isTextField(document.activeElement)) {
+        document.body.classList.remove('keyboard-open');
+        window.scrollTo(0, 0);
+      }
+    }, 200);
   });
 
-  // visualViewport API 지원 기기 (안드로이드 크롬, iOS 사파리 최신)
-  if (window.visualViewport) {
+  // visualViewport API 지원 기기 (안드로이드 크롬, iOS 사파리 최신) - 실제 키보드 높이 변화로 정확히 판단
+  if (hasVisualViewport) {
     window.visualViewport.addEventListener('resize', function() {
-      var keyboardOpen = window.visualViewport.height < initialWindowHeight * 0.8;
-      if (keyboardOpen) {
+      var focused = document.activeElement;
+      var keyboardLikely = window.visualViewport.height < initialWindowHeight * 0.8;
+      if (keyboardLikely && isTextField(focused)) {
         document.body.classList.add('keyboard-open');
       } else {
-        var focused = document.activeElement;
-        var ft = focused ? focused.tagName : '';
-        if (ft !== 'INPUT' && ft !== 'TEXTAREA' && ft !== 'SELECT') {
-          document.body.classList.remove('keyboard-open');
-          window.scrollTo(0, 0);
-        }
+        document.body.classList.remove('keyboard-open');
+        if (!isTextField(focused)) window.scrollTo(0, 0);
       }
     });
   }
