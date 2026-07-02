@@ -26,6 +26,527 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script>
+
+// ── 번역 사전 ──────────────────────────────────────
+const NIJI_DICT = {
+  /* 설정 카드 */
+  set_font_title:    { ko: '글자 크기 설정',    en: 'Font Size' },
+  set_lang_title:    { ko: '언어 설정',          en: 'Language' },
+  font_default:      { ko: '기본',               en: 'Default' },
+  font_large:        { ko: '크게',               en: 'Large' },
+  font_xlarge:       { ko: '아주 크게',          en: 'X-Large' },
+  /* 공유 페이지 */
+  share_title:       { ko: '공유 & 백업',        en: 'Share & Backup' },
+  share_sub:         { ko: '데이터를 백업하거나 공유하세요', en: 'Back up or share your data' },
+  share_niji:        { ko: '니지스트링',          en: 'NIJI STRING' },
+  share_kakao:       { ko: '카카오 오픈채팅 참여하기',    en: 'Join KakaoTalk Chat' },
+  share_kakao_sub:   { ko: '니지스트링 테니스·배드민턴 커뮤니티', en: 'NIJI STRING Tennis & Badminton Community' },
+  share_account:     { ko: '내 계정',            en: 'My Account' },
+  share_logout:      { ko: '로그아웃',           en: 'Sign Out' },
+  share_logout_sub:  { ko: '다른 계정으로 전환하거나 로그아웃', en: 'Switch account or sign out' },
+  share_device:      { ko: '기기 관리',          en: 'Device' },
+  share_clear_cache: { ko: '저장공간 정리',      en: 'Clear Cache' },
+  share_clear_sub:   { ko: '기기 캐시 삭제 (데이터는 Firebase에 안전 보관)', en: 'Delete local cache (data safe in Firebase)' },
+  share_backup:      { ko: '백업',               en: 'Backup' },
+  share_export:      { ko: '데이터 내보내기',    en: 'Export Data' },
+  share_export_sub:  { ko: 'JSON 파일로 저장',   en: 'Save as JSON file' },
+  share_import:      { ko: '가져오기',           en: 'Import' },
+  share_import_sub:  { ko: '백업 파일에서 복원', en: 'Restore from backup file' },
+  share_manual_sec:  { ko: '사용 방법',          en: 'Help' },
+  share_manual_item: { ko: '사용 설명서 보기',   en: 'View User Guide' },
+  share_manual_sub:  { ko: '앱 사용법 안내',     en: 'How to use this app' },
+  /* 하단 탭 */
+  nav_profile:       { ko: '프로필',   en: 'Profile' },
+  nav_match:         { ko: '경기기록', en: 'Records' },
+  nav_stats:         { ko: '통계',     en: 'Stats' },
+  nav_players:       { ko: '선수',     en: 'Players' },
+  nav_tournament:    { ko: '대회',     en: 'Contest' },
+  nav_share:         { ko: '공유',     en: 'Share' },
+
+  /* 프로필 탭 */
+  pf_sport_title:    { ko: '종목 선택',     en: 'Sport' },
+  pf_tennis:         { ko: '테니스',        en: 'Tennis' },
+  pf_badminton:      { ko: '배드민턴',      en: 'Badminton' },
+  pf_pickleball:     { ko: '피클볼',        en: 'Pickleball' },
+
+  /* 경기기록 탭 */
+  match_page_header:       { ko: '경기기록',           en: 'Records' },
+  match_sport_saved_as:    { ko: '종목으로 저장됩니다', en: 'will be recorded' },
+  match_change_sport:      { ko: '종목 변경 →',        en: 'Change →' },
+  match_new_sub:           { ko: '새 경기를 입력하세요', en: 'Enter a new match' },
+  match_new_btn:           { ko: '➕ 새 경기 입력',    en: '➕ New Match' },
+  match_editing:           { ko: '✏️ 경기 수정 중',    en: '✏️ Editing Match' },
+  match_cancel:            { ko: '✕ 취소',             en: '✕ Cancel' },
+  match_date_lbl:          { ko: '📅 날짜',             en: '📅 Date' },
+  match_format_lbl:        { ko: '형식',               en: 'Format' },
+  match_singles:           { ko: '단식',               en: 'Singles' },
+  match_doubles:           { ko: '복식',               en: 'Doubles' },
+  match_opponent_lbl:      { ko: '🆚 상대',             en: '🆚 Opponent' },
+  match_partner_lbl:       { ko: '🤝 파트너',           en: '🤝 Partner' },
+  match_opp1_lbl:          { ko: '🆚 상대 1',           en: '🆚 Opp 1' },
+  match_opp2_lbl:          { ko: '🆚 상대 2',           en: '🆚 Opp 2' },
+  match_result_lbl:        { ko: '결과',               en: 'Result' },
+  match_win_btn:           { ko: '🏆 승리',             en: '🏆 Win' },
+  match_lose_btn:          { ko: '😔 패배',             en: '😔 Lose' },
+  match_score_lbl:         { ko: '스코어 (선택)',       en: 'Score (opt.)' },
+  match_tiebreak_lbl:      { ko: '타이브레이크 (선택)', en: 'Tiebreak (opt.)' },
+  match_racket_lbl:        { ko: '🎾 사용 라켓 (선택)', en: '🎾 Racket (opt.)' },
+  match_racket_none_opt:   { ko: '선택 안 함',          en: 'None' },
+  match_racket_noreg:      { ko: '⚠️ 라켓이 등록되지 않았어요.', en: '⚠️ No racket registered.' },
+  match_racket_go_profile: { ko: '프로필에서 등록하기 →', en: 'Register in Profile →' },
+  match_memo_lbl:          { ko: '📝 메모 (선택)',      en: '📝 Memo (opt.)' },
+  match_save_btn:          { ko: '경기 저장',           en: 'Save Match' },
+  match_today_title:       { ko: '오늘 경기',           en: "Today's Matches" },
+  match_past_title:        { ko: '📋 이전 경기 기록',   en: '📋 Past Records' },
+  match_me_label:          { ko: '나',                  en: 'Me' },
+  match_opp_label:         { ko: '상대',               en: 'Opp' },
+  match_input_ph:          { ko: '이름 또는 초성',      en: 'Name or initial' },
+  match_memo_ph:           { ko: '경기 메모...',        en: 'Match memo...' },
+  match_new_btn_open:      { ko: '➕ 새 경기 입력',    en: '➕ New Match' },
+  match_form_close:        { ko: '✖ 닫기',             en: '✖ Close' },
+  match_edit_title:        { ko: '✏️ 경기 수정',        en: '✏️ Edit Match' },
+  match_edit_save:         { ko: '수정 저장',           en: 'Save Edit' },
+  match_racket_required:   { ko: '🎾 사용 라켓 (필수)', en: '🎾 Racket (required)' },
+  match_racket_sel_ph:     { ko: '-- 라켓 선택 (필수) --', en: '-- Select Racket (required) --' },
+  match_past_empty:        { ko: '이 달에 경기 기록이 없어요', en: 'No matches this month' },
+  match_count_unit:        { ko: '경기',               en: 'matches' },
+  match_delete_title:      { ko: '경기 삭제',           en: 'Delete Match' },
+  match_delete_desc:       { ko: '이 경기 기록을 삭제하시겠습니까?', en: 'Delete this match record?' },
+  match_delete_done:       { ko: '🗑️ 경기 삭제 완료',  en: '🗑️ Match deleted' },
+  match_old_records:       { ko: '── 6개월 이전 {n}개 기록 (통계에는 반영됨)', en: '── {n} records older than 6mo (included in stats)' },
+  pf_tension_ph:           { ko: '예) 50/52 파운드',   en: 'e.g. 50/52 lbs' },
+
+  /* 통계 탭 */
+  stats_page_header:       { ko: '통계',               en: 'Stats' },
+  stats_sport_basis:       { ko: '기준 통계',          en: 'stats' },
+  stats_change_sport:      { ko: '종목 변경 →',        en: 'Change →' },
+  stats_atp_notice:        { ko: '🏆 ATP 방식 · 최근 12개월 기준', en: '🏆 ATP Style · Last 12 Months' },
+  stats_lbl_total:         { ko: '경기수',             en: 'Matches' },
+  stats_lbl_win:           { ko: '승',                 en: 'Win' },
+  stats_lbl_lose:          { ko: '패',                 en: 'Loss' },
+  stats_lbl_rate:          { ko: '승률',               en: 'Win%' },
+  stats_acc_summary:       { ko: '📊 상세 요약',       en: '📊 Summary' },
+  stats_acc_monthly:       { ko: '📅 월별 승률 (12개월)', en: '📅 Monthly Win% (12mo)' },
+  stats_monthly_empty:     { ko: '경기를 입력하면 그래프가 표시됩니다', en: 'Enter matches to see the graph' },
+  stats_acc_opponent:      { ko: '⚔️ 상대 전적',       en: '⚔️ Head-to-Head' },
+  stats_opp_sort_winrate:  { ko: '승률 높은 순',       en: 'By Win Rate' },
+  stats_opp_sort_games:    { ko: '경기 많은 순',       en: 'By Matches' },
+  stats_opp_sort_name:     { ko: '이름순',             en: 'By Name' },
+  stats_opp_empty:         { ko: '경기를 입력하면\n상대 데이터가 표시됩니다', en: 'Enter matches to see\nopponent data' },
+  stats_acc_partner:       { ko: '🤝 파트너 궁합',     en: '🤝 Partner Stats' },
+  stats_partner_empty:     { ko: '복식 경기를 입력하면\n파트너 데이터가 표시됩니다', en: 'Enter doubles matches to see\npartner data' },
+  stats_acc_singles:       { ko: '🎯 단식 상성',       en: '🎯 Singles Matchups' },
+  stats_singles_sub:       { ko: '(1:1)',               en: '(1:1)' },
+  stats_singles_empty:     { ko: '단식 경기를 입력하면\n상성 데이터가 표시됩니다', en: 'Enter singles matches to see\nmatchup data' },
+  stats_acc_enemy:         { ko: '🆚 상대팀 상성',     en: '🆚 Rival Team Stats' },
+  stats_enemy_sub:         { ko: '(복식)',              en: '(Doubles)' },
+  stats_enemy_empty:       { ko: '복식 경기를 입력하면\n상대팀 데이터가 표시됩니다', en: 'Enter doubles matches to see\nrival team data' },
+
+  /* 선수 탭 */
+  players_page_header:     { ko: '선수 목록',          en: 'Players' },
+  players_page_sub:        { ko: '등록된 선수를 관리하세요', en: 'Manage registered players' },
+  players_sort_name:       { ko: '이름순',             en: 'By Name' },
+  players_sort_recent:     { ko: '최근 대전순',        en: 'Recent Match' },
+  players_sort_matches:    { ko: '전적 많은 순',       en: 'Most Matches' },
+  players_sort_winrate:    { ko: '승률 높은 순',       en: 'Best Win Rate' },
+  players_club_title:      { ko: '🏠 클럽 관리',       en: '🏠 Club Manager' },
+  players_club_add_btn:    { ko: '+ 추가',             en: '+ Add' },
+  players_reg_acc:         { ko: '👤 선수 등록',       en: '👤 Add Player' },
+  players_gender_lbl:      { ko: '성별',               en: 'Gender' },
+  players_gender_m:        { ko: '남자',               en: 'Male' },
+  players_gender_f:        { ko: '여자',               en: 'Female' },
+  players_age_lbl:         { ko: '나이대',             en: 'Age Group' },
+  players_age_10s:         { ko: '10대',               en: 'Teens' },
+  players_age_20s:         { ko: '20대',               en: '20s' },
+  players_age_30s:         { ko: '30대',               en: '30s' },
+  players_age_40s:         { ko: '40대',               en: '40s' },
+  players_age_50s:         { ko: '50대',               en: '50s' },
+  players_age_60s:         { ko: '60대 이상',          en: '60s+' },
+  players_hand_lbl:        { ko: '손잡이',             en: 'Handedness' },
+  players_hand_r:          { ko: '오른손',             en: 'Right' },
+  players_hand_l:          { ko: '왼손',               en: 'Left' },
+  players_career_lbl:      { ko: '구력',               en: 'Experience' },
+  players_career_1:        { ko: '6개월 미만',         en: 'Under 6mo' },
+  players_career_2:        { ko: '6개월~1년',          en: '6mo~1yr' },
+  players_career_3:        { ko: '1~2년',              en: '1~2 yrs' },
+  players_career_4:        { ko: '2~5년',              en: '2~5 yrs' },
+  players_career_5:        { ko: '5~10년',             en: '5~10 yrs' },
+  players_career_6:        { ko: '10년 이상',          en: '10+ yrs' },
+  players_style_lbl:       { ko: '플레이스타일',       en: 'Play Style' },
+  players_style_1:         { ko: '공격형',             en: 'Aggressive' },
+  players_style_2:         { ko: '수비형',             en: 'Defensive' },
+  players_style_3:         { ko: '올라운드',           en: 'All-round' },
+  players_style_4:         { ko: '네트플레이',         en: 'Net Play' },
+  players_style_5:         { ko: '베이스라인',         en: 'Baseline' },
+  players_club_opt:        { ko: '클럽 선택 (선택사항)', en: 'Club (optional)' },
+  players_add_btn:         { ko: '+ 선수 등록',        en: '+ Register Player' },
+
+  /* ─── 대회 탭 ─── */
+  // 탭 버튼
+  ctab_hanul:              { ko: '🔄 한울방식',         en: '🔄 Hanul' },
+  ctab_tour:               { ko: '🏆 토너먼트',         en: '🏆 Tournament' },
+  ctab_score:              { ko: '🎾 스코어',            en: '🎾 Score' },
+  ctab_tactics:            { ko: '📋 전술판',            en: '📋 Tactics' },
+
+  // 한울방식 목록
+  tv_list_sub:             { ko: '파트너·상대방 순환 복식 대회', en: 'Rotating Doubles Format' },
+  tv_new_btn:              { ko: '+ 새 대회 만들기',     en: '+ New Contest' },
+  tv_empty:                { ko: '대회가 없어요.\n새 대회를 만들어보세요!', en: 'No contests yet.\nCreate a new one!' },
+
+  // 토너먼트 목록
+  tn_list_sub:             { ko: '단·복식 대진표를 자동으로 생성해요', en: 'Auto-generate singles/doubles brackets' },
+  tn_new_btn:              { ko: '+ 새 토너먼트 만들기', en: '+ New Tournament' },
+  tn_empty:                { ko: '토너먼트가 없어요.\n새 토너먼트를 만들어보세요!', en: 'No tournaments yet.\nCreate a new one!' },
+
+  // 공통 대회 상태
+  contest_done:            { ko: '완료',                en: 'Done' },
+  contest_ongoing:         { ko: '진행중',              en: 'In Progress' },
+  contest_edit:            { ko: '수정',                en: 'Edit' },
+  contest_delete:          { ko: '삭제',                en: 'Delete' },
+  contest_bracket:         { ko: '대진표',              en: 'Bracket' },
+  contest_ranking:         { ko: '순위표',              en: 'Ranking' },
+  contest_info:            { ko: '대회 정보',           en: 'Contest Info' },
+  contest_name_ph:         { ko: '대회 이름',           en: 'Contest Name' },
+  contest_players:         { ko: '참가 선수',           en: 'Players' },
+  contest_direct_input:    { ko: '직접 입력',           en: 'Enter name' },
+  contest_add_btn:         { ko: '추가',                en: 'Add' },
+  contest_create_bracket:  { ko: '대진표 생성',         en: 'Create Bracket' },
+  contest_select_all:      { ko: '전체 선택',           en: 'Select All' },
+  contest_deselect_all:    { ko: '전체 해제',           en: 'Clear All' },
+  contest_other:           { ko: '기타',                en: 'Other' },
+  contest_no_players:      { ko: '선수 탭에서 먼저 선수를 등록하세요.', en: 'Register players in the Players tab first.' },
+  contest_persons:         { ko: '명',                  en: 'p' },
+  contest_games:           { ko: '게임',                en: 'games' },
+  contest_selected_n:      { ko: '선택된 선수 {n}명',  en: '{n} players selected' },
+  contest_seed_hint:       { ko: '↕️ 순서 조정으로 시드 배정 (위가 강한 선수)', en: '↕️ Drag to set seed order (top = strongest)' },
+  contest_seed_hint_short: { ko: '(위쪽이 시드 높음)', en: '(top = top seed)' },
+
+  // 한울방식 만들기 모달
+  tv_modal_title:          { ko: '새 대회 만들기',      en: 'New Contest' },
+  tv_select_hint:          { ko: '선수를 선택하세요 (최소 4명)', en: 'Select players (min 4)' },
+  game_n1:                 { ko: '1게임',               en: '1 Game' },
+  game_n2:                 { ko: '2게임',               en: '2 Games' },
+  game_n3:                 { ko: '3게임',               en: '3 Games' },
+  game_n4:                 { ko: '4게임',               en: '4 Games' },
+
+  // 토너먼트 만들기 모달
+  tn_modal_title:          { ko: '🏆 새 토너먼트 만들기', en: '🏆 New Tournament' },
+  tn_format_title:         { ko: '형식 선택',           en: 'Format' },
+  tn_singles:              { ko: '🎾 단식',             en: '🎾 Singles' },
+  tn_doubles:              { ko: '🤝 복식',             en: '🤝 Doubles' },
+  tn_singles_note:         { ko: '※ 단식은 2·4·8·16명 권장', en: '※ Singles: 2·4·8·16 players recommended' },
+  tn_doubles_note:         { ko: '※ 복식은 짝수 명이어야 해요 (4·8·16명)', en: '※ Doubles: even number required (4·8·16 players)' },
+  tn_select_hint:          { ko: '선수를 선택하세요 (최소 2명)', en: 'Select players (min 2)' },
+  tn_create_btn:           { ko: '🏆 대진표 생성',      en: '🏆 Create Bracket' },
+  tn_team_build_title:     { ko: '복식 팀 구성 방법',   en: 'Doubles Team Setup' },
+  tn_team_auto:            { ko: '🎲 자동 팀 섞기',     en: '🎲 Auto Team' },
+  tn_team_manual:          { ko: '✋ 직접 파트너 지정', en: '✋ Manual Partners' },
+  tn_auto_desc:            { ko: '선택된 선수 순서(위→아래)로 자동 팀을 구성해요.\n1번↔마지막, 2번↔끝에서 2번 방식으로 짝이 맺어져요.',
+                             en: 'Teams are formed by pairing players top-to-bottom: 1st↔last, 2nd↔second-to-last.' },
+  tn_manual_desc:          { ko: '선수를 순서대로 2명씩 클릭하면 팀이 만들어져요. 파란색 = 1번째, 초록색 = 2번째(파트너)',
+                             en: 'Click 2 players in order to form a team. Blue = 1st pick, Green = 2nd pick (partner).' },
+  tn_team_reset:           { ko: '🗑️ 팀 초기화',        en: '🗑️ Reset Teams' },
+  tn_all_assigned:         { ko: '모든 선수가 팀에 배정되었어요 ✅', en: 'All players assigned to teams ✅' },
+  tn_no_teams_yet:         { ko: '아직 팀이 없어요. 위에서 선수를 2명씩 클릭하세요!', en: 'No teams yet. Click 2 players above to form a team!' },
+
+  // 상대팀 구성 방법 (단식 토너먼트)
+  tn_opp_build_title:      { ko: '상대팀 배치 방법',     en: 'Opponent Setup' },
+  tn_opp_auto:             { ko: '🎲 자동 배치',         en: '🎲 Auto Arrange' },
+  tn_opp_manual:           { ko: '✋ 직접 대진 지정',    en: '✋ Manual Bracket' },
+  tn_opp_auto_desc:        { ko: '선수 순서(위→아래)대로 자동으로 대진이 짜여요.\n시드 순서를 조정하고 싶다면 선수 목록 순서를 바꿔서 생성하세요.',
+                             en: 'Bracket is auto-arranged by player order (top→bottom). Adjust player order to change seeding.' },
+  tn_opp_manual_desc:      { ko: '선수를 2명씩 클릭해서 1라운드 대진을 직접 짜세요.\n파란색 = A팀, 초록색 = B팀(상대)',
+                             en: 'Click 2 players to set 1st round matchups. Blue = A side, Green = B side (opponent).' },
+  tn_opp_reset:            { ko: '🗑️ 대진 초기화',       en: '🗑️ Reset Bracket' },
+  tn_opp_all_set:          { ko: '모든 1라운드 대진이 완성되었어요 ✅', en: 'All 1st round matchups set ✅' },
+  tn_opp_no_match:         { ko: '아직 대진이 없어요. 위에서 선수를 2명씩 클릭하세요!', en: 'No matchups yet. Click 2 players above!' },
+
+  // 프로필 탭 동적 렌더 텍스트
+  pf_unset:                { ko: '미설정',          en: 'Not set' },
+  pf_not_entered:          { ko: '미입력',          en: 'Not entered' },
+  pf_equipment:            { ko: '🎾 장비 정보',    en: '🎾 Equipment' },
+  pf_racket_name:          { ko: '라켓명',          en: 'Racket' },
+  pf_string_label:         { ko: '스트링',          en: 'String' },
+  pf_tension_label:        { ko: '텐션',            en: 'Tension' },
+  pf_string_date:          { ko: '스트링 교체일',   en: 'String Date' },
+  pf_no_racket:            { ko: '라켓 정보를 입력해주세요', en: 'Enter your racket info' },
+  pf_default_name:         { ko: '선수',            en: 'Player' },
+  pf_select_string:        { ko: '📋 과거 스트링 중 선택', en: '📋 Select from history' },
+  pf_string_input_ph:      { ko: '직접 입력 또는 위에서 선택', en: 'Type or select above' },
+  pf_string_status_title:  { ko: '스트링 상태',     en: 'String Status' },
+  pf_player_info_title:    { ko: '플레이어 정보',   en: 'Player Info' },
+
+  // 통계 탭 동적 렌더 텍스트
+  stats_this_month:        { ko: '이번 달',         en: 'This Month' },
+  stats_no_match:          { ko: '경기 없음',        en: 'No matches' },
+  stats_singles_record:    { ko: '단식 전적',        en: 'Singles Record' },
+  stats_doubles_record:    { ko: '복식 전적',        en: 'Doubles Record' },
+  stats_no_record:         { ko: '없음',             en: 'None' },
+  stats_best_vs:           { ko: '가장 많이 이긴 상대', en: 'Best Win vs' },
+  stats_hardest_vs:        { ko: '가장 어려운 상대',  en: 'Hardest Opponent' },
+  stats_win_suffix:        { ko: '승',               en: 'W' },
+  stats_lose_suffix:       { ko: '패',               en: 'L' },
+  match_result_win:        { ko: '승리',             en: 'Win' },
+  match_result_lose:       { ko: '패배',             en: 'Lose' },
+  stats_game_count:        { ko: '전',               en: 'G' },
+  stats_winrate_label:     { ko: '내 승률',          en: 'Win%' },
+  stats_show_more_person:  { ko: '명 더 보기',       en: ' more' },
+  stats_show_more_team:    { ko: '팀 더 보기',       en: ' more' },
+  stats_fold:              { ko: '접기 ▲',           en: 'Fold ▲' },
+  stats_badge_strong:      { ko: '우세',             en: '↑' },
+  stats_badge_weak:        { ko: '약점',             en: '↓' },
+  stats_badge_disadvantage:{ ko: '열세',             en: '↓' },
+  stats_singles_opp_label: { ko: '단식 상대',        en: 'Singles Opp.' },
+  stats_enemy_team_label:  { ko: '상대팀',           en: 'Enemy Team' },
+  stats_combo_opp:         { ko: '상대:',            en: 'Opp:' },
+  stats_combo_team:        { ko: '내팀:',            en: 'My Team:' },
+  stats_partner_main:      { ko: '내 파트너:',       en: 'My Partner:' },
+  stats_partner_solo:      { ko: '단독 출전',        en: 'Solo' },
+  stats_partner_mostly:    { ko: '와 주로',          en: 'mostly' },
+  stats_games_together:    { ko: '경기 함께',        en: 'games together' },
+  stats_chemistry:         { ko: '궁합',             en: 'Chemistry' },
+  stats_streak_win:        { ko: '연승 중!',         en: ' Win Streak!' },
+  stats_streak_lose:       { ko: '연패 중',          en: ' Lose Streak' },
+  stats_streak_win_msg:    { ko: '연속 승리! 🎉',   en: ' straight wins! 🎉' },
+  stats_streak_lose_msg:   { ko: '연속 패배. 파이팅! 💪', en: ' straight losses. Keep going! 💪' },
+  stats_streak_recent:     { ko: '최근',             en: 'Last' },
+  stats_streak_games:      { ko: '경기',             en: 'matches' },
+  stats_month_suffix:      { ko: '월',               en: '' },
+  pd_partner_label:        { ko: '파트너:',           en: 'Partner:' },
+  pd_opp_team_label:       { ko: '상대팀:',           en: 'Opp Team:' },
+  pd_show_more:            { ko: '▼ 더보기',          en: '▼ More' },
+  pd_fold:                 { ko: '▲ 접기',            en: '▲ Fold' },
+  pd_no_match:             { ko: '경기 기록이 없습니다', en: 'No match records' },
+  stats_enemyteam_empty:   { ko: '복식 경기를 입력하면\n상대팀 데이터가 표시됩니다', en: 'Enter doubles matches to see\nenemy team data' },
+  stats_search_empty:      { ko: '검색 결과가 없습니다', en: 'No results found' },
+  match_today_empty:       { ko: '아직 경기 기록이 없어요', en: 'No match records yet' },
+  match_today_none:        { ko: '오늘 경기 기록이 없어요', en: 'No matches today' },
+
+  // 선수 탭 동적 렌더 텍스트
+  player_add_placeholder:  { ko: '선수를 추가해보세요!', en: 'Add a player!' },
+  player_no_club:          { ko: '해당 클럽에 선수가 없습니다', en: 'No players in this club' },
+  player_all_filter:       { ko: '전체',             en: 'All' },
+  player_no_club_filter:   { ko: '클럽 없음',        en: 'No Club' },
+
+  // 언어 선택 버튼 (프로필 탭 상단)
+  pf_lang_section:         { ko: '🌐 언어 / Language', en: '🌐 Language / 언어' },
+
+  // ── 설명서 (manualModal) ─────────────────────────────
+  manual_title:   { ko: '📖 사용 설명서', en: '📖 User Guide' },
+
+  // 1. 프로필
+  manual_s1_title: { ko: '1. 프로필', en: '1. Profile' },
+  manual_s1_1: { ko: '상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요', en: 'Tap the photo area at the top to set your <b>profile picture</b>' },
+  manual_s1_2: { ko: '이름·클럽·나이대·손잡이·구력·스타일 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다', en: 'Tap any field (name, club, age, handedness, experience, style) to edit — changes are <b>auto-saved</b>' },
+  manual_s1_3: { ko: '라켓은 <b>2자루까지</b> 등록할 수 있어요. RACQUET 1·2 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요', en: 'You can register <b>up to 2 racquets</b>. Tap RACQUET 1·2 to expand, then enter the name, string, tension, and restring date' },
+  manual_s1_4: { ko: '<b>스트링 선택</b> — 과거에 입력한 스트링 목록에서 고르거나, 아래 입력창에 직접 타이핑할 수 있어요. 드롭다운에서 선택하면 입력창에도 자동으로 채워져요', en: '<b>String selection</b> — pick from your past strings in the dropdown, or type directly. Selecting from the dropdown auto-fills the input field' },
+  manual_s1_5: { ko: '<b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'Enter a <b>restring date</b> to see D+ days and games played automatically — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
+  manual_s1_6: { ko: '프로필 하단에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼 <b>종목을 설정</b>하세요. 경기기록·통계 탭의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동해요', en: 'Set your <b>sport</b> at the bottom of the profile: 🎾 Tennis / 🏸 Badminton / 🏓 Pickleball. You can also tap <b>[Change Sport →]</b> in the Match or Stats tab' },
+  manual_s1_7: { ko: '상단 🌙/☀️ 버튼으로 <b>다크/라이트 테마</b>를 전환할 수 있어요', en: 'Tap 🌙/☀️ at the top to switch between <b>dark and light theme</b>' },
+
+  // 2. 경기 기록
+  manual_s2_title: { ko: '2. 경기 기록', en: '2. Match Records' },
+  manual_s2_1: { ko: '앱을 열면 <b>날짜가 오늘로 자동 입력</b>됩니다. 과거 날짜로 바꿀 수도 있어요', en: 'When you open the app, <b>today\'s date is filled in automatically</b>. You can change it to a past date' },
+  manual_s2_2: { ko: '단식 / 복식을 선택하세요. 복식이면 <b>파트너·상대2 입력란</b>이 추가됩니다', en: 'Select Singles or Doubles. In doubles mode, <b>partner and 2nd opponent fields</b> appear' },
+  manual_s2_3: { ko: '날짜 · 상대 이름 · 결과(승/패)는 <b>필수</b>, 스코어·메모·사용 라켓은 선택 사항이에요', en: 'Date, opponent name, and result (win/loss) are <b>required</b>. Score, memo, and racquet used are optional' },
+  manual_s2_4: { ko: '이름 입력 시 <b>초성 자동완성</b>을 지원해요. 예: \'ㄱㄷㅎ\' → \'김동현\' 자동 추천', en: '<b>Autocomplete</b> is supported when typing names. Start typing and matching names appear' },
+  manual_s2_5: { ko: '경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수가 따로 카운트돼요', en: 'Selecting a <b>racquet used</b> when logging a match lets you track game count per racquet' },
+  manual_s2_6: { ko: '오늘 경기는 상단에 바로 표시되고, 이전 경기는 <b>📋 이전 경기 기록</b>을 탭해서 확인하세요', en: 'Today\'s matches appear at the top. Tap <b>📋 Previous Records</b> to see past matches' },
+  manual_s2_7: { ko: '저장된 경기는 ✏️ 수정 · 🗑️ 삭제가 가능해요', en: 'Saved matches can be ✏️ edited or 🗑️ deleted' },
+  manual_s2_8: { ko: '🏆 대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다', en: 'Scores entered in the 🏆 Tournament tab are <b>automatically added to match records</b>' },
+  manual_s2_9: { ko: '경기 카드 오른쪽 <b>📤 공유 버튼</b>을 탭하면 결과 공유 팝업이 열려요 — 카카오톡·문자·밴드 등 폰 기본 공유창으로 자랑하거나, <b>텍스트 복사</b> 후 붙여넣기 할 수 있어요', en: 'Tap the <b>📤 share button</b> on a match card to open the share popup — share via KakaoTalk, SMS, Band, or <b>copy the text</b> and paste anywhere' },
+
+  // 3. 통계
+  manual_s3_title: { ko: '3. 통계', en: '3. Statistics' },
+  manual_s3_1: { ko: '통계 탭 상단에 현재 선택된 종목이 표시됩니다. <b>[종목 변경 →]</b> 버튼을 누르면 프로필 탭에서 종목을 바꿀 수 있어요', en: 'The current sport is shown at the top. Tap <b>[Change Sport →]</b> to switch sports in the profile tab' },
+  manual_s3_2: { ko: '<b>연승·연패 배너</b> — 현재 연속 기록이 자동으로 표시됩니다', en: '<b>Win/Loss Streak banner</b> — your current streak is shown automatically' },
+  manual_s3_3: { ko: '<b>상세 요약</b> — 이번 달 성적, 단식·복식 승률, 가장 많이 이긴 상대·가장 어려운 상대', en: '<b>Summary</b> — this month\'s record, singles/doubles win rates, best and toughest opponents' },
+  manual_s3_4: { ko: '<b>월별 승률 그래프</b> — 최근 6개월 성적 추이를 바 차트로 확인', en: '<b>Monthly win rate chart</b> — view your last 6 months of performance as a bar chart' },
+  manual_s3_5: { ko: '<b>상대 전적 · 파트너 궁합 · 상대팀 상성</b>을 각각 분석해줘요. 기본 상위 5명만 표시되고, <b>[더보기]</b> 버튼으로 전체를 볼 수 있어요', en: 'Analyzes <b>opponent records, partner chemistry, and rival team matchups</b>. Top 5 shown by default — tap <b>[Show More]</b> for all' },
+  manual_s3_6: { ko: '각 섹션 상단 <b>🔍 검색창</b>에서 이름 또는 초성으로 바로 찾을 수 있어요', en: 'Use the <b>🔍 search bar</b> at the top of each section to find by name' },
+  manual_s3_7: { ko: '각 항목은 탭하면 펼쳐지는 <b>아코디언 방식</b>으로 필요한 것만 열어볼 수 있어요', en: 'Each item uses an <b>accordion style</b> — tap to expand only what you need' },
+
+  // 4. 선수 관리
+  manual_s4_title: { ko: '4. 선수 관리', en: '4. Player Management' },
+  manual_s4_1: { ko: '선수 등록 시 <b>성별·등급·나이대·손잡이·구력·플레이스타일</b>을 함께 입력할 수 있어요', en: 'When adding a player, you can enter <b>gender, level, age group, handedness, experience, and play style</b>' },
+  manual_s4_2: { ko: '이름 입력 시 <b>초성 검색</b>을 지원해요. 예: \'ㄱㄷㅎ\' 입력 → \'김동현\' 검색', en: '<b>Name search with autocomplete</b> is supported. Start typing to find matching players' },
+  manual_s4_3: { ko: '<b>클럽 관리</b>에서 클럽을 만들고 선수에게 배정할 수 있어요. 한 선수가 여러 클럽에 속할 수도 있어요', en: 'Create clubs in <b>Club Management</b> and assign players. A player can belong to multiple clubs' },
+  manual_s4_4: { ko: '선수 이름을 탭하면 <b>상세 전적 페이지</b>로 이동해요 — 나와의 전적·승률·최근 대전 기록 확인 가능', en: 'Tap a player\'s name to open their <b>detail page</b> — see your head-to-head record, win rate, and recent matches' },
+  manual_s4_5: { ko: '이름순·최근 대전순·전적 많은 순·승률 높은 순으로 <b>정렬</b>할 수 있어요', en: '<b>Sort</b> players by name, most recent match, most matches, or highest win rate' },
+  manual_s4_6: { ko: '📝 메모 버튼으로 선수별 특징이나 스타일을 기록해두세요', en: 'Use the 📝 memo button to note each player\'s characteristics or style' },
+
+  // 5. 대회
+  manual_s5_title: { ko: '5. 대회', en: '5. Tournament' },
+  manual_s5_1: { ko: '대회 탭에는 <b>🔄 한울방식 · 🏆 토너먼트 · 🎾 스코어</b> 세 가지 메뉴가 있어요', en: 'The Tournament tab has three menus: <b>🔄 Rotation (Hanul)</b>, <b>🏆 Bracket Tournament</b>, and <b>🎾 Score</b>' },
+  manual_s5_2: { ko: '<b>🔄 한울방식</b> — 매 게임마다 파트너와 상대가 자동으로 바뀌는 <b>순환 복식 대회</b>예요. 참가 인원과 게임 수를 설정하면 모든 조합이 자동으로 짜여요. 예) 8명·4게임이면 모두 골고루 파트너/상대로 만나요', en: '<b>🔄 Rotation (Hanul)</b> — partners and opponents rotate each game in a <b>round-robin doubles</b> format. Set players and game count and all pairings are auto-generated. e.g. 8 players × 4 games means everyone pairs with and faces everyone equally' },
+  manual_s5_3: { ko: '<b>🏆 토너먼트</b> — 단식·복식 <b>KO방식 대진표</b>예요. 이긴 팀만 다음 라운드로 진출하고, 결과 입력 시 다음 경기가 자동으로 채워져요', en: '<b>🏆 Bracket Tournament</b> — single/doubles <b>knockout bracket</b>. Only winners advance, and entering a result automatically fills in the next match' },
+  manual_s5_4: { ko: '<b>복식 파트너 구성</b> — 선수 선택 후 아래 두 가지 중 선택해요<br>· <b>🎲 자동 팀 섞기</b>: 선수 순서대로 1번↔마지막, 2번↔끝에서 2번 방식으로 자동 짝을 맺어요<br>· <b>✋ 직접 파트너 지정</b>: 선수를 2명씩 직접 클릭해서 팀을 만들어요', en: '<b>Doubles partner setup</b> — after selecting players, choose:<br>· <b>🎲 Auto pair</b>: pairs 1st↔last, 2nd↔2nd-last automatically<br>· <b>✋ Manual pair</b>: click players two at a time to form your own teams' },
+  manual_s5_5: { ko: '<b>상대팀 배치 방법</b> — 1라운드 대진을 어떻게 짤지 선택해요<br>· <b>🎲 자동 배치</b>: 선수/팀 순서대로 표준 시드 방식으로 자동 대진이 만들어져요<br>· <b>✋ 직접 대진 지정</b>: 내가 원하는 대로 누가 누구와 1라운드에서 붙을지 직접 클릭해서 대진을 짜요', en: '<b>Bracket draw method</b> — choose how Round 1 matchups are set:<br>· <b>🎲 Auto draw</b>: standard seeded bracket generated automatically<br>· <b>✋ Manual draw</b>: click to decide exactly who faces who in Round 1' },
+  manual_s5_6: { ko: '준결승 패자는 자동으로 <b>3·4위전</b>에 배치됩니다', en: 'Semifinal losers are automatically placed in the <b>3rd place match</b>' },
+  manual_s5_7: { ko: '선수 탭에서 등록한 선수를 바로 불러오거나, 직접 이름을 입력할 수 있어요', en: 'Import players from the Players tab, or type names directly' },
+  manual_s5_8: { ko: '대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다', en: 'Scores entered in tournaments are <b>automatically saved to match records</b>' },
+  manual_s5_9: { ko: '<b>📊 스코어보드</b> — 실제 경기 진행 중 실시간 점수판이에요. <b>폰을 가로로 돌리면</b> 대형 점수 화면이 열려요', en: '<b>📊 Scoreboard</b> — a live scoring display for matches in progress. <b>Rotate your phone to landscape</b> for the full-screen scoreboard' },
+  manual_s5_10: { ko: '스코어보드에서 <b>+POINT</b>로 점수 추가, <b>ACE</b>·<b>FAULT(더블폴트)</b> 버튼으로 특수 상황 입력, <b>↩ UNDO</b>로 되돌리기 가능해요', en: 'On the scoreboard: tap <b>+POINT</b> to score, <b>ACE</b>·<b>FAULT (double fault)</b> for special situations, and <b>↩ UNDO</b> to revert' },
+  manual_s5_11: { ko: '40-40 상황에서 자동으로 <b>DEUCE → AD</b> 처리되며, <b>🔀 타이브레이크</b> 버튼으로 타이브레이크를 시작할 수 있어요', en: 'At 40-40, <b>DEUCE → AD</b> is handled automatically. Use the <b>🔀 Tiebreak</b> button to start a tiebreak' },
+  manual_s5_12: { ko: '하단 <b>SETUP 탭</b>에서 선수 이름과 경기 제목을 직접 입력할 수 있어요', en: 'Enter player names and match title in the <b>SETUP tab</b> at the bottom' },
+  manual_s5_13: { ko: '<b>🎾 스코어</b> 버튼은 한울방식·토너먼트 설정 없이 <b>바로 스코어보드만 빠르게</b> 열고 싶을 때 사용해요. 친선경기나 즉석 게임 점수 기록에 편리해요', en: '<b>🎾 Score</b> opens the scoreboard <b>instantly without setting up</b> a Rotation or Bracket tournament — handy for friendly matches or quick on-the-spot scoring' },
+
+  // 6. 스트링 관리
+  manual_s6_title: { ko: '6. 스트링 관리', en: '6. String Management' },
+  manual_s6_1: { ko: '프로필 탭 → 라켓 카드에서 <b>스트링명</b>을 입력하세요. 과거에 입력한 스트링은 드롭다운에서 바로 선택할 수 있어요', en: 'Go to Profile → racquet card and enter the <b>string name</b>. Previously used strings appear in the dropdown' },
+  manual_s6_2: { ko: '<b>스트링 교체일</b>을 입력하면 프로필 배너에 D+일수와 교체 후 게임 수가 자동 표시됩니다', en: 'Enter a <b>restring date</b> to see D+ days and post-restring game count in the profile banner' },
+  manual_s6_3: { ko: '배너 색상으로 교체 시기를 한눈에 확인할 수 있어요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'The banner color shows restring status at a glance — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
+  manual_s6_4: { ko: '경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수를 따로 카운트해줘요', en: 'Choose a <b>racquet used</b> when logging a match to track game count per racquet separately' },
+  manual_s6_5: { ko: '<b>스트링 선택이 안 보여요</b> — 스트링 입력 기록이 없으면 직접 입력창만 표시돼요. 기록이 쌓이면 드롭다운이 자동으로 나타납니다', en: '<b>No string dropdown?</b> — The dropdown only appears after you\'ve entered a string at least once. Just type directly until then' },
+  manual_s6_6: { ko: '스트링 관리 탭 상단 <b>🛠️ 교체 인증하기</b> 버튼을 탭하면, 라켓·스트링·텐션·교체일 정보가 자동으로 문구로 만들어져서 카카오톡 등으로 바로 공유할 수 있어요', en: 'Tap <b>🛠️ Share Restring</b> at the top of the String Management tab to instantly generate and share your racquet, string, tension, and restring date via KakaoTalk or any app' },
+
+  // 7. 전술판
+  manual_s7_title: { ko: '7. 전술판', en: '7. Tactics Board' },
+  manual_s7_1: { ko: '<b>대회</b> 탭 상단의 <b>📋 전술판</b> 버튼을 탭하면 전용 화면이 열려요', en: 'Tap <b>📋 Tactics Board</b> at the top of the Tournament tab to open the dedicated screen' },
+  manual_s7_2: { ko: '코트에서 <b>선수(원형 아이콘)를 드래그</b>해서 위치를 자유롭게 움직일 수 있어요', en: '<b>Drag player icons</b> (circles) on the court to freely reposition them' },
+  manual_s7_3: { ko: '선수를 <b>한 번 탭</b>하면 타구각 표시, <b>두 번 탭</b>하면 이름·번호·포지션·색상을 편집할 수 있어요', en: '<b>Single tap</b> a player to show shot angles. <b>Double tap</b> to edit name, number, position, and color' },
+  manual_s7_4: { ko: '상단 버튼으로 <b>기본·양쪽전위·양쪽후위·I포메이션·호주</b> 5가지 대형을 바로 적용할 수 있어요', en: 'Use the top buttons to instantly apply 5 formations: <b>Default, Both Net, Both Back, I-Formation, Australian</b>' },
+  manual_s7_5: { ko: '☰ 버튼(화면 오른쪽 가운데)을 탭하면 조작 버튼이 나타나요', en: 'Tap the ☰ button (middle right of screen) to show the control panel' },
+  manual_s7_6: { ko: '<b>➡️ 화살표</b> — 선수 탭 후 드래그: 이동 화살표 / 빈 곳 드래그: 자유 화살표', en: '<b>➡️ Arrow</b> — tap a player then drag: movement arrow / drag empty space: free arrow' },
+  manual_s7_7: { ko: '<b>✏️ 그리기</b> — 손가락으로 코트 위에 자유롭게 선을 그을 수 있어요', en: '<b>✏️ Draw</b> — draw freely on the court with your finger' },
+  manual_s7_8: { ko: '<b>⭕ 커버존 / 🎾 공 / 📐 타구각</b> — 각각 탭해서 표시/숨기기 전환', en: '<b>⭕ Cover zone / 🎾 Ball / 📐 Shot angle</b> — tap each to toggle show/hide' },
+  manual_s7_9: { ko: '<b>🎨 보드설정</b> — 코트 색상(그린·클레이·하드·다크·잔디), 그리기 색상 변경', en: '<b>🎨 Board settings</b> — change court color (green, clay, hard, dark, grass) and drawing color' },
+  manual_s7_10: { ko: '<b>💾 저장 / 📂 불러오기</b> — 전술판 배치를 이름 붙여 저장하고 나중에 다시 불러올 수 있어요 (최대 20개)', en: '<b>💾 Save / 📂 Load</b> — save your board layout with a name and reload it later (up to 20 saves)' },
+  manual_s7_11: { ko: '<b>🔗 공유</b> — 현재 전술판을 URL 링크로 만들어 카카오톡 등으로 공유할 수 있어요', en: '<b>🔗 Share</b> — generate a URL link of the current board and share it via KakaoTalk or other apps' },
+  manual_s7_12: { ko: '<b>🗑️ 삭제</b>는 화살표·그리기만 지워요. <b>🔄 초기화</b>는 선수 위치까지 원래대로 돌아가요', en: '<b>🗑️ Delete</b> clears only arrows and drawings. <b>🔄 Reset</b> also returns players to their original positions' },
+
+  // 8. 공유 & 백업
+  manual_s8_title: { ko: '8. 공유 & 백업', en: '8. Share & Backup' },
+  manual_s8_1: { ko: '데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 같은 구글 계정으로 로그인하면 그대로 유지돼요', en: 'Data is <b>automatically saved to the cloud (Firebase)</b>. Log in with the same Google account on a new phone to restore everything' },
+  manual_s8_2: { ko: '<b>💾 데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요', en: '<b>💾 Export Data</b> — save all records as a JSON file for an extra backup' },
+  manual_s8_3: { ko: '<b>📂 가져오기</b> — 백업한 JSON 파일을 불러와 데이터를 복원할 수 있어요', en: '<b>📂 Import</b> — load a backed-up JSON file to restore your data' },
+  manual_s8_4: { ko: '🧹 <b>저장공간 정리</b> — 기기 캐시만 삭제돼요. 클라우드 데이터는 안전하게 유지됩니다', en: '🧹 <b>Clear Storage</b> — clears only the device cache. Your cloud data stays safe' },
+  manual_s8_5: { ko: '💬 <b>카카오 오픈채팅</b> — 공유 탭에서 참여해 동호인들과 소통하세요', en: '💬 <b>KakaoTalk Open Chat</b> — join from the Share tab to connect with other players' },
+
+  // 9. 자주 묻는 질문
+  manual_s9_title: { ko: '9. 자주 묻는 질문', en: '9. FAQ' },
+  manual_s9_1: { ko: '<b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요', en: '<b>Matches not showing in stats?</b> — Check that the correct sport (🎾 Tennis, etc.) is selected in your profile. Stats only show for the current sport' },
+  manual_s9_2: { ko: '<b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 \'화면을 가로로 돌려주세요\' 안내가 나와요', en: '<b>Scoreboard not showing?</b> — The scoreboard requires <b>landscape mode</b>. In portrait, a "Please rotate" message appears' },
+  manual_s9_3: { ko: '<b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요', en: '<b>App not updating?</b> — Tap Share tab → Clear Storage, or on iPhone Safari go to Settings → Clear History and Website Data' },
+  manual_s9_4: { ko: '<b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요', en: '<b>App running slowly?</b> — Tap Share tab → Clear Storage to improve performance' },
+  manual_s9_5: { ko: '<b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다', en: '<b>Data disappeared?</b> — Sign out and log back in with the same Google account to restore your data' },
+  manual_s9_6: { ko: '<b>HTML 파일로 직접 열면 오류가 나요</b> — 반드시 인터넷이 연결된 상태에서 <b>웹 주소(URL)</b>로 접속하세요', en: '<b>Error when opening the HTML file directly?</b> — Always access the app via its <b>web URL</b> with an internet connection' },
+
+  // 10. 니지스트링 커뮤니티
+  manual_s10_title: { ko: '10. 니지스트링 커뮤니티', en: '10. NIJI STRING Community' },
+  manual_s10_1: { ko: '공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요', en: 'Join the <b>KakaoTalk Open Chat</b> from the Share tab to connect with fellow players' },
+  manual_s10_2: { ko: '스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요', en: 'Use <b>NIJI STRING</b> professional services: restringing, racquet repair, custom watch strap crafting, and more' },
+
+  // ── 스코어보드 UI ──
+  sb_close:       { ko: '✕ 닫기',            en: '✕ Close' },
+  sb_tap_hint:    { ko: '▲ 선수 영역 탭=포인트 / 길게누름=취소 · 가운데 탭=메뉴', en: '▲ Tap player=Point / Hold=Undo · Center tap=Menu' },
+  sb_tab_score:   { ko: '🎾 점수',            en: '🎾 Score' },
+  sb_tab_fault:   { ko: '✖ 폴트',            en: '✖ Fault' },
+  sb_tab_setup:   { ko: '⚙ 설정',            en: '⚙ Setup' },
+  sb_srvsub:      { ko: '🟢 서브 선수 교체',  en: '🟢 Switch Server' },
+  sb_point:       { ko: '⚡ 포인트',          en: '⚡ Point' },
+  sb_ace:         { ko: '🎯 에이스',          en: '🎯 Ace' },
+  sb_fault_btn:   { ko: '✖ 폴트',            en: '✖ Fault' },
+  sb_undo:        { ko: '↩ 되돌리기',         en: '↩ Undo' },
+  sb_tiebreak:    { ko: '🔀 타이브레이크',    en: '🔀 Tiebreak' },
+  sb_reset:       { ko: '↺ 초기화',           en: '↺ Reset' },
+  sb_cur_fault:   { ko: '현재 폴트',          en: 'Current Fault' },
+  sb_double_fault:{ ko: '더블폴트',           en: 'Double Fault' },
+  sb_fault_times: { ko: '회',                 en: '' },
+  sb_srv_fault:   { ko: '서버 폴트',          en: 'Server Fault' },
+  sb_fault_auto:  { ko: '폴트는 서브하는 선수에게 자동 적용됩니다', en: 'Fault is automatically applied to the serving player' },
+  sb_fault_reset: { ko: '폴트 초기화',        en: 'Reset Faults' },
+  sb_singles:     { ko: '🎾 단식',            en: '🎾 Singles' },
+  sb_doubles:     { ko: '🤝 복식',            en: '🤝 Doubles' },
+  sb_player1:     { ko: '🟡 선수 1',          en: '🟡 Player 1' },
+  sb_player2:     { ko: '🔵 선수 2',          en: '🔵 Player 2' },
+  sb_dbl_our1:    { ko: '🟡 우리팀 듀스코트',  en: '🟡 Our Team (Deuce)' },
+  sb_dbl_opp1:    { ko: '🔵 상대팀 듀스코트',  en: '🔵 Opp. Team (Deuce)' },
+  sb_dbl_p1:      { ko: '🟡 우리팀 애드코트',  en: '🟡 Our Team (Ad)' },
+  sb_dbl_p2:      { ko: '🔵 상대팀 애드코트',  en: '🔵 Opp. Team (Ad)' },
+  sb_team_ours:   { ko: '우리팀',              en: 'Our Team' },
+  sb_team_opp:    { ko: '상대팀',              en: 'Opp. Team' },
+  sb_court_pair:  { ko: '듀스/애드 2명',        en: 'Deuce/Ad, 2 players' },
+  sb_match_title: { ko: '경기 제목',          en: 'Match Title' },
+  sb_touch_input: { ko: '터치하여 입력',      en: 'Tap to enter' },
+  sb_apply:       { ko: '✔ 적용하기',         en: '✔ Apply' },
+  sb_winner_title:{ ko: '🏆 경기 승자',       en: '🏆 Match Winner' },
+  sb_new_match:   { ko: '↺ 새 경기 시작',    en: '↺ New Match' },
+
+  // ── 전술판 ──
+  tc_back:           { ko: '← 돌아가기',         en: '← Back' },
+  tc_title:          { ko: '🎾 복식 전술판',      en: '🎾 Doubles Tactics Board' },
+  tc_preset_basic:   { ko: '기본',               en: 'Basic' },
+  tc_preset_bothup:  { ko: '양쪽전위',            en: 'Both Up' },
+  tc_preset_bothback:{ ko: '양쪽후위',            en: 'Both Back' },
+  tc_preset_iform:   { ko: 'I포메이션',           en: 'I-Formation' },
+  tc_preset_aus:     { ko: '호주',               en: 'Australian' },
+  tc_btn_arrow:      { ko: '➡️ 화살표',           en: '➡️ Arrow' },
+  tc_btn_draw:       { ko: '✏️ 그리기',           en: '✏️ Draw' },
+  tc_btn_cover:      { ko: '⭕ 커버존',           en: '⭕ Cover Zone' },
+  tc_btn_ball:       { ko: '🎾 공',              en: '🎾 Ball' },
+  tc_btn_angle:      { ko: '📐 타구각',           en: '📐 Shot Angle' },
+  tc_btn_del:        { ko: '🗑️ 삭제',            en: '🗑️ Delete' },
+  tc_btn_reset:      { ko: '🔄 초기화',           en: '🔄 Reset' },
+  tc_btn_board:      { ko: '🎨 보드설정',         en: '🎨 Board Setup' },
+  tc_btn_save:       { ko: '💾 저장',            en: '💾 Save' },
+  tc_btn_load:       { ko: '📂 불러오기',         en: '📂 Load' },
+  tc_btn_share:      { ko: '🔗 공유',            en: '🔗 Share' },
+  tc_guide:          { ko: '선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동', en: 'Player tab → select (shot angle) &nbsp;·&nbsp; Double-tap → edit &nbsp;·&nbsp; Drag → move' },
+  tc_edit_title:     { ko: '✏️ 선수 편집',        en: '✏️ Edit Player' },
+  tc_edit_name:      { ko: '이름',               en: 'Name' },
+  tc_edit_number:    { ko: '등번호',              en: 'Number' },
+  tc_edit_position:  { ko: '포지션',              en: 'Position' },
+  tc_edit_color:     { ko: '선수 색상',           en: 'Player Color' },
+  tc_cancel:         { ko: '취소',               en: 'Cancel' },
+  tc_ok:             { ko: '확인',               en: 'OK' },
+  tc_close:          { ko: '닫기',               en: 'Close' },
+  tc_apply:          { ko: '적용',               en: 'Apply' },
+  tc_board_title:    { ko: '🎨 보드 설정',        en: '🎨 Board Settings' },
+  tc_board_theme:    { ko: '코트 테마',           en: 'Court Theme' },
+  tc_theme_green:    { ko: '🟩 그린',            en: '🟩 Green' },
+  tc_theme_clay:     { ko: '🧱 클레이',           en: '🧱 Clay' },
+  tc_theme_hard:     { ko: '🔵 하드',            en: '🔵 Hard' },
+  tc_theme_dark:     { ko: '⚫ 다크',            en: '⚫ Dark' },
+  tc_theme_grass:    { ko: '🌿 잔디',            en: '🌿 Grass' },
+  tc_board_drawcolor:{ ko: '그리기 색상',         en: 'Drawing Color' },
+  tc_save_title:     { ko: '💾 전술판 저장',      en: '💾 Save Tactics Board' },
+  tc_save_label:     { ko: '저장 이름',           en: 'Save Name' },
+  tc_save_ok:        { ko: '저장',               en: 'Save' },
+  tc_load_title:     { ko: '📂 저장된 전술판',    en: '📂 Saved Boards' },
+  tc_share_title:    { ko: '🔗 보드 공유',        en: '🔗 Share Board' },
+  tc_share_desc:     { ko: '현재 전술판이 URL에 담겼어요.<br>복사해서 카카오톡으로 보내세요!', en: 'The current tactics board has been encoded into a URL.<br>Copy and share it via KakaoTalk!' },
+  tc_share_copy:     { ko: '📋 링크 복사',        en: '📋 Copy Link' },
+};
+
+// ── 글자 크기 변경 ──────────────────────────────────
+function setFontSize(px) {
+  // html 태그의 font-size CSS 변수를 바꿈 → rem 단위 전체 비율 변경
+  document.documentElement.style.setProperty('--app-font-size', px + 'px');
+  // 태블릿 등 다양한 기기에서도 확실히 적용되도록 직접 설정
+  document.documentElement.style.fontSize = px + 'px';
+  document.body.style.fontSize = px + 'px';
+  localStorage.setItem('niji_font_size', String(px));
+
+  // 버튼 강조 (선택된 버튼 = 보라색, 나머지 = 기본)
+  document.querySelectorAll('.lang-font-btn').forEach(function(btn) {
+    var on = (btn.id === 'fontBtn-' + px);
+    btn.style.background  = on ? 'var(--accent)' : '';
+    btn.style.color       = on ? '#fff'          : '';
+    btn.style.borderColor = on ? 'var(--accent)' : '';
+    btn.style.boxShadow   = on ? '0 0 0 2px var(--accent)' : '';
+    btn.style.fontWeight  = on ? '700'           : '';
+  });
+}
+
+// ── 현재 언어로 사전 텍스트 가져오기 (대회 탭 동적 렌더에 사용) ──
+function _t(key) {
+  var lang = localStorage.getItem('niji_language') || 'ko';
+  if (NIJI_DICT[key] && NIJI_DICT[key][lang]) return NIJI_DICT[key][lang];
+  if (NIJI_DICT[key] && NIJI_DICT[key]['ko']) return NIJI_DICT[key]['ko'];
+  return key;
+}
+
   try {
     const firebaseConfig = {
       apiKey: "AIzaSyCyDq-V7J3JfGNyU8wL7rUIQntdU_lD31Q",
@@ -1774,11 +2295,11 @@
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
           <div style="flex:1;">
             <label class="form-label" style="font-size:0.72rem;">마지막 교체일</label>
-            <input type="date" class="form-input" id="str1-date" style="font-size:0.85rem;padding:7px 10px;" onchange="saveStrR1Field('stringDate',this.value)">
+            <input type="date" class="form-input" id="str1-date" style="font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(1)">
           </div>
           <div style="min-width:100px;">
             <label class="form-label" style="font-size:0.72rem;">교체 주기</label>
-            <select class="form-select" id="str1-interval" style="font-size:0.85rem;padding:7px 10px;" onchange="saveStrR1Interval(this.value)">
+            <select class="form-select" id="str1-interval" style="font-size:0.85rem;padding:7px 10px;">
               <option value="1">1개월</option>
               <option value="2">2개월</option>
               <option value="3" selected>3개월</option>
@@ -1787,15 +2308,11 @@
             </select>
           </div>
         </div>
+        <button class="btn btn-primary" style="width:100%;font-size:0.88rem;padding:10px;margin-bottom:4px;" onclick="saveStringingInfo(1)">💾 저장 (이력에 자동 기록)</button>
         <!-- 히스토리 -->
-        <div style="border-top:1px solid var(--border);padding-top:10px;">
+        <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
           <div class="card-title" style="font-size:0.82rem;margin-bottom:8px;">📋 교체 이력 (라켓 1)</div>
           <div id="stringingHistoryList1"></div>
-          <div class="stringing-add-row" style="margin-top:8px;">
-            <input class="form-input" id="newStringName1" placeholder="스트링명·텐션 입력" style="font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter'){document.getElementById('newStringDate1').focus();}">
-            <input type="date" class="form-input" id="newStringDate1" style="max-width:130px;font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter')addStringingHistory(1)">
-            <button class="btn btn-primary btn-sm" onclick="addStringingHistory(1)" style="font-size:0.8rem;">+ 추가</button>
-          </div>
         </div>
       </div>
 
@@ -1821,11 +2338,11 @@
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
           <div style="flex:1;">
             <label class="form-label" style="font-size:0.72rem;">마지막 교체일</label>
-            <input type="date" class="form-input" id="str2-date" style="font-size:0.85rem;padding:7px 10px;" onchange="saveStrR2Field('stringDate2',this.value)">
+            <input type="date" class="form-input" id="str2-date" style="font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(2)">
           </div>
           <div style="min-width:100px;">
             <label class="form-label" style="font-size:0.72rem;">교체 주기</label>
-            <select class="form-select" id="str2-interval" style="font-size:0.85rem;padding:7px 10px;" onchange="saveStrR2Interval(this.value)">
+            <select class="form-select" id="str2-interval" style="font-size:0.85rem;padding:7px 10px;">
               <option value="1">1개월</option>
               <option value="2">2개월</option>
               <option value="3" selected>3개월</option>
@@ -1834,15 +2351,11 @@
             </select>
           </div>
         </div>
+        <button class="btn btn-primary" style="width:100%;font-size:0.88rem;padding:10px;margin-bottom:4px;" onclick="saveStringingInfo(2)">💾 저장 (이력에 자동 기록)</button>
         <!-- 히스토리 -->
-        <div style="border-top:1px solid var(--border);padding-top:10px;">
+        <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
           <div class="card-title" style="font-size:0.82rem;margin-bottom:8px;">📋 교체 이력 (라켓 2)</div>
           <div id="stringingHistoryList2"></div>
-          <div class="stringing-add-row" style="margin-top:8px;">
-            <input class="form-input" id="newStringName2" placeholder="스트링명·텐션 입력" style="font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter'){document.getElementById('newStringDate2').focus();}">
-            <input type="date" class="form-input" id="newStringDate2" style="max-width:130px;font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter')addStringingHistory(2)">
-            <button class="btn btn-primary btn-sm" onclick="addStringingHistory(2)" style="font-size:0.8rem;">+ 추가</button>
-          </div>
         </div>
       </div>
     </div>
@@ -5630,12 +6143,10 @@ function renderStringing() {
   if (s2date && document.activeElement !== s2date) s2date.value = p.stringDate2 || '';
   if (s2int  && document.activeElement !== s2int)  s2int.value  = state.stringInterval2 || 3;
 
-  // 오늘 날짜 기본값
+  // 교체일이 비어있으면 오늘 날짜를 기본값으로 채워줌 (저장 시 바로 쓸 수 있게)
   const today = getTodayStr();
-  const nd1 = document.getElementById('newStringDate1');
-  const nd2 = document.getElementById('newStringDate2');
-  if (nd1 && !nd1.value) nd1.value = today;
-  if (nd2 && !nd2.value) nd2.value = today;
+  if (s1date && document.activeElement !== s1date && !s1date.value) s1date.value = today;
+  if (s2date && document.activeElement !== s2date && !s2date.value) s2date.value = today;
 
   // ---- 알림 배너 렌더링 (공통 함수) ----
   function renderAlert(elId, dateStr, intervalMonths) {
@@ -5885,86 +6396,61 @@ function shareStringCert() {
 }
 // ===================================================
 
-// ===== 라켓1 필드 저장 =====
+// ===== 라켓1 필드 저장 (스트링명/텐션 입력 중 실시간 반영용) =====
 function saveStrR1Field(key, val) {
   state.profile[key] = val;
-  // stringDate 변경 시 lastStringDate 동기화 (기존 호환)
-  if (key === 'stringDate') {
-    state.lastStringDate = val;
-  }
   save();
   renderStringBanner();
-  renderStringing();
 }
 
-// ===== 라켓2 필드 저장 =====
+// ===== 라켓2 필드 저장 (스트링명/텐션 입력 중 실시간 반영용) =====
 function saveStrR2Field(key, val) {
   state.profile[key] = val;
   save();
   renderStringBanner();
-  renderStringing();
 }
 
-// ===== 교체 주기 저장 (라켓 1) =====
-function saveStrR1Interval(val) {
-  state.stringInterval = parseInt(val);
-  save();
-  renderStringing();
-}
-
-// ===== 교체 주기 저장 (라켓 2) =====
-function saveStrR2Interval(val) {
-  state.stringInterval2 = parseInt(val);
-  save();
-  renderStringing();
-}
-
-function saveLastStringDate(val) {
-  state.lastStringDate = val;
-  state.profile.stringDate = val;
-  save();
-  renderStringing();
-  renderStringBanner();
-  showToast('📅 교체일 저장 완료!');
-}
-
-function saveStringInterval(val) {
-  state.stringInterval = parseInt(val);
-  save();
-  renderStringing();
-}
-
-function addStringingHistory(racketNum) {
-  // racketNum: 1 또는 2
+// ===== 스트링 정보 저장 + 이력 자동 기록 (라켓 1/2 공용) =====
+// "저장" 버튼 한 번으로: 스트링명·텐션·교체일·교체주기 저장 + 교체 이력에 자동 기록
+function saveStringingInfo(racketNum) {
   const rn = racketNum || 1;
-  const nameEl = document.getElementById('newStringName' + rn);
-  const dateEl = document.getElementById('newStringDate' + rn);
-  if (!nameEl || !dateEl) return;
-  const name = nameEl.value.trim();
-  const date = dateEl.value;
-  if (!name) { showToast('⚠️ 스트링명을 입력하세요'); return; }
-  if (!date) { showToast('⚠️ 날짜를 선택하세요'); return; }
+  const strEl  = document.getElementById(rn === 1 ? 'str1-string'   : 'str2-string');
+  const tenEl  = document.getElementById(rn === 1 ? 'str1-tension'  : 'str2-tension');
+  const dateEl = document.getElementById(rn === 1 ? 'str1-date'     : 'str2-date');
+  const intEl  = document.getElementById(rn === 1 ? 'str1-interval' : 'str2-interval');
+  if (!strEl || !dateEl) return;
+
+  const stringName = strEl.value.trim();
+  const tension     = tenEl ? tenEl.value.trim() : '';
+  const date        = dateEl.value;
+  const interval    = intEl ? parseInt(intEl.value) : 3;
+
+  if (!stringName) { showToast('⚠️ 스트링명을 입력하세요'); return; }
+  if (!date) { showToast('⚠️ 교체일을 선택하세요'); return; }
+
+  // 프로필 필드에 저장
+  const stringKey   = rn === 1 ? 'string'     : 'string2';
+  const tensionKey  = rn === 1 ? 'tension'    : 'tension2';
+  const dateKey     = rn === 1 ? 'stringDate' : 'stringDate2';
+  state.profile[stringKey]  = stringName;
+  state.profile[tensionKey] = tension;
+  state.profile[dateKey]    = date;
+  if (rn === 1) { state.lastStringDate = date; state.stringInterval  = interval; }
+  else          { state.stringInterval2 = interval; }
+
+  // 교체 이력에 자동 기록 (같은 라켓·날짜·내용의 중복 기록은 남기지 않음)
   if (!state.stringingHistory) state.stringingHistory = [];
-  const id = Date.now();
-  state.stringingHistory.push({ id, name, date, racket: rn });
-  // 해당 라켓의 교체일 자동 업데이트
-  const histForRacket = [...state.stringingHistory]
-    .filter(h => h.racket == rn || (!h.racket && rn === 1))
-    .sort((a,b) => b.date.localeCompare(a.date));
-  if (histForRacket.length) {
-    const latest = histForRacket[0];
-    if (rn === 1) {
-      state.lastStringDate = latest.date;
-      state.profile.stringDate = latest.date;
-    } else {
-      state.profile.stringDate2 = latest.date;
-    }
+  const histName = tension ? `${stringName} ${tension}lb` : stringName;
+  const isDup = state.stringingHistory.some(h =>
+    (h.racket == rn || (!h.racket && rn === 1)) && h.date === date && h.name === histName);
+  if (!isDup) {
+    state.stringingHistory.push({ id: Date.now(), name: histName, date, racket: rn });
   }
+
   save();
-  nameEl.value = '';
   renderStringing();
   renderStringBanner();
-  showToast('✅ 교체 이력 추가 완료!');
+  showToast('✅ 저장 완료! 교체 이력에도 자동 기록됐어요');
 }
 
 function deleteStringingHistory(id) {
@@ -10002,525 +10488,6 @@ function exitNijiApp() {
    저장: localStorage (niji_font_size, niji_language)
 ================================================ */
 
-// ── 번역 사전 ──────────────────────────────────────
-const NIJI_DICT = {
-  /* 설정 카드 */
-  set_font_title:    { ko: '글자 크기 설정',    en: 'Font Size' },
-  set_lang_title:    { ko: '언어 설정',          en: 'Language' },
-  font_default:      { ko: '기본',               en: 'Default' },
-  font_large:        { ko: '크게',               en: 'Large' },
-  font_xlarge:       { ko: '아주 크게',          en: 'X-Large' },
-  /* 공유 페이지 */
-  share_title:       { ko: '공유 & 백업',        en: 'Share & Backup' },
-  share_sub:         { ko: '데이터를 백업하거나 공유하세요', en: 'Back up or share your data' },
-  share_niji:        { ko: '니지스트링',          en: 'NIJI STRING' },
-  share_kakao:       { ko: '카카오 오픈채팅 참여하기',    en: 'Join KakaoTalk Chat' },
-  share_kakao_sub:   { ko: '니지스트링 테니스·배드민턴 커뮤니티', en: 'NIJI STRING Tennis & Badminton Community' },
-  share_account:     { ko: '내 계정',            en: 'My Account' },
-  share_logout:      { ko: '로그아웃',           en: 'Sign Out' },
-  share_logout_sub:  { ko: '다른 계정으로 전환하거나 로그아웃', en: 'Switch account or sign out' },
-  share_device:      { ko: '기기 관리',          en: 'Device' },
-  share_clear_cache: { ko: '저장공간 정리',      en: 'Clear Cache' },
-  share_clear_sub:   { ko: '기기 캐시 삭제 (데이터는 Firebase에 안전 보관)', en: 'Delete local cache (data safe in Firebase)' },
-  share_backup:      { ko: '백업',               en: 'Backup' },
-  share_export:      { ko: '데이터 내보내기',    en: 'Export Data' },
-  share_export_sub:  { ko: 'JSON 파일로 저장',   en: 'Save as JSON file' },
-  share_import:      { ko: '가져오기',           en: 'Import' },
-  share_import_sub:  { ko: '백업 파일에서 복원', en: 'Restore from backup file' },
-  share_manual_sec:  { ko: '사용 방법',          en: 'Help' },
-  share_manual_item: { ko: '사용 설명서 보기',   en: 'View User Guide' },
-  share_manual_sub:  { ko: '앱 사용법 안내',     en: 'How to use this app' },
-  /* 하단 탭 */
-  nav_profile:       { ko: '프로필',   en: 'Profile' },
-  nav_match:         { ko: '경기기록', en: 'Records' },
-  nav_stats:         { ko: '통계',     en: 'Stats' },
-  nav_players:       { ko: '선수',     en: 'Players' },
-  nav_tournament:    { ko: '대회',     en: 'Contest' },
-  nav_share:         { ko: '공유',     en: 'Share' },
-
-  /* 프로필 탭 */
-  pf_sport_title:    { ko: '종목 선택',     en: 'Sport' },
-  pf_tennis:         { ko: '테니스',        en: 'Tennis' },
-  pf_badminton:      { ko: '배드민턴',      en: 'Badminton' },
-  pf_pickleball:     { ko: '피클볼',        en: 'Pickleball' },
-
-  /* 경기기록 탭 */
-  match_page_header:       { ko: '경기기록',           en: 'Records' },
-  match_sport_saved_as:    { ko: '종목으로 저장됩니다', en: 'will be recorded' },
-  match_change_sport:      { ko: '종목 변경 →',        en: 'Change →' },
-  match_new_sub:           { ko: '새 경기를 입력하세요', en: 'Enter a new match' },
-  match_new_btn:           { ko: '➕ 새 경기 입력',    en: '➕ New Match' },
-  match_editing:           { ko: '✏️ 경기 수정 중',    en: '✏️ Editing Match' },
-  match_cancel:            { ko: '✕ 취소',             en: '✕ Cancel' },
-  match_date_lbl:          { ko: '📅 날짜',             en: '📅 Date' },
-  match_format_lbl:        { ko: '형식',               en: 'Format' },
-  match_singles:           { ko: '단식',               en: 'Singles' },
-  match_doubles:           { ko: '복식',               en: 'Doubles' },
-  match_opponent_lbl:      { ko: '🆚 상대',             en: '🆚 Opponent' },
-  match_partner_lbl:       { ko: '🤝 파트너',           en: '🤝 Partner' },
-  match_opp1_lbl:          { ko: '🆚 상대 1',           en: '🆚 Opp 1' },
-  match_opp2_lbl:          { ko: '🆚 상대 2',           en: '🆚 Opp 2' },
-  match_result_lbl:        { ko: '결과',               en: 'Result' },
-  match_win_btn:           { ko: '🏆 승리',             en: '🏆 Win' },
-  match_lose_btn:          { ko: '😔 패배',             en: '😔 Lose' },
-  match_score_lbl:         { ko: '스코어 (선택)',       en: 'Score (opt.)' },
-  match_tiebreak_lbl:      { ko: '타이브레이크 (선택)', en: 'Tiebreak (opt.)' },
-  match_racket_lbl:        { ko: '🎾 사용 라켓 (선택)', en: '🎾 Racket (opt.)' },
-  match_racket_none_opt:   { ko: '선택 안 함',          en: 'None' },
-  match_racket_noreg:      { ko: '⚠️ 라켓이 등록되지 않았어요.', en: '⚠️ No racket registered.' },
-  match_racket_go_profile: { ko: '프로필에서 등록하기 →', en: 'Register in Profile →' },
-  match_memo_lbl:          { ko: '📝 메모 (선택)',      en: '📝 Memo (opt.)' },
-  match_save_btn:          { ko: '경기 저장',           en: 'Save Match' },
-  match_today_title:       { ko: '오늘 경기',           en: "Today's Matches" },
-  match_past_title:        { ko: '📋 이전 경기 기록',   en: '📋 Past Records' },
-  match_me_label:          { ko: '나',                  en: 'Me' },
-  match_opp_label:         { ko: '상대',               en: 'Opp' },
-  match_input_ph:          { ko: '이름 또는 초성',      en: 'Name or initial' },
-  match_memo_ph:           { ko: '경기 메모...',        en: 'Match memo...' },
-  match_new_btn_open:      { ko: '➕ 새 경기 입력',    en: '➕ New Match' },
-  match_form_close:        { ko: '✖ 닫기',             en: '✖ Close' },
-  match_edit_title:        { ko: '✏️ 경기 수정',        en: '✏️ Edit Match' },
-  match_edit_save:         { ko: '수정 저장',           en: 'Save Edit' },
-  match_racket_required:   { ko: '🎾 사용 라켓 (필수)', en: '🎾 Racket (required)' },
-  match_racket_sel_ph:     { ko: '-- 라켓 선택 (필수) --', en: '-- Select Racket (required) --' },
-  match_past_empty:        { ko: '이 달에 경기 기록이 없어요', en: 'No matches this month' },
-  match_count_unit:        { ko: '경기',               en: 'matches' },
-  match_delete_title:      { ko: '경기 삭제',           en: 'Delete Match' },
-  match_delete_desc:       { ko: '이 경기 기록을 삭제하시겠습니까?', en: 'Delete this match record?' },
-  match_delete_done:       { ko: '🗑️ 경기 삭제 완료',  en: '🗑️ Match deleted' },
-  match_old_records:       { ko: '── 6개월 이전 {n}개 기록 (통계에는 반영됨)', en: '── {n} records older than 6mo (included in stats)' },
-  pf_tension_ph:           { ko: '예) 50/52 파운드',   en: 'e.g. 50/52 lbs' },
-
-  /* 통계 탭 */
-  stats_page_header:       { ko: '통계',               en: 'Stats' },
-  stats_sport_basis:       { ko: '기준 통계',          en: 'stats' },
-  stats_change_sport:      { ko: '종목 변경 →',        en: 'Change →' },
-  stats_atp_notice:        { ko: '🏆 ATP 방식 · 최근 12개월 기준', en: '🏆 ATP Style · Last 12 Months' },
-  stats_lbl_total:         { ko: '경기수',             en: 'Matches' },
-  stats_lbl_win:           { ko: '승',                 en: 'Win' },
-  stats_lbl_lose:          { ko: '패',                 en: 'Loss' },
-  stats_lbl_rate:          { ko: '승률',               en: 'Win%' },
-  stats_acc_summary:       { ko: '📊 상세 요약',       en: '📊 Summary' },
-  stats_acc_monthly:       { ko: '📅 월별 승률 (12개월)', en: '📅 Monthly Win% (12mo)' },
-  stats_monthly_empty:     { ko: '경기를 입력하면 그래프가 표시됩니다', en: 'Enter matches to see the graph' },
-  stats_acc_opponent:      { ko: '⚔️ 상대 전적',       en: '⚔️ Head-to-Head' },
-  stats_opp_sort_winrate:  { ko: '승률 높은 순',       en: 'By Win Rate' },
-  stats_opp_sort_games:    { ko: '경기 많은 순',       en: 'By Matches' },
-  stats_opp_sort_name:     { ko: '이름순',             en: 'By Name' },
-  stats_opp_empty:         { ko: '경기를 입력하면\n상대 데이터가 표시됩니다', en: 'Enter matches to see\nopponent data' },
-  stats_acc_partner:       { ko: '🤝 파트너 궁합',     en: '🤝 Partner Stats' },
-  stats_partner_empty:     { ko: '복식 경기를 입력하면\n파트너 데이터가 표시됩니다', en: 'Enter doubles matches to see\npartner data' },
-  stats_acc_singles:       { ko: '🎯 단식 상성',       en: '🎯 Singles Matchups' },
-  stats_singles_sub:       { ko: '(1:1)',               en: '(1:1)' },
-  stats_singles_empty:     { ko: '단식 경기를 입력하면\n상성 데이터가 표시됩니다', en: 'Enter singles matches to see\nmatchup data' },
-  stats_acc_enemy:         { ko: '🆚 상대팀 상성',     en: '🆚 Rival Team Stats' },
-  stats_enemy_sub:         { ko: '(복식)',              en: '(Doubles)' },
-  stats_enemy_empty:       { ko: '복식 경기를 입력하면\n상대팀 데이터가 표시됩니다', en: 'Enter doubles matches to see\nrival team data' },
-
-  /* 선수 탭 */
-  players_page_header:     { ko: '선수 목록',          en: 'Players' },
-  players_page_sub:        { ko: '등록된 선수를 관리하세요', en: 'Manage registered players' },
-  players_sort_name:       { ko: '이름순',             en: 'By Name' },
-  players_sort_recent:     { ko: '최근 대전순',        en: 'Recent Match' },
-  players_sort_matches:    { ko: '전적 많은 순',       en: 'Most Matches' },
-  players_sort_winrate:    { ko: '승률 높은 순',       en: 'Best Win Rate' },
-  players_club_title:      { ko: '🏠 클럽 관리',       en: '🏠 Club Manager' },
-  players_club_add_btn:    { ko: '+ 추가',             en: '+ Add' },
-  players_reg_acc:         { ko: '👤 선수 등록',       en: '👤 Add Player' },
-  players_gender_lbl:      { ko: '성별',               en: 'Gender' },
-  players_gender_m:        { ko: '남자',               en: 'Male' },
-  players_gender_f:        { ko: '여자',               en: 'Female' },
-  players_age_lbl:         { ko: '나이대',             en: 'Age Group' },
-  players_age_10s:         { ko: '10대',               en: 'Teens' },
-  players_age_20s:         { ko: '20대',               en: '20s' },
-  players_age_30s:         { ko: '30대',               en: '30s' },
-  players_age_40s:         { ko: '40대',               en: '40s' },
-  players_age_50s:         { ko: '50대',               en: '50s' },
-  players_age_60s:         { ko: '60대 이상',          en: '60s+' },
-  players_hand_lbl:        { ko: '손잡이',             en: 'Handedness' },
-  players_hand_r:          { ko: '오른손',             en: 'Right' },
-  players_hand_l:          { ko: '왼손',               en: 'Left' },
-  players_career_lbl:      { ko: '구력',               en: 'Experience' },
-  players_career_1:        { ko: '6개월 미만',         en: 'Under 6mo' },
-  players_career_2:        { ko: '6개월~1년',          en: '6mo~1yr' },
-  players_career_3:        { ko: '1~2년',              en: '1~2 yrs' },
-  players_career_4:        { ko: '2~5년',              en: '2~5 yrs' },
-  players_career_5:        { ko: '5~10년',             en: '5~10 yrs' },
-  players_career_6:        { ko: '10년 이상',          en: '10+ yrs' },
-  players_style_lbl:       { ko: '플레이스타일',       en: 'Play Style' },
-  players_style_1:         { ko: '공격형',             en: 'Aggressive' },
-  players_style_2:         { ko: '수비형',             en: 'Defensive' },
-  players_style_3:         { ko: '올라운드',           en: 'All-round' },
-  players_style_4:         { ko: '네트플레이',         en: 'Net Play' },
-  players_style_5:         { ko: '베이스라인',         en: 'Baseline' },
-  players_club_opt:        { ko: '클럽 선택 (선택사항)', en: 'Club (optional)' },
-  players_add_btn:         { ko: '+ 선수 등록',        en: '+ Register Player' },
-
-  /* ─── 대회 탭 ─── */
-  // 탭 버튼
-  ctab_hanul:              { ko: '🔄 한울방식',         en: '🔄 Hanul' },
-  ctab_tour:               { ko: '🏆 토너먼트',         en: '🏆 Tournament' },
-  ctab_score:              { ko: '🎾 스코어',            en: '🎾 Score' },
-  ctab_tactics:            { ko: '📋 전술판',            en: '📋 Tactics' },
-
-  // 한울방식 목록
-  tv_list_sub:             { ko: '파트너·상대방 순환 복식 대회', en: 'Rotating Doubles Format' },
-  tv_new_btn:              { ko: '+ 새 대회 만들기',     en: '+ New Contest' },
-  tv_empty:                { ko: '대회가 없어요.\n새 대회를 만들어보세요!', en: 'No contests yet.\nCreate a new one!' },
-
-  // 토너먼트 목록
-  tn_list_sub:             { ko: '단·복식 대진표를 자동으로 생성해요', en: 'Auto-generate singles/doubles brackets' },
-  tn_new_btn:              { ko: '+ 새 토너먼트 만들기', en: '+ New Tournament' },
-  tn_empty:                { ko: '토너먼트가 없어요.\n새 토너먼트를 만들어보세요!', en: 'No tournaments yet.\nCreate a new one!' },
-
-  // 공통 대회 상태
-  contest_done:            { ko: '완료',                en: 'Done' },
-  contest_ongoing:         { ko: '진행중',              en: 'In Progress' },
-  contest_edit:            { ko: '수정',                en: 'Edit' },
-  contest_delete:          { ko: '삭제',                en: 'Delete' },
-  contest_bracket:         { ko: '대진표',              en: 'Bracket' },
-  contest_ranking:         { ko: '순위표',              en: 'Ranking' },
-  contest_info:            { ko: '대회 정보',           en: 'Contest Info' },
-  contest_name_ph:         { ko: '대회 이름',           en: 'Contest Name' },
-  contest_players:         { ko: '참가 선수',           en: 'Players' },
-  contest_direct_input:    { ko: '직접 입력',           en: 'Enter name' },
-  contest_add_btn:         { ko: '추가',                en: 'Add' },
-  contest_create_bracket:  { ko: '대진표 생성',         en: 'Create Bracket' },
-  contest_select_all:      { ko: '전체 선택',           en: 'Select All' },
-  contest_deselect_all:    { ko: '전체 해제',           en: 'Clear All' },
-  contest_other:           { ko: '기타',                en: 'Other' },
-  contest_no_players:      { ko: '선수 탭에서 먼저 선수를 등록하세요.', en: 'Register players in the Players tab first.' },
-  contest_persons:         { ko: '명',                  en: 'p' },
-  contest_games:           { ko: '게임',                en: 'games' },
-  contest_selected_n:      { ko: '선택된 선수 {n}명',  en: '{n} players selected' },
-  contest_seed_hint:       { ko: '↕️ 순서 조정으로 시드 배정 (위가 강한 선수)', en: '↕️ Drag to set seed order (top = strongest)' },
-  contest_seed_hint_short: { ko: '(위쪽이 시드 높음)', en: '(top = top seed)' },
-
-  // 한울방식 만들기 모달
-  tv_modal_title:          { ko: '새 대회 만들기',      en: 'New Contest' },
-  tv_select_hint:          { ko: '선수를 선택하세요 (최소 4명)', en: 'Select players (min 4)' },
-  game_n1:                 { ko: '1게임',               en: '1 Game' },
-  game_n2:                 { ko: '2게임',               en: '2 Games' },
-  game_n3:                 { ko: '3게임',               en: '3 Games' },
-  game_n4:                 { ko: '4게임',               en: '4 Games' },
-
-  // 토너먼트 만들기 모달
-  tn_modal_title:          { ko: '🏆 새 토너먼트 만들기', en: '🏆 New Tournament' },
-  tn_format_title:         { ko: '형식 선택',           en: 'Format' },
-  tn_singles:              { ko: '🎾 단식',             en: '🎾 Singles' },
-  tn_doubles:              { ko: '🤝 복식',             en: '🤝 Doubles' },
-  tn_singles_note:         { ko: '※ 단식은 2·4·8·16명 권장', en: '※ Singles: 2·4·8·16 players recommended' },
-  tn_doubles_note:         { ko: '※ 복식은 짝수 명이어야 해요 (4·8·16명)', en: '※ Doubles: even number required (4·8·16 players)' },
-  tn_select_hint:          { ko: '선수를 선택하세요 (최소 2명)', en: 'Select players (min 2)' },
-  tn_create_btn:           { ko: '🏆 대진표 생성',      en: '🏆 Create Bracket' },
-  tn_team_build_title:     { ko: '복식 팀 구성 방법',   en: 'Doubles Team Setup' },
-  tn_team_auto:            { ko: '🎲 자동 팀 섞기',     en: '🎲 Auto Team' },
-  tn_team_manual:          { ko: '✋ 직접 파트너 지정', en: '✋ Manual Partners' },
-  tn_auto_desc:            { ko: '선택된 선수 순서(위→아래)로 자동 팀을 구성해요.\n1번↔마지막, 2번↔끝에서 2번 방식으로 짝이 맺어져요.',
-                             en: 'Teams are formed by pairing players top-to-bottom: 1st↔last, 2nd↔second-to-last.' },
-  tn_manual_desc:          { ko: '선수를 순서대로 2명씩 클릭하면 팀이 만들어져요. 파란색 = 1번째, 초록색 = 2번째(파트너)',
-                             en: 'Click 2 players in order to form a team. Blue = 1st pick, Green = 2nd pick (partner).' },
-  tn_team_reset:           { ko: '🗑️ 팀 초기화',        en: '🗑️ Reset Teams' },
-  tn_all_assigned:         { ko: '모든 선수가 팀에 배정되었어요 ✅', en: 'All players assigned to teams ✅' },
-  tn_no_teams_yet:         { ko: '아직 팀이 없어요. 위에서 선수를 2명씩 클릭하세요!', en: 'No teams yet. Click 2 players above to form a team!' },
-
-  // 상대팀 구성 방법 (단식 토너먼트)
-  tn_opp_build_title:      { ko: '상대팀 배치 방법',     en: 'Opponent Setup' },
-  tn_opp_auto:             { ko: '🎲 자동 배치',         en: '🎲 Auto Arrange' },
-  tn_opp_manual:           { ko: '✋ 직접 대진 지정',    en: '✋ Manual Bracket' },
-  tn_opp_auto_desc:        { ko: '선수 순서(위→아래)대로 자동으로 대진이 짜여요.\n시드 순서를 조정하고 싶다면 선수 목록 순서를 바꿔서 생성하세요.',
-                             en: 'Bracket is auto-arranged by player order (top→bottom). Adjust player order to change seeding.' },
-  tn_opp_manual_desc:      { ko: '선수를 2명씩 클릭해서 1라운드 대진을 직접 짜세요.\n파란색 = A팀, 초록색 = B팀(상대)',
-                             en: 'Click 2 players to set 1st round matchups. Blue = A side, Green = B side (opponent).' },
-  tn_opp_reset:            { ko: '🗑️ 대진 초기화',       en: '🗑️ Reset Bracket' },
-  tn_opp_all_set:          { ko: '모든 1라운드 대진이 완성되었어요 ✅', en: 'All 1st round matchups set ✅' },
-  tn_opp_no_match:         { ko: '아직 대진이 없어요. 위에서 선수를 2명씩 클릭하세요!', en: 'No matchups yet. Click 2 players above!' },
-
-  // 프로필 탭 동적 렌더 텍스트
-  pf_unset:                { ko: '미설정',          en: 'Not set' },
-  pf_not_entered:          { ko: '미입력',          en: 'Not entered' },
-  pf_equipment:            { ko: '🎾 장비 정보',    en: '🎾 Equipment' },
-  pf_racket_name:          { ko: '라켓명',          en: 'Racket' },
-  pf_string_label:         { ko: '스트링',          en: 'String' },
-  pf_tension_label:        { ko: '텐션',            en: 'Tension' },
-  pf_string_date:          { ko: '스트링 교체일',   en: 'String Date' },
-  pf_no_racket:            { ko: '라켓 정보를 입력해주세요', en: 'Enter your racket info' },
-  pf_default_name:         { ko: '선수',            en: 'Player' },
-  pf_select_string:        { ko: '📋 과거 스트링 중 선택', en: '📋 Select from history' },
-  pf_string_input_ph:      { ko: '직접 입력 또는 위에서 선택', en: 'Type or select above' },
-  pf_string_status_title:  { ko: '스트링 상태',     en: 'String Status' },
-  pf_player_info_title:    { ko: '플레이어 정보',   en: 'Player Info' },
-
-  // 통계 탭 동적 렌더 텍스트
-  stats_this_month:        { ko: '이번 달',         en: 'This Month' },
-  stats_no_match:          { ko: '경기 없음',        en: 'No matches' },
-  stats_singles_record:    { ko: '단식 전적',        en: 'Singles Record' },
-  stats_doubles_record:    { ko: '복식 전적',        en: 'Doubles Record' },
-  stats_no_record:         { ko: '없음',             en: 'None' },
-  stats_best_vs:           { ko: '가장 많이 이긴 상대', en: 'Best Win vs' },
-  stats_hardest_vs:        { ko: '가장 어려운 상대',  en: 'Hardest Opponent' },
-  stats_win_suffix:        { ko: '승',               en: 'W' },
-  stats_lose_suffix:       { ko: '패',               en: 'L' },
-  match_result_win:        { ko: '승리',             en: 'Win' },
-  match_result_lose:       { ko: '패배',             en: 'Lose' },
-  stats_game_count:        { ko: '전',               en: 'G' },
-  stats_winrate_label:     { ko: '내 승률',          en: 'Win%' },
-  stats_show_more_person:  { ko: '명 더 보기',       en: ' more' },
-  stats_show_more_team:    { ko: '팀 더 보기',       en: ' more' },
-  stats_fold:              { ko: '접기 ▲',           en: 'Fold ▲' },
-  stats_badge_strong:      { ko: '우세',             en: '↑' },
-  stats_badge_weak:        { ko: '약점',             en: '↓' },
-  stats_badge_disadvantage:{ ko: '열세',             en: '↓' },
-  stats_singles_opp_label: { ko: '단식 상대',        en: 'Singles Opp.' },
-  stats_enemy_team_label:  { ko: '상대팀',           en: 'Enemy Team' },
-  stats_combo_opp:         { ko: '상대:',            en: 'Opp:' },
-  stats_combo_team:        { ko: '내팀:',            en: 'My Team:' },
-  stats_partner_main:      { ko: '내 파트너:',       en: 'My Partner:' },
-  stats_partner_solo:      { ko: '단독 출전',        en: 'Solo' },
-  stats_partner_mostly:    { ko: '와 주로',          en: 'mostly' },
-  stats_games_together:    { ko: '경기 함께',        en: 'games together' },
-  stats_chemistry:         { ko: '궁합',             en: 'Chemistry' },
-  stats_streak_win:        { ko: '연승 중!',         en: ' Win Streak!' },
-  stats_streak_lose:       { ko: '연패 중',          en: ' Lose Streak' },
-  stats_streak_win_msg:    { ko: '연속 승리! 🎉',   en: ' straight wins! 🎉' },
-  stats_streak_lose_msg:   { ko: '연속 패배. 파이팅! 💪', en: ' straight losses. Keep going! 💪' },
-  stats_streak_recent:     { ko: '최근',             en: 'Last' },
-  stats_streak_games:      { ko: '경기',             en: 'matches' },
-  stats_month_suffix:      { ko: '월',               en: '' },
-  pd_partner_label:        { ko: '파트너:',           en: 'Partner:' },
-  pd_opp_team_label:       { ko: '상대팀:',           en: 'Opp Team:' },
-  pd_show_more:            { ko: '▼ 더보기',          en: '▼ More' },
-  pd_fold:                 { ko: '▲ 접기',            en: '▲ Fold' },
-  pd_no_match:             { ko: '경기 기록이 없습니다', en: 'No match records' },
-  stats_enemyteam_empty:   { ko: '복식 경기를 입력하면\n상대팀 데이터가 표시됩니다', en: 'Enter doubles matches to see\nenemy team data' },
-  stats_search_empty:      { ko: '검색 결과가 없습니다', en: 'No results found' },
-  match_today_empty:       { ko: '아직 경기 기록이 없어요', en: 'No match records yet' },
-  match_today_none:        { ko: '오늘 경기 기록이 없어요', en: 'No matches today' },
-
-  // 선수 탭 동적 렌더 텍스트
-  player_add_placeholder:  { ko: '선수를 추가해보세요!', en: 'Add a player!' },
-  player_no_club:          { ko: '해당 클럽에 선수가 없습니다', en: 'No players in this club' },
-  player_all_filter:       { ko: '전체',             en: 'All' },
-  player_no_club_filter:   { ko: '클럽 없음',        en: 'No Club' },
-
-  // 언어 선택 버튼 (프로필 탭 상단)
-  pf_lang_section:         { ko: '🌐 언어 / Language', en: '🌐 Language / 언어' },
-
-  // ── 설명서 (manualModal) ─────────────────────────────
-  manual_title:   { ko: '📖 사용 설명서', en: '📖 User Guide' },
-
-  // 1. 프로필
-  manual_s1_title: { ko: '1. 프로필', en: '1. Profile' },
-  manual_s1_1: { ko: '상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요', en: 'Tap the photo area at the top to set your <b>profile picture</b>' },
-  manual_s1_2: { ko: '이름·클럽·나이대·손잡이·구력·스타일 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다', en: 'Tap any field (name, club, age, handedness, experience, style) to edit — changes are <b>auto-saved</b>' },
-  manual_s1_3: { ko: '라켓은 <b>2자루까지</b> 등록할 수 있어요. RACQUET 1·2 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요', en: 'You can register <b>up to 2 racquets</b>. Tap RACQUET 1·2 to expand, then enter the name, string, tension, and restring date' },
-  manual_s1_4: { ko: '<b>스트링 선택</b> — 과거에 입력한 스트링 목록에서 고르거나, 아래 입력창에 직접 타이핑할 수 있어요. 드롭다운에서 선택하면 입력창에도 자동으로 채워져요', en: '<b>String selection</b> — pick from your past strings in the dropdown, or type directly. Selecting from the dropdown auto-fills the input field' },
-  manual_s1_5: { ko: '<b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'Enter a <b>restring date</b> to see D+ days and games played automatically — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
-  manual_s1_6: { ko: '프로필 하단에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼 <b>종목을 설정</b>하세요. 경기기록·통계 탭의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동해요', en: 'Set your <b>sport</b> at the bottom of the profile: 🎾 Tennis / 🏸 Badminton / 🏓 Pickleball. You can also tap <b>[Change Sport →]</b> in the Match or Stats tab' },
-  manual_s1_7: { ko: '상단 🌙/☀️ 버튼으로 <b>다크/라이트 테마</b>를 전환할 수 있어요', en: 'Tap 🌙/☀️ at the top to switch between <b>dark and light theme</b>' },
-
-  // 2. 경기 기록
-  manual_s2_title: { ko: '2. 경기 기록', en: '2. Match Records' },
-  manual_s2_1: { ko: '앱을 열면 <b>날짜가 오늘로 자동 입력</b>됩니다. 과거 날짜로 바꿀 수도 있어요', en: 'When you open the app, <b>today\'s date is filled in automatically</b>. You can change it to a past date' },
-  manual_s2_2: { ko: '단식 / 복식을 선택하세요. 복식이면 <b>파트너·상대2 입력란</b>이 추가됩니다', en: 'Select Singles or Doubles. In doubles mode, <b>partner and 2nd opponent fields</b> appear' },
-  manual_s2_3: { ko: '날짜 · 상대 이름 · 결과(승/패)는 <b>필수</b>, 스코어·메모·사용 라켓은 선택 사항이에요', en: 'Date, opponent name, and result (win/loss) are <b>required</b>. Score, memo, and racquet used are optional' },
-  manual_s2_4: { ko: '이름 입력 시 <b>초성 자동완성</b>을 지원해요. 예: \'ㄱㄷㅎ\' → \'김동현\' 자동 추천', en: '<b>Autocomplete</b> is supported when typing names. Start typing and matching names appear' },
-  manual_s2_5: { ko: '경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수가 따로 카운트돼요', en: 'Selecting a <b>racquet used</b> when logging a match lets you track game count per racquet' },
-  manual_s2_6: { ko: '오늘 경기는 상단에 바로 표시되고, 이전 경기는 <b>📋 이전 경기 기록</b>을 탭해서 확인하세요', en: 'Today\'s matches appear at the top. Tap <b>📋 Previous Records</b> to see past matches' },
-  manual_s2_7: { ko: '저장된 경기는 ✏️ 수정 · 🗑️ 삭제가 가능해요', en: 'Saved matches can be ✏️ edited or 🗑️ deleted' },
-  manual_s2_8: { ko: '🏆 대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다', en: 'Scores entered in the 🏆 Tournament tab are <b>automatically added to match records</b>' },
-  manual_s2_9: { ko: '경기 카드 오른쪽 <b>📤 공유 버튼</b>을 탭하면 결과 공유 팝업이 열려요 — 카카오톡·문자·밴드 등 폰 기본 공유창으로 자랑하거나, <b>텍스트 복사</b> 후 붙여넣기 할 수 있어요', en: 'Tap the <b>📤 share button</b> on a match card to open the share popup — share via KakaoTalk, SMS, Band, or <b>copy the text</b> and paste anywhere' },
-
-  // 3. 통계
-  manual_s3_title: { ko: '3. 통계', en: '3. Statistics' },
-  manual_s3_1: { ko: '통계 탭 상단에 현재 선택된 종목이 표시됩니다. <b>[종목 변경 →]</b> 버튼을 누르면 프로필 탭에서 종목을 바꿀 수 있어요', en: 'The current sport is shown at the top. Tap <b>[Change Sport →]</b> to switch sports in the profile tab' },
-  manual_s3_2: { ko: '<b>연승·연패 배너</b> — 현재 연속 기록이 자동으로 표시됩니다', en: '<b>Win/Loss Streak banner</b> — your current streak is shown automatically' },
-  manual_s3_3: { ko: '<b>상세 요약</b> — 이번 달 성적, 단식·복식 승률, 가장 많이 이긴 상대·가장 어려운 상대', en: '<b>Summary</b> — this month\'s record, singles/doubles win rates, best and toughest opponents' },
-  manual_s3_4: { ko: '<b>월별 승률 그래프</b> — 최근 6개월 성적 추이를 바 차트로 확인', en: '<b>Monthly win rate chart</b> — view your last 6 months of performance as a bar chart' },
-  manual_s3_5: { ko: '<b>상대 전적 · 파트너 궁합 · 상대팀 상성</b>을 각각 분석해줘요. 기본 상위 5명만 표시되고, <b>[더보기]</b> 버튼으로 전체를 볼 수 있어요', en: 'Analyzes <b>opponent records, partner chemistry, and rival team matchups</b>. Top 5 shown by default — tap <b>[Show More]</b> for all' },
-  manual_s3_6: { ko: '각 섹션 상단 <b>🔍 검색창</b>에서 이름 또는 초성으로 바로 찾을 수 있어요', en: 'Use the <b>🔍 search bar</b> at the top of each section to find by name' },
-  manual_s3_7: { ko: '각 항목은 탭하면 펼쳐지는 <b>아코디언 방식</b>으로 필요한 것만 열어볼 수 있어요', en: 'Each item uses an <b>accordion style</b> — tap to expand only what you need' },
-
-  // 4. 선수 관리
-  manual_s4_title: { ko: '4. 선수 관리', en: '4. Player Management' },
-  manual_s4_1: { ko: '선수 등록 시 <b>성별·등급·나이대·손잡이·구력·플레이스타일</b>을 함께 입력할 수 있어요', en: 'When adding a player, you can enter <b>gender, level, age group, handedness, experience, and play style</b>' },
-  manual_s4_2: { ko: '이름 입력 시 <b>초성 검색</b>을 지원해요. 예: \'ㄱㄷㅎ\' 입력 → \'김동현\' 검색', en: '<b>Name search with autocomplete</b> is supported. Start typing to find matching players' },
-  manual_s4_3: { ko: '<b>클럽 관리</b>에서 클럽을 만들고 선수에게 배정할 수 있어요. 한 선수가 여러 클럽에 속할 수도 있어요', en: 'Create clubs in <b>Club Management</b> and assign players. A player can belong to multiple clubs' },
-  manual_s4_4: { ko: '선수 이름을 탭하면 <b>상세 전적 페이지</b>로 이동해요 — 나와의 전적·승률·최근 대전 기록 확인 가능', en: 'Tap a player\'s name to open their <b>detail page</b> — see your head-to-head record, win rate, and recent matches' },
-  manual_s4_5: { ko: '이름순·최근 대전순·전적 많은 순·승률 높은 순으로 <b>정렬</b>할 수 있어요', en: '<b>Sort</b> players by name, most recent match, most matches, or highest win rate' },
-  manual_s4_6: { ko: '📝 메모 버튼으로 선수별 특징이나 스타일을 기록해두세요', en: 'Use the 📝 memo button to note each player\'s characteristics or style' },
-
-  // 5. 대회
-  manual_s5_title: { ko: '5. 대회', en: '5. Tournament' },
-  manual_s5_1: { ko: '대회 탭에는 <b>🔄 한울방식 · 🏆 토너먼트 · 🎾 스코어</b> 세 가지 메뉴가 있어요', en: 'The Tournament tab has three menus: <b>🔄 Rotation (Hanul)</b>, <b>🏆 Bracket Tournament</b>, and <b>🎾 Score</b>' },
-  manual_s5_2: { ko: '<b>🔄 한울방식</b> — 매 게임마다 파트너와 상대가 자동으로 바뀌는 <b>순환 복식 대회</b>예요. 참가 인원과 게임 수를 설정하면 모든 조합이 자동으로 짜여요. 예) 8명·4게임이면 모두 골고루 파트너/상대로 만나요', en: '<b>🔄 Rotation (Hanul)</b> — partners and opponents rotate each game in a <b>round-robin doubles</b> format. Set players and game count and all pairings are auto-generated. e.g. 8 players × 4 games means everyone pairs with and faces everyone equally' },
-  manual_s5_3: { ko: '<b>🏆 토너먼트</b> — 단식·복식 <b>KO방식 대진표</b>예요. 이긴 팀만 다음 라운드로 진출하고, 결과 입력 시 다음 경기가 자동으로 채워져요', en: '<b>🏆 Bracket Tournament</b> — single/doubles <b>knockout bracket</b>. Only winners advance, and entering a result automatically fills in the next match' },
-  manual_s5_4: { ko: '<b>복식 파트너 구성</b> — 선수 선택 후 아래 두 가지 중 선택해요<br>· <b>🎲 자동 팀 섞기</b>: 선수 순서대로 1번↔마지막, 2번↔끝에서 2번 방식으로 자동 짝을 맺어요<br>· <b>✋ 직접 파트너 지정</b>: 선수를 2명씩 직접 클릭해서 팀을 만들어요', en: '<b>Doubles partner setup</b> — after selecting players, choose:<br>· <b>🎲 Auto pair</b>: pairs 1st↔last, 2nd↔2nd-last automatically<br>· <b>✋ Manual pair</b>: click players two at a time to form your own teams' },
-  manual_s5_5: { ko: '<b>상대팀 배치 방법</b> — 1라운드 대진을 어떻게 짤지 선택해요<br>· <b>🎲 자동 배치</b>: 선수/팀 순서대로 표준 시드 방식으로 자동 대진이 만들어져요<br>· <b>✋ 직접 대진 지정</b>: 내가 원하는 대로 누가 누구와 1라운드에서 붙을지 직접 클릭해서 대진을 짜요', en: '<b>Bracket draw method</b> — choose how Round 1 matchups are set:<br>· <b>🎲 Auto draw</b>: standard seeded bracket generated automatically<br>· <b>✋ Manual draw</b>: click to decide exactly who faces who in Round 1' },
-  manual_s5_6: { ko: '준결승 패자는 자동으로 <b>3·4위전</b>에 배치됩니다', en: 'Semifinal losers are automatically placed in the <b>3rd place match</b>' },
-  manual_s5_7: { ko: '선수 탭에서 등록한 선수를 바로 불러오거나, 직접 이름을 입력할 수 있어요', en: 'Import players from the Players tab, or type names directly' },
-  manual_s5_8: { ko: '대회에서 입력한 스코어는 <b>경기기록에 자동 반영</b>됩니다', en: 'Scores entered in tournaments are <b>automatically saved to match records</b>' },
-  manual_s5_9: { ko: '<b>📊 스코어보드</b> — 실제 경기 진행 중 실시간 점수판이에요. <b>폰을 가로로 돌리면</b> 대형 점수 화면이 열려요', en: '<b>📊 Scoreboard</b> — a live scoring display for matches in progress. <b>Rotate your phone to landscape</b> for the full-screen scoreboard' },
-  manual_s5_10: { ko: '스코어보드에서 <b>+POINT</b>로 점수 추가, <b>ACE</b>·<b>FAULT(더블폴트)</b> 버튼으로 특수 상황 입력, <b>↩ UNDO</b>로 되돌리기 가능해요', en: 'On the scoreboard: tap <b>+POINT</b> to score, <b>ACE</b>·<b>FAULT (double fault)</b> for special situations, and <b>↩ UNDO</b> to revert' },
-  manual_s5_11: { ko: '40-40 상황에서 자동으로 <b>DEUCE → AD</b> 처리되며, <b>🔀 타이브레이크</b> 버튼으로 타이브레이크를 시작할 수 있어요', en: 'At 40-40, <b>DEUCE → AD</b> is handled automatically. Use the <b>🔀 Tiebreak</b> button to start a tiebreak' },
-  manual_s5_12: { ko: '하단 <b>SETUP 탭</b>에서 선수 이름과 경기 제목을 직접 입력할 수 있어요', en: 'Enter player names and match title in the <b>SETUP tab</b> at the bottom' },
-  manual_s5_13: { ko: '<b>🎾 스코어</b> 버튼은 한울방식·토너먼트 설정 없이 <b>바로 스코어보드만 빠르게</b> 열고 싶을 때 사용해요. 친선경기나 즉석 게임 점수 기록에 편리해요', en: '<b>🎾 Score</b> opens the scoreboard <b>instantly without setting up</b> a Rotation or Bracket tournament — handy for friendly matches or quick on-the-spot scoring' },
-
-  // 6. 스트링 관리
-  manual_s6_title: { ko: '6. 스트링 관리', en: '6. String Management' },
-  manual_s6_1: { ko: '프로필 탭 → 라켓 카드에서 <b>스트링명</b>을 입력하세요. 과거에 입력한 스트링은 드롭다운에서 바로 선택할 수 있어요', en: 'Go to Profile → racquet card and enter the <b>string name</b>. Previously used strings appear in the dropdown' },
-  manual_s6_2: { ko: '<b>스트링 교체일</b>을 입력하면 프로필 배너에 D+일수와 교체 후 게임 수가 자동 표시됩니다', en: 'Enter a <b>restring date</b> to see D+ days and post-restring game count in the profile banner' },
-  manual_s6_3: { ko: '배너 색상으로 교체 시기를 한눈에 확인할 수 있어요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'The banner color shows restring status at a glance — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
-  manual_s6_4: { ko: '경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수를 따로 카운트해줘요', en: 'Choose a <b>racquet used</b> when logging a match to track game count per racquet separately' },
-  manual_s6_5: { ko: '<b>스트링 선택이 안 보여요</b> — 스트링 입력 기록이 없으면 직접 입력창만 표시돼요. 기록이 쌓이면 드롭다운이 자동으로 나타납니다', en: '<b>No string dropdown?</b> — The dropdown only appears after you\'ve entered a string at least once. Just type directly until then' },
-  manual_s6_6: { ko: '스트링 관리 탭 상단 <b>🛠️ 교체 인증하기</b> 버튼을 탭하면, 라켓·스트링·텐션·교체일 정보가 자동으로 문구로 만들어져서 카카오톡 등으로 바로 공유할 수 있어요', en: 'Tap <b>🛠️ Share Restring</b> at the top of the String Management tab to instantly generate and share your racquet, string, tension, and restring date via KakaoTalk or any app' },
-
-  // 7. 전술판
-  manual_s7_title: { ko: '7. 전술판', en: '7. Tactics Board' },
-  manual_s7_1: { ko: '<b>대회</b> 탭 상단의 <b>📋 전술판</b> 버튼을 탭하면 전용 화면이 열려요', en: 'Tap <b>📋 Tactics Board</b> at the top of the Tournament tab to open the dedicated screen' },
-  manual_s7_2: { ko: '코트에서 <b>선수(원형 아이콘)를 드래그</b>해서 위치를 자유롭게 움직일 수 있어요', en: '<b>Drag player icons</b> (circles) on the court to freely reposition them' },
-  manual_s7_3: { ko: '선수를 <b>한 번 탭</b>하면 타구각 표시, <b>두 번 탭</b>하면 이름·번호·포지션·색상을 편집할 수 있어요', en: '<b>Single tap</b> a player to show shot angles. <b>Double tap</b> to edit name, number, position, and color' },
-  manual_s7_4: { ko: '상단 버튼으로 <b>기본·양쪽전위·양쪽후위·I포메이션·호주</b> 5가지 대형을 바로 적용할 수 있어요', en: 'Use the top buttons to instantly apply 5 formations: <b>Default, Both Net, Both Back, I-Formation, Australian</b>' },
-  manual_s7_5: { ko: '☰ 버튼(화면 오른쪽 가운데)을 탭하면 조작 버튼이 나타나요', en: 'Tap the ☰ button (middle right of screen) to show the control panel' },
-  manual_s7_6: { ko: '<b>➡️ 화살표</b> — 선수 탭 후 드래그: 이동 화살표 / 빈 곳 드래그: 자유 화살표', en: '<b>➡️ Arrow</b> — tap a player then drag: movement arrow / drag empty space: free arrow' },
-  manual_s7_7: { ko: '<b>✏️ 그리기</b> — 손가락으로 코트 위에 자유롭게 선을 그을 수 있어요', en: '<b>✏️ Draw</b> — draw freely on the court with your finger' },
-  manual_s7_8: { ko: '<b>⭕ 커버존 / 🎾 공 / 📐 타구각</b> — 각각 탭해서 표시/숨기기 전환', en: '<b>⭕ Cover zone / 🎾 Ball / 📐 Shot angle</b> — tap each to toggle show/hide' },
-  manual_s7_9: { ko: '<b>🎨 보드설정</b> — 코트 색상(그린·클레이·하드·다크·잔디), 그리기 색상 변경', en: '<b>🎨 Board settings</b> — change court color (green, clay, hard, dark, grass) and drawing color' },
-  manual_s7_10: { ko: '<b>💾 저장 / 📂 불러오기</b> — 전술판 배치를 이름 붙여 저장하고 나중에 다시 불러올 수 있어요 (최대 20개)', en: '<b>💾 Save / 📂 Load</b> — save your board layout with a name and reload it later (up to 20 saves)' },
-  manual_s7_11: { ko: '<b>🔗 공유</b> — 현재 전술판을 URL 링크로 만들어 카카오톡 등으로 공유할 수 있어요', en: '<b>🔗 Share</b> — generate a URL link of the current board and share it via KakaoTalk or other apps' },
-  manual_s7_12: { ko: '<b>🗑️ 삭제</b>는 화살표·그리기만 지워요. <b>🔄 초기화</b>는 선수 위치까지 원래대로 돌아가요', en: '<b>🗑️ Delete</b> clears only arrows and drawings. <b>🔄 Reset</b> also returns players to their original positions' },
-
-  // 8. 공유 & 백업
-  manual_s8_title: { ko: '8. 공유 & 백업', en: '8. Share & Backup' },
-  manual_s8_1: { ko: '데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 같은 구글 계정으로 로그인하면 그대로 유지돼요', en: 'Data is <b>automatically saved to the cloud (Firebase)</b>. Log in with the same Google account on a new phone to restore everything' },
-  manual_s8_2: { ko: '<b>💾 데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요', en: '<b>💾 Export Data</b> — save all records as a JSON file for an extra backup' },
-  manual_s8_3: { ko: '<b>📂 가져오기</b> — 백업한 JSON 파일을 불러와 데이터를 복원할 수 있어요', en: '<b>📂 Import</b> — load a backed-up JSON file to restore your data' },
-  manual_s8_4: { ko: '🧹 <b>저장공간 정리</b> — 기기 캐시만 삭제돼요. 클라우드 데이터는 안전하게 유지됩니다', en: '🧹 <b>Clear Storage</b> — clears only the device cache. Your cloud data stays safe' },
-  manual_s8_5: { ko: '💬 <b>카카오 오픈채팅</b> — 공유 탭에서 참여해 동호인들과 소통하세요', en: '💬 <b>KakaoTalk Open Chat</b> — join from the Share tab to connect with other players' },
-
-  // 9. 자주 묻는 질문
-  manual_s9_title: { ko: '9. 자주 묻는 질문', en: '9. FAQ' },
-  manual_s9_1: { ko: '<b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요', en: '<b>Matches not showing in stats?</b> — Check that the correct sport (🎾 Tennis, etc.) is selected in your profile. Stats only show for the current sport' },
-  manual_s9_2: { ko: '<b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 \'화면을 가로로 돌려주세요\' 안내가 나와요', en: '<b>Scoreboard not showing?</b> — The scoreboard requires <b>landscape mode</b>. In portrait, a "Please rotate" message appears' },
-  manual_s9_3: { ko: '<b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요', en: '<b>App not updating?</b> — Tap Share tab → Clear Storage, or on iPhone Safari go to Settings → Clear History and Website Data' },
-  manual_s9_4: { ko: '<b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요', en: '<b>App running slowly?</b> — Tap Share tab → Clear Storage to improve performance' },
-  manual_s9_5: { ko: '<b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다', en: '<b>Data disappeared?</b> — Sign out and log back in with the same Google account to restore your data' },
-  manual_s9_6: { ko: '<b>HTML 파일로 직접 열면 오류가 나요</b> — 반드시 인터넷이 연결된 상태에서 <b>웹 주소(URL)</b>로 접속하세요', en: '<b>Error when opening the HTML file directly?</b> — Always access the app via its <b>web URL</b> with an internet connection' },
-
-  // 10. 니지스트링 커뮤니티
-  manual_s10_title: { ko: '10. 니지스트링 커뮤니티', en: '10. NIJI STRING Community' },
-  manual_s10_1: { ko: '공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요', en: 'Join the <b>KakaoTalk Open Chat</b> from the Share tab to connect with fellow players' },
-  manual_s10_2: { ko: '스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요', en: 'Use <b>NIJI STRING</b> professional services: restringing, racquet repair, custom watch strap crafting, and more' },
-
-  // ── 스코어보드 UI ──
-  sb_close:       { ko: '✕ 닫기',            en: '✕ Close' },
-  sb_tap_hint:    { ko: '▲ 선수 영역 탭=포인트 / 길게누름=취소 · 가운데 탭=메뉴', en: '▲ Tap player=Point / Hold=Undo · Center tap=Menu' },
-  sb_tab_score:   { ko: '🎾 점수',            en: '🎾 Score' },
-  sb_tab_fault:   { ko: '✖ 폴트',            en: '✖ Fault' },
-  sb_tab_setup:   { ko: '⚙ 설정',            en: '⚙ Setup' },
-  sb_srvsub:      { ko: '🟢 서브 선수 교체',  en: '🟢 Switch Server' },
-  sb_point:       { ko: '⚡ 포인트',          en: '⚡ Point' },
-  sb_ace:         { ko: '🎯 에이스',          en: '🎯 Ace' },
-  sb_fault_btn:   { ko: '✖ 폴트',            en: '✖ Fault' },
-  sb_undo:        { ko: '↩ 되돌리기',         en: '↩ Undo' },
-  sb_tiebreak:    { ko: '🔀 타이브레이크',    en: '🔀 Tiebreak' },
-  sb_reset:       { ko: '↺ 초기화',           en: '↺ Reset' },
-  sb_cur_fault:   { ko: '현재 폴트',          en: 'Current Fault' },
-  sb_double_fault:{ ko: '더블폴트',           en: 'Double Fault' },
-  sb_fault_times: { ko: '회',                 en: '' },
-  sb_srv_fault:   { ko: '서버 폴트',          en: 'Server Fault' },
-  sb_fault_auto:  { ko: '폴트는 서브하는 선수에게 자동 적용됩니다', en: 'Fault is automatically applied to the serving player' },
-  sb_fault_reset: { ko: '폴트 초기화',        en: 'Reset Faults' },
-  sb_singles:     { ko: '🎾 단식',            en: '🎾 Singles' },
-  sb_doubles:     { ko: '🤝 복식',            en: '🤝 Doubles' },
-  sb_player1:     { ko: '🟡 선수 1',          en: '🟡 Player 1' },
-  sb_player2:     { ko: '🔵 선수 2',          en: '🔵 Player 2' },
-  sb_dbl_our1:    { ko: '🟡 우리팀 듀스코트',  en: '🟡 Our Team (Deuce)' },
-  sb_dbl_opp1:    { ko: '🔵 상대팀 듀스코트',  en: '🔵 Opp. Team (Deuce)' },
-  sb_dbl_p1:      { ko: '🟡 우리팀 애드코트',  en: '🟡 Our Team (Ad)' },
-  sb_dbl_p2:      { ko: '🔵 상대팀 애드코트',  en: '🔵 Opp. Team (Ad)' },
-  sb_team_ours:   { ko: '우리팀',              en: 'Our Team' },
-  sb_team_opp:    { ko: '상대팀',              en: 'Opp. Team' },
-  sb_court_pair:  { ko: '듀스/애드 2명',        en: 'Deuce/Ad, 2 players' },
-  sb_match_title: { ko: '경기 제목',          en: 'Match Title' },
-  sb_touch_input: { ko: '터치하여 입력',      en: 'Tap to enter' },
-  sb_apply:       { ko: '✔ 적용하기',         en: '✔ Apply' },
-  sb_winner_title:{ ko: '🏆 경기 승자',       en: '🏆 Match Winner' },
-  sb_new_match:   { ko: '↺ 새 경기 시작',    en: '↺ New Match' },
-
-  // ── 전술판 ──
-  tc_back:           { ko: '← 돌아가기',         en: '← Back' },
-  tc_title:          { ko: '🎾 복식 전술판',      en: '🎾 Doubles Tactics Board' },
-  tc_preset_basic:   { ko: '기본',               en: 'Basic' },
-  tc_preset_bothup:  { ko: '양쪽전위',            en: 'Both Up' },
-  tc_preset_bothback:{ ko: '양쪽후위',            en: 'Both Back' },
-  tc_preset_iform:   { ko: 'I포메이션',           en: 'I-Formation' },
-  tc_preset_aus:     { ko: '호주',               en: 'Australian' },
-  tc_btn_arrow:      { ko: '➡️ 화살표',           en: '➡️ Arrow' },
-  tc_btn_draw:       { ko: '✏️ 그리기',           en: '✏️ Draw' },
-  tc_btn_cover:      { ko: '⭕ 커버존',           en: '⭕ Cover Zone' },
-  tc_btn_ball:       { ko: '🎾 공',              en: '🎾 Ball' },
-  tc_btn_angle:      { ko: '📐 타구각',           en: '📐 Shot Angle' },
-  tc_btn_del:        { ko: '🗑️ 삭제',            en: '🗑️ Delete' },
-  tc_btn_reset:      { ko: '🔄 초기화',           en: '🔄 Reset' },
-  tc_btn_board:      { ko: '🎨 보드설정',         en: '🎨 Board Setup' },
-  tc_btn_save:       { ko: '💾 저장',            en: '💾 Save' },
-  tc_btn_load:       { ko: '📂 불러오기',         en: '📂 Load' },
-  tc_btn_share:      { ko: '🔗 공유',            en: '🔗 Share' },
-  tc_guide:          { ko: '선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동', en: 'Player tab → select (shot angle) &nbsp;·&nbsp; Double-tap → edit &nbsp;·&nbsp; Drag → move' },
-  tc_edit_title:     { ko: '✏️ 선수 편집',        en: '✏️ Edit Player' },
-  tc_edit_name:      { ko: '이름',               en: 'Name' },
-  tc_edit_number:    { ko: '등번호',              en: 'Number' },
-  tc_edit_position:  { ko: '포지션',              en: 'Position' },
-  tc_edit_color:     { ko: '선수 색상',           en: 'Player Color' },
-  tc_cancel:         { ko: '취소',               en: 'Cancel' },
-  tc_ok:             { ko: '확인',               en: 'OK' },
-  tc_close:          { ko: '닫기',               en: 'Close' },
-  tc_apply:          { ko: '적용',               en: 'Apply' },
-  tc_board_title:    { ko: '🎨 보드 설정',        en: '🎨 Board Settings' },
-  tc_board_theme:    { ko: '코트 테마',           en: 'Court Theme' },
-  tc_theme_green:    { ko: '🟩 그린',            en: '🟩 Green' },
-  tc_theme_clay:     { ko: '🧱 클레이',           en: '🧱 Clay' },
-  tc_theme_hard:     { ko: '🔵 하드',            en: '🔵 Hard' },
-  tc_theme_dark:     { ko: '⚫ 다크',            en: '⚫ Dark' },
-  tc_theme_grass:    { ko: '🌿 잔디',            en: '🌿 Grass' },
-  tc_board_drawcolor:{ ko: '그리기 색상',         en: 'Drawing Color' },
-  tc_save_title:     { ko: '💾 전술판 저장',      en: '💾 Save Tactics Board' },
-  tc_save_label:     { ko: '저장 이름',           en: 'Save Name' },
-  tc_save_ok:        { ko: '저장',               en: 'Save' },
-  tc_load_title:     { ko: '📂 저장된 전술판',    en: '📂 Saved Boards' },
-  tc_share_title:    { ko: '🔗 보드 공유',        en: '🔗 Share Board' },
-  tc_share_desc:     { ko: '현재 전술판이 URL에 담겼어요.<br>복사해서 카카오톡으로 보내세요!', en: 'The current tactics board has been encoded into a URL.<br>Copy and share it via KakaoTalk!' },
-  tc_share_copy:     { ko: '📋 링크 복사',        en: '📋 Copy Link' },
-};
-
-// ── 글자 크기 변경 ──────────────────────────────────
-function setFontSize(px) {
-  // html 태그의 font-size CSS 변수를 바꿈 → rem 단위 전체 비율 변경
-  document.documentElement.style.setProperty('--app-font-size', px + 'px');
-  // 태블릿 등 다양한 기기에서도 확실히 적용되도록 직접 설정
-  document.documentElement.style.fontSize = px + 'px';
-  document.body.style.fontSize = px + 'px';
-  localStorage.setItem('niji_font_size', String(px));
-
-  // 버튼 강조 (선택된 버튼 = 보라색, 나머지 = 기본)
-  document.querySelectorAll('.lang-font-btn').forEach(function(btn) {
-    var on = (btn.id === 'fontBtn-' + px);
-    btn.style.background  = on ? 'var(--accent)' : '';
-    btn.style.color       = on ? '#fff'          : '';
-    btn.style.borderColor = on ? 'var(--accent)' : '';
-    btn.style.boxShadow   = on ? '0 0 0 2px var(--accent)' : '';
-    btn.style.fontWeight  = on ? '700'           : '';
-  });
-}
-
-// ── 현재 언어로 사전 텍스트 가져오기 (대회 탭 동적 렌더에 사용) ──
-function _t(key) {
-  var lang = localStorage.getItem('niji_language') || 'ko';
-  if (NIJI_DICT[key] && NIJI_DICT[key][lang]) return NIJI_DICT[key][lang];
-  if (NIJI_DICT[key] && NIJI_DICT[key]['ko']) return NIJI_DICT[key]['ko'];
-  return key;
-}
 
 // ── 언어 변경 ───────────────────────────────────────
 function setLanguage(lang) {
