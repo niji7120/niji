@@ -7290,7 +7290,11 @@ function renderScoreboard() {
   #sb-topbar { display:grid; grid-template-columns:auto 1fr auto; align-items:center; height:14%; min-height:56px; border-bottom:1px solid #16281f; position:relative; z-index:1; flex-shrink:0; padding:0 16px; gap:12px; }
   #sb-close-btn { background:rgba(255,255,255,0.08); color:#aaa; border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:6px 14px; font-size:clamp(11px,1.8vw,14px); font-family:'Cormorant Garamond',serif; letter-spacing:1px; cursor:pointer; justify-self:start; white-space:nowrap; }
   #sb-close-btn:active { background:rgba(255,255,255,0.18); }
-  #sb-match-title { font-family:'Cormorant Garamond',serif; font-size:clamp(12px,2.2vw,20px); color:#c9a961; letter-spacing:3px; font-weight:700; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #sb-topbtns { display:flex; align-items:center; justify-content:center; gap:8px; min-width:0; }
+  .sb-topbtn { font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:clamp(11px,1.8vw,15px); padding:7px 16px; border-radius:20px; cursor:pointer; white-space:nowrap; }
+  .sb-topbtn:active { transform:scale(.92); opacity:.85; }
+  .sb-topbtn-ace { background:rgba(0,166,81,.25); color:#00e070; border:1.5px solid #00a651; }
+  .sb-topbtn-flt { background:rgba(255,79,79,.22); color:#ff7070; border:1.5px solid #ff4f4f; }
   #sb-game-score { display:flex; flex-direction:column; align-items:flex-end; justify-self:end; min-width:0; }
   #sb-game-score .sb-gs-label { font-family:'Cormorant Garamond',serif; font-size:clamp(16px,2.8vw,24px); color:#7d9188; letter-spacing:2px; }
   #sb-game-score .sb-gs-num { font-family:'Bebas Neue',sans-serif; font-size:clamp(64px,14vw,130px); color:#fff; letter-spacing:3px; line-height:1; }
@@ -7312,12 +7316,6 @@ function renderScoreboard() {
   .sb-swap-hint { opacity:.5; font-size:0.75em; }
   .sb-pts { font-family:'Bebas Neue',sans-serif; font-size:clamp(180px,48vw,480px); line-height:.88; color:#fff; -webkit-text-stroke:3px #c9a961; text-shadow:0 0 20px rgba(255,255,255,.8),0 0 40px rgba(255,216,77,.4); letter-spacing:-1px; }
   .sb-pts.deuce-ad { color:#ccff00; -webkit-text-stroke:2px rgba(180,255,0,.4); text-shadow:0 0 20px rgba(180,255,0,.8),0 0 50px rgba(180,255,0,.4); }
-  .sb-quickbtns { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:none; gap:8px; z-index:3; }
-  .sb-quickbtns.show { display:flex; }
-  .sb-qbtn { font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:clamp(11px,1.8vw,15px); padding:6px 14px; border-radius:20px; cursor:pointer; letter-spacing:0; white-space:nowrap; }
-  .sb-qbtn:active { transform:scale(.92); opacity:.85; }
-  .sb-qbtn-ace { background:rgba(0,166,81,.25); color:#00e070; border:1.5px solid #00a651; }
-  .sb-qbtn-flt { background:rgba(255,79,79,.22); color:#ff7070; border:1.5px solid #ff4f4f; }
   #sb-divider { width:3px; background:linear-gradient(to bottom,transparent,#c9a961 20%,#c9a961 80%,transparent); opacity:.5; }
   #sb-tap-hint { text-align:center; padding:10px 0 12px; font-family:'Cormorant Garamond',serif; font-size:clamp(13px,2.4vw,17px); color:#8a998f; letter-spacing:2px; background:#08120e; animation:sbBlink 2.5s ease-in-out infinite; flex-shrink:0; }
   @keyframes sbBlink { 0%,100%{opacity:.4;}50%{opacity:.9;} }
@@ -7399,7 +7397,10 @@ function renderScoreboard() {
 <div id="sb-wrap" onclick="sbHandleTap(event)">
   <div id="sb-topbar">
     <button id="sb-close-btn" onclick="event.stopPropagation();if(window._sbOverlayClose)window._sbOverlayClose();">${_t('sb_close')}</button>
-    <div id="sb-match-title">🎾 ${_sb.title}</div>
+    <div id="sb-topbtns">
+      <button class="sb-topbtn sb-topbtn-ace" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();" onclick="event.stopPropagation();sbAddAce(_sb.serving);">${_t('sb_ace')}</button>
+      <button class="sb-topbtn sb-topbtn-flt" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();" onclick="event.stopPropagation();sbAddFaultAuto();">${_t('sb_fault_btn')}</button>
+    </div>
     <div id="sb-game-score"><div class="sb-gs-label">GAMES</div><div class="sb-gs-num"><span id="sb-gs1">0</span> - <span id="sb-gs2">0</span></div></div>
   </div>
   <div id="sb-status-msg"></div>
@@ -7408,20 +7409,12 @@ function renderScoreboard() {
       <div class="sb-serve-dot" id="sb-sdot1"></div>
       <div class="sb-pname" id="sb-name1-d" onclick="event.stopPropagation();sbSwapTeamOrder(0);" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();">${sbNameHTML(0)}</div>
       <div class="sb-pts" id="sb-pts1-d">0</div>
-      <div class="sb-quickbtns" id="sb-qb1">
-        <button class="sb-qbtn sb-qbtn-ace" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();" onclick="event.stopPropagation();sbAddAce(0);">${_t('sb_ace')}</button>
-        <button class="sb-qbtn sb-qbtn-flt" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();" onclick="event.stopPropagation();sbAddFault(0);">${_t('sb_fault_btn')}</button>
-      </div>
     </div>
     <div id="sb-divider"></div>
     <div class="sb-pb" id="sb-pb2" onclick="event.stopPropagation();" onpointerdown="sbPlayerPress(event,1)" onpointerup="sbPlayerRelease(event,1)" onpointercancel="sbPlayerCancel(event)" onpointerleave="sbPlayerCancel(event)">
       <div class="sb-serve-dot" id="sb-sdot2"></div>
       <div class="sb-pname" id="sb-name2-d" onclick="event.stopPropagation();sbSwapTeamOrder(1);" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();">${sbNameHTML(1)}</div>
       <div class="sb-pts" id="sb-pts2-d">0</div>
-      <div class="sb-quickbtns" id="sb-qb2">
-        <button class="sb-qbtn sb-qbtn-ace" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();" onclick="event.stopPropagation();sbAddAce(1);">${_t('sb_ace')}</button>
-        <button class="sb-qbtn sb-qbtn-flt" onpointerdown="event.stopPropagation();" onpointerup="event.stopPropagation();" onpointercancel="event.stopPropagation();" onclick="event.stopPropagation();sbAddFault(1);">${_t('sb_fault_btn')}</button>
-      </div>
     </div>
   </div>
 
@@ -7449,16 +7442,12 @@ function renderScoreboard() {
             <div class="sb-pctrl-name" id="sb-cname1">${n1}</div>
             <div class="sb-btn-group">
               <button class="sb-btn sb-btn-pt" onclick="sbAddPoint(0);sbClosePanel()">${_t('sb_point')}</button>
-              <button class="sb-btn sb-btn-ace" onclick="sbAddAce(0);sbClosePanel()" id="sb-srv-ace-1" style="display:none">${_t('sb_ace')}</button>
-              <button class="sb-btn sb-btn-flt" onclick="sbAddFault(0);sbClosePanel()" id="sb-srv-flt-1" style="display:none">${_t('sb_fault_btn')}</button>
             </div>
           </div>
           <div class="sb-pctrl">
             <div class="sb-pctrl-name b" id="sb-cname2">${n2}</div>
             <div class="sb-btn-group">
               <button class="sb-btn sb-btn-pt" onclick="sbAddPoint(1);sbClosePanel()">${_t('sb_point')}</button>
-              <button class="sb-btn sb-btn-ace" onclick="sbAddAce(1);sbClosePanel()" id="sb-srv-ace-2" style="display:none">${_t('sb_ace')}</button>
-              <button class="sb-btn sb-btn-flt" onclick="sbAddFault(1);sbClosePanel()" id="sb-srv-flt-2" style="display:none">${_t('sb_fault_btn')}</button>
             </div>
           </div>
         </div>
@@ -7477,9 +7466,6 @@ function renderScoreboard() {
             <div class="sb-fd-dot" id="sb-fd2"></div>
           </div>
           <span>${_t('sb_double_fault')}: <span id="sb-df-cnt" style="color:#ff4f4f">0</span>${_t('sb_fault_times')}</span>
-        </div>
-        <div class="sb-btn-group">
-          <button class="sb-btn sb-btn-flt" style="flex:1;padding:12px;font-size: 0.9333rem" onclick="sbAddFaultAuto()">${_t('sb_srv_fault')}</button>
         </div>
         <div style="font-family:'Noto Sans KR',sans-serif;font-size: 0.8667rem;color:#aaa;text-align:center;margin-top:4px;letter-spacing:0.5px;">${_t('sb_fault_auto')}</div>
         <button class="sb-btn sb-btn-undo" style="width:100%;padding:10px;margin-top:6px;" onclick="sbResetFaults()">${_t('sb_fault_reset')}</button>
@@ -7525,21 +7511,11 @@ function renderScoreboard() {
         </div>
         <!-- 서브 시작 선수는 코트 화면에서 이름을 탭해 좌우로 바꾸면 됩니다 -->
         <div style="font-family:'Noto Sans KR',sans-serif;font-size:0.7333rem;color:#7a998f;text-align:center;margin-top:6px;letter-spacing:0;">🎾 코트 화면의 선수 이름을 탭하면 서브 순서가 바뀌어요</div>
-        <!-- 경기 제목 (단식/복식 공통) -->
-        <div class="sb-setup-grid" style="margin-top:5px;">
-          <div class="sb-setup-item" style="grid-column:1/-1">
-            <label>${_t('sb_match_title')}</label>
-            <button class="sb-name-btn" id="sb-nbtn-title" onclick="sbOpenInput('sb-in-title',_t('sb_match_title'))">
-              <span id="sb-nbtn-title-txt">${_sb.title||_t('sb_touch_input')}</span>
-            </button>
-          </div>
-        </div>
         <!-- 숨겨진 실제 값 저장용 input들 (포커스 안 받음) -->
         <input type="hidden" id="sb-in-name1" value="${n1}">
         <input type="hidden" id="sb-in-name2" value="${n2}">
         <input type="hidden" id="sb-in-name3" value="${_sb.names2[0]||''}">
         <input type="hidden" id="sb-in-name4" value="${_sb.names2[1]||''}">
-        <input type="hidden" id="sb-in-title" value="${_sb.title}">
         <button class="sb-btn-apply" onclick="sbApplySetup();sbClosePanel()">${_t('sb_apply')}</button>
       </div>
       </div><!-- /sb-ctrl-scroll -->
@@ -8367,10 +8343,6 @@ function sbRender() {
   s2.className = 'sb-serve-dot' + (_sb.serving===1?' on':'');
   pb1.className = 'sb-pb' + (_sb.serving===0?' serving':'');
   pb2.className = 'sb-pb' + (_sb.serving===1?' serving':'');
-  var qb1 = document.getElementById('sb-qb1');
-  var qb2 = document.getElementById('sb-qb2');
-  if (qb1) qb1.classList.toggle('show', _sb.serving===0 && !_sb.over);
-  if (qb2) qb2.classList.toggle('show', _sb.serving===1 && !_sb.over);
   var nmA = document.getElementById('sb-name1-d'); if (nmA) nmA.innerHTML = sbNameHTML(0);
   var nmB = document.getElementById('sb-name2-d'); if (nmB) nmB.innerHTML = sbNameHTML(1);
 
