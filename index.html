@@ -5502,6 +5502,39 @@ function renderSummaryCard(ms) {
 const OPP_PAGE_SIZE = 5;
 window._oppShowAll = false;
 
+// ── 상대/파트너/팀 통계 공통 헬퍼 (정렬 · 검색 · 더보기버튼) ──
+function _statsSortWL(entries, sortBy) {
+  return entries.sort((a, b) => {
+    if (sortBy === 'winrate') {
+      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
+      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
+      if (rb !== ra) return rb - ra;
+      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
+      if (tb !== ta) return tb - ta;
+      return a[0].localeCompare(b[0], 'ko');
+    } else if (sortBy === 'name') {
+      return a[0].localeCompare(b[0], 'ko');
+    }
+    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
+    if (diff !== 0) return diff;
+    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
+  });
+}
+function _statsFilterSearch(sorted, searchQ) {
+  if (!searchQ) return sorted;
+  const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
+  return sorted.filter(([name]) =>
+    isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
+  );
+}
+function _statsMoreBtn(showAll, total, searchQ, showAllFlagKey, renderFnName, moreLabelKey) {
+  return (!showAll && total > OPP_PAGE_SIZE)
+    ? `<button onclick="window.${showAllFlagKey}=true;${renderFnName}();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}${_t(moreLabelKey)}</button>`
+    : (showAll && total > OPP_PAGE_SIZE && !searchQ)
+    ? `<button onclick="window.${showAllFlagKey}=false;${renderFnName}();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">${_t('stats_fold')}</button>`
+    : '';
+}
+
 function renderOpponentStats(ms) {
   if (!ms) { const sport = state.sportType||'tennis'; const cutoff = getRolling12MonthsCutoff(); ms = state.matches.filter(m=>(m.sport||'tennis')===sport && m.date >= cutoff); }
   const om = {};
@@ -5533,27 +5566,10 @@ function renderOpponentStats(ms) {
   const sortEl = document.getElementById('oppSort');
   const sortBy = sortEl ? sortEl.value : 'winrate';
   const searchQ = (document.getElementById('oppSearch')||{}).value||'';
-  let sorted = Object.entries(om).sort((a,b) => {
-    if (sortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      if (rb !== ra) return rb - ra;
-      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
-      if (tb !== ta) return tb - ta;
-      return a[0].localeCompare(b[0], 'ko');
-    } else if (sortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
-    if (diff !== 0) return diff;
-    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
-  });
+  let sorted = _statsSortWL(Object.entries(om), sortBy);
   // 검색 필터 (초성 포함)
   if (searchQ) {
-    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
-    sorted = sorted.filter(([name]) =>
-      isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
-    );
+    sorted = _statsFilterSearch(sorted, searchQ);
     window._oppShowAll = true;
   }
   if (!sorted.length) {
@@ -5598,11 +5614,7 @@ function renderOpponentStats(ms) {
       ${hasCombos ? `<div id="${comboId}" style="display:none;margin-top:8px;padding:4px 8px 0;background:rgba(124,106,247,.05);border-radius:8px;border:1px solid var(--border);">${comboHtml}</div>` : ''}
     </div>`;
   }).join('');
-  const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
-    ? `<button onclick="window._oppShowAll=true;renderOpponentStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}${_t('stats_show_more_person')}</button>`
-    : (showAll && total > OPP_PAGE_SIZE && !searchQ)
-    ? `<button onclick="window._oppShowAll=false;renderOpponentStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">${_t('stats_fold')}</button>`
-    : '';
+  const moreBtn = _statsMoreBtn(showAll, total, searchQ, '_oppShowAll', 'renderOpponentStats', 'stats_show_more_person');
   document.getElementById('opponentCard').innerHTML = cards + moreBtn;
 }
 
@@ -5623,26 +5635,9 @@ function renderPartnerStats(ms) {
   const partnerSortEl = document.getElementById('partnerSort');
   const partnerSortBy = partnerSortEl ? partnerSortEl.value : 'winrate';
   const searchQ = (document.getElementById('partnerSearch')||{}).value||'';
-  let sorted = Object.entries(pm).sort((a,b) => {
-    if (partnerSortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      if (rb !== ra) return rb - ra;
-      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
-      if (tb !== ta) return tb - ta;
-      return a[0].localeCompare(b[0], 'ko');
-    } else if (partnerSortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
-    if (diff !== 0) return diff;
-    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
-  });
+  let sorted = _statsSortWL(Object.entries(pm), partnerSortBy);
   if (searchQ) {
-    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
-    sorted = sorted.filter(([name]) =>
-      isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
-    );
+    sorted = _statsFilterSearch(sorted, searchQ);
     window._partnerShowAll = true;
   }
   if (!sorted.length) {
@@ -5669,11 +5664,7 @@ function renderPartnerStats(ms) {
       </div>
     </div>`;
   }).join('');
-  const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
-    ? `<button onclick="window._partnerShowAll=true;renderPartnerStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}${_t('stats_show_more_person')}</button>`
-    : (showAll && total > OPP_PAGE_SIZE && !searchQ)
-    ? `<button onclick="window._partnerShowAll=false;renderPartnerStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">${_t('stats_fold')}</button>`
-    : '';
+  const moreBtn = _statsMoreBtn(showAll, total, searchQ, '_partnerShowAll', 'renderPartnerStats', 'stats_show_more_person');
   document.getElementById('partnerCard').innerHTML = cards + moreBtn;
 }
 
@@ -5697,26 +5688,9 @@ function renderSinglesStats(ms) {
   const singlesSortEl = document.getElementById('singlesSort');
   const singlesSortBy = singlesSortEl ? singlesSortEl.value : 'winrate';
   const searchQ = (document.getElementById('singlesSearch')||{}).value||'';
-  let sorted = Object.entries(tm).sort((a,b) => {
-    if (singlesSortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      if (rb !== ra) return rb - ra;
-      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
-      if (tb !== ta) return tb - ta;
-      return a[0].localeCompare(b[0], 'ko');
-    } else if (singlesSortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
-    if (diff !== 0) return diff;
-    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
-  });
+  let sorted = _statsSortWL(Object.entries(tm), singlesSortBy);
   if (searchQ) {
-    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
-    sorted = sorted.filter(([name]) =>
-      isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
-    );
+    sorted = _statsFilterSearch(sorted, searchQ);
     window._singlesShowAll = true;
   }
   if (!sorted.length) {
@@ -5746,11 +5720,7 @@ function renderSinglesStats(ms) {
       </div>
     </div>`;
   }).join('');
-  const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
-    ? `<button onclick="window._singlesShowAll=true;renderSinglesStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}${_t('stats_show_more_person')}</button>`
-    : (showAll && total > OPP_PAGE_SIZE && !searchQ)
-    ? `<button onclick="window._singlesShowAll=false;renderSinglesStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">${_t('stats_fold')}</button>`
-    : '';
+  const moreBtn = _statsMoreBtn(showAll, total, searchQ, '_singlesShowAll', 'renderSinglesStats', 'stats_show_more_person');
   document.getElementById('singlesCard').innerHTML = cards + moreBtn;
 }
 
@@ -5773,26 +5743,9 @@ function renderEnemyTeamStats(ms) {
   const enemySortEl = document.getElementById('enemySort');
   const enemySortBy = enemySortEl ? enemySortEl.value : 'winrate';
   const searchQ = (document.getElementById('enemySearch')||{}).value||'';
-  let sorted = Object.entries(tm).sort((a,b) => {
-    if (enemySortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      if (rb !== ra) return rb - ra;
-      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
-      if (tb !== ta) return tb - ta;
-      return a[0].localeCompare(b[0], 'ko');
-    } else if (enemySortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
-    if (diff !== 0) return diff;
-    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
-  });
+  let sorted = _statsSortWL(Object.entries(tm), enemySortBy);
   if (searchQ) {
-    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
-    sorted = sorted.filter(([team]) =>
-      isChosung ? getChosung(team).startsWith(searchQ) : team.includes(searchQ)
-    );
+    sorted = _statsFilterSearch(sorted, searchQ);
     window._enemyShowAll = true;
   }
   if (!sorted.length) {
@@ -5831,11 +5784,7 @@ function renderEnemyTeamStats(ms) {
       </div>
     </div>`;
   }).join('');
-  const moreBtn = (!showAll && total > OPP_PAGE_SIZE)
-    ? `<button onclick="window._enemyShowAll=true;renderEnemyTeamStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--accent);font-size: 0.8667rem;font-weight:700;cursor:pointer;">더보기 +${total - OPP_PAGE_SIZE}${_t('stats_show_more_team')}</button>`
-    : (showAll && total > OPP_PAGE_SIZE && !searchQ)
-    ? `<button onclick="window._enemyShowAll=false;renderEnemyTeamStats();" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size: 0.8667rem;cursor:pointer;">${_t('stats_fold')}</button>`
-    : '';
+  const moreBtn = _statsMoreBtn(showAll, total, searchQ, '_enemyShowAll', 'renderEnemyTeamStats', 'stats_show_more_team');
   document.getElementById('enemyTeamCard').innerHTML = cards + moreBtn;
 }
 
@@ -7302,13 +7251,15 @@ function renderScoreboard() {
   #sb-status-msg { position:absolute; top:17%; left:50%; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-size:clamp(12px,2vw,18px); color:#c9a961; letter-spacing:3px; white-space:nowrap; opacity:0; transition:opacity .3s; pointer-events:none; z-index:5; text-shadow:0 0 8px rgba(255,216,77,.6); }
   #sb-status-msg.show { opacity:1; }
   #sb-score-area { display:grid; grid-template-columns:1fr 3px 1fr; flex:1; min-height:0; }
-  .sb-pb { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:16px 8px; background:#08120e; position:relative; }
+  .sb-pb { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:16px 8px; background:#08120e; position:relative; }
   .sb-pb.serving { background:rgba(173,255,47,0.03); }
   .sb-pb-press { background:rgba(255,79,79,0.12) !important; transition: background .15s; }
   .sb-serve-dot { width:clamp(16px,2.8vw,28px); height:clamp(16px,2.8vw,28px); border-radius:50%; background:transparent; border:2px solid #7d9188; position:static; flex-shrink:0; transition:all .3s; }
   .sb-serve-dot.on { background:radial-gradient(circle at 35% 35%,#ccff00,#88cc00); border-color:transparent; box-shadow:0 0 14px rgba(180,255,0,.8); animation:sbServePulse 1.4s ease-in-out infinite; }
   @keyframes sbServePulse { 0%,100%{box-shadow:0 0 12px rgba(180,255,0,.6);}50%{box-shadow:0 0 28px rgba(180,255,0,1);} }
-  .sb-pname { font-family:'Cormorant Garamond',serif; font-size:clamp(14px,3.5vw,30px); color:#fff; letter-spacing:2px; font-weight:700; text-align:center; margin-bottom:0; word-break:break-all; }
+  /* 이름(순서변경) 터치 영역을 패딩+음수마진으로 넓혀서 점수 터치와 서로 안 겹치게 함 */
+  .sb-pname { font-family:'Cormorant Garamond',serif; font-size:clamp(14px,3.5vw,30px); color:#fff; letter-spacing:2px; font-weight:700; text-align:center; margin-bottom:0; word-break:break-all; padding:14px 14px; margin:-14px -14px -8px; border-radius:10px; touch-action:manipulation; min-height:44px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; }
+  .sb-pname:active { background:rgba(255,255,255,0.07); }
   .sb-srv-name { color:#ccff00; text-shadow:0 0 10px rgba(180,255,0,.7); position:relative; }
   .sb-srv-name::after { content:'🟢'; font-size:0.55em; margin-left:4px; vertical-align:middle; }
   .sb-sub-name { opacity:.55; }
@@ -7842,6 +7793,12 @@ function sbPlayerCancel(e) {
   _sbLongFired = false;
 }
 
+// 경기가 이미 시작됐는지 확인 (점수/게임이 하나라도 나면 시작된 것으로 봄)
+function sbMatchStarted() {
+  return !!(_sb.pts[0] > 0 || _sb.pts[1] > 0 || _sb.games[0] > 0 || _sb.games[1] > 0 ||
+    (_sb.tbPts && (_sb.tbPts[0] > 0 || _sb.tbPts[1] > 0)));
+}
+
 // 복식일 때 "A / B" 형태 이름에서 서브 선수(subIdx)를 강조 표시
 function sbNameHTML(p) {
   var name = _sb.names[p] || ('선수 ' + (p+1));
@@ -7855,7 +7812,7 @@ function sbNameHTML(p) {
       }
       return '<span class="sb-sub-name">' + part + '</span>';
     }).join('<span class="sb-name-sep"> / </span>');
-    return html + ' <span class="sb-swap-hint">⇄</span>';
+    return html + ' <span class="sb-swap-hint">' + (sbMatchStarted() ? '🔒' : '⇄') + '</span>';
   }
   return name;
 }
@@ -7872,6 +7829,10 @@ function sbSetServerSub(team, idx) {
 // 코트 화면에서 선수 이름을 탭하면 좌우 순서를 바꿔서(서브 순서도 함께 바뀜) 간단하게 지정
 function sbSwapTeamOrder(team) {
   if (_sb.format !== 'doubles') return;
+  if (sbMatchStarted()) {
+    sbFlashStatus('🔒 경기 중에는 순서를 바꿀 수 없어요', 1200);
+    return;
+  }
   var name = _sb.names[team] || '';
   var parts = name.split(' / ');
   if (parts.length !== 2 || !parts[0] || !parts[1]) return;
