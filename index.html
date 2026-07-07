@@ -31,7 +31,6 @@
 const NIJI_DICT = {
   /* 설정 카드 */
   set_font_title:    { ko: '글자 크기 설정',    en: 'Font Size' },
-  set_lang_title:    { ko: '언어 설정',          en: 'Language' },
   font_default:      { ko: '기본',               en: 'Default' },
   font_large:        { ko: '크게',               en: 'Large' },
   font_xlarge:       { ko: '아주 크게',          en: 'X-Large' },
@@ -65,6 +64,35 @@ const NIJI_DICT = {
 
   /* 프로필 탭 */
   pf_sport_title:    { ko: '종목 선택',     en: 'Sport' },
+  pf_default_name:   { ko: '선수',             en: 'Player' },
+  pf_drag_hint:      { ko: '↕ 드래그해서 위치 조정', en: '↕ Drag to adjust position' },
+  share_loading:     { ko: '로딩 중...',      en: 'Loading...' },
+  stats_search_ph:   { ko: '🔍 이름 또는 초성 (예: ㄱㄷㅎ)', en: '🔍 Name or initial' },
+  contest_loading:   { ko: '불러오는 중...',   en: 'Loading...' },
+  toast_offline_saved:     { ko: '📴 오프라인 저장됨. 인터넷 연결 시 자동 동기화돼요.', en: '📴 Saved offline. Will sync automatically once back online.' },
+  toast_photo_too_large:   { ko: '⚠️ 사진이 너무 커서 저장 안됐어요. 더 작은 사진을 써주세요.', en: '⚠️ Photo too large to save. Please use a smaller photo.' },
+  toast_photo_save_failed: { ko: '⚠️ 사진 저장 실패. 기기 저장공간을 확인해 주세요.', en: '⚠️ Failed to save photo. Please check your device storage.' },
+  toast_offline_synced:    { ko: '✅ 오프라인 기록이 클라우드에 동기화됐어요!', en: '✅ Offline records synced to the cloud!' },
+  toast_cache_cleared:     { ko: '🧹 저장공간 정리 완료!', en: '🧹 Cache cleared!' },
+  toast_cache_clear_failed:{ ko: '❌ 정리 실패: ', en: '❌ Clear failed: ' },
+  toast_photo_size_limit:  { ko: '⚠️ 사진 크기는 15MB 이하여야 합니다', en: '⚠️ Photo must be under 15MB' },
+  toast_photo_uploaded:    { ko: '📷 사진 업로드 완료! 위아래로 드래그해서 위치를 조정할 수 있어요', en: '📷 Photo uploaded! Drag up and down to adjust the position' },
+  toast_result_copied:     { ko: '📋 결과가 복사되었어요! 카카오톡에 붙여넣기 하세요 😊', en: '📋 Result copied! Paste it into KakaoTalk 😊' },
+  toast_string_copied:     { ko: '📋 교체 인증 문구가 복사됐어요! 카카오톡에 붙여넣기 하세요 😊', en: '📋 Restring caption copied! Paste it into KakaoTalk 😊' },
+  toast_copy_failed:       { ko: '복사에 실패했어요. 직접 선택해서 복사해 주세요.', en: 'Copy failed. Please select and copy it manually.' },
+  str_toast_need_name:     { ko: '⚠️ 스트링명을 입력하세요', en: '⚠️ Please enter a string name' },
+  str_toast_need_date:     { ko: '⚠️ 교체일을 선택하세요', en: '⚠️ Please select a replacement date' },
+  str_toast_saved:         { ko: '✅ 저장 완료! 교체 이력에도 자동 기록됐어요', en: '✅ Saved! Also recorded in the restring history' },
+  str_toast_deleted:       { ko: '🗑️ 삭제 완료',          en: '🗑️ Deleted' },
+  toast_export_done:       { ko: '💾 내보내기 완료!',     en: '💾 Export complete!' },
+  toast_import_done:       { ko: '✅ 가져오기 완료!',     en: '✅ Import complete!' },
+  toast_import_failed:     { ko: '❌ 파일 형식 오류',     en: '❌ Invalid file format' },
+  confirm_default_ok:    { ko: '삭제',        en: 'Delete' },
+  confirm_default_cancel:{ ko: '취소',        en: 'Cancel' },
+  share_logout_title:    { ko: '로그아웃',     en: 'Sign Out' },
+  share_logout_confirm:  { ko: '로그아웃 하시겠습니까?', en: 'Sign out?' },
+  share_clear_title:     { ko: '저장공간 정리', en: 'Clear Cache' },
+  share_clear_confirm:   { ko: '기기의 캐시를 삭제합니다. 데이터는 Firebase에 안전하게 보관됩니다.', en: 'This will clear the local cache. Your data stays safe in Firebase.' },
   pf_tennis:         { ko: '테니스',        en: 'Tennis' },
   pf_badminton:      { ko: '배드민턴',      en: 'Badminton' },
   pf_pickleball:     { ko: '피클볼',        en: 'Pickleball' },
@@ -144,9 +172,15 @@ const NIJI_DICT = {
   match_count_unit:        { ko: '경기',               en: 'matches' },
   match_delete_title:      { ko: '경기 삭제',           en: 'Delete Match' },
   match_delete_desc:       { ko: '이 경기 기록을 삭제하시겠습니까?', en: 'Delete this match record?' },
+  match_toast_need_date:   { ko: '⚠️ 날짜를 입력하세요', en: '⚠️ Please enter a date' },
+  match_toast_need_format: { ko: '⚠️ 형식을 선택하세요', en: '⚠️ Please select a format' },
+  match_toast_need_opp:    { ko: '⚠️ 상대를 입력하세요', en: '⚠️ Please enter an opponent' },
+  match_toast_need_result: { ko: '⚠️ 결과를 선택하세요', en: '⚠️ Please select a result' },
+  match_toast_need_racket: { ko: '⚠️ 사용한 라켓을 선택하세요', en: '⚠️ Please select the racket used' },
+  match_toast_edit_notfound:{ ko: '❌ 수정할 경기를 찾지 못했어요', en: '❌ Could not find the match to edit' },
+  match_toast_saved:       { ko: '경기 저장 완료!',     en: 'Match saved!' },
   match_delete_done:       { ko: '🗑️ 경기 삭제 완료',  en: '🗑️ Match deleted' },
   match_old_records:       { ko: '── 6개월 이전 {n}개 기록 (통계에는 반영됨)', en: '── {n} records older than 6mo (included in stats)' },
-  pf_tension_ph:           { ko: '예) 50/52 파운드',   en: 'e.g. 50/52 lbs' },
 
   /* 통계 탭 */
   stats_page_header:       { ko: '통계',               en: 'Stats' },
@@ -265,7 +299,6 @@ const NIJI_DICT = {
   pd_my_loss:              { ko: '내 패',              en: 'My Losses' },
   pd_vs_me_title:          { ko: '🆚 나와의 전적',      en: '🆚 Head-to-Head' },
   pd_recent_matches_title: { ko: '📋 최근 대전 기록',   en: '📋 Recent Matches' },
-  pd_me_fallback:          { ko: '나',                 en: 'Me' },
 
   /* ─── 대회 탭 ─── */
   // 탭 버튼
@@ -435,15 +468,9 @@ const NIJI_DICT = {
   // 프로필 탭 동적 렌더 텍스트
   pf_unset:                { ko: '미설정',          en: 'Not set' },
   pf_not_entered:          { ko: '미입력',          en: 'Not entered' },
-  pf_equipment:            { ko: '🎾 장비 정보',    en: '🎾 Equipment' },
   pf_racket_name:          { ko: '라켓명',          en: 'Racket' },
-  pf_string_label:         { ko: '스트링',          en: 'String' },
-  pf_tension_label:        { ko: '텐션',            en: 'Tension' },
-  pf_string_date:          { ko: '스트링 교체일',   en: 'String Date' },
   pf_no_racket:            { ko: '라켓 정보를 입력해주세요', en: 'Enter your racket info' },
   pf_default_name:         { ko: '선수',            en: 'Player' },
-  pf_select_string:        { ko: '📋 과거 스트링 중 선택', en: '📋 Select from history' },
-  pf_string_input_ph:      { ko: '직접 입력 또는 위에서 선택', en: 'Type or select above' },
   pf_string_manage_btn:    { ko: '스트링 관리',     en: 'String Management' },
   pf_string_status_title:  { ko: '스트링 상태',     en: 'String Status' },
   pf_player_info_title:    { ko: '플레이어 정보',   en: 'Player Info' },
@@ -492,7 +519,6 @@ const NIJI_DICT = {
   pd_show_more:            { ko: '▼ 더보기',          en: '▼ More' },
   pd_fold:                 { ko: '▲ 접기',            en: '▲ Fold' },
   pd_no_match:             { ko: '경기 기록이 없습니다', en: 'No match records' },
-  stats_enemyteam_empty:   { ko: '복식 경기를 입력하면\n상대팀 데이터가 표시됩니다', en: 'Enter doubles matches to see\nenemy team data' },
   stats_search_empty:      { ko: '검색 결과가 없습니다', en: 'No results found' },
   match_today_empty:       { ko: '아직 경기 기록이 없어요', en: 'No match records yet' },
   match_today_none:        { ko: '오늘 경기 기록이 없어요', en: 'No matches today' },
@@ -504,7 +530,6 @@ const NIJI_DICT = {
   player_no_club_filter:   { ko: '클럽 없음',        en: 'No Club' },
 
   // 언어 선택 버튼 (프로필 탭 상단)
-  pf_lang_section:         { ko: '🌐 언어 / Language', en: '🌐 Language / 언어' },
 
   // ── 설명서 (manualModal) ─────────────────────────────
   manual_title:   { ko: '📖 사용 설명서', en: '📖 User Guide' },
@@ -621,7 +646,6 @@ const NIJI_DICT = {
   sb_tab_score:   { ko: '🎾 점수',            en: '🎾 Score' },
   sb_tab_fault:   { ko: '✖ 폴트',            en: '✖ Fault' },
   sb_tab_setup:   { ko: '⚙ 설정',            en: '⚙ Setup' },
-  sb_srvsub:      { ko: '🟢 서브 선수 교체',  en: '🟢 Switch Server' },
   sb_point:       { ko: '⚡ 포인트',          en: '⚡ Point' },
   sb_ace:         { ko: '🎯 에이스',          en: '🎯 Ace' },
   sb_fault_btn:   { ko: '✖ 폴트',            en: '✖ Fault' },
@@ -631,7 +655,6 @@ const NIJI_DICT = {
   sb_cur_fault:   { ko: '현재 폴트',          en: 'Current Fault' },
   sb_double_fault:{ ko: '더블폴트',           en: 'Double Fault' },
   sb_fault_times: { ko: '회',                 en: '' },
-  sb_srv_fault:   { ko: '서버 폴트',          en: 'Server Fault' },
   sb_fault_auto:  { ko: '폴트는 서브하는 선수에게 자동 적용됩니다', en: 'Fault is automatically applied to the serving player' },
   sb_fault_reset: { ko: '폴트 초기화',        en: 'Reset Faults' },
   sb_singles:     { ko: '🎾 단식',            en: '🎾 Singles' },
@@ -645,7 +668,6 @@ const NIJI_DICT = {
   sb_team_ours:   { ko: '우리팀',              en: 'Our Team' },
   sb_team_opp:    { ko: '상대팀',              en: 'Opp. Team' },
   sb_court_pair:  { ko: '듀스/애드 2명',        en: 'Deuce/Ad, 2 players' },
-  sb_match_title: { ko: '경기 제목',          en: 'Match Title' },
   sb_touch_input: { ko: '터치하여 입력',      en: 'Tap to enter' },
   sb_apply:       { ko: '✔ 적용하기',         en: '✔ Apply' },
   sb_winner_title:{ ko: '🏆 경기 승자',       en: '🏆 Match Winner' },
@@ -673,7 +695,6 @@ const NIJI_DICT = {
   tc_guide:          { ko: '선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동', en: 'Player tab → select (shot angle) &nbsp;·&nbsp; Double-tap → edit &nbsp;·&nbsp; Drag → move' },
   tc_edit_title:     { ko: '✏️ 선수 편집',        en: '✏️ Edit Player' },
   tc_edit_name:      { ko: '이름',               en: 'Name' },
-  tc_edit_number:    { ko: '등번호',              en: 'Number' },
   tc_edit_position:  { ko: '포지션',              en: 'Position' },
   tc_edit_color:     { ko: '선수 색상',           en: 'Player Color' },
   tc_cancel:         { ko: '취소',               en: 'Cancel' },
@@ -717,9 +738,18 @@ function setFontSize(px) {
   });
 }
 
+// ── 현재 언어 캐시 (성능 최적화: localStorage 접근을 줄이기 위해 메모리에 캐싱) ──
+// niji_language 값이 바뀌는 곳(setLanguage, _applyLoginLang)에서 _nijiSetLangCache()로 캐시를 갱신함
+var _nijiLangCache = null;
+function _nijiGetLang() {
+  if (_nijiLangCache === null) _nijiLangCache = localStorage.getItem('niji_language') || 'ko';
+  return _nijiLangCache;
+}
+function _nijiSetLangCache(lang) { _nijiLangCache = lang; }
+
 // ── 현재 언어로 사전 텍스트 가져오기 (대회 탭 동적 렌더에 사용) ──
 function _t(key) {
-  var lang = localStorage.getItem('niji_language') || 'ko';
+  var lang = _nijiGetLang();
   if (NIJI_DICT[key] && NIJI_DICT[key][lang]) return NIJI_DICT[key][lang];
   if (NIJI_DICT[key] && NIJI_DICT[key]['ko']) return NIJI_DICT[key]['ko'];
   return key;
@@ -793,10 +823,10 @@ function _t(key) {
     --success: #16a34a;
     --danger: #dc2626;
     --warn: #b8860b;
+    background: radial-gradient(ellipse at top, #fffdf6 0%, var(--bg) 55%);
   }
 
   /* 라이트 테마 추가 스타일 */
-  body.light-theme { background: radial-gradient(ellipse at top, #fffdf6 0%, var(--bg) 55%); }
   body.light-theme .topbar { background: #ffffff; border-bottom: 1px solid #ded4b8; }
   body.light-theme .nav { background: #ffffff; border-top: 1px solid #ded4b8; }
   body.light-theme .match-card { background: #ffffff; border: 1px solid #ded4b8; }
@@ -804,7 +834,6 @@ function _t(key) {
   body.light-theme .form-input { background: #f0ebdc; color: #1c241d; border-color: #ded4b8; }
   body.light-theme .form-select { background: #f0ebdc; color: #1c241d; border-color: #ded4b8; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
   body.light-theme .topbar-logo { color: #96762a; background: linear-gradient(135deg, #96762a, #c9a961, #1f6f54); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-  body.light-theme .pf-name-text { color: #1c241d; }
   body.light-theme .page-header { color: #1c241d; }
   body.light-theme .section-title { color: #5c6b60; }
   body.light-theme .pf-item-lbl { color: #5c6b60; }
@@ -824,7 +853,6 @@ function _t(key) {
   body.light-theme .manual-sec-title { color: #1c241d; }
   body.light-theme .manual-item span { color: #2b332c; }
   body.light-theme .pf-wrap { background: var(--bg); }
-  body.light-theme .pf-name-text { color: #1c241d !important; }
   body.light-theme .match-item { background: #ffffff; border-color: #ded4b8; }
   body.light-theme .player-item { background: #ffffff; border-color: #ded4b8; }
   body.light-theme .player-memo-input { background: #f0ebdc; color: #1c241d; border-color: #ded4b8; }
@@ -835,6 +863,15 @@ function _t(key) {
   body.light-theme .confirm-box { background: #ffffff; }
   body.light-theme .confirm-title { color: #1c241d; }
   body.light-theme .confirm-desc { color: #5c6b60; }
+  body.light-theme .pf-hero::before {
+    background-image:
+      radial-gradient(ellipse 90% 60% at 50% 0%, rgba(150,118,42,.18), transparent 70%),
+      radial-gradient(circle at 50% 42%, rgba(150,118,42,.10), transparent 55%),
+      repeating-linear-gradient(45deg, rgba(150,118,42,.06) 0px, rgba(150,118,42,.06) 1px, transparent 1px, transparent 16px),
+      repeating-linear-gradient(-45deg, rgba(150,118,42,.06) 0px, rgba(150,118,42,.06) 1px, transparent 1px, transparent 16px),
+      linear-gradient(180deg, #fbf6e8 0%, #f7f0dd 45%, var(--bg) 100%);
+  }
+  body.light-theme .pf-content { background: var(--bg); }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root { --app-font-size: 15px; }
@@ -908,7 +945,7 @@ function _t(key) {
   .topbar-avatar::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid transparent; background: linear-gradient(135deg, var(--accent), var(--accent2)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; }
 
   /* ===== CONTENT ===== */
-  .content { flex: 1; height: 0; min-height: 0; overflow-y: auto; overflow-x: auto; padding: 16px; padding-bottom: calc(16px + 70px + env(safe-area-inset-bottom)); scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+  .content { flex: 1; height: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 16px; padding-bottom: calc(16px + 70px + env(safe-area-inset-bottom)); scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
   .content::-webkit-scrollbar { width: 4px; }
   .content::-webkit-scrollbar-track { background: transparent; }
   .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -990,13 +1027,9 @@ function _t(key) {
   .btn-secondary { background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
   .btn-danger { background: rgba(248,113,113,.15); border: 1px solid rgba(248,113,113,.3); color: var(--danger); }
   .btn-sm { padding: 7px 14px; font-size: 0.8rem; border-radius: 8px; width: auto; }
-  .btn-icon { width: 32px; height: 32px; padding: 0; border-radius: 8px; width: auto; }
 
   /* ===== MATCH RESULT ===== */
   .match-result { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 14px; }
-  .match-result-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; text-align: center; }
-  .match-score-input { width: 80px; text-align: center; font-size: 1.3333rem; font-weight: 700; padding-left: 6px; padding-right: 6px; }
-  .vs-text { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; }
   .match-result-winner { display: flex; gap: 8px; justify-content: center; }
   .winner-btn {
     flex: 1; padding: 10px; border-radius: 10px; border: 1.5px solid var(--border);
@@ -1066,10 +1099,6 @@ function _t(key) {
     display:inline-block; padding:3px 12px; border-radius:20px;
     font-size: 0.75rem; font-weight:700; letter-spacing:.5px;
   }
-  #nijiShareCard .sc-score {
-    font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:900;
-    text-align:center; letter-spacing:2px; color:#fff;
-  }
   #nijiShareCard .sc-footer {
     font-size: 0.65rem; color:#888; text-align:center; margin-top:4px;
   }
@@ -1105,10 +1134,6 @@ function _t(key) {
   .rank-table td { padding: 10px 8px; border-top: 1px solid var(--border); font-size: 0.8667rem; vertical-align: middle; }
   .rank-table tr:hover td { background: var(--surface2); }
   .rank-num { width: 28px; font-weight: 900; color: var(--text-muted); font-size: 0.8rem; }
-  .rank-first .rank-num { color: var(--warn); }
-  .rank-second .rank-num { color: #9ca3af; }
-  .rank-third .rank-num { color: #cd7c2f; }
-  .rank-rate { font-weight: 700; color: var(--accent); }
   .rank-me td { background: rgba(124,106,247,.15) !important; border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent); }
   .rank-me:hover td { background: rgba(124,106,247,.25) !important; }
 
@@ -1137,7 +1162,7 @@ function _t(key) {
   }
   .player-actions { display: flex; gap: 6px; flex-shrink: 0; }
   .player-action-btn {
-    width: 30px; height: 30px; border-radius: 8px; border: none;
+    width: 36px; height: 36px; border-radius: 8px; border: none;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; transition: all .2s; background: var(--surface);
     color: var(--text-muted);
@@ -1159,7 +1184,7 @@ function _t(key) {
   }
   .player-memo-input:focus { border-color: var(--accent); }
   .memo-save-btn {
-    margin-top: 8px; padding: 7px 14px; background: linear-gradient(135deg, var(--accent), #a9822f);
+    margin-top: 8px; padding: 10px 16px; background: linear-gradient(135deg, var(--accent), #a9822f);
     border: none; border-radius: 8px; color: #fff; font-family: inherit; font-size: 0.8rem;
     font-weight: 600; cursor: pointer; transition: all .2s;
   }
@@ -1171,24 +1196,10 @@ function _t(key) {
   .add-player-row .form-input { flex: 1; }
 
   /* ===== PROFILE ===== */
-  .profile-hero {
-    background: linear-gradient(135deg, rgba(124,106,247,.15), rgba(247,106,200,.1));
-    border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 24px; text-align: center; margin-bottom: 12px;
-  }
-  .profile-avatar-big {
-    width: 140px; height: 180px; border-radius: 16px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 3.2rem; font-weight: 700; margin: 0 auto 12px;
-    position: relative; overflow: hidden;
-  }
   #avatarInitial {
     display: flex; align-items: center; justify-content: center;
     width: 100%; height: 100%; position: relative; z-index: 1;
   }
-  .profile-name-big { font-size: 1.4667rem; font-weight: 900; margin-bottom: 4px; }
-  .profile-sub { font-size: 0.8rem; color: var(--text-muted); }
 
   /* ===== MODAL ===== */
   .modal-overlay {
@@ -1206,7 +1217,7 @@ function _t(key) {
   .modal-overlay.open .modal { transform: translateY(0); }
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .modal-title { font-size: 1.2rem; font-weight: 700; }
-  .modal-close { background: var(--surface2); border: none; width: 32px; height: 32px; border-radius: 50%; color: var(--text); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .modal-close { background: var(--surface2); border: none; width: 40px; height: 40px; border-radius: 50%; color: var(--text); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
   /* ===== TOAST ===== */
   .toast {
@@ -1226,11 +1237,6 @@ function _t(key) {
   .share-text { font-size: 0.9333rem; font-weight: 600; }
   .share-sub { font-size: 0.7333rem; color: var(--text-muted); margin-top: 1px; }
 
-  /* ===== PILL TABS ===== */
-  .pill-tabs { display: flex; gap: 6px; background: var(--surface2); border-radius: 12px; padding: 4px; margin-bottom: 14px; }
-  .pill-tab { flex: 1; padding: 8px; border: none; background: none; color: var(--text-muted); font-family: inherit; font-size: 0.8rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all .2s; }
-  .pill-tab.active { background: var(--accent); color: #fff; }
-
   /* ===== EMPTY STATE ===== */
   .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
   .empty-icon { font-size: 2.6667rem; margin-bottom: 12px; opacity: .4; }
@@ -1247,12 +1253,12 @@ function _t(key) {
   .edit-row { display: flex; gap: 8px; align-items: center; }
   .edit-row .form-input { flex: 1; padding: 9px 12px; font-size: 0.8667rem; }
   .edit-confirm-btn {
-    padding: 9px 14px; background: linear-gradient(135deg, var(--accent), #a9822f);
+    padding: 11px 14px; background: linear-gradient(135deg, var(--accent), #a9822f);
     border: none; border-radius: 8px; color: #fff; font-family: inherit; font-size: 0.8rem;
     font-weight: 600; cursor: pointer; white-space: nowrap;
   }
   .edit-cancel-btn {
-    padding: 9px 12px; background: var(--surface); border: 1px solid var(--border);
+    padding: 11px 12px; background: var(--surface); border: 1px solid var(--border);
     border-radius: 8px; color: var(--text-muted); font-family: inherit; font-size: 0.8rem;
     font-weight: 600; cursor: pointer; white-space: nowrap;
   }
@@ -1281,13 +1287,8 @@ function _t(key) {
   .format-badge { font-size: 0.6667rem; padding: 2px 7px; border-radius: 20px; background: rgba(124,106,247,.15); color: var(--accent); border: 1px solid rgba(124,106,247,.3); white-space: nowrap; }
 
   /* ===== OPPONENT WIN/LOSE BAR ===== */
-  .opponent-bar { margin-bottom: 10px; }
-  .opponent-name { display: flex; justify-content: space-between; font-size: 0.8667rem; margin-bottom: 5px; }
   .bar-track { background: var(--surface2); border-radius: 20px; height: 6px; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .5s ease; }
-  .bar-fill-partner { height: 100%; border-radius: 20px; background: linear-gradient(90deg, #2dd4bf, #34d399); transition: width .5s ease; }
-  .rate-partner { color: #2dd4bf; font-weight: 700; }
-  .rate-opponent { color: var(--accent); font-weight: 700; }
 
   /* ===== FORMAT TOGGLE BUTTONS ===== */
   .format-toggle { display: flex; gap: 8px; }
@@ -1308,10 +1309,6 @@ function _t(key) {
     padding: 2px 8px; border-radius: 20px; margin-left: 6px;
     background: rgba(247,106,200,.15); color: var(--accent2);
     border: 1px solid rgba(247,106,200,.3); vertical-align: middle;
-  }
-  .club-badge.my-club {
-    background: rgba(124,106,247,.15); color: var(--accent);
-    border: 1px solid rgba(124,106,247,.3);
   }
 
   /* ===== CLUB FILTER TABS ===== */
@@ -1336,7 +1333,7 @@ function _t(key) {
   }
   .club-tag-del {
     background: none; border: none; color: var(--text-muted); cursor: pointer;
-    font-size: 0.8667rem; line-height: 1; padding: 0; transition: color .2s;
+    font-size: 0.8667rem; line-height: 1; padding: 6px; margin: -6px -8px -6px -2px; transition: color .2s;
   }
   .club-tag-del:hover { color: var(--danger); }
 
@@ -1373,7 +1370,6 @@ function _t(key) {
   .matchup-sub { font-size: 0.7333rem; color: var(--text-muted); margin-top: 2px; }
   .matchup-score { text-align: right; flex-shrink: 0; }
   .matchup-wl { font-size: 1rem; font-weight: 900; }
-  .matchup-rate { font-size: 0.7333rem; color: var(--text-muted); margin-top: 1px; }
   .matchup-bar-wrap { width: 100%; height: 4px; background: var(--surface2); border-radius: 2px; margin-top: 4px; }
   .matchup-bar-fill { height: 4px; border-radius: 2px; background: linear-gradient(to right, var(--accent), var(--accent2)); }
   .matchup-bar-fill.good { background: linear-gradient(to right, var(--success), #22c55e); }
@@ -1418,7 +1414,6 @@ function _t(key) {
   .streak-count.lose-streak { color: var(--danger); }
 
   /* ===== 스트링 교체 / 장비 히스토리 ===== */
-  .stringing-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 10px; }
   .stringing-alert {
     display: flex; align-items: center; gap: 10px;
     background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.25);
@@ -1439,7 +1434,7 @@ function _t(key) {
   .stringing-history-info { flex: 1; min-width: 0; }
   .stringing-history-name { font-size: 0.8667rem; font-weight: 700; }
   .stringing-history-meta { font-size: 0.7333rem; color: var(--text-muted); margin-top: 2px; }
-  .stringing-history-del { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 6px; font-size: 0.8667rem; }
+  .stringing-history-del { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 8px; font-size: 0.8667rem; }
   .stringing-add-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
   .stringing-add-row .form-input { flex: 1; min-width: 0; font-size: 1.0667rem; padding: 8px 12px; }
   .stringing-add-row .btn { white-space: nowrap; font-size: 0.8rem; padding: 0 14px; }
@@ -1502,7 +1497,6 @@ function _t(key) {
     font-size: 0.6667rem; color: var(--text-muted);
     margin-top: 6px;
   }
-  .pf-divider { height: 1px; background: var(--border); margin: 10px 0; }
   .pf-bg-initial {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
@@ -1838,9 +1832,6 @@ function _t(key) {
       margin-left: auto;
       margin-right: auto;
     }
-    .modal-wrap {
-      align-items: center;
-    }
     .modal {
       max-width: 600px;
       margin: 0 auto;
@@ -1894,6 +1885,7 @@ function _t(key) {
       max-width: 680px;
     }
   }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -1911,10 +1903,8 @@ function _t(key) {
     border-top-color:#c9a961; border-radius:50%;
     animation:spin .8s linear infinite;"></div>
   <div id="loadingMsg" style="font-size: 0.8rem; color:#8a998f;">서버 연결 중...</div>
+  <script>(function(){try{var l=document.getElementById('loadingMsg');var lang=localStorage.getItem('niji_language');if(l&&lang==='en')l.textContent='Connecting to server...';}catch(e){}})();</script>
 </div>
-<style>
-  @keyframes spin { to { transform: rotate(360deg); } }
-</style>
 <div id="app">
   <div class="topbar">
     <span class="topbar-logo">NIJI STRING</span>
@@ -1954,10 +1944,10 @@ function _t(key) {
             </div>
             <div class="pf-camera-btn">📷</div>
           </div>
-          <div class="pf-drag-hint" id="pfDragHint" style="display:none;">↕ 드래그해서 위치 조정</div>
+          <div class="pf-drag-hint" id="pfDragHint" style="display:none;" data-lang="pf_drag_hint">↕ 드래그해서 위치 조정</div>
           <div class="pf-name-row" id="profileNameBig">
             <span class="pf-club-tag" id="profileClubBig"></span>
-            <span class="pf-name-text">선수</span>
+            <span class="pf-name-text" data-lang="pf_default_name">선수</span>
           </div>
         </div>
 
@@ -2084,7 +2074,7 @@ function _t(key) {
             <!-- 줄 1: 날짜 -->
             <div style="margin-bottom:8px;">
               <div class="form-label" style="margin-bottom:4px;" data-lang="match_date_lbl">📅 날짜</div>
-              <input type="date" class="form-input" id="matchDate" style="padding:9px 10px;font-size: 0.9333rem;">
+              <input type="date" class="form-input" id="matchDate" style="padding:9px 10px;font-size:16px;">
             </div>
             <!-- 줄 1b: 형식 -->
             <div style="margin-bottom:8px;">
@@ -2101,7 +2091,7 @@ function _t(key) {
             <div id="singlesOpponentRow" style="margin-bottom:8px;">
               <div class="form-label" style="margin-bottom:4px;" data-lang="match_opponent_lbl">🆚 상대</div>
               <div style="position:relative;">
-                <input class="form-input" id="matchOpponent" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent')" style="padding:9px 12px;font-size: 0.9333rem;">
+                <input class="form-input" id="matchOpponent" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent')" style="padding:9px 12px;font-size:16px;">
                 <div class="player-ac-list" id="ac-opponent" style="display:none;"></div>
               </div>
             </div>
@@ -2112,7 +2102,7 @@ function _t(key) {
               <div id="partnerGroup" style="margin-bottom:8px;">
                 <div class="form-label" style="margin-bottom:4px;" data-lang="match_partner_lbl">🤝 파트너</div>
                 <div style="position:relative;">
-                  <input class="form-input" id="matchPartner" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-partner')" style="padding:9px 12px;font-size: 0.9333rem;">
+                  <input class="form-input" id="matchPartner" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-partner')" style="padding:9px 12px;font-size:16px;">
                   <div class="player-ac-list" id="ac-partner" style="display:none;"></div>
                 </div>
               </div>
@@ -2121,14 +2111,14 @@ function _t(key) {
                 <div>
                   <div class="form-label" style="margin-bottom:4px;" data-lang="match_opp1_lbl">🆚 상대 1</div>
                   <div style="position:relative;">
-                    <input class="form-input" id="matchOpponent1" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent1')" style="padding:9px 10px;font-size: 0.9333rem;">
+                    <input class="form-input" id="matchOpponent1" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent1')" style="padding:9px 10px;font-size:16px;">
                     <div class="player-ac-list" id="ac-opponent1" style="display:none;"></div>
                   </div>
                 </div>
                 <div id="opponent2Group">
                   <div class="form-label" style="margin-bottom:4px;" data-lang="match_opp2_lbl">🆚 상대 2</div>
                   <div style="position:relative;">
-                    <input class="form-input" id="matchOpponent2" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent2')" style="padding:9px 10px;font-size: 0.9333rem;">
+                    <input class="form-input" id="matchOpponent2" data-lang-placeholder="match_input_ph" placeholder="이름 또는 초성" autocomplete="off" oninput="showPlayerAC(this,'ac-opponent2')" style="padding:9px 10px;font-size:16px;">
                     <div class="player-ac-list" id="ac-opponent2" style="display:none;"></div>
                   </div>
                 </div>
@@ -2150,12 +2140,12 @@ function _t(key) {
                 <div class="form-label" style="margin-bottom:4px;" data-lang="match_score_lbl">스코어 (선택)</div>
                 <div style="display:flex;align-items:center;gap:4px;">
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
-                    <input type="number" class="form-input" id="myScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
+                    <input type="number" class="form-input" id="myScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size:16px;font-weight:700;">
                     <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_me_label">나</span>
                   </div>
                   <span style="font-size: 0.7333rem;color:var(--text-muted);font-weight:700;">:</span>
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
-                    <input type="number" class="form-input" id="oppScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
+                    <input type="number" class="form-input" id="oppScore" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size:16px;font-weight:700;">
                     <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_opp_label">상대</span>
                   </div>
                 </div>
@@ -2164,12 +2154,12 @@ function _t(key) {
                 <div class="form-label" style="margin-bottom:4px;" data-lang="match_tiebreak_lbl">타이브레이크 (선택)</div>
                 <div style="display:flex;align-items:center;gap:4px;">
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
-                    <input type="number" class="form-input" id="myTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
+                    <input type="number" class="form-input" id="myTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size:16px;font-weight:700;">
                     <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_me_label">나</span>
                   </div>
                   <span style="font-size: 0.7333rem;color:var(--text-muted);font-weight:700;">:</span>
                   <div style="display:flex;align-items:center;gap:3px;flex:1;">
-                    <input type="number" class="form-input" id="oppTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size: 1rem;font-weight:700;">
+                    <input type="number" class="form-input" id="oppTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size:16px;font-weight:700;">
                     <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_opp_label">상대</span>
                   </div>
                 </div>
@@ -2191,7 +2181,7 @@ function _t(key) {
             <!-- 줄 7: 메모 -->
             <div style="margin-bottom:10px;">
               <div class="form-label" style="margin-bottom:4px;" data-lang="match_memo_lbl">📝 메모 (선택)</div>
-              <textarea class="form-textarea" id="matchMemo" data-lang-placeholder="match_memo_ph" placeholder="경기 메모..." style="min-height:54px;padding:9px 12px;font-size: 0.9333rem;"></textarea>
+              <textarea class="form-textarea" id="matchMemo" data-lang-placeholder="match_memo_ph" placeholder="경기 메모..." style="min-height:54px;padding:9px 12px;font-size:16px;"></textarea>
             </div>
 
             <button class="btn btn-primary" id="matchSaveBtn" onclick="saveMatch()" data-lang="match_save_btn">경기 저장</button>
@@ -2273,8 +2263,8 @@ function _t(key) {
         </button>
         <div class="acc-body" id="accOpponent">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-            <input id="oppSearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderOpponentStats()"
-              style="flex:1;font-size: 0.8rem;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+            <input id="oppSearch" type="text" data-lang-placeholder="stats_search_ph" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderOpponentStats()"
+              style="flex:1;font-size:16px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._oppShowAll=false;renderOpponentStats();" id="oppSort" style="font-size: 0.8rem;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
               <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
               <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
@@ -2294,8 +2284,8 @@ function _t(key) {
         </button>
         <div class="acc-body" id="accPartner">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-            <input id="partnerSearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderPartnerStats()"
-              style="flex:1;font-size: 0.8rem;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+            <input id="partnerSearch" type="text" data-lang-placeholder="stats_search_ph" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderPartnerStats()"
+              style="flex:1;font-size:16px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._partnerShowAll=false;renderPartnerStats();" id="partnerSort" style="font-size: 0.8rem;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
               <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
               <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
@@ -2316,8 +2306,8 @@ function _t(key) {
         </button>
         <div class="acc-body" id="accSingles">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-            <input id="singlesSearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderSinglesStats()"
-              style="flex:1;font-size: 0.8rem;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+            <input id="singlesSearch" type="text" data-lang-placeholder="stats_search_ph" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderSinglesStats()"
+              style="flex:1;font-size:16px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._singlesShowAll=false;renderSinglesStats();" id="singlesSort" style="font-size: 0.8rem;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
               <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
               <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
@@ -2338,8 +2328,8 @@ function _t(key) {
         </button>
         <div class="acc-body" id="accEnemy">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-            <input id="enemySearch" type="text" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderEnemyTeamStats()"
-              style="flex:1;font-size: 0.8rem;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+            <input id="enemySearch" type="text" data-lang-placeholder="stats_search_ph" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderEnemyTeamStats()"
+              style="flex:1;font-size:16px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._enemyShowAll=false;renderEnemyTeamStats();" id="enemySort" style="font-size: 0.8rem;padding:4px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;">
               <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
               <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
@@ -2465,7 +2455,7 @@ function _t(key) {
       <div class="card" style="margin-bottom:14px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
           <span style="background:var(--accent);color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET 1</span>
-          <input class="form-input" id="str-r1-name" placeholder="예) 윌슨 블레이드 98" data-lang-placeholder="str_racket1_ph" style="flex:1;font-size:0.88rem;padding:6px 10px;" oninput="saveStrR1Field('racket',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-string');if(n){n.focus();n.select();}}">
+          <input class="form-input" id="str-r1-name" placeholder="예) 윌슨 블레이드 98" data-lang-placeholder="str_racket1_ph" style="flex:1;font-size:16px;padding:6px 10px;" oninput="saveStrR1Field('racket',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-string');if(n){n.focus();n.select();}}">
         </div>
         <!-- 알림 배너 -->
         <div id="stringingAlert1" style="margin-bottom:10px;"></div>
@@ -2473,17 +2463,17 @@ function _t(key) {
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
           <div>
             <label class="form-label" data-lang="str_string_name_lbl" style="font-size:0.72rem;">스트링명</label>
-            <input class="form-input" id="str1-string" placeholder="예) VS Touch 130" data-lang-placeholder="str_string1_ph" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR1Field('string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-tension');if(n){n.focus();n.select();}}">
+            <input class="form-input" id="str1-string" placeholder="예) VS Touch 130" data-lang-placeholder="str_string1_ph" style="font-size:16px;padding:7px 10px;" oninput="saveStrR1Field('string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-tension');if(n){n.focus();n.select();}}">
           </div>
           <div>
             <label class="form-label" data-lang="str_tension_lbl" style="font-size:0.72rem;">텐션 (lb)</label>
-            <input class="form-input" id="str1-tension" placeholder="예) 52" data-lang-placeholder="str_tension1_ph" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR1Field('tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-date');if(n)n.focus();}">
+            <input class="form-input" id="str1-tension" placeholder="예) 52" data-lang-placeholder="str_tension1_ph" style="font-size:16px;padding:7px 10px;" oninput="saveStrR1Field('tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-date');if(n)n.focus();}">
           </div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
           <div style="flex:1;">
             <label class="form-label" data-lang="str_last_replace_lbl" style="font-size:0.72rem;">마지막 교체일</label>
-            <input type="date" class="form-input" id="str1-date" style="font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(1)">
+            <input type="date" class="form-input" id="str1-date" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(1)">
           </div>
           <div style="min-width:100px;">
             <label class="form-label" data-lang="str_interval_lbl" style="font-size:0.72rem;">교체 주기</label>
@@ -2508,7 +2498,7 @@ function _t(key) {
       <div class="card" style="margin-bottom:14px;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
           <span style="background:var(--accent2);color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET 2</span>
-          <input class="form-input" id="str-r2-name" placeholder="예) 요넥스 VCORE 98" data-lang-placeholder="str_racket2_ph" style="flex:1;font-size:0.88rem;padding:6px 10px;" oninput="saveStrR2Field('racket2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-string');if(n){n.focus();n.select();}}">
+          <input class="form-input" id="str-r2-name" placeholder="예) 요넥스 VCORE 98" data-lang-placeholder="str_racket2_ph" style="flex:1;font-size:16px;padding:6px 10px;" oninput="saveStrR2Field('racket2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-string');if(n){n.focus();n.select();}}">
         </div>
         <!-- 알림 배너 -->
         <div id="stringingAlert2" style="margin-bottom:10px;"></div>
@@ -2516,17 +2506,17 @@ function _t(key) {
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
           <div>
             <label class="form-label" data-lang="str_string_name_lbl" style="font-size:0.72rem;">스트링명</label>
-            <input class="form-input" id="str2-string" placeholder="예) Yonex BG65" data-lang-placeholder="str_string2_ph" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR2Field('string2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-tension');if(n){n.focus();n.select();}}">
+            <input class="form-input" id="str2-string" placeholder="예) Yonex BG65" data-lang-placeholder="str_string2_ph" style="font-size:16px;padding:7px 10px;" oninput="saveStrR2Field('string2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-tension');if(n){n.focus();n.select();}}">
           </div>
           <div>
             <label class="form-label" data-lang="str_tension_lbl" style="font-size:0.72rem;">텐션 (lb)</label>
-            <input class="form-input" id="str2-tension" placeholder="예) 24" data-lang-placeholder="str_tension2_ph" style="font-size:0.85rem;padding:7px 10px;" oninput="saveStrR2Field('tension2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-date');if(n)n.focus();}">
+            <input class="form-input" id="str2-tension" placeholder="예) 24" data-lang-placeholder="str_tension2_ph" style="font-size:16px;padding:7px 10px;" oninput="saveStrR2Field('tension2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-date');if(n)n.focus();}">
           </div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
           <div style="flex:1;">
             <label class="form-label" data-lang="str_last_replace_lbl" style="font-size:0.72rem;">마지막 교체일</label>
-            <input type="date" class="form-input" id="str2-date" style="font-size:0.85rem;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(2)">
+            <input type="date" class="form-input" id="str2-date" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(2)">
           </div>
           <div style="min-width:100px;">
             <label class="form-label" data-lang="str_interval_lbl" style="font-size:0.72rem;">교체 주기</label>
@@ -2592,7 +2582,7 @@ function _t(key) {
             <span id="googleProfileEmoji" style="font-size: 1.3333rem;">👤</span>
           </div>
           <div style="flex:1;min-width:0;">
-            <div class="share-text" id="googleDisplayName">로딩 중...</div>
+            <div class="share-text" id="googleDisplayName" data-lang="share_loading">로딩 중...</div>
             <div class="share-sub" id="googleEmailDisplay" style="word-break:break-all;"></div>
           </div>
         </div>
@@ -2668,9 +2658,9 @@ function _t(key) {
         </button>
       </div>
       <!-- 한울방식 섹션 -->
-      <div id="tv-root"><div style="text-align:center;color:var(--text-muted);padding:30px 0;">불러오는 중...</div></div>
+      <div id="tv-root"><div style="text-align:center;color:var(--text-muted);padding:30px 0;" data-lang="contest_loading">불러오는 중...</div></div>
       <!-- 토너먼트 섹션 -->
-      <div id="tn-root" style="display:none;"><div style="text-align:center;color:var(--text-muted);padding:30px 0;">불러오는 중...</div></div>
+      <div id="tn-root" style="display:none;"><div style="text-align:center;color:var(--text-muted);padding:30px 0;" data-lang="contest_loading">불러오는 중...</div></div>
       <!-- 스코어보드 섹션 -->
       <div id="score-root" style="display:none;"></div>
       <div style="height:60px;"></div>
@@ -3063,7 +3053,7 @@ function _t(key) {
     <div class="confirm-title" id="confirmTitle">삭제하시겠습니까?</div>
     <div class="confirm-desc" id="confirmDesc">이 작업은 되돌릴 수 없습니다.</div>
     <div class="confirm-btns">
-      <button class="btn btn-secondary" onclick="closeConfirm()">취소</button>
+      <button class="btn btn-secondary" onclick="closeConfirm()" data-lang="confirm_default_cancel">취소</button>
       <button class="btn btn-danger" id="confirmOkBtn" onclick="doConfirm()">삭제</button>
     </div>
   </div>
@@ -3178,7 +3168,7 @@ function save() {
           try {
             localStorage.setItem('nijiData_pending_' + window._userId, JSON.stringify(saveState));
           } catch(ex) {}
-          showToast('📴 오프라인 저장됨. 인터넷 연결 시 자동 동기화돼요.');
+          showToast(_t('toast_offline_saved'));
         });
     } else {
       // Firebase 없으면 offline 키에도 추가 저장
@@ -3191,11 +3181,11 @@ function save() {
         if (photo.length < 1300000) {
           localStorage.setItem('nijiPhoto_' + (window._userId || 'local'), photo);
         } else {
-          showToast('⚠️ 사진이 너무 커서 저장 안됐어요. 더 작은 사진을 써주세요.');
+          showToast(_t('toast_photo_too_large'));
           console.warn('사진 저장 실패(용량 초과): ' + Math.round(photo.length/1024) + 'KB');
         }
       } catch(e) {
-        showToast('⚠️ 사진 저장 실패. 기기 저장공간을 확인해 주세요.');
+        showToast(_t('toast_photo_save_failed'));
         console.warn('사진 저장 실패(예외):', e);
       }
     }
@@ -3223,7 +3213,7 @@ function _syncPendingData() {
     window._firebaseDB.ref('users/' + window._userId + '/nijiData').set(parsed)
       .then(function() {
         localStorage.removeItem(pendingKey);
-        showToast('✅ 오프라인 기록이 클라우드에 동기화됐어요!');
+        showToast(_t('toast_offline_synced'));
         console.log('오프라인 대기 데이터 동기화 완료');
       })
       .catch(function(e) { console.warn('동기화 재시도 실패:', e); });
@@ -3266,7 +3256,7 @@ function load() {
 
   if (!window._firebaseAuth || !window._firebaseDB) {
     var msgEl = document.getElementById('loadingMsg');
-    if (msgEl) msgEl.textContent = '오프라인 모드...';
+    if (msgEl) msgEl.textContent = _nijiGetLang() === 'en' ? 'Offline mode...' : '오프라인 모드...';
     _loadFromLocalStorage();
     _initApp();
     return;
@@ -3279,7 +3269,7 @@ function load() {
     // [추가] iOS에서 무한 로딩 상태 강제 해제 + 안내 메시지
     var msgEl = document.getElementById('loadingMsg');
     if (msgEl && _isIOSSafari()) {
-      msgEl.textContent = '네트워크 문제가 감지됐어요. 로그인 화면으로 이동합니다...';
+      msgEl.textContent = _nijiGetLang() === 'en' ? 'Network issue detected. Moving to sign-in screen...' : '네트워크 문제가 감지됐어요. 로그인 화면으로 이동합니다...';
     }
     _showLoginScreen();
   }, _authTimeoutMs);
@@ -3303,7 +3293,7 @@ function load() {
       window._userEmail = user.email || '';
       window._userPhoto = user.photoURL || '';
       var msgEl = document.getElementById('loadingMsg');
-      if (msgEl) msgEl.textContent = '데이터 불러오는 중...';
+      if (msgEl) msgEl.textContent = _nijiGetLang() === 'en' ? 'Loading data...' : '데이터 불러오는 중...';
 
       _migrateOfflineData();
       _syncPendingData();
@@ -3329,7 +3319,7 @@ function _isIOSSafari() {
 // 기존에는 아이콘+텍스트 HTML이 3곳에 하드코딩(한국어 고정)되어 있어서,
 // 영어 모드에서 로그인 실패 시 버튼이 다시 한국어로 바뀌는 오류가 있었음
 function _googleBtnHTML() {
-  var lang = localStorage.getItem('niji_language') || 'ko';
+  var lang = _nijiGetLang() || 'ko';
   var text = (lang === 'en') ? 'Sign in with Google' : 'Google로 로그인';
   return '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px;height:20px;" alt="Google"> ' + text;
 }
@@ -3363,13 +3353,14 @@ function _showLoginScreen() {
     signup:    { ko: '✉️ 이메일로 회원가입', en: '✉️ Sign Up with Email' },
     forgot:    { ko: '비밀번호를 잊으셨나요?', en: 'Forgot password?' }
   };
-  var _loginLang = localStorage.getItem('niji_language') || 'ko';
+  var _loginLang = _nijiGetLang() || 'ko';
   function _ld(key) { return (_loginDict[key] && _loginDict[key][_loginLang]) || _loginDict[key]['ko']; }
   // [수정] window에 미리 등록 - innerHTML 버튼의 onclick에서 호출 가능하도록
   window._applyLoginLang = function(lang) { _applyLoginLang(lang); };
   function _applyLoginLang(lang) {
     _loginLang = lang;
     localStorage.setItem('niji_language', lang);
+    _nijiSetLangCache(lang);
     // 로그인 창 텍스트 갱신
     var el;
     el = document.getElementById('login-subtitle');   if(el) el.textContent = _ld('subtitle');
@@ -3440,10 +3431,10 @@ function _showLoginScreen() {
       <!-- 이메일 로그인 폼 -->
       <input id="loginEmail" type="email" placeholder="이메일 주소" inputmode="email"
         style="width:100%;padding:13px;background:#1a1a24;border:1px solid #24382f;
-          border-radius:12px;color:#fff;font-size:1rem;box-sizing:border-box;margin-bottom:10px;outline:none;">
+          border-radius:12px;color:#fff;font-size:16px;box-sizing:border-box;margin-bottom:10px;outline:none;">
       <input id="loginPassword" type="password" placeholder="비밀번호"
         style="width:100%;padding:13px;background:#1a1a24;border:1px solid #24382f;
-          border-radius:12px;color:#fff;font-size:1rem;box-sizing:border-box;margin-bottom:12px;outline:none;">
+          border-radius:12px;color:#fff;font-size:16px;box-sizing:border-box;margin-bottom:12px;outline:none;">
 
       <!-- 로그인 버튼 (전체 너비) -->
       <button id="login-signin-btn" onclick="signInWithEmail()"
@@ -3501,7 +3492,7 @@ function _showLoginScreen() {
           <div style="font-size:0.8rem;font-weight:700;color:#8a998f;margin-bottom:6px;">이메일 주소</div>
           <input id="signupEmail" type="email" placeholder="예: tennis@naver.com" inputmode="email"
             style="width:100%;padding:13px;background:#0f0f18;border:1.5px solid #24382f;
-              border-radius:12px;color:#fff;font-size:1rem;box-sizing:border-box;outline:none;"
+              border-radius:12px;color:#fff;font-size:16px;box-sizing:border-box;outline:none;"
             onfocus="this.style.borderColor='#c9a961'" onblur="this.style.borderColor='#24382f'">
         </div>
 
@@ -3510,7 +3501,7 @@ function _showLoginScreen() {
           <div style="font-size:0.8rem;font-weight:700;color:#8a998f;margin-bottom:6px;">비밀번호 <span style="font-weight:400;color:#555570;">(6자 이상)</span></div>
           <input id="signupPassword" type="password" placeholder="비밀번호 입력"
             style="width:100%;padding:13px;background:#0f0f18;border:1.5px solid #24382f;
-              border-radius:12px;color:#fff;font-size:1rem;box-sizing:border-box;outline:none;"
+              border-radius:12px;color:#fff;font-size:16px;box-sizing:border-box;outline:none;"
             onfocus="this.style.borderColor='#c9a961'" onblur="this.style.borderColor='#24382f'">
         </div>
 
@@ -3519,7 +3510,7 @@ function _showLoginScreen() {
           <div style="font-size:0.8rem;font-weight:700;color:#8a998f;margin-bottom:6px;">비밀번호 확인</div>
           <input id="signupPasswordConfirm" type="password" placeholder="비밀번호 다시 입력"
             style="width:100%;padding:13px;background:#0f0f18;border:1.5px solid #24382f;
-              border-radius:12px;color:#fff;font-size:1rem;box-sizing:border-box;outline:none;"
+              border-radius:12px;color:#fff;font-size:16px;box-sizing:border-box;outline:none;"
             onfocus="this.style.borderColor='#c9a961'" onblur="this.style.borderColor='#24382f'">
         </div>
 
@@ -3646,7 +3637,7 @@ function resetPassword() {
 
 // 로그아웃
 function signOut() {
-  showConfirm('로그아웃', '로그아웃 하시겠습니까?', '🚪', function() {
+  showConfirm(_t('share_logout_title'), _t('share_logout_confirm'), '🚪', function() {
     // 로그아웃하기 전에 로그인 잠금 장치를 먼저 풀어줍니다.
     window._appLoaded = false;
     
@@ -3862,7 +3853,7 @@ function _initApp() {
   if (ls) ls.style.display = 'none';
 
   // 저장된 언어 설정 복원
-  var savedLang = localStorage.getItem('niji_language') || 'ko';
+  var savedLang = _nijiGetLang() || 'ko';
   if (typeof setLanguage === 'function') setLanguage(savedLang);
 
   if (document.getElementById('sportType')) {
@@ -3913,7 +3904,7 @@ function _initApp() {
 
 // ===== 저장공간 정리 =====
 function clearLocalStorageCache() {
-  showConfirm('저장공간 정리', '기기의 캐시를 삭제합니다. 데이터는 Firebase에 안전하게 보관됩니다.', '🧹', function() {
+  showConfirm(_t('share_clear_title'), _t('share_clear_confirm'), '🧹', function() {
     try {
       // 현재 사용자 사진만 남기고 나머지 오래된 데이터 삭제
       var uid = window._userId || 'local';
@@ -3928,9 +3919,9 @@ function clearLocalStorageCache() {
       // 현재 사용자 사진 복원 (사진은 보존)
       if (photo) localStorage.setItem('nijiPhoto_' + uid, photo);
       localStorage.setItem('nijiTheme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-      showToast('🧹 저장공간 정리 완료!');
+      showToast(_t('toast_cache_cleared'));
     } catch(e) {
-      showToast('❌ 정리 실패: ' + e.message);
+      showToast(_t('toast_cache_clear_failed') + e.message);
     }
   });
 }
@@ -4476,7 +4467,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function showManual() {
   document.getElementById('manualModal').classList.add('open');
   // 모달 열 때 현재 언어로 텍스트 재적용 (영어 전환 반영)
-  var lang = localStorage.getItem('niji_language') || 'ko';
+  var lang = _nijiGetLang() || 'ko';
   document.querySelectorAll('#manualModal [data-lang]').forEach(function(el) {
     var key = el.getAttribute('data-lang');
     if (NIJI_DICT[key] && NIJI_DICT[key][lang]) {
@@ -4486,7 +4477,8 @@ function showManual() {
 }
 
 // ===== CONFIRM =====
-function showConfirm(title, desc, icon, cb, okLabel = '삭제') {
+function showConfirm(title, desc, icon, cb, okLabel) {
+  if (!okLabel) okLabel = _t('confirm_default_ok');
   document.getElementById('confirmTitle').textContent = title;
   document.getElementById('confirmDesc').textContent = desc;
   document.getElementById('confirmIcon').textContent = icon;
@@ -4505,7 +4497,7 @@ function doConfirm() {
 
 // ===== PROFILE =====
 function getProfileFields() {
-  const lang = localStorage.getItem('niji_language') || 'ko';
+  const lang = _nijiGetLang() || 'ko';
   const isEn = lang === 'en';
   // [정리] 라켓/스트링/텐션/교체일 필드는 실제로는 "스트링" 탭에서 입력·관리되고
   // 여기(프로필 탭)에서는 화면에 그려지지 않는 죽은 정의였어서 제거함.
@@ -4578,44 +4570,6 @@ function renderProfile() {
   const _fields = getProfileFields();
   _fields.forEach(f => fieldMap[f.key] = f);
 
-  // 스트링 히스토리에서 옵션 목록 생성
-  const histStrings = [...new Set((state.stringingHistory || []).map(h => h.name).filter(Boolean))];
-
-  // 스트링 선택 드롭다운 + 직접입력 HTML 생성 (개선: 세로 배치)
-  function stringSelectInput(key, val) {
-    const ph = _t('pf_string_input_ph');
-    const uid = 'ssi_' + key;
-    if (histStrings.length === 0) {
-      return `<input class="pf-item-input" value="${escHtml(val)}" placeholder="${_t('pf_string_input_ph')}"
-               oninput="pfDebounceSave('${key}',this.value)"
-               onkeydown="if(event.key==='Enter')this.blur()">`;
-    }
-    // 드롭다운과 직접입력을 세로로 배치 — 드롭다운 선택 시 입력창에 값 자동 채움
-    return `<div style="display:flex;flex-direction:column;gap:5px;width:100%;">
-      <select class="pf-item-select${val?'':' unset'}" style="width:100%;"
-        onchange="
-          var inp=document.getElementById('${uid}');
-          this.classList.toggle('unset',!this.value);
-          if(this.value){
-            inp.value=this.value;
-            pfDebounceSave('${key}',this.value);
-          }
-        ">
-        <option value="">${_t('pf_select_string')}</option>
-        ${histStrings.map(s=>`<option${val===s?' selected':''}>${escHtml(s)}</option>`).join('')}
-      </select>
-      <input id="${uid}" class="pf-item-input" value="${escHtml(val)}" placeholder="${ph}"
-        oninput="
-          pfDebounceSave('${key}',this.value);
-          var sel=this.previousElementSibling;
-          var matched=[...sel.options].find(o=>o.value===this.value);
-          sel.value=matched?matched.value:'';
-          sel.classList.toggle('unset',!sel.value);
-        "
-        onkeydown="if(event.key==='Enter')this.blur()">
-    </div>`;
-  }
-
   let html = '';
 
   // 기본 정보 그룹
@@ -4659,7 +4613,7 @@ function renderStringBanner() {
   if (!banner) return;
 
   const p = state.profile || {};
-  const lang = localStorage.getItem('niji_language') || 'ko';
+  const lang = _nijiGetLang() || 'ko';
   const isEn = lang === 'en';
 
   // D+일수 및 색상 계산 함수
@@ -4855,7 +4809,7 @@ function pfBgClick() {
 
 function uploadPhoto(input) {
   const file = input.files[0]; if (!file) return;
-  if (file.size > 15*1024*1024) { showToast('⚠️ 사진 크기는 15MB 이하여야 합니다'); return; }
+  if (file.size > 15*1024*1024) { showToast(_t('toast_photo_size_limit')); return; }
   const reader = new FileReader();
   reader.onload = e => {
     const img = new Image();
@@ -4898,7 +4852,7 @@ function uploadPhoto(input) {
       state.profile.photo = dataUrl;
       state.profile.photoPosY = 50; // 새 사진은 가운데부터 시작
       save(); renderProfile();
-      showToast('📷 사진 업로드 완료! 위아래로 드래그해서 위치를 조정할 수 있어요');
+      showToast(_t('toast_photo_uploaded'));
     };
     img.src = e.target.result;
   };
@@ -4988,15 +4942,15 @@ function saveMatch() {
   const date = document.getElementById('matchDate').value;
   const format = document.getElementById('matchFormat').value;
   const opponent = format === 'doubles' ? document.getElementById('matchOpponent1').value.trim() : document.getElementById('matchOpponent').value.trim();
-  if (!date) { showToast('⚠️ 날짜를 입력하세요'); return; }
-  if (!format) { showToast('⚠️ 형식을 선택하세요'); return; }
-  if (!opponent) { showToast('⚠️ 상대를 입력하세요'); return; }
-  if (!state.currentResult) { showToast('⚠️ 결과를 선택하세요'); return; }
+  if (!date) { showToast(_t('match_toast_need_date')); return; }
+  if (!format) { showToast(_t('match_toast_need_format')); return; }
+  if (!opponent) { showToast(_t('match_toast_need_opp')); return; }
+  if (!state.currentResult) { showToast(_t('match_toast_need_result')); return; }
   // 라켓이 등록된 경우에만 선택 필수
   const _racketVal = document.getElementById('matchRacket').value;
   const _p = state.profile || {};
   const _hasRacket = (_p.racket || '').trim() !== '' || (_p.racket2 || '').trim() !== '';
-  if (_hasRacket && !_racketVal) { showToast('⚠️ 사용한 라켓을 선택하세요'); return; }
+  if (_hasRacket && !_racketVal) { showToast(_t('match_toast_need_racket')); return; }
 
   const matchData = {
     date,
@@ -5025,7 +4979,7 @@ function saveMatch() {
       const originalSport = state.matches[idx].sport;
       state.matches[idx] = { ...state.matches[idx], ...matchData, id: originalId, sport: originalSport || matchData.sport };
     } else {
-      showToast('❌ 수정할 경기를 찾지 못했어요');
+      showToast(_t('match_toast_edit_notfound'));
       state.editingMatchId = null;
       return;
     }
@@ -5046,7 +5000,7 @@ function saveMatch() {
       }
     });
     const _sportIcon = state.sportType === 'tennis' ? '🎾' : state.sportType === 'pickleball' ? '🏓' : '🏸';
-    showToast(_sportIcon + ' 경기 저장 완료!');
+    showToast(_sportIcon + ' ' + _t('match_toast_saved'));
   }
 
   save();
@@ -5096,13 +5050,13 @@ function _matchCardHTML(m) {
         <span class="format-badge">${sportIcon} ${fmtLabel}${pickleLabel}</span>
       </div>
       <div class="match-item-actions">
-        <button class="match-share-btn" onclick="openShareModal(${m.id})" title="공유" style="min-width:36px;min-height:36px;padding:8px;">
+        <button class="match-share-btn" onclick="openShareModal(${m.id})" title="공유" style="min-width:40px;min-height:40px;padding:9px;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         </button>
-        <button class="match-edit-btn" onclick="editMatch(${m.id})" title="수정" style="min-width:36px;min-height:36px;padding:8px;">
+        <button class="match-edit-btn" onclick="editMatch(${m.id})" title="수정" style="min-width:40px;min-height:40px;padding:9px;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
-        <button class="match-delete-btn" onclick="deleteMatch(${m.id})" title="삭제" style="min-width:36px;min-height:36px;padding:8px;">
+        <button class="match-delete-btn" onclick="deleteMatch(${m.id})" title="삭제" style="min-width:40px;min-height:40px;padding:9px;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
         </button>
       </div>
@@ -5147,9 +5101,9 @@ function buildMatchMonthSelect() {
   const cur = state._matchSelectedMonth || months[0]; // 기본: 이번달
   sel.innerHTML = months.map(ym => {
     const [y, m] = ym.split('-');
-    const label = (localStorage.getItem('niji_language')||'ko')==='en' ? `${y}/${m}` : `${y}년 ${parseInt(m)}월`;
+    const label = (_nijiGetLang()||'ko')==='en' ? `${y}/${m}` : `${y}년 ${parseInt(m)}월`;
     const cnt = (state.matches||[]).filter(mm => mm.date !== today && mm.date.slice(0,7) === ym).length;
-    const cntLabel = (localStorage.getItem('niji_language')||'ko')==='en' ? `${cnt} ${_t('match_count_unit')}` : `${cnt}${_t('match_count_unit')}`;
+    const cntLabel = (_nijiGetLang()||'ko')==='en' ? `${cnt} ${_t('match_count_unit')}` : `${cnt}${_t('match_count_unit')}`;
     return `<option value="${ym}"${ym===cur?' selected':''}>${label}  (${cntLabel})</option>`;
   }).join('');
   // 6개월 이전 데이터 있으면 안내 문구
@@ -5659,6 +5613,34 @@ function renderSummaryCard(ms) {
 const OPP_PAGE_SIZE = 5;
 window._oppShowAll = false;
 
+// [코드감사 리팩토링] renderOpponentStats/renderPartnerStats/renderSinglesStats/renderEnemyTeamStats
+// 4개 함수에서 완전히 동일했던 "정렬"과 "초성 검색 필터" 로직을 공용 함수로 통합함.
+// 화면에 나타나는 결과(정렬 순서, 검색 동작)는 이전과 100% 동일함 — 내부 코드만 정리.
+function _statsSortEntries(entries, sortBy) {
+  return entries.sort((a, b) => {
+    if (sortBy === 'winrate') {
+      const ra = Math.round(a[1].w / (a[1].w + a[1].l) * 100);
+      const rb = Math.round(b[1].w / (b[1].w + b[1].l) * 100);
+      if (rb !== ra) return rb - ra;
+      const ta = a[1].w + a[1].l, tb = b[1].w + b[1].l;
+      if (tb !== ta) return tb - ta;
+      return a[0].localeCompare(b[0], 'ko');
+    } else if (sortBy === 'name') {
+      return a[0].localeCompare(b[0], 'ko');
+    }
+    const diff = (b[1].w + b[1].l) - (a[1].w + a[1].l);
+    if (diff !== 0) return diff;
+    return Math.round(b[1].w / (b[1].w + b[1].l) * 100) - Math.round(a[1].w / (a[1].w + a[1].l) * 100);
+  });
+}
+function _statsChosungFilter(sorted, searchQ) {
+  if (!searchQ) return sorted;
+  const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
+  return sorted.filter(([name]) =>
+    isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
+  );
+}
+
 function renderOpponentStats(ms) {
   if (!ms) ms = getStatsFilteredMatches();
   const om = {};
@@ -5690,27 +5672,10 @@ function renderOpponentStats(ms) {
   const sortEl = document.getElementById('oppSort');
   const sortBy = sortEl ? sortEl.value : 'winrate';
   const searchQ = (document.getElementById('oppSearch')||{}).value||'';
-  let sorted = Object.entries(om).sort((a,b) => {
-    if (sortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      if (rb !== ra) return rb - ra;
-      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
-      if (tb !== ta) return tb - ta;
-      return a[0].localeCompare(b[0], 'ko');
-    } else if (sortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
-    if (diff !== 0) return diff;
-    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
-  });
+  let sorted = _statsSortEntries(Object.entries(om), sortBy);
   // 검색 필터 (초성 포함)
   if (searchQ) {
-    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
-    sorted = sorted.filter(([name]) =>
-      isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
-    );
+    sorted = _statsChosungFilter(sorted, searchQ);
     window._oppShowAll = true;
   }
   if (!sorted.length) {
@@ -5780,26 +5745,9 @@ function renderPartnerStats(ms) {
   const partnerSortEl = document.getElementById('partnerSort');
   const partnerSortBy = partnerSortEl ? partnerSortEl.value : 'winrate';
   const searchQ = (document.getElementById('partnerSearch')||{}).value||'';
-  let sorted = Object.entries(pm).sort((a,b) => {
-    if (partnerSortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      if (rb !== ra) return rb - ra;
-      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
-      if (tb !== ta) return tb - ta;
-      return a[0].localeCompare(b[0], 'ko');
-    } else if (partnerSortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
-    if (diff !== 0) return diff;
-    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
-  });
+  let sorted = _statsSortEntries(Object.entries(pm), partnerSortBy);
   if (searchQ) {
-    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
-    sorted = sorted.filter(([name]) =>
-      isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
-    );
+    sorted = _statsChosungFilter(sorted, searchQ);
     window._partnerShowAll = true;
   }
   if (!sorted.length) {
@@ -5854,26 +5802,9 @@ function renderSinglesStats(ms) {
   const singlesSortEl = document.getElementById('singlesSort');
   const singlesSortBy = singlesSortEl ? singlesSortEl.value : 'winrate';
   const searchQ = (document.getElementById('singlesSearch')||{}).value||'';
-  let sorted = Object.entries(tm).sort((a,b) => {
-    if (singlesSortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      if (rb !== ra) return rb - ra;
-      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
-      if (tb !== ta) return tb - ta;
-      return a[0].localeCompare(b[0], 'ko');
-    } else if (singlesSortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
-    if (diff !== 0) return diff;
-    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
-  });
+  let sorted = _statsSortEntries(Object.entries(tm), singlesSortBy);
   if (searchQ) {
-    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
-    sorted = sorted.filter(([name]) =>
-      isChosung ? getChosung(name).startsWith(searchQ) : name.includes(searchQ)
-    );
+    sorted = _statsChosungFilter(sorted, searchQ);
     window._singlesShowAll = true;
   }
   if (!sorted.length) {
@@ -5930,26 +5861,9 @@ function renderEnemyTeamStats(ms) {
   const enemySortEl = document.getElementById('enemySort');
   const enemySortBy = enemySortEl ? enemySortEl.value : 'winrate';
   const searchQ = (document.getElementById('enemySearch')||{}).value||'';
-  let sorted = Object.entries(tm).sort((a,b) => {
-    if (enemySortBy === 'winrate') {
-      const ra = Math.round(a[1].w/(a[1].w+a[1].l)*100);
-      const rb = Math.round(b[1].w/(b[1].w+b[1].l)*100);
-      if (rb !== ra) return rb - ra;
-      const ta = a[1].w+a[1].l, tb = b[1].w+b[1].l;
-      if (tb !== ta) return tb - ta;
-      return a[0].localeCompare(b[0], 'ko');
-    } else if (enemySortBy === 'name') {
-      return a[0].localeCompare(b[0], 'ko');
-    }
-    const diff = (b[1].w+b[1].l) - (a[1].w+a[1].l);
-    if (diff !== 0) return diff;
-    return Math.round(b[1].w/(b[1].w+b[1].l)*100) - Math.round(a[1].w/(a[1].w+a[1].l)*100);
-  });
+  let sorted = _statsSortEntries(Object.entries(tm), enemySortBy);
   if (searchQ) {
-    const isChosung = /^[ㄱ-ㅎ]+$/.test(searchQ);
-    sorted = sorted.filter(([team]) =>
-      isChosung ? getChosung(team).startsWith(searchQ) : team.includes(searchQ)
-    );
+    sorted = _statsChosungFilter(sorted, searchQ);
     window._enemyShowAll = true;
   }
   if (!sorted.length) {
@@ -5996,14 +5910,6 @@ function renderEnemyTeamStats(ms) {
   document.getElementById('enemyTeamCard').innerHTML = cards + moreBtn;
 }
 
-function toggleRankingClubFilter(club) {
-  const idx = state.rankingClubFilter.indexOf(club);
-  if (idx === -1) state.rankingClubFilter.push(club);
-  else state.rankingClubFilter.splice(idx, 1);
-  save();
-}
-function renderRankingClubFilter() {}
-function renderRanking() {}
 
 // ===== CLUBS =====
 function addClub() {
@@ -6493,7 +6399,7 @@ function doShareMatch(type) {
     // 클립보드 복사 (native 지원 안 될 때도 copy로 fallback)
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(() => {
-        showToast('📋 결과가 복사되었어요! 카카오톡에 붙여넣기 하세요 😊');
+        showToast(_t('toast_result_copied'));
         closeShareModal();
       }).catch(() => _fallbackCopy(text));
     } else {
@@ -6508,7 +6414,7 @@ function _fallbackCopy(text) {
   ta.style.position = 'fixed'; ta.style.opacity = '0';
   document.body.appendChild(ta);
   ta.focus(); ta.select();
-  try { document.execCommand('copy'); showToast('📋 결과가 복사되었어요! 카카오톡에 붙여넣기 하세요 😊'); closeShareModal(); } catch(e) {}
+  try { document.execCommand('copy'); showToast(_t('toast_result_copied')); closeShareModal(); } catch(e) {}
   document.body.removeChild(ta);
 }
 
@@ -6549,13 +6455,13 @@ function shareStringCert() {
     navigator.share({ title: 'NIJI STRING 스트링 교체 인증', text: txt }).catch(() => {});
   } else if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(txt).then(() => {
-      showToast('📋 교체 인증 문구가 복사됐어요! 카카오톡에 붙여넣기 하세요 😊');
-    }).catch(() => { showToast('복사에 실패했어요. 직접 선택해서 복사해 주세요.'); });
+      showToast(_t('toast_string_copied'));
+    }).catch(() => { showToast(_t('toast_copy_failed')); });
   } else {
     const ta = document.createElement('textarea');
     ta.value = txt; ta.style.position='fixed'; ta.style.opacity='0';
     document.body.appendChild(ta); ta.focus(); ta.select();
-    try { document.execCommand('copy'); showToast('📋 교체 인증 문구가 복사됐어요! 카카오톡에 붙여넣기 하세요 😊'); } catch(e) {}
+    try { document.execCommand('copy'); showToast(_t('toast_string_copied')); } catch(e) {}
     document.body.removeChild(ta);
   }
 }
@@ -6590,8 +6496,8 @@ function saveStringingInfo(racketNum) {
   const date        = dateEl.value;
   const interval    = intEl ? parseInt(intEl.value) : 3;
 
-  if (!stringName) { showToast('⚠️ 스트링명을 입력하세요'); return; }
-  if (!date) { showToast('⚠️ 교체일을 선택하세요'); return; }
+  if (!stringName) { showToast(_t('str_toast_need_name')); return; }
+  if (!date) { showToast(_t('str_toast_need_date')); return; }
 
   // 프로필 필드에 저장
   const stringKey   = rn === 1 ? 'string'     : 'string2';
@@ -6615,7 +6521,7 @@ function saveStringingInfo(racketNum) {
   save();
   renderStringing();
   renderStringBanner();
-  showToast('✅ 저장 완료! 교체 이력에도 자동 기록됐어요');
+  showToast(_t('str_toast_saved'));
 }
 
 function deleteStringingHistory(id) {
@@ -6640,7 +6546,7 @@ function deleteStringingHistory(id) {
   save();
   renderStringing();
   renderStringBanner();
-  showToast('🗑️ 삭제 완료');
+  showToast(_t('str_toast_deleted'));
 }
 
 
@@ -6699,7 +6605,7 @@ function renderPlayers() {
   const badge = document.getElementById('playerCountBadge');
   if (badge) {
     const total = state.players.length;
-    const lang = localStorage.getItem('niji_language') || 'ko';
+    const lang = _nijiGetLang() || 'ko';
     badge.textContent = lang === 'en' ? total + ' players' : total + '명';
     badge.style.display = total > 0 ? 'inline-block' : 'none';
   }
@@ -6718,26 +6624,46 @@ function renderPlayers() {
   const sort = state.playerSort || 'name';
   if (sort === 'name') {
     filtered = [...filtered].sort((a,b) => a.name.localeCompare(b.name, 'ko'));
-  } else if (sort === 'recent') {
-    filtered = [...filtered].sort((a,b) => {
-      const la = state.matches.filter(m => m.opponent===a.name||m.opponent2===a.name||m.partner===a.name).map(m=>m.date).sort().pop() || '';
-      const lb = state.matches.filter(m => m.opponent===b.name||m.opponent2===b.name||m.partner===b.name).map(m=>m.date).sort().pop() || '';
-      return lb.localeCompare(la);
-    });
-  } else if (sort === 'matches') {
-    filtered = [...filtered].sort((a,b) => {
-      const ca = state.matches.filter(m => m.opponent===a.name||m.opponent2===a.name||m.partner===a.name).length;
-      const cb = state.matches.filter(m => m.opponent===b.name||m.opponent2===b.name||m.partner===b.name).length;
-      return cb - ca;
-    });
-  } else if (sort === 'winrate') {
-    filtered = [...filtered].sort((a,b) => {
-      const ma = state.matches.filter(m => m.opponent===a.name||m.opponent2===a.name);
-      const mb = state.matches.filter(m => m.opponent===b.name||m.opponent2===b.name);
-      const ra = ma.length ? ma.filter(m=>m.result==='win').length/ma.length : -1;
-      const rb = mb.length ? mb.filter(m=>m.result==='win').length/mb.length : -1;
-      return rb - ra;
-    });
+  } else if (sort === 'recent' || sort === 'matches' || sort === 'winrate') {
+    // 성능 최적화: 정렬 비교(comparator)마다 전체 matches 배열을 filter하면
+    // 선수 수가 많을 때 매우 느려짐 (O(N log N × M)). 대신 matches 배열을
+    // 단 한 번만 순회해서 이름별 통계를 미리 계산해두고 조회만 함 (O(M + N log N)).
+    // 결과값은 기존 로직과 동일함.
+    const _statByName = Object.create(null);
+    const _getStat = nm => _statByName[nm] || (_statByName[nm] = { lastDate: '', count: 0, oppCount: 0, oppWins: 0 });
+    for (let i = 0; i < state.matches.length; i++) {
+      const m = state.matches[i];
+      // opponent/opponent2/partner 중 이름이 겹칠 수 있으므로 Set으로 중복 제거 후 집계 (기존 filter().length와 동일한 결과)
+      const anyNames = new Set();
+      if (m.opponent) anyNames.add(m.opponent);
+      if (m.opponent2) anyNames.add(m.opponent2);
+      if (m.partner) anyNames.add(m.partner);
+      anyNames.forEach(nm => {
+        const s = _getStat(nm);
+        s.count++;
+        if (m.date && m.date > s.lastDate) s.lastDate = m.date;
+      });
+      const oppNames = new Set();
+      if (m.opponent) oppNames.add(m.opponent);
+      if (m.opponent2) oppNames.add(m.opponent2);
+      oppNames.forEach(nm => {
+        const s = _getStat(nm);
+        s.oppCount++;
+        if (m.result === 'win') s.oppWins++;
+      });
+    }
+    if (sort === 'recent') {
+      filtered = [...filtered].sort((a,b) => _getStat(b.name).lastDate.localeCompare(_getStat(a.name).lastDate));
+    } else if (sort === 'matches') {
+      filtered = [...filtered].sort((a,b) => _getStat(b.name).count - _getStat(a.name).count);
+    } else if (sort === 'winrate') {
+      filtered = [...filtered].sort((a,b) => {
+        const sa = _getStat(a.name), sb = _getStat(b.name);
+        const ra = sa.oppCount ? sa.oppWins/sa.oppCount : -1;
+        const rb = sb.oppCount ? sb.oppWins/sb.oppCount : -1;
+        return rb - ra;
+      });
+    }
   }
 
   if (!filtered.length) {
@@ -6921,7 +6847,7 @@ function showPlayerDetail(playerId) {
           value="${escHtml(item.val)}"
           data-pid="${player.id}" data-key="${item.key}"
           onchange="savePlayerProfile(parseInt(this.dataset.pid),this.dataset.key,this.value.trim());showToast(_t('players_saved_toast'))"
-          style="text-align:right;width:100%;background:transparent;border:none;outline:none;font-size: 0.8667rem;font-weight:700;color:var(--text);font-family:inherit;">
+          style="text-align:right;width:100%;background:transparent;border:none;outline:none;font-size:16px;font-weight:700;color:var(--text);font-family:inherit;">
       </div>`;
     }
     return `<div class="pd-profile-item">
@@ -7135,10 +7061,12 @@ function exportData() {
   if (exportState.profile) exportState.profile.photo = ''; // 사진은 용량이 커서 제외
   const blob = new Blob([JSON.stringify(exportState, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  const blobUrl = URL.createObjectURL(blob);
+  a.href = blobUrl;
   a.download = `niji-backup-${getTodayStr()}.json`;
   a.click();
-  showToast('💾 내보내기 완료!');
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 1000); // 메모리 정리 (누수 방지)
+  showToast(_t('toast_export_done'));
 }
 function importData(input) {
   const file = input.files[0];
@@ -7159,8 +7087,8 @@ function importData(input) {
       save();
       renderProfile();
       renderMatchList();
-      showToast('✅ 가져오기 완료!');
-    } catch(ex) { showToast('❌ 파일 형식 오류'); }
+      showToast(_t('toast_import_done'));
+    } catch(ex) { showToast(_t('toast_import_failed')); }
   };
   reader.readAsText(file);
   input.value = '';
@@ -7402,7 +7330,7 @@ var _sb = {
 };
 // _sb 초기 기본값은 renderScoreboard 시점에 _t()로 세팅
 function _sbInitDefaults() {
-  var lang = localStorage.getItem('niji_language') || 'ko';
+  var lang = _nijiGetLang() || 'ko';
   if (!_sb.names[0]) _sb.names[0] = lang==='en' ? 'Player 1' : '선수 1';
   if (!_sb.names[1]) _sb.names[1] = lang==='en' ? 'Player 2' : '선수 2';
   if (!_sb.title)    _sb.title    = lang==='en' ? 'Tennis Match' : '테니스 경기';
@@ -7732,14 +7660,14 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
   // 제목
   var lbl = document.createElement('div');
   lbl.style.cssText = 'font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;color:#ffd84d;font-weight:700;margin-bottom:14px;letter-spacing:0.5px;';
-  lbl.textContent = label + (localStorage.getItem('niji_language')==='en' ? '' : ' 입력');
+  lbl.textContent = label + (_nijiGetLang()==='en' ? '' : ' 입력');
   box.appendChild(lbl);
 
   // 입력창
   var inp = document.createElement('input');
   inp.type = 'text';
   inp.value = currentVal;
-  inp.placeholder = localStorage.getItem('niji_language')==='en' ? 'Enter name' : '이름 입력 (초성도 가능)';
+  inp.placeholder = _nijiGetLang()==='en' ? 'Enter name' : '이름 입력 (초성도 가능)';
   inp.autocomplete = 'off';
   inp.style.cssText = 'width:100%;box-sizing:border-box;background:#050810;border:2px solid #1a6bff;color:#fff;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.4rem;padding:16px 14px;border-radius:10px;outline:none;margin-bottom:10px;letter-spacing:0.5px;';
 
@@ -7794,7 +7722,7 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
 
   // 지우기 버튼 (선수1/필드1)
   var btnClear = document.createElement('button');
-  btnClear.textContent = localStorage.getItem('niji_language')==='en' ? '✕ Clear' : '✕ 입력 지우기';
+  btnClear.textContent = _nijiGetLang()==='en' ? '✕ Clear' : '✕ 입력 지우기';
   btnClear.style.cssText = 'width:100%;padding:10px;margin:-2px 0 10px;background:rgba(255,79,79,.1);color:#ff7070;border:1px solid rgba(255,79,79,.3);border-radius:8px;font-family:\'Noto Sans KR\',sans-serif;font-size:0.9rem;cursor:pointer;';
   btnClear.addEventListener('click', function() {
     inp.value = '';
@@ -7811,13 +7739,13 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
 
     var lbl2El = document.createElement('div');
     lbl2El.style.cssText = 'font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;color:#7ad1ff;font-weight:700;margin:14px 0 14px;letter-spacing:0.5px;';
-    lbl2El.textContent = label2 + (localStorage.getItem('niji_language')==='en' ? '' : ' 입력');
+    lbl2El.textContent = label2 + (_nijiGetLang()==='en' ? '' : ' 입력');
     box.appendChild(lbl2El);
 
     inp2 = document.createElement('input');
     inp2.type = 'text';
     inp2.value = currentVal2;
-    inp2.placeholder = localStorage.getItem('niji_language')==='en' ? 'Enter name' : '이름 입력 (초성도 가능)';
+    inp2.placeholder = _nijiGetLang()==='en' ? 'Enter name' : '이름 입력 (초성도 가능)';
     inp2.autocomplete = 'off';
     inp2.style.cssText = 'width:100%;box-sizing:border-box;background:#050810;border:2px solid #7ad1ff;color:#fff;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.4rem;padding:16px 14px;border-radius:10px;outline:none;margin-bottom:10px;letter-spacing:0.5px;';
 
@@ -7861,7 +7789,7 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
     box.appendChild(inp2);
 
     var btnClear2 = document.createElement('button');
-    btnClear2.textContent = localStorage.getItem('niji_language')==='en' ? '✕ Clear' : '✕ 입력 지우기';
+    btnClear2.textContent = _nijiGetLang()==='en' ? '✕ Clear' : '✕ 입력 지우기';
     btnClear2.style.cssText = 'width:100%;padding:10px;margin:-2px 0 10px;background:rgba(255,79,79,.1);color:#ff7070;border:1px solid rgba(255,79,79,.3);border-radius:8px;font-family:\'Noto Sans KR\',sans-serif;font-size:0.9rem;cursor:pointer;';
     btnClear2.addEventListener('click', function() {
       inp2.value = '';
@@ -7875,7 +7803,7 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
   // 안내 문구
   var hint = document.createElement('div');
   hint.style.cssText = 'font-family:\'Noto Sans KR\',sans-serif;font-size:0.8rem;color:#7a7aaa;margin:-4px 0 10px;letter-spacing:0;';
-  hint.textContent = localStorage.getItem('niji_language')==='en' ? '💡 Tap the field to see registered players' : '💡 입력칸을 누르면 등록된 선수 목록이 바로 보여요';
+  hint.textContent = _nijiGetLang()==='en' ? '💡 Tap the field to see registered players' : '💡 입력칸을 누르면 등록된 선수 목록이 바로 보여요';
   box.appendChild(hint);
 
   // 버튼 행
@@ -7883,12 +7811,12 @@ function sbOpenInput(fieldId, label, fieldId2, label2) {
   btnRow.style.cssText = 'display:flex;gap:10px;';
 
   var btnCancel = document.createElement('button');
-  btnCancel.textContent = localStorage.getItem('niji_language')==='en' ? 'Cancel' : '취소';
+  btnCancel.textContent = _nijiGetLang()==='en' ? 'Cancel' : '취소';
   btnCancel.style.cssText = 'flex:1;padding:16px;background:rgba(255,255,255,0.07);color:#aaa;border:1px solid #2a2a4a;border-radius:10px;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;cursor:pointer;';
   btnCancel.addEventListener('click', function() { popup.remove(); });
 
   var btnOk = document.createElement('button');
-  btnOk.textContent = localStorage.getItem('niji_language')==='en' ? '✔ OK' : '✔ 확인';
+  btnOk.textContent = _nijiGetLang()==='en' ? '✔ OK' : '✔ 확인';
   btnOk.style.cssText = 'flex:2;padding:16px;background:#1a6bff;color:#fff;border:none;border-radius:10px;font-family:\'Noto Sans KR\',sans-serif;font-size: 1.1rem;font-weight:700;cursor:pointer;';
   btnOk.addEventListener('click', function() {
     var val = inp.value.trim();
@@ -7985,7 +7913,7 @@ function sbMatchStarted() {
 
 // 복식일 때 "A / B" 형태 이름에서 서브 선수(subIdx)를 강조 표시
 function sbNameHTML(p) {
-  var lang = localStorage.getItem('niji_language') || 'ko';
+  var lang = _nijiGetLang() || 'ko';
   var name = _sb.names[p] || ((lang==='en' ? 'Player ' : '선수 ') + (p+1));
   if (_sb.format === 'doubles' && name.indexOf(' / ') !== -1) {
     var parts = name.split(' / ');
@@ -8000,15 +7928,6 @@ function sbNameHTML(p) {
     return html + ' <span class="sb-swap-hint">' + (sbMatchStarted() ? '🔒' : '⇄') + '</span>';
   }
   return name;
-}
-// 팀의 서브 시작 선수를 직접 지정 (idx: 0=첫번째 이름, 1=두번째 이름)
-// 지금 서빙 중이 아닌 팀도 미리 정해둘 수 있음 (예: 애드코트 선수가 먼저 서브 넣는 경우)
-function sbSetServerSub(team, idx) {
-  if (_sb.format !== 'doubles') return;
-  _sb.serverSub[team] = idx;
-  _sb._serverSubTouched = true;
-  sbRender();
-  sbUpdateServeBtns();
 }
 
 // 코트 화면에서 선수 이름을 탭하면 좌우 순서를 바꿔서(서브 순서도 함께 바뀜) 간단하게 지정
@@ -8056,17 +7975,11 @@ function sbClosePanel() {
   if (bd)  bd.classList.remove('open');
   if (hint) hint.style.display = '';
 }
-// 서브 버튼: 서빙하는 선수만 표시
-function sbUpdateServeBtns() {
-  var ace1 = document.getElementById('sb-srv-ace-1');
-  var flt1 = document.getElementById('sb-srv-flt-1');
-  var ace2 = document.getElementById('sb-srv-ace-2');
-  var flt2 = document.getElementById('sb-srv-flt-2');
-  if (ace1) ace1.style.display = _sb.serving === 0 ? 'block' : 'none';
-  if (flt1) flt1.style.display = _sb.serving === 0 ? 'block' : 'none';
-  if (ace2) ace2.style.display = _sb.serving === 1 ? 'block' : 'none';
-  if (flt2) flt2.style.display = _sb.serving === 1 ? 'block' : 'none';
-}
+// 서브 버튼: 예전 버전에는 팀별로 에이스/폴트 버튼이 따로 있었으나,
+// 지금은 상단에 버튼 1쌍만 두고 서빙 중인 팀에 자동 적용하는 방식으로 바뀌어
+// 아래 id들(sb-srv-ace-1 등)을 가진 요소가 더 이상 존재하지 않습니다.
+// 호출부(7곳)를 깨뜨리지 않기 위해 함수는 남겨두되 내용은 비웁니다.
+function sbUpdateServeBtns() {}
 
 function sbSwitchTab(name) {
   document.querySelectorAll('.sb-tab-btn').forEach(function(b, i) {
@@ -8450,7 +8363,7 @@ function sbApplySetup() {
   var a2 = ((document.getElementById('sb-in-name2')||{}).value || '').trim();
   var b1 = ((document.getElementById('sb-in-name3')||{}).value || '').trim();
   var b2 = ((document.getElementById('sb-in-name4')||{}).value || '').trim();
-  var lang = localStorage.getItem('niji_language') || 'ko';
+  var lang = _nijiGetLang() || 'ko';
   var title = ((document.getElementById('sb-in-title')||{}).value || '').trim() || (lang==='en' ? 'Tennis Match' : '테니스 경기');
   var n1, n2;
   if (_sb.format === 'doubles') {
@@ -9069,6 +8982,16 @@ function tnCreate() {
 }
 
 // [수정] 시드 배정 대진표 생성 - 복식 수동 팀 모드 + 상대팀 수동 대진 모드 반영
+// 라운드 이름 계산 (결승/준결승/8강 등) - tnBuildBracket, tnBuildBracketManualOpp 공용
+function tnGetRoundName(total, roundIdx) {
+  const m = total / Math.pow(2, roundIdx + 1);
+  if (m === 1) return '결승';
+  if (m === 2) return '준결승';
+  if (m === 4) return '8강';
+  if (m === 8) return '16강';
+  if (m === 16) return '32강';
+  return m + '강';
+}
 function tnBuildBracket(players, format) {
   let entries;
   if (format === 'doubles') {
@@ -9111,15 +9034,7 @@ function tnBuildBracket(players, format) {
   const slotPlayer = new Array(size).fill(null);
   entries.forEach((e, i) => { slotPlayer[seedOrder[i]] = e; });
 
-  const getRoundName = (total, roundIdx) => {
-    const m = total / Math.pow(2, roundIdx + 1);
-    if (m === 1) return '결승';
-    if (m === 2) return '준결승';
-    if (m === 4) return '8강';
-    if (m === 8) return '16강';
-    if (m === 16) return '32강';
-    return m + '강';
-  };
+  const getRoundName = tnGetRoundName;
 
   const r1games = [];
   for (let i = 0; i < size; i += 2) {
@@ -9181,15 +9096,7 @@ function tnBuildBracketManualOpp(entries) {
   const totalR1 = r1games.length;
   const size = Math.pow(2, Math.ceil(Math.log2(Math.max(totalR1, 1))));
 
-  const getRoundName = (total, roundIdx) => {
-    const m = total / Math.pow(2, roundIdx + 1);
-    if (m === 1) return '결승';
-    if (m === 2) return '준결승';
-    if (m === 4) return '8강';
-    if (m === 8) return '16강';
-    if (m === 16) return '32강';
-    return m + '강';
-  };
+  const getRoundName = tnGetRoundName;
 
   const totalMatches = size * 2;
   const rounds = [];
@@ -9850,8 +9757,8 @@ if ('serviceWorker' in navigator) {
 <div id="tc-modalPlayer" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
     <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_edit_title">✏️ 선수 편집</div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_name">이름</div><input id="tc-editName" maxlength="6" placeholder="이름 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_position">포지션</div><input id="tc-editPosition" maxlength="6" placeholder="포지션 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;"></div>
+    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_name">이름</div><input id="tc-editName" maxlength="6" placeholder="이름 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size:16px;outline:none;"></div>
+    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_position">포지션</div><input id="tc-editPosition" maxlength="6" placeholder="포지션 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size:16px;outline:none;"></div>
     <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_color">선수 색상</div><div id="tc-colorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
     <div style="display:flex;gap:8px;margin-top:14px;">
       <button onclick="document.getElementById('tc-modalPlayer').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_cancel">취소</button>
@@ -9886,7 +9793,7 @@ if ('serviceWorker' in navigator) {
   <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;">
     <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_save_title">💾 전술판 저장</div>
     <div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_save_label">저장 이름</div>
-    <input id="tc-saveNameInput" placeholder="예: 서브 후 전술" maxlength="20" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size: 0.8667rem;outline:none;">
+    <input id="tc-saveNameInput" placeholder="예: 서브 후 전술" maxlength="20" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size:16px;outline:none;">
     <div style="display:flex;gap:8px;margin-top:14px;">
       <button onclick="document.getElementById('tc-modalSave').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_cancel">취소</button>
       <button onclick="tcSaveOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;" data-lang="tc_save_ok">저장</button>
@@ -10025,7 +9932,7 @@ if ('serviceWorker' in navigator) {
     const p=PRESETS[key];
     TC.KEYS.forEach(k=>{TC.players[k]={x:p[k].x,y:p[k].y};});
     TC.arrows=[];TC.arrowDraw=null;TC.drawPaths=[];
-    const lang=localStorage.getItem('niji_language')||'ko';
+    const lang=_nijiGetLang()||'ko';
     document.getElementById("tc-descBox").textContent=typeof p.desc==='object'?p.desc[lang]||p.desc.ko:p.desc;
     document.querySelectorAll(".tc-preset-btn").forEach(b=>b.classList.toggle("tc-active",b.dataset.preset===key));
     tcDraw();
@@ -10127,7 +10034,18 @@ if ('serviceWorker' in navigator) {
     });
   }
 
+  // 성능 최적화: touchmove/mousemove 이벤트는 화면 주사율보다 훨씬 빠르게 발생할 수 있어서
+  // 매번 즉시 tcDraw()를 실행하면 같은 프레임 안에서 캔버스 전체를 여러 번 다시 그리는
+  // 낭비가 생김. requestAnimationFrame으로 묶어서 프레임당 최대 1번만 실제로 그리도록 함.
+  // (마지막 상태 기준으로 그리므로 화면에 보이는 결과는 기존과 동일함)
+  let _tcDrawScheduled = false;
   function tcDraw(){
+    if (_tcDrawScheduled) return;
+    _tcDrawScheduled = true;
+    requestAnimationFrame(_tcDrawImmediate);
+  }
+  function _tcDrawImmediate(){
+    _tcDrawScheduled = false;
     if(!canvas.width)return;
     const W=canvas.width,H=canvas.height,T=THEMES[TC.currentTheme];
     ctx.clearRect(0,0,W,H);
@@ -10147,7 +10065,7 @@ if ('serviceWorker' in navigator) {
     ctx.shadowBlur=10;ctx.shadowColor="rgba(255,255,255,0.7)";ctx.strokeStyle="white";ctx.lineWidth=3;line(0,NET_Y,LW,NET_Y);ctx.shadowBlur=0;
     ctx.fillStyle="#c8a05a";ctx.fillRect(px(CL-8),py(NET_Y-14),px(10),py(28));ctx.fillRect(px(CR-2),py(NET_Y-14),px(10),py(28));
     ctx.fillStyle="rgba(255,255,255,0.3)";ctx.font=`${py(8)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="alphabetic";ctx.fillText("NET",px(CX_L),py(NET_Y-8));
-    const isEnLang=localStorage.getItem('niji_language')==='en';
+    const isEnLang=_nijiGetLang()==='en';
     ctx.font=`bold ${py(9)}px sans-serif`;ctx.fillStyle=T.l1;ctx.fillText(isEnLang?"Our Court":"우리팀 코트",px(CX_L),py(CB-10));ctx.fillStyle=T.l2;ctx.fillText(isEnLang?"Opp. Court":"상대팀 코트",px(CX_L),py(CT+20));
     drawFreeLinesTC();
     TC.arrows.forEach(a=>drawArrowTC(a.x1,a.y1,a.x2,a.y2,a.color,!a.fromKey));
@@ -10222,7 +10140,7 @@ if ('serviceWorker' in navigator) {
     if(typeof applyLang === 'function') applyLang();
     // URL에서 공유 데이터 체크
     const p=new URLSearchParams(location.search),s=p.get("tc");
-    if(s){try{tcLoadState(JSON.parse(decodeURIComponent(escape(atob(s)))));tcShowToast(localStorage.getItem('niji_language')==='en'?"Shared tactics board loaded! 🔗":"공유된 전술판을 불러왔어요! 🔗");}catch(e){}}
+    if(s){try{tcLoadState(JSON.parse(decodeURIComponent(escape(atob(s)))));tcShowToast(_nijiGetLang()==='en'?"Shared tactics board loaded! 🔗":"공유된 전술판을 불러왔어요! 🔗");}catch(e){}}
   };
   window.closeTacticsBoard=function(){
     document.getElementById("tacticsModal").style.display="none";
@@ -10237,7 +10155,7 @@ if ('serviceWorker' in navigator) {
   window.tcSetMode=function(m){
     if(TC.mode===m)TC.mode="drag"; else TC.mode=m;
     TC.arrowDraw=null;
-    const isEn=localStorage.getItem('niji_language')==='en';
+    const isEn=_nijiGetLang()==='en';
     const ba=document.getElementById("tc-btnArrow"),bd=document.getElementById("tc-btnDraw");
     ba.classList.toggle("tc-arrow-on",TC.mode==="arrow");bd.classList.toggle("tc-draw-on",TC.mode==="draw");
     ba.textContent=TC.mode==="arrow"?(isEn?"✏️ Arrow ON":"✏️ 화살표 ON"):(isEn?"➡️ Arrow":"➡️ 화살표");
@@ -10247,11 +10165,11 @@ if ('serviceWorker' in navigator) {
     else if(TC.mode==="draw")g.innerHTML=isEn?"Draw freely with your finger &nbsp;·&nbsp; Use Delete to erase":"손가락으로 자유롭게 그리세요 &nbsp;·&nbsp; 삭제 버튼으로 지우기";
     else g.innerHTML=isEn?"Player tap → select (shot angle) &nbsp;·&nbsp; Double-tap → edit &nbsp;·&nbsp; Drag → move":"선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동";
   };
-  window.tcToggleCover=function(){TC.showCover=!TC.showCover;const isEn=localStorage.getItem('niji_language')==='en';const b=document.getElementById("tc-btnCover");b.textContent=TC.showCover?(isEn?"⭕ Cover ON":"⭕ 커버존 ON"):(isEn?"⭕ Cover OFF":"⭕ 커버존 OFF");b.classList.toggle("tc-cover-on",TC.showCover);tcDraw();};
-  window.tcToggleBall=function(){TC.showBall=!TC.showBall;const isEn=localStorage.getItem('niji_language')==='en';const b=document.getElementById("tc-btnBall");b.textContent=TC.showBall?(isEn?"🎾 Ball ON":"🎾 공 ON"):(isEn?"🎾 Ball OFF":"🎾 공 OFF");b.classList.toggle("tc-ball-on",TC.showBall);tcDraw();};
-  window.tcToggleAngle=function(){TC.showAngle=!TC.showAngle;const isEn=localStorage.getItem('niji_language')==='en';const b=document.getElementById("tc-btnAngle");b.textContent=TC.showAngle?(isEn?"📐 Angle ON":"📐 타구각 ON"):(isEn?"📐 Angle OFF":"📐 타구각 OFF");b.classList.toggle("tc-angle-on",TC.showAngle);tcDraw();};
-  window.tcDelDrawings=function(){const isEn=localStorage.getItem('niji_language')==='en';TC.arrows=[];TC.arrowDraw=null;TC.drawPaths=[];tcDraw();tcShowToast(isEn?"Arrows & drawings cleared":"화살표·그리기 삭제됨");};
-  window.tcReset=function(){const isEn=localStorage.getItem('niji_language')==='en';TC.selectedKeys.clear();tcApplyPreset(TC.activePreset);TC.ball={x:CX_L,y:NET_Y+60};TC.arrows=[];TC.drawPaths=[];tcDraw();tcShowToast(isEn?"Reset complete":"초기화 완료");};
+  window.tcToggleCover=function(){TC.showCover=!TC.showCover;const isEn=_nijiGetLang()==='en';const b=document.getElementById("tc-btnCover");b.textContent=TC.showCover?(isEn?"⭕ Cover ON":"⭕ 커버존 ON"):(isEn?"⭕ Cover OFF":"⭕ 커버존 OFF");b.classList.toggle("tc-cover-on",TC.showCover);tcDraw();};
+  window.tcToggleBall=function(){TC.showBall=!TC.showBall;const isEn=_nijiGetLang()==='en';const b=document.getElementById("tc-btnBall");b.textContent=TC.showBall?(isEn?"🎾 Ball ON":"🎾 공 ON"):(isEn?"🎾 Ball OFF":"🎾 공 OFF");b.classList.toggle("tc-ball-on",TC.showBall);tcDraw();};
+  window.tcToggleAngle=function(){TC.showAngle=!TC.showAngle;const isEn=_nijiGetLang()==='en';const b=document.getElementById("tc-btnAngle");b.textContent=TC.showAngle?(isEn?"📐 Angle ON":"📐 타구각 ON"):(isEn?"📐 Angle OFF":"📐 타구각 OFF");b.classList.toggle("tc-angle-on",TC.showAngle);tcDraw();};
+  window.tcDelDrawings=function(){const isEn=_nijiGetLang()==='en';TC.arrows=[];TC.arrowDraw=null;TC.drawPaths=[];tcDraw();tcShowToast(isEn?"Arrows & drawings cleared":"화살표·그리기 삭제됨");};
+  window.tcReset=function(){const isEn=_nijiGetLang()==='en';TC.selectedKeys.clear();tcApplyPreset(TC.activePreset);TC.ball={x:CX_L,y:NET_Y+60};TC.arrows=[];TC.drawPaths=[];tcDraw();tcShowToast(isEn?"Reset complete":"초기화 완료");};
 
   function tcOpenPlayerEdit(key){
     TC.editingKey=key;const p=TC.PINFO[key];
@@ -10273,7 +10191,7 @@ if ('serviceWorker' in navigator) {
     const sel=document.querySelector("#tc-colorSwatches .tc-color-swatch.tc-sel");
     if(sel){p.main=sel.style.background;updateDarkTC(key);}
     document.getElementById("tc-modalPlayer").style.display="none";
-    tcDraw();tcShowToast(localStorage.getItem('niji_language')==='en'?"Player saved ✓":"선수 정보 저장됨 ✓");
+    tcDraw();tcShowToast(_nijiGetLang()==='en'?"Player saved ✓":"선수 정보 저장됨 ✓");
   };
 
   window.tcOpenBoardStyle=function(){
@@ -10290,15 +10208,35 @@ if ('serviceWorker' in navigator) {
   window.tcBoardOk=function(){
     const sel=document.querySelector(".tc-theme-chip.tc-theme-sel");if(sel)TC.currentTheme=sel.dataset.theme;
     const dc=document.querySelector("#tc-drawColorSwatches .tc-color-swatch.tc-sel");if(dc)TC.drawColor=dc.style.background;
-    document.getElementById("tc-modalBoard").style.display="none";tcDraw();tcShowToast(localStorage.getItem('niji_language')==='en'?"Board settings applied ✓":"보드 설정 적용됨 ✓");
+    document.getElementById("tc-modalBoard").style.display="none";tcDraw();tcShowToast(_nijiGetLang()==='en'?"Board settings applied ✓":"보드 설정 적용됨 ✓");
   };
 
   function tcGetState(){return{players:JSON.parse(JSON.stringify(TC.players)),ball:{...TC.ball},arrows:JSON.parse(JSON.stringify(TC.arrows)),drawPaths:JSON.parse(JSON.stringify(TC.drawPaths)),PINFO:JSON.parse(JSON.stringify(TC.PINFO)),currentTheme:TC.currentTheme,activePreset:TC.activePreset,showCover:TC.showCover,showBall:TC.showBall,showAngle:TC.showAngle,drawColor:TC.drawColor};}
   function tcLoadState(s){if(!s)return;if(s.players)TC.players=s.players;if(s.ball)TC.ball=s.ball;if(s.arrows)TC.arrows=s.arrows;if(s.drawPaths)TC.drawPaths=s.drawPaths;if(s.PINFO)TC.PINFO=s.PINFO;if(s.currentTheme)TC.currentTheme=s.currentTheme;if(s.activePreset)TC.activePreset=s.activePreset;if(s.showCover!==undefined)TC.showCover=s.showCover;if(s.showBall!==undefined)TC.showBall=s.showBall;if(s.showAngle!==undefined)TC.showAngle=s.showAngle;if(s.drawColor)TC.drawColor=s.drawColor;tcDraw();}
 
+  // [코드감사 수정] 전술판 localStorage 읽기/쓰기 공용 헬퍼 - 손상된 데이터/저장공간 초과 시에도 앱이 멈추지 않도록 try/catch로 보호
+  function _tcSavesGet(){
+    try{
+      return JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+    }catch(e){
+      console.warn('전술판 목록 읽기 실패:', e);
+      return [];
+    }
+  }
+  function _tcSavesSet(arr){
+    try{
+      localStorage.setItem("niji_tactics_saves", JSON.stringify(arr));
+      return true;
+    }catch(e){
+      console.warn('전술판 목록 저장 실패:', e);
+      tcShowToast(_nijiGetLang()==='en' ? '⚠️ Failed to save (storage full)' : '⚠️ 저장 실패 (저장공간 부족)');
+      return false;
+    }
+  }
+
   window.tcSave=function(){document.getElementById("tc-saveNameInput").value="";document.getElementById("tc-modalSave").style.display="flex";setTimeout(()=>document.getElementById("tc-saveNameInput").focus(),100);};
   window.tcSaveOk=function(){
-    const isEn=localStorage.getItem('niji_language')==='en';
+    const isEn=_nijiGetLang()==='en';
     const name=document.getElementById("tc-saveNameInput").value.trim()||(isEn?"Tactics":"전술판");
     const newEntry={name,date:new Date().toLocaleString("ko-KR"),state:tcGetState()};
 
@@ -10316,17 +10254,17 @@ if ('serviceWorker' in navigator) {
         ref.push({name:newEntry.name,date:newEntry.date,state:newEntry.state});
       }).catch(()=>{
         // Firebase 실패시 localStorage 폴백
-        const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+        const saves=_tcSavesGet();
         saves.unshift(newEntry);
         if(saves.length>20)saves.pop();
-        localStorage.setItem("niji_tactics_saves",JSON.stringify(saves));
+        _tcSavesSet(saves);
       });
     } else {
       // 비로그인: localStorage 사용
-      const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+      const saves=_tcSavesGet();
       saves.unshift(newEntry);
       if(saves.length>20)saves.pop();
-      localStorage.setItem("niji_tactics_saves",JSON.stringify(saves));
+      _tcSavesSet(saves);
     }
     document.getElementById("tc-modalSave").style.display="none";
     tcShowToast(isEn?`"${name}" saved! 💾`:`"${name}" 저장 완료! 💾`);
@@ -10334,7 +10272,7 @@ if ('serviceWorker' in navigator) {
 
   window.tcLoad=function(){
     const list=document.getElementById("tc-slotList");
-    const isEn=localStorage.getItem('niji_language')==='en';
+    const isEn=_nijiGetLang()==='en';
     list.innerHTML=`<div style='text-align:center;color:#8a998f;font-size: 0.8rem;padding:20px;'>${isEn?'Loading...':'불러오는 중...'}</div>`;
     document.getElementById("tc-modalLoad").style.display="flex";
 
@@ -10353,9 +10291,9 @@ if ('serviceWorker' in navigator) {
             if(fbKey&&window._firebaseDB&&window._userId){
               window._firebaseDB.ref('users/'+window._userId+'/tacticsSaves/'+fbKey).remove().then(()=>window.tcLoad());
             } else if(localIdx!==''){
-              const arr=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+              const arr=_tcSavesGet();
               arr.splice(parseInt(localIdx),1);
-              localStorage.setItem("niji_tactics_saves",JSON.stringify(arr));
+              _tcSavesSet(arr);
               window.tcLoad();
             }
             return;
@@ -10372,7 +10310,7 @@ if ('serviceWorker' in navigator) {
           const saves=[];
           snap.forEach(child=>{saves.unshift({key:child.key,...child.val()});});
           // localStorage에 기존 데이터 있으면 Firebase로 마이그레이션
-          const old=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+          const old=_tcSavesGet();
           if(old.length>0&&saves.length===0){
             const ref=window._firebaseDB.ref('users/'+window._userId+'/tacticsSaves');
             old.forEach(o=>ref.push(o));
@@ -10381,11 +10319,11 @@ if ('serviceWorker' in navigator) {
           }
           renderTcSaveList(saves);
         }).catch(()=>{
-          const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+          const saves=_tcSavesGet();
           renderTcSaveList(saves.map((s,i)=>({...s,localIdx:i})));
         });
     } else {
-      const saves=JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
+      const saves=_tcSavesGet();
       renderTcSaveList(saves.map((s,i)=>({...s,localIdx:i})));
     }
   };
@@ -10589,7 +10527,7 @@ function showExitToastMessage() {
 
   var toast = document.createElement('div');
   toast.id = 'niji-exit-toast';
-  toast.innerText = "뒤로가기 버튼을 한 번 더 누르면 종료됩니다.";
+  toast.innerText = (typeof _nijiGetLang === 'function' && _nijiGetLang() === 'en') ? "Press back again to exit." : "뒤로가기 버튼을 한 번 더 누르면 종료됩니다.";
   
   toast.style.position = 'fixed';
   toast.style.bottom = '15%';
@@ -10645,6 +10583,7 @@ function exitNijiApp() {
 // ── 언어 변경 ───────────────────────────────────────
 function setLanguage(lang) {
   localStorage.setItem('niji_language', lang);
+  _nijiSetLangCache(lang);
 
   // data-lang 속성이 달린 모든 태그 텍스트 교체
   // manual_ 키는 <b> 태그 포함 → innerHTML, 나머지는 textContent
@@ -10725,7 +10664,7 @@ function setLanguage(lang) {
   if (!savedFont || isNaN(savedFont)) savedFont = 15;
   setFontSize(savedFont);
 
-  var savedLang = localStorage.getItem('niji_language') || 'ko';
+  var savedLang = _nijiGetLang() || 'ko';
   setLanguage(savedLang);
 })();
 
@@ -10851,34 +10790,4 @@ function setLanguage(lang) {
 })();
 </script>
 
-<!-- 셀카 리모컨 점수 입력 기능 추가 스크립트 -->
-<script>
-  // 예시용 점수 변수 (현재 대시보드 구조에 맞게 연동 필요)
-  let teamAScore = 0;
-  let teamBScore = 0;
-
-  // 키보드 입력(리모컨 신호)을 감지하는 이벤트 리스너
-  window.addEventListener('keydown', function(event) {
-    
-    // 1. 볼륨 업 버튼이 눌렸을 때 (Team A 점수 증가로 가정)
-    if (event.key === 'AudioVolumeUp' || event.keyCode === 175) {
-      event.preventDefault(); // 스마트폰 기본 볼륨 조절 창이 뜨는 것을 막습니다.
-      
-      teamAScore++;
-      alert('A팀 점수 증가: ' + teamAScore); // 테스트용 알림 (실제 적용시 화면의 점수 텍스트를 바꾸도록 수정)
-      
-      // TODO: 현재 화면의 Score Input 값을 업데이트하는 함수 호출 필요
-    }
-    
-    // 2. 볼륨 다운 버튼이 눌렸을 때 (Team B 점수 증가로 가정)
-    if (event.key === 'AudioVolumeDown' || event.keyCode === 174) {
-      event.preventDefault(); // 스마트폰 기본 볼륨 조절 창이 뜨는 것을 막습니다.
-      
-      teamBScore++;
-      alert('B팀 점수 증가: ' + teamBScore); // 테스트용 알림
-      
-      // TODO: 현재 화면의 Score Input 값을 업데이트하는 함수 호출 필요
-    }
-  }, { passive: false }); // preventDefault가 잘 작동하도록 설정
-</script>
 </html>
