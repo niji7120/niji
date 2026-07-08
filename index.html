@@ -128,6 +128,33 @@ const NIJI_DICT = {
   str_alert_soon_title:    { ko: '교체까지 {n}일 남았어요',          en: '{n} days until restring' },
   str_alert_soon_sub:      { ko: '슬슬 교체를 준비해보세요.',        en: 'Time to get ready for a restring.' },
   str_alert_ok_sub:        { ko: '마지막 교체: {date} · {n}일 경과', en: 'Last replaced: {date} · {n} days ago' },
+  str_alert_games_overdue: { ko: '교체 후 {n}게임 · 게임 수 기준 교체 권장', en: '{n} games since restring · replace recommended by game count' },
+  str_alert_games_soon:    { ko: '교체 후 {n}게임 · 슬슬 게임 수도 찹니다', en: '{n} games since restring · getting close on game count too' },
+  str_racket3_ph:       { ko: '예) 던롭 CX200',                     en: 'e.g. Dunlop CX200' },
+  str_racket_add_btn:   { ko: '➕ 라켓 추가 (라켓 3)',               en: '➕ Add Racquet (Racquet 3)' },
+  str_racket_remove_btn:{ ko: '➖ 라켓 3 제거',                      en: '➖ Remove Racquet 3' },
+  str_history_title3:   { ko: '📋 교체 이력 (라켓 3)',               en: '📋 History (Racquet 3)' },
+  str_hybrid_toggle:    { ko: '🔀 하이브리드 (메인/크로스 다르게)',  en: '🔀 Hybrid (different mains/crosses)' },
+  str_main_string_lbl:  { ko: '메인 스트링',                        en: 'Main String' },
+  str_cross_string_lbl: { ko: '크로스 스트링',                      en: 'Cross String' },
+  str_cross_string_ph:  { ko: '예) Yonex BG80',                     en: 'e.g. Yonex BG80' },
+  str_cross_tension_ph: { ko: '예) 22',                             en: 'e.g. 22' },
+  str_game_limit_lbl:   { ko: '게임 임계치',                        en: 'Game Limit' },
+  str_game_limit_sub:   { ko: '이 게임 수를 넘기면 교체 권장',      en: 'Replace once this many games are played' },
+  str_reason_lbl:       { ko: '교체 사유',                          en: 'Reason' },
+  str_reason_regular:   { ko: '정기 교체',                          en: 'Scheduled' },
+  str_reason_tension:   { ko: '텐션 저하',                          en: 'Tension loss' },
+  str_reason_broken:    { ko: '끊어짐',                              en: 'Broke' },
+  str_reason_damaged:   { ko: '라켓 파손',                          en: 'Racquet damage' },
+  str_reason_other:     { ko: '기타',                                en: 'Other' },
+  str_cost_lbl:         { ko: '비용 (원, 선택)',                    en: 'Cost (optional)' },
+  str_cost_ph:          { ko: '예) 25000',                          en: 'e.g. 25000' },
+  str_total_cost:       { ko: '누적 비용',                          en: 'Total spent' },
+  str_calendar_btn:     { ko: '📅 캘린더에 다음 교체일 알림 등록',  en: '📅 Add reminder to Calendar' },
+  str_calendar_need_date:{ ko: '먼저 교체일을 저장해주세요',        en: 'Save a restring date first' },
+  str_calendar_added:   { ko: '📅 캘린더 파일을 내려받았어요! 열어서 등록하세요', en: '📅 Calendar file downloaded! Open it to add the reminder' },
+  str_calendar_title:   { ko: '스트링 교체 예정일',                 en: 'String restring due' },
+  str_racket3_remove_confirm: { ko: '라켓 3 정보와 이력이 화면에서 숨겨져요 (데이터는 남아있어요)', en: 'Racquet 3 will be hidden from view (its data stays saved)' },
 
   /* 경기기록 탭 */
   match_page_header:       { ko: '경기기록',           en: 'Records' },
@@ -538,7 +565,7 @@ const NIJI_DICT = {
   manual_s1_title: { ko: '1. 프로필', en: '1. Profile' },
   manual_s1_1: { ko: '상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요', en: 'Tap the photo area at the top to set your <b>profile picture</b>' },
   manual_s1_2: { ko: '이름·클럽·나이대·손잡이·구력·스타일 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다', en: 'Tap any field (name, club, age, handedness, experience, style) to edit — changes are <b>auto-saved</b>' },
-  manual_s1_3: { ko: '라켓은 <b>2자루까지</b> 등록할 수 있어요. RACQUET 1·2 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요', en: 'You can register <b>up to 2 racquets</b>. Tap RACQUET 1·2 to expand, then enter the name, string, tension, and restring date' },
+  manual_s1_3: { ko: '라켓은 <b>기본 2자루, "라켓 추가" 버튼으로 3자루까지</b> 등록할 수 있어요. RACQUET 1·2·3 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요', en: 'You can register <b>2 racquets by default, or up to 3 with the "Add Racquet" button</b>. Tap RACQUET 1·2·3 to expand, then enter the name, string, tension, and restring date' },
   manual_s1_4: { ko: '<b>스트링 선택</b> — 과거에 입력한 스트링 목록에서 고르거나, 아래 입력창에 직접 타이핑할 수 있어요. 드롭다운에서 선택하면 입력창에도 자동으로 채워져요', en: '<b>String selection</b> — pick from your past strings in the dropdown, or type directly. Selecting from the dropdown auto-fills the input field' },
   manual_s1_5: { ko: '<b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'Enter a <b>restring date</b> to see D+ days and games played automatically — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
   manual_s1_6: { ko: '프로필 하단에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼 <b>종목을 설정</b>하세요. 경기기록·통계 탭의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동해요', en: 'Set your <b>sport</b> at the bottom of the profile: 🎾 Tennis / 🏸 Badminton / 🏓 Pickleball. You can also tap <b>[Change Sport →]</b> in the Match or Stats tab' },
@@ -602,6 +629,10 @@ const NIJI_DICT = {
   manual_s6_4: { ko: '경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수를 따로 카운트해줘요', en: 'Choose a <b>racquet used</b> when logging a match to track game count per racquet separately' },
   manual_s6_5: { ko: '<b>스트링 선택이 안 보여요</b> — 스트링 입력 기록이 없으면 직접 입력창만 표시돼요. 기록이 쌓이면 드롭다운이 자동으로 나타납니다', en: '<b>No string dropdown?</b> — The dropdown only appears after you\'ve entered a string at least once. Just type directly until then' },
   manual_s6_6: { ko: '스트링 관리 탭 상단 <b>🛠️ 교체 인증하기</b> 버튼을 탭하면, 라켓·스트링·텐션·교체일 정보가 자동으로 문구로 만들어져서 카카오톡 등으로 바로 공유할 수 있어요', en: 'Tap <b>🛠️ Share Restring</b> at the top of the String Management tab to instantly generate and share your racquet, string, tension, and restring date via KakaoTalk or any app' },
+  manual_s6_7: { ko: '알림은 이제 <b>날짜와 게임 수</b>를 함께 봐요. 라켓 카드의 <b>게임 임계치</b>를 넘게 치면, 아직 교체일이 안 됐어도 주의/교체 알림이 떠요', en: 'Alerts now consider <b>both days and game count</b>. If you pass the <b>game limit</b> on a racquet card, you will get a caution/replace alert even before the calendar date is due' },
+  manual_s6_8: { ko: '<b>🔀 하이브리드</b> 체크박스를 켜면 메인·크로스 스트링을 따로 기록할 수 있어요', en: 'Turn on <b>🔀 Hybrid</b> to record different main and cross strings' },
+  manual_s6_9: { ko: '<b>📅 캘린더에 알림 등록</b> 버튼을 누르면 다음 교체 예정일이 폰 캘린더 앱에 알림으로 저장돼요 — 앱을 안 켜도 알림이 와요', en: 'Tap <b>📅 Add reminder to Calendar</b> to save the next restring date to your phone\'s calendar app — notifications work even without opening this app' },
+  manual_s6_10: { ko: '라켓 카드 아래 <b>➕ 라켓 추가</b> 버튼으로 라켓 3까지 등록할 수 있고, 저장할 때 <b>교체 사유·비용</b>도 함께 남길 수 있어요', en: 'Use <b>➕ Add Racquet</b> below the cards to register a 3rd racquet, and record the <b>reason and cost</b> each time you save a restring' },
 
   // 7. 전술판
   manual_s7_title: { ko: '7. 전술판', en: '7. Tactics Board' },
@@ -2451,91 +2482,13 @@ function _t(key) {
         <span data-lang="str_voice_preview_btn">🔊 알림음 미리듣기</span>
       </button>
 
-      <!-- ===== 라켓 1 카드 ===== -->
-      <div class="card" style="margin-bottom:14px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-          <span style="background:var(--accent);color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET 1</span>
-          <input class="form-input" id="str-r1-name" placeholder="예) 윌슨 블레이드 98" data-lang-placeholder="str_racket1_ph" style="flex:1;font-size:16px;padding:6px 10px;" oninput="saveStrR1Field('racket',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-string');if(n){n.focus();n.select();}}">
-        </div>
-        <!-- 알림 배너 -->
-        <div id="stringingAlert1" style="margin-bottom:10px;"></div>
-        <!-- 스트링 정보 입력 -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-          <div>
-            <label class="form-label" data-lang="str_string_name_lbl" style="font-size:0.72rem;">스트링명</label>
-            <input class="form-input" id="str1-string" placeholder="예) VS Touch 130" data-lang-placeholder="str_string1_ph" style="font-size:16px;padding:7px 10px;" oninput="saveStrR1Field('string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-tension');if(n){n.focus();n.select();}}">
-          </div>
-          <div>
-            <label class="form-label" data-lang="str_tension_lbl" style="font-size:0.72rem;">텐션 (lb)</label>
-            <input class="form-input" id="str1-tension" placeholder="예) 52" data-lang-placeholder="str_tension1_ph" style="font-size:16px;padding:7px 10px;" oninput="saveStrR1Field('tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str1-date');if(n)n.focus();}">
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-          <div style="flex:1;">
-            <label class="form-label" data-lang="str_last_replace_lbl" style="font-size:0.72rem;">마지막 교체일</label>
-            <input type="date" class="form-input" id="str1-date" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(1)">
-          </div>
-          <div style="min-width:100px;">
-            <label class="form-label" data-lang="str_interval_lbl" style="font-size:0.72rem;">교체 주기</label>
-            <select class="form-select" id="str1-interval" style="font-size:0.85rem;padding:7px 10px;">
-              <option value="1" data-lang="str_interval_1m">1개월</option>
-              <option value="2" data-lang="str_interval_2m">2개월</option>
-              <option value="3" data-lang="str_interval_3m" selected>3개월</option>
-              <option value="6" data-lang="str_interval_6m">6개월</option>
-              <option value="12" data-lang="str_interval_12m">12개월</option>
-            </select>
-          </div>
-        </div>
-        <button class="btn btn-primary" style="width:100%;font-size:0.88rem;padding:10px;margin-bottom:4px;" onclick="saveStringingInfo(1)"><span data-lang="str_save_btn">💾 저장 (이력에 자동 기록)</span></button>
-        <!-- 히스토리 -->
-        <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
-          <div class="card-title" data-lang="str_history_title1" style="font-size:0.82rem;margin-bottom:8px;">📋 교체 이력 (라켓 1)</div>
-          <div id="stringingHistoryList1"></div>
-        </div>
-      </div>
+      <!-- ===== 라켓 카드 (1/2/3, JS로 생성됨) ===== -->
+      <div id="racketCardsWrap"></div>
 
-      <!-- ===== 라켓 2 카드 ===== -->
-      <div class="card" style="margin-bottom:14px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-          <span style="background:var(--accent2);color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET 2</span>
-          <input class="form-input" id="str-r2-name" placeholder="예) 요넥스 VCORE 98" data-lang-placeholder="str_racket2_ph" style="flex:1;font-size:16px;padding:6px 10px;" oninput="saveStrR2Field('racket2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-string');if(n){n.focus();n.select();}}">
-        </div>
-        <!-- 알림 배너 -->
-        <div id="stringingAlert2" style="margin-bottom:10px;"></div>
-        <!-- 스트링 정보 입력 -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-          <div>
-            <label class="form-label" data-lang="str_string_name_lbl" style="font-size:0.72rem;">스트링명</label>
-            <input class="form-input" id="str2-string" placeholder="예) Yonex BG65" data-lang-placeholder="str_string2_ph" style="font-size:16px;padding:7px 10px;" oninput="saveStrR2Field('string2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-tension');if(n){n.focus();n.select();}}">
-          </div>
-          <div>
-            <label class="form-label" data-lang="str_tension_lbl" style="font-size:0.72rem;">텐션 (lb)</label>
-            <input class="form-input" id="str2-tension" placeholder="예) 24" data-lang-placeholder="str_tension2_ph" style="font-size:16px;padding:7px 10px;" oninput="saveStrR2Field('tension2',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str2-date');if(n)n.focus();}">
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-          <div style="flex:1;">
-            <label class="form-label" data-lang="str_last_replace_lbl" style="font-size:0.72rem;">마지막 교체일</label>
-            <input type="date" class="form-input" id="str2-date" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(2)">
-          </div>
-          <div style="min-width:100px;">
-            <label class="form-label" data-lang="str_interval_lbl" style="font-size:0.72rem;">교체 주기</label>
-            <select class="form-select" id="str2-interval" style="font-size:0.85rem;padding:7px 10px;">
-              <option value="1" data-lang="str_interval_1m">1개월</option>
-              <option value="2" data-lang="str_interval_2m">2개월</option>
-              <option value="3" data-lang="str_interval_3m" selected>3개월</option>
-              <option value="6" data-lang="str_interval_6m">6개월</option>
-              <option value="12" data-lang="str_interval_12m">12개월</option>
-            </select>
-          </div>
-        </div>
-        <button class="btn btn-primary" style="width:100%;font-size:0.88rem;padding:10px;margin-bottom:4px;" onclick="saveStringingInfo(2)"><span data-lang="str_save_btn">💾 저장 (이력에 자동 기록)</span></button>
-        <!-- 히스토리 -->
-        <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
-          <div class="card-title" data-lang="str_history_title2" style="font-size:0.82rem;margin-bottom:8px;">📋 교체 이력 (라켓 2)</div>
-          <div id="stringingHistoryList2"></div>
-        </div>
-      </div>
+      <!-- ===== 라켓 3 추가/제거 버튼 ===== -->
+      <button class="string-cert-btn" id="racket3ToggleBtn" style="background:var(--surface2);color:var(--text);margin-bottom:20px;" onclick="toggleRacket3()">
+        <span data-lang="str_racket_add_btn">➕ 라켓 추가 (라켓 3)</span>
+      </button>
     </div>
 
     <!-- ===== SHARE PAGE ===== -->
@@ -2866,7 +2819,7 @@ function _t(key) {
         <div class="manual-items">
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_1">상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_2">이름·클럽·나이대·손잡이·구력·스타일 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_3">라켓은 <b>2자루까지</b> 등록할 수 있어요. RACQUET 1·2 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_3">라켓은 <b>기본 2자루, "라켓 추가" 버튼으로 3자루까지</b> 등록할 수 있어요. RACQUET 1·2·3 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_4"><b>스트링 선택</b> — 과거에 입력한 스트링 목록에서 고르거나, 아래 입력창에 직접 타이핑할 수 있어요. 드롭다운에서 선택하면 입력창에도 자동으로 채워져요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_5"><b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_6">프로필 하단에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼 <b>종목을 설정</b>하세요. 경기기록·통계 탭의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동해요</span></div>
@@ -2970,6 +2923,10 @@ function _t(key) {
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_4">경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수를 따로 카운트해줘요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_5"><b>스트링 선택이 안 보여요</b> — 스트링 입력 기록이 없으면 직접 입력창만 표시돼요. 기록이 쌓이면 드롭다운이 자동으로 나타납니다</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_6">스트링 관리 탭 상단 <b>🛠️ 교체 인증하기</b> 버튼을 탭하면, 라켓·스트링·텐션·교체일 정보가 자동으로 문구로 만들어져서 카카오톡 등으로 바로 공유할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_7">알림은 이제 <b>날짜와 게임 수</b>를 함께 봐요. 라켓 카드의 <b>게임 임계치</b>를 넘게 치면, 아직 교체일이 안 됐어도 주의/교체 알림이 떠요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_8">🔀 하이브리드 체크박스를 켜면 메인·크로스 스트링을 따로 기록할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_9">📅 캘린더에 알림 등록 버튼을 누르면 다음 교체 예정일이 폰 캘린더 앱에 알림으로 저장돼요 — 앱을 안 켜도 알림이 와요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_10">라켓 카드 아래 ➕ 라켓 추가 버튼으로 라켓 3까지 등록할 수 있고, 저장할 때 교체 사유·비용도 함께 남길 수 있어요</span></div>
         </div>
       </div>
 
@@ -3124,7 +3081,12 @@ let state = {
   lastStringDate: '',
   stringInterval: 3,
   stringInterval2: 3,
-  stringingHistory: [], // { id, name, date, racket: 1|2 }
+  stringInterval3: 3,
+  stringGameLimit1: 30,
+  stringGameLimit2: 30,
+  stringGameLimit3: 30,
+  showRacket3: false,
+  stringingHistory: [], // { id, name, date, racket: 1|2|3, reason, cost }
   tnTournaments: [],  // 토너먼트 데이터
 };
 
@@ -3768,6 +3730,11 @@ function _applyFirebaseData(parsed) {
     state.lastStringDate = parsed.lastStringDate || '';
     state.stringInterval = parsed.stringInterval || 3;
     state.stringInterval2 = parsed.stringInterval2 || 3;
+    state.stringInterval3 = parsed.stringInterval3 || 3;
+    state.stringGameLimit1 = parsed.stringGameLimit1 || 30;
+    state.stringGameLimit2 = parsed.stringGameLimit2 || 30;
+    state.stringGameLimit3 = parsed.stringGameLimit3 || 30;
+    state.showRacket3 = !!parsed.showRacket3 || !!(parsed.profile && parsed.profile.racket3);
 
     // 배열 데이터 (Firebase 객체→배열 변환 포함)
     state.matches          = _toArray(parsed.matches);
@@ -4608,6 +4575,36 @@ function renderProfile() {
   renderStringBanner();
 }
 
+// 교체일 이후 게임(매치) 수 계산 (라켓별) — renderStringBanner / renderStringing 공용
+function countGamesAfterRestring(dateStr, dateTimeStr, racketKey) {
+  if (!dateStr) return 0;
+  return (state.matches || []).filter(m => {
+    if (!m.date) return false;
+    // 날짜가 교체일보다 이전이면 제외
+    if (m.date < dateStr) return false;
+    // 날짜가 교체일과 같은 날이면 → 시각 비교
+    if (m.date === dateStr) {
+      // 교체 시각이 있고, 경기 저장 시각이 있으면 시각 비교
+      if (dateTimeStr && m.savedAt) {
+        // 경기 저장 시각이 교체 시각보다 이전이면 제외 (교체 전 경기)
+        if (m.savedAt <= dateTimeStr) return false;
+      } else if (dateTimeStr && !m.savedAt) {
+        // 경기에 시각 정보 없으면(구버전 데이터) → 같은 날 경기는 제외 (안전하게)
+        return false;
+      }
+    }
+    // 라켓 필터: 라켓을 선택하지 않은 경기는 카운트에서 제외
+    if (!m.racketUsed) return false;
+    return m.racketUsed === racketKey;
+  }).length;
+}
+
+// 라켓별 "게임 임계치" (이 게임 수를 넘기면 게임 수 기준 교체 권장). 기본 30게임.
+function getRacketGameLimit(num) {
+  const v = state['stringGameLimit' + num];
+  return (v && v > 0) ? v : 30;
+}
+
 function renderStringBanner() {
   const banner = document.getElementById('stringStatusBanner');
   if (!banner) return;
@@ -4643,8 +4640,10 @@ function renderStringBanner() {
 
   const date1 = p.stringDate  || '';
   const date2 = p.stringDate2 || '';
+  const date3 = p.stringDate3 || '';
   const diff1 = calcDiff(date1);
   const diff2 = calcDiff(date2);
+  const diff3 = calcDiff(date3);
 
   const racket1 = p.racket  || '';
   const string1 = p.string  || '';
@@ -4652,39 +4651,24 @@ function renderStringBanner() {
   const racket2 = p.racket2  || '';
   const string2 = p.string2  || '';
   const tension2 = p.tension2 || '';
+  const racket3 = p.racket3  || '';
+  const string3 = p.string3  || '';
+  const tension3 = p.tension3 || '';
 
-  // 교체일 이후 게임(매치) 수 계산 (라켓별)
-  function countGamesAfter(dateStr, dateTimeStr, racketKey) {
-    if (!dateStr) return 0;
-    return (state.matches || []).filter(m => {
-      if (!m.date) return false;
-      // 날짜가 교체일보다 이전이면 제외
-      if (m.date < dateStr) return false;
-      // 날짜가 교체일과 같은 날이면 → 시각 비교
-      if (m.date === dateStr) {
-        // 교체 시각이 있고, 경기 저장 시각이 있으면 시각 비교
-        if (dateTimeStr && m.savedAt) {
-          // 경기 저장 시각이 교체 시각보다 이전이면 제외 (교체 전 경기)
-          if (m.savedAt <= dateTimeStr) return false;
-        } else if (dateTimeStr && !m.savedAt) {
-          // 경기에 시각 정보 없으면(구버전 데이터) → 같은 날 경기는 제외 (안전하게)
-          return false;
-        }
-      }
-      // 라켓 필터: 라켓을 선택하지 않은 경기는 카운트에서 제외
-      if (!m.racketUsed) return false;
-      return m.racketUsed === racketKey;
-    }).length;
-  }
-  const games1 = date1 ? countGamesAfter(date1, p.stringDateTime  || '', 'racket1') : 0;
-  const games2 = date2 ? countGamesAfter(date2, p.stringDate2Time || '', 'racket2') : 0;
+  const games1 = date1 ? countGamesAfterRestring(date1, p.stringDateTime  || '', 'racket1') : 0;
+  const games2 = date2 ? countGamesAfterRestring(date2, p.stringDate2Time || '', 'racket2') : 0;
+  const games3 = date3 ? countGamesAfterRestring(date3, p.stringDate3Time || '', 'racket3') : 0;
 
   // 라켓 한 줄 생성: 게이지 링 + 라켓/스트링 정보 + 상태뱃지
   function racketRow(num, racket, string, tension, diff, games) {
     const hasData = racket || string || tension || diff !== null;
     if (!hasData) return '';
     const name = racket || `${_t('pf_racket_name')} ${num}`;
-    const cls  = diff !== null ? colorClass(diff) : 'none';
+    // 날짜 기준 등급과 게임수 기준 등급 중 더 심각한 쪽을 표시 (게임 수 데이터도 반영)
+    const limit = getRacketGameLimit(num);
+    let cls  = diff !== null ? colorClass(diff) : 'none';
+    if (diff !== null && games >= limit && cls === 'green') cls = 'yellow';
+    if (diff !== null && games >= limit * 1.3) cls = 'red';
     const dColor = diff !== null ? dayColor(cls) : 'var(--border)';
     const pct = freshnessPct(diff);
 
@@ -4723,14 +4707,15 @@ function renderStringBanner() {
 
   const row1 = racketRow(1, racket1, string1, tension1, diff1, games1);
   const row2 = racketRow(2, racket2, string2, tension2, diff2, games2);
-  const hasAny = row1 || row2;
+  const row3 = racketRow(3, racket3, string3, tension3, diff3, games3);
+  const hasAny = row1 || row2 || row3;
 
   if (!hasAny) {
     banner.innerHTML = `<div style="font-size: 0.8rem;color:var(--text-muted);padding:4px 2px;">${_t('pf_no_racket')}</div>`;
     return;
   }
 
-  banner.innerHTML = `${row1}${row2}`;
+  banner.innerHTML = `${row1}${row2}${row3}`;
 
   // lastStringDate 동기화 (라켓1 교체일 기준 유지)
   if (date1) state.lastStringDate = date1;
@@ -4949,7 +4934,7 @@ function saveMatch() {
   // 라켓이 등록된 경우에만 선택 필수
   const _racketVal = document.getElementById('matchRacket').value;
   const _p = state.profile || {};
-  const _hasRacket = (_p.racket || '').trim() !== '' || (_p.racket2 || '').trim() !== '';
+  const _hasRacket = (_p.racket || '').trim() !== '' || (_p.racket2 || '').trim() !== '' || (_p.racket3 || '').trim() !== '';
   if (_hasRacket && !_racketVal) { showToast(_t('match_toast_need_racket')); return; }
 
   const matchData = {
@@ -5073,8 +5058,9 @@ function _matchCardHTML(m) {
     </div>` : ''}
     ${m.racketUsed ? (function(){
       const p = state.profile || {};
-      const rName = m.racketUsed === 'racket1' ? (p.racket || 'R1') : (p.racket2 || 'R2');
-      const rNum  = m.racketUsed === 'racket1' ? 1 : 2;
+      const rMap = { racket1: [1, p.racket], racket2: [2, p.racket2], racket3: [3, p.racket3] };
+      const rInfo = rMap[m.racketUsed] || [1, p.racket];
+      const rNum = rInfo[0], rName = rInfo[1] || ('R' + rInfo[0]);
       return `<div style="margin-top:6px;font-size: 0.6667rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:6px;">🎾 R${rNum} ${escHtml(rName)}</div>`;
     })() : ''}
   </div>`;
@@ -5264,14 +5250,17 @@ function updateMatchRacketOptions() {
   const p = state.profile || {};
   const r1 = p.racket  || '';
   const r2 = p.racket2 || '';
+  const r3 = p.racket3 || '';
   const hasR1 = r1.trim() !== '';
   const hasR2 = r2.trim() !== '';
-  const hasAny = hasR1 || hasR2;
+  const hasR3 = r3.trim() !== '';
+  const hasAny = hasR1 || hasR2 || hasR3;
 
   // 라켓 등록된 경우: 필수 선택 / 미등록: 선택 안 함 허용
   let options = hasAny ? `<option value="">${_t('match_racket_sel_ph')}</option>` : `<option value="">${_t('match_racket_none_opt')}</option>`;
   if (hasR1) options += `<option value="racket1">🎾 R1 · ${escHtml(r1)}</option>`;
   if (hasR2) options += `<option value="racket2">🎾 R2 · ${escHtml(r2)}</option>`;
+  if (hasR3) options += `<option value="racket3">🎾 R3 · ${escHtml(r3)}</option>`;
 
   sel.innerHTML = options;
 
@@ -6131,7 +6120,8 @@ function checkStringReplaceVoiceAlert() {
 
     const due1 = isDue(p.stringDate, state.stringInterval);
     const due2 = isDue(p.stringDate2, state.stringInterval2);
-    if (!due1 && !due2) return; // 교체 권장 상태 아니면 알림 없음
+    const due3 = isDue(p.stringDate3, state.stringInterval3);
+    if (!due1 && !due2 && !due3) return; // 교체 권장 상태 아니면 알림 없음
 
     const todayStr = getTodayStr();
     const lastPlayedKey = 'niji_string_voice_alert_date';
@@ -6139,10 +6129,9 @@ function checkStringReplaceVoiceAlert() {
 
     localStorage.setItem(lastPlayedKey, todayStr);
 
-    let msg = '스트링 교체하세요';
-    if (due1 && due2) msg = '라켓 1, 라켓 2 스트링 교체하세요';
-    else if (due1) msg = '라켓 1 스트링 교체하세요';
-    else if (due2) msg = '라켓 2 스트링 교체하세요';
+    const dueNums = [due1 && 1, due2 && 2, due3 && 3].filter(Boolean);
+    const _isEn = (_nijiGetLang() || 'ko') === 'en';
+    const msg = (_isEn ? 'Racquet ' : '라켓 ') + dueNums.join(', ') + (_isEn ? ' string needs replacing' : ' 스트링 교체하세요');
 
     playStringReplaceVoice(msg);
   } catch (e) {
@@ -6187,104 +6176,300 @@ function playStringReplaceVoice(msg) {
   } catch (e) { /* 음성 실패는 무시 */ }
 }
 
+// ===== 라켓 카드 HTML 생성 (라켓 1/2/3 공용 템플릿) =====
+function buildRacketCard(num) {
+  const accent = num === 1 ? 'var(--accent)' : num === 2 ? 'var(--accent2)' : '#c9a961';
+  const ph = 'str_racket' + num + '_ph';
+  const removeBtn = num === 3
+    ? `<button onclick="toggleRacket3()" style="background:none;border:none;color:var(--text-muted);font-size:1.05rem;cursor:pointer;padding:2px 6px;" title="${_t('str_racket_remove_btn')}">✕</button>`
+    : '';
+  return `
+  <div class="card" style="margin-bottom:14px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span style="background:${accent};color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET ${num}</span>
+      <input class="form-input" id="str-r${num}-name" data-lang-placeholder="${ph}" placeholder="${escHtml(_t(ph))}" style="flex:1;font-size:16px;padding:6px 10px;" oninput="saveStrField(${num},'racket',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-string');if(n){n.focus();n.select();}}">
+      ${removeBtn}
+    </div>
+    <div id="stringingAlert${num}" style="margin-bottom:10px;"></div>
+
+    <label style="display:flex;align-items:center;gap:6px;font-size:0.78rem;margin-bottom:10px;cursor:pointer;color:var(--text-muted);">
+      <input type="checkbox" id="str${num}-hybrid" onchange="onHybridToggle(${num})" style="width:16px;height:16px;">
+      <span data-lang="str_hybrid_toggle">🔀 하이브리드 (메인/크로스 다르게)</span>
+    </label>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+      <div>
+        <label class="form-label" id="str${num}-string-lbl" style="font-size:0.72rem;">${_t('str_string_name_lbl')}</label>
+        <input class="form-input" id="str${num}-string" data-lang-placeholder="str_string${num === 1 ? '1' : num === 2 ? '2' : '1'}_ph" placeholder="${escHtml(_t('str_string' + (num === 3 ? '1' : num) + '_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-tension');if(n){n.focus();n.select();}}">
+      </div>
+      <div>
+        <label class="form-label" style="font-size:0.72rem;">${_t('str_tension_lbl')}</label>
+        <input class="form-input" id="str${num}-tension" placeholder="${escHtml(_t('str_tension' + (num === 3 ? '1' : num) + '_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-date');if(n)n.focus();}">
+      </div>
+    </div>
+
+    <div id="str${num}-cross-wrap" style="display:none;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+      <div>
+        <label class="form-label" style="font-size:0.72rem;">${_t('str_cross_string_lbl')}</label>
+        <input class="form-input" id="str${num}-cross-string" placeholder="${escHtml(_t('str_cross_string_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'crossString',this.value)">
+      </div>
+      <div>
+        <label class="form-label" style="font-size:0.72rem;">${_t('str_tension_lbl')}</label>
+        <input class="form-input" id="str${num}-cross-tension" placeholder="${escHtml(_t('str_cross_tension_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'crossTension',this.value)">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+      <div style="flex:1;">
+        <label class="form-label" style="font-size:0.72rem;">${_t('str_last_replace_lbl')}</label>
+        <input type="date" class="form-input" id="str${num}-date" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(${num})">
+      </div>
+      <div style="min-width:100px;">
+        <label class="form-label" style="font-size:0.72rem;">${_t('str_interval_lbl')}</label>
+        <select class="form-select" id="str${num}-interval" style="font-size:0.85rem;padding:7px 10px;">
+          <option value="1">${_t('str_interval_1m')}</option>
+          <option value="2">${_t('str_interval_2m')}</option>
+          <option value="3">${_t('str_interval_3m')}</option>
+          <option value="6">${_t('str_interval_6m')}</option>
+          <option value="12">${_t('str_interval_12m')}</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <div style="flex:1;">
+        <label class="form-label" style="font-size:0.72rem;">${_t('str_game_limit_lbl')}</label>
+        <input type="number" min="1" class="form-input" id="str${num}-gamelimit" style="font-size:16px;padding:7px 10px;" oninput="saveGameLimit(${num},this.value)">
+        <div style="font-size:0.62rem;color:var(--text-muted);margin-top:2px;">${_t('str_game_limit_sub')}</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+      <div>
+        <label class="form-label" style="font-size:0.72rem;">${_t('str_reason_lbl')}</label>
+        <select class="form-select" id="str${num}-reason" style="font-size:0.85rem;padding:7px 10px;">
+          <option value="regular">${_t('str_reason_regular')}</option>
+          <option value="tension">${_t('str_reason_tension')}</option>
+          <option value="broken">${_t('str_reason_broken')}</option>
+          <option value="damaged">${_t('str_reason_damaged')}</option>
+          <option value="other">${_t('str_reason_other')}</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label" style="font-size:0.72rem;">${_t('str_cost_lbl')}</label>
+        <input type="number" min="0" class="form-input" id="str${num}-cost" placeholder="${escHtml(_t('str_cost_ph'))}" style="font-size:16px;padding:7px 10px;">
+      </div>
+    </div>
+
+    <button class="btn btn-primary" style="width:100%;font-size:0.88rem;padding:10px;margin-bottom:8px;" onclick="saveStringingInfo(${num})"><span>${_t('str_save_btn')}</span></button>
+    <button class="btn" style="width:100%;font-size:0.82rem;padding:9px;margin-bottom:4px;background:var(--surface2);color:var(--text);" onclick="addStringCalendarReminder(${num})"><span>${_t('str_calendar_btn')}</span></button>
+
+    <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:8px;">
+        <div class="card-title" data-lang="str_history_title${num}" style="font-size:0.82rem;">${_t('str_history_title' + num)}</div>
+        <div id="stringingTotalCost${num}" style="font-size:0.68rem;color:var(--text-muted);white-space:nowrap;"></div>
+      </div>
+      <div id="stringingHistoryList${num}"></div>
+    </div>
+  </div>`;
+}
+
+// ===== 라켓 카드 컨테이너 렌더 (라켓3는 showRacket3일 때만) =====
+// 참고: 매번 innerHTML을 새로 만들면 입력 중이던 필드의 포커스/커서가 날아가므로,
+// 라켓3 표시 여부나 언어가 실제로 바뀌었을 때만 DOM을 다시 만든다.
+let _stringCardsMeta = { built: false, showR3: null, lang: null };
+function renderRacketCards(force) {
+  const wrap = document.getElementById('racketCardsWrap');
+  if (!wrap) return;
+  const lang = _nijiGetLang() || 'ko';
+  const needed = !!state.showRacket3;
+  if (!force && _stringCardsMeta.built && _stringCardsMeta.showR3 === needed && _stringCardsMeta.lang === lang) {
+    return;
+  }
+  let html = buildRacketCard(1) + buildRacketCard(2);
+  if (needed) html += buildRacketCard(3);
+  wrap.innerHTML = html;
+  _stringCardsMeta = { built: true, showR3: needed, lang: lang };
+
+  const toggleBtn = document.getElementById('racket3ToggleBtn');
+  if (toggleBtn) {
+    toggleBtn.querySelector('span').textContent = needed
+      ? _t('str_racket_remove_btn') : _t('str_racket_add_btn');
+  }
+}
+
+function toggleRacket3() {
+  if (state.showRacket3) {
+    showConfirm(_t('str_racket_remove_btn'), _t('str_racket3_remove_confirm'), '➖', () => {
+      state.showRacket3 = false;
+      save();
+      renderRacketCards(true);
+      renderStringing();
+    });
+  } else {
+    state.showRacket3 = true;
+    save();
+    renderRacketCards(true);
+    renderStringing();
+  }
+}
+
+// 하이브리드 체크박스 토글: 크로스 입력칸 표시/숨김 + 저장
+function onHybridToggle(num) {
+  const cb = document.getElementById('str' + num + '-hybrid');
+  const wrap = document.getElementById('str' + num + '-cross-wrap');
+  if (wrap) wrap.style.display = cb.checked ? 'grid' : 'none';
+  state.profile['hybrid' + num] = cb.checked;
+  save();
+}
+
+function saveGameLimit(num, val) {
+  const n = parseInt(val);
+  state['stringGameLimit' + num] = (n && n > 0) ? n : 30;
+  save();
+  renderStringing();
+}
+
+// ===== 라켓 N 필드 저장 (스트링명/텐션/크로스 입력 중 실시간 반영용, 공용) =====
+function saveStrField(num, key, val) {
+  const p = state.profile;
+  if (key === 'racket')      p[num === 1 ? 'racket'  : 'racket' + num]  = val;
+  else if (key === 'string') p[num === 1 ? 'string'  : 'string' + num]  = val;
+  else if (key === 'tension')p[num === 1 ? 'tension' : 'tension' + num] = val;
+  else if (key === 'crossString')  p['crossString' + num]  = val;
+  else if (key === 'crossTension') p['crossTension' + num] = val;
+  save();
+  renderStringBanner();
+}
+// 하위 호환용 별칭 (예전 코드/북마크에서 호출될 수 있음)
+function saveStrR1Field(key, val) { saveStrField(1, key === 'racket' ? 'racket' : key, val); }
+function saveStrR2Field(key, val) { saveStrField(2, key === 'racket2' ? 'racket' : (key === 'string2' ? 'string' : key === 'tension2' ? 'tension' : key), val); }
+
 function renderStringing() {
+  renderRacketCards();
   const p = state.profile || {};
-
-  // ---- 라켓명 표시 (input value) ----
-  const r1name = document.getElementById('str-r1-name');
-  const r2name = document.getElementById('str-r2-name');
-  if (r1name && document.activeElement !== r1name) r1name.value = p.racket  || '';
-  if (r2name && document.activeElement !== r2name) r2name.value = p.racket2 || '';
-
-  // ---- 폼 값 채우기 ----
-  const s1str  = document.getElementById('str1-string');
-  const s1ten  = document.getElementById('str1-tension');
-  const s1date = document.getElementById('str1-date');
-  const s1int  = document.getElementById('str1-interval');
-  const s2str  = document.getElementById('str2-string');
-  const s2ten  = document.getElementById('str2-tension');
-  const s2date = document.getElementById('str2-date');
-  const s2int  = document.getElementById('str2-interval');
-  if (s1str  && document.activeElement !== s1str)  s1str.value  = p.string    || '';
-  if (s1ten  && document.activeElement !== s1ten)  s1ten.value  = p.tension   || '';
-  if (s1date && document.activeElement !== s1date) s1date.value = p.stringDate || '';
-  if (s1int  && document.activeElement !== s1int)  s1int.value  = state.stringInterval  || 3;
-  if (s2str  && document.activeElement !== s2str)  s2str.value  = p.string2   || '';
-  if (s2ten  && document.activeElement !== s2ten)  s2ten.value  = p.tension2  || '';
-  if (s2date && document.activeElement !== s2date) s2date.value = p.stringDate2 || '';
-  if (s2int  && document.activeElement !== s2int)  s2int.value  = state.stringInterval2 || 3;
-
-  // 교체일이 비어있으면 오늘 날짜를 기본값으로 채워줌 (저장 시 바로 쓸 수 있게)
   const today = getTodayStr();
-  if (s1date && document.activeElement !== s1date && !s1date.value) s1date.value = today;
-  if (s2date && document.activeElement !== s2date && !s2date.value) s2date.value = today;
 
-  // ---- 알림 배너 렌더링 (공통 함수) ----
-  function renderAlert(elId, dateStr, intervalMonths) {
-    const el = document.getElementById(elId);
-    if (!el) return;
-    if (!dateStr) {
-      el.innerHTML = `<div class="stringing-alert" style="margin-bottom:4px;">
-        <div class="stringing-alert-icon">ℹ️</div>
-        <div class="stringing-alert-text">
-          <div class="stringing-alert-title">${_t('str_alert_no_date_title')}</div>
-          <div class="stringing-alert-sub">${_t('str_alert_no_date_sub')}</div>
-        </div></div>`;
-      return;
-    }
-    const [ly,lm,ld] = dateStr.split('-').map(Number);
-    const last = new Date(ly, lm-1, ld);
-    const now  = new Date();
-    const todayD = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const diffDays = Math.floor((todayD - last) / 86400000);
-    const intervalDays = (intervalMonths || 3) * 30;
-    const remaining = intervalDays - diffDays;
-    let cls='ok', icon='✅', title='', sub='';
-    if (remaining <= 0) {
-      cls='danger'; icon='🔴';
-      title = _t('str_alert_overdue_title').replace('{n}', Math.abs(remaining));
-      sub = _t('str_alert_overdue_sub');
-    } else if (remaining <= 14) {
-      cls=''; icon='⚠️';
-      title = _t('str_alert_soon_title').replace('{n}', remaining);
-      sub = _t('str_alert_soon_sub');
-    } else {
-      title = _t('str_alert_soon_title').replace('{n}', remaining);
-      sub = _t('str_alert_ok_sub').replace('{date}', dateStr).replace('{n}', diffDays);
-    }
-    el.innerHTML = `<div class="stringing-alert ${cls}" style="margin-bottom:4px;">
-      <div class="stringing-alert-icon">${icon}</div>
-      <div class="stringing-alert-text">
-        <div class="stringing-alert-title">${title}</div>
-        <div class="stringing-alert-sub">${sub}</div>
-      </div></div>`;
-  }
-  renderAlert('stringingAlert1', p.stringDate  || '', state.stringInterval  || 3);
-  renderAlert('stringingAlert2', p.stringDate2 || '', state.stringInterval2 || 3);
+  [1, 2, 3].forEach(num => {
+    if (num === 3 && !state.showRacket3) return;
+    const suf = num === 1 ? '' : num;
 
-  // ---- 히스토리 렌더링 (라켓 1 / 2 분리) ----
-  function renderHistList(elId, racketNum) {
-    const listEl = document.getElementById(elId);
-    if (!listEl) return;
-    const hist = [...(state.stringingHistory || [])]
-      .filter(h => h && h.date && (h.racket == racketNum || (!h.racket && racketNum === 1)))
-      .sort((a,b) => b.date.localeCompare(a.date));
-    if (!hist.length) {
-      listEl.innerHTML = `<div style="color:var(--text-muted);font-size:0.8rem;padding:8px 0 4px;">${_t('str_no_history')}</div>`;
-    } else {
-      listEl.innerHTML = hist.map(h => `
-        <div class="stringing-history-row">
-          <div class="stringing-dot"></div>
-          <div class="stringing-history-info">
-            <div class="stringing-history-name">${escHtml(h.name)}</div>
-            <div class="stringing-history-meta">${h.date}</div>
-          </div>
-          <button class="stringing-history-del" onclick="deleteStringingHistory(${h.id})">🗑️</button>
-        </div>`).join('');
+    const nameEl = document.getElementById('str-r' + num + '-name');
+    if (nameEl && document.activeElement !== nameEl) nameEl.value = p['racket' + suf] || '';
+
+    const strEl  = document.getElementById('str' + num + '-string');
+    const tenEl  = document.getElementById('str' + num + '-tension');
+    const dateEl = document.getElementById('str' + num + '-date');
+    const intEl  = document.getElementById('str' + num + '-interval');
+    const hybEl  = document.getElementById('str' + num + '-hybrid');
+    const crossStrEl = document.getElementById('str' + num + '-cross-string');
+    const crossTenEl = document.getElementById('str' + num + '-cross-tension');
+    const crossWrap  = document.getElementById('str' + num + '-cross-wrap');
+    const limitEl = document.getElementById('str' + num + '-gamelimit');
+
+    if (strEl  && document.activeElement !== strEl)  strEl.value  = p['string' + suf]  || '';
+    if (tenEl  && document.activeElement !== tenEl)  tenEl.value  = p['tension' + suf] || '';
+    if (dateEl && document.activeElement !== dateEl) dateEl.value = p['stringDate' + suf] || '';
+    if (intEl  && document.activeElement !== intEl)  intEl.value  = state['stringInterval' + suf] || 3;
+    if (limitEl && document.activeElement !== limitEl) limitEl.value = getRacketGameLimit(num);
+    if (dateEl && document.activeElement !== dateEl && !dateEl.value) dateEl.value = today;
+
+    const isHybrid = !!p['hybrid' + num];
+    if (hybEl) hybEl.checked = isHybrid;
+    if (crossWrap) crossWrap.style.display = isHybrid ? 'grid' : 'none';
+    if (crossStrEl && document.activeElement !== crossStrEl) crossStrEl.value = p['crossString' + num] || '';
+    if (crossTenEl && document.activeElement !== crossTenEl) crossTenEl.value = p['crossTension' + num] || '';
+
+    // ---- 알림 배너: 날짜 기준 + 게임 수 기준을 함께 반영 ----
+    const alertEl = document.getElementById('stringingAlert' + num);
+    if (alertEl) {
+      const dateStr = p['stringDate' + suf] || '';
+      const intervalMonths = state['stringInterval' + suf] || 3;
+      if (!dateStr) {
+        alertEl.innerHTML = `<div class="stringing-alert" style="margin-bottom:4px;">
+          <div class="stringing-alert-icon">ℹ️</div>
+          <div class="stringing-alert-text">
+            <div class="stringing-alert-title">${_t('str_alert_no_date_title')}</div>
+            <div class="stringing-alert-sub">${_t('str_alert_no_date_sub')}</div>
+          </div></div>`;
+      } else {
+        const [ly, lm, ld] = dateStr.split('-').map(Number);
+        const last = new Date(ly, lm - 1, ld);
+        const now = new Date();
+        const todayD = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const diffDays = Math.floor((todayD - last) / 86400000);
+        const intervalDays = intervalMonths * 30;
+        const remaining = intervalDays - diffDays;
+
+        const games = countGamesAfterRestring(dateStr, p['stringDate' + (num === 1 ? '' : num) + 'Time'] || '', 'racket' + num);
+        const limit = getRacketGameLimit(num);
+        const gameOverdue = games >= limit;
+        const gameSoon = !gameOverdue && games >= limit * 0.7;
+
+        let cls = 'ok', icon = '✅', title = '', sub = '';
+        if (remaining <= 0 || gameOverdue) {
+          cls = 'danger'; icon = '🔴';
+          if (remaining <= 0) {
+            title = _t('str_alert_overdue_title').replace('{n}', Math.abs(remaining));
+            sub = _t('str_alert_overdue_sub');
+          } else {
+            title = _t('str_alert_games_overdue').replace('{n}', games);
+            sub = _t('str_alert_overdue_sub');
+          }
+        } else if (remaining <= 14 || gameSoon) {
+          cls = ''; icon = '⚠️';
+          if (remaining <= 14) {
+            title = _t('str_alert_soon_title').replace('{n}', remaining);
+            sub = _t('str_alert_soon_sub');
+          } else {
+            title = _t('str_alert_games_soon').replace('{n}', games);
+            sub = _t('str_alert_soon_sub');
+          }
+        } else {
+          title = _t('str_alert_soon_title').replace('{n}', remaining);
+          sub = _t('str_alert_ok_sub').replace('{date}', dateStr).replace('{n}', diffDays) + ` · ${games}${_t('contest_games')}`;
+        }
+        alertEl.innerHTML = `<div class="stringing-alert ${cls}" style="margin-bottom:4px;">
+          <div class="stringing-alert-icon">${icon}</div>
+          <div class="stringing-alert-text">
+            <div class="stringing-alert-title">${title}</div>
+            <div class="stringing-alert-sub">${sub}</div>
+          </div></div>`;
+      }
     }
-  }
-  renderHistList('stringingHistoryList1', 1);
-  renderHistList('stringingHistoryList2', 2);
+
+    // ---- 교체 이력 렌더 (사유 · 비용 포함) + 누적 비용 ----
+    const listEl = document.getElementById('stringingHistoryList' + num);
+    if (listEl) {
+      const hist = [...(state.stringingHistory || [])]
+        .filter(h => h && h.date && (h.racket == num || (!h.racket && num === 1)))
+        .sort((a, b) => b.date.localeCompare(a.date));
+      if (!hist.length) {
+        listEl.innerHTML = `<div style="color:var(--text-muted);font-size:0.8rem;padding:8px 0 4px;">${_t('str_no_history')}</div>`;
+      } else {
+        const reasonKey = { regular: 'str_reason_regular', tension: 'str_reason_tension', broken: 'str_reason_broken', damaged: 'str_reason_damaged', other: 'str_reason_other' };
+        listEl.innerHTML = hist.map(h => {
+          const reasonTxt = h.reason && reasonKey[h.reason] ? _t(reasonKey[h.reason]) : '';
+          const costTxt = h.cost ? Number(h.cost).toLocaleString() + '원' : '';
+          const metaParts = [h.date, reasonTxt, costTxt].filter(Boolean);
+          return `
+          <div class="stringing-history-row">
+            <div class="stringing-dot"></div>
+            <div class="stringing-history-info">
+              <div class="stringing-history-name">${escHtml(h.name)}</div>
+              <div class="stringing-history-meta">${escHtml(metaParts.join(' · '))}</div>
+            </div>
+            <button class="stringing-history-del" onclick="deleteStringingHistory(${h.id})">🗑️</button>
+          </div>`;
+        }).join('');
+      }
+      const totalCostEl = document.getElementById('stringingTotalCost' + num);
+      if (totalCostEl) {
+        const total = hist.reduce((s, h) => s + (Number(h.cost) || 0), 0);
+        totalCostEl.textContent = total > 0 ? `${_t('str_total_cost')} ${total.toLocaleString()}원` : '';
+      }
+    }
+  });
 }
 
 // ===================================================
@@ -6421,32 +6606,33 @@ function _fallbackCopy(text) {
 // ===== 스트링 교체 인증 공유 =====
 function shareStringCert() {
   const p = state.profile || {};
-  const racket1 = p.racket || '';
-  const string1 = p.string || '';
-  const tension1 = p.tension || '';
-  const date1 = p.stringDate || state.lastStringDate || '';
-  const racket2 = p.racket2 || '';
-  const string2 = p.string2 || '';
-  const tension2 = p.tension2 || '';
-  const date2 = p.stringDate2 || '';
 
+  function block(num) {
+    const suf = num === 1 ? '' : num;
+    const racket = p['racket' + suf] || '';
+    const string = p['string' + suf] || '';
+    const tension = p['tension' + suf] || '';
+    const cross = p['crossString' + num] || '';
+    const crossTen = p['crossTension' + num] || '';
+    const date = num === 1 ? (p.stringDate || state.lastStringDate || '') : (p['stringDate' + num] || '');
+    if (!(racket || string || date)) return '';
+    let t = `[RACQUET ${num}]\n`;
+    if (racket) t += `🎾 라켓: ${racket}\n`;
+    if (cross) {
+      if (string) t += `📌 메인: ${string}${tension ? ' ' + tension + 'lb' : ''}\n`;
+      t += `📌 크로스: ${cross}${crossTen ? ' ' + crossTen + 'lb' : ''}\n`;
+    } else {
+      if (string) t += `📌 스트링: ${string}\n`;
+      if (tension) t += `💪 텐션: ${tension}lb\n`;
+    }
+    if (date) t += `📅 교체일: ${date}\n`;
+    return t;
+  }
+
+  const blocks = [1, 2, 3].map(block).filter(Boolean);
   let txt = `🛠️ 스트링 교체 완료!\n`;
   txt += `━━━━━━━━━━━━━━━━\n`;
-  if (racket1 || string1 || date1) {
-    txt += `[RACQUET 1]\n`;
-    if (racket1) txt += `🎾 라켓: ${racket1}\n`;
-    if (string1) txt += `📌 스트링: ${string1}\n`;
-    if (tension1) txt += `💪 텐션: ${tension1}lb\n`;
-    if (date1) txt += `📅 교체일: ${date1}\n`;
-  }
-  if (racket2 || string2 || date2) {
-    if (racket1 || string1 || date1) txt += `\n`;
-    txt += `[RACQUET 2]\n`;
-    if (racket2) txt += `🎾 라켓: ${racket2}\n`;
-    if (string2) txt += `📌 스트링: ${string2}\n`;
-    if (tension2) txt += `💪 텐션: ${tension2}lb\n`;
-    if (date2) txt += `📅 교체일: ${date2}\n`;
-  }
+  txt += blocks.join('\n');
   txt += `━━━━━━━━━━━━━━━━\n`;
   txt += `새 스트링으로 더 강하게! 💥\n`;
   txt += `#NIJI_STRING #스트링교체 #라켓`;
@@ -6467,55 +6653,56 @@ function shareStringCert() {
 }
 // ===================================================
 
-// ===== 라켓1 필드 저장 (스트링명/텐션 입력 중 실시간 반영용) =====
-function saveStrR1Field(key, val) {
-  state.profile[key] = val;
-  save();
-  renderStringBanner();
-}
-
-// ===== 라켓2 필드 저장 (스트링명/텐션 입력 중 실시간 반영용) =====
-function saveStrR2Field(key, val) {
-  state.profile[key] = val;
-  save();
-  renderStringBanner();
-}
-
-// ===== 스트링 정보 저장 + 이력 자동 기록 (라켓 1/2 공용) =====
-// "저장" 버튼 한 번으로: 스트링명·텐션·교체일·교체주기 저장 + 교체 이력에 자동 기록
+// ===== 스트링 정보 저장 + 이력 자동 기록 (라켓 1/2/3 공용) =====
+// "저장" 버튼 한 번으로: 스트링명·텐션·교체일·교체주기·사유·비용 저장 + 교체 이력에 자동 기록
 function saveStringingInfo(racketNum) {
   const rn = racketNum || 1;
-  const strEl  = document.getElementById(rn === 1 ? 'str1-string'   : 'str2-string');
-  const tenEl  = document.getElementById(rn === 1 ? 'str1-tension'  : 'str2-tension');
-  const dateEl = document.getElementById(rn === 1 ? 'str1-date'     : 'str2-date');
-  const intEl  = document.getElementById(rn === 1 ? 'str1-interval' : 'str2-interval');
+  const strEl    = document.getElementById('str' + rn + '-string');
+  const tenEl    = document.getElementById('str' + rn + '-tension');
+  const dateEl   = document.getElementById('str' + rn + '-date');
+  const intEl    = document.getElementById('str' + rn + '-interval');
+  const hybEl    = document.getElementById('str' + rn + '-hybrid');
+  const crossStrEl = document.getElementById('str' + rn + '-cross-string');
+  const crossTenEl = document.getElementById('str' + rn + '-cross-tension');
+  const limitEl  = document.getElementById('str' + rn + '-gamelimit');
+  const reasonEl = document.getElementById('str' + rn + '-reason');
+  const costEl   = document.getElementById('str' + rn + '-cost');
   if (!strEl || !dateEl) return;
 
   const stringName = strEl.value.trim();
   const tension     = tenEl ? tenEl.value.trim() : '';
   const date        = dateEl.value;
   const interval    = intEl ? parseInt(intEl.value) : 3;
+  const isHybrid    = hybEl ? hybEl.checked : false;
+  const crossString = isHybrid && crossStrEl ? crossStrEl.value.trim() : '';
+  const crossTension = isHybrid && crossTenEl ? crossTenEl.value.trim() : '';
+  const reason      = reasonEl ? reasonEl.value : 'regular';
+  const cost        = costEl && costEl.value !== '' ? Number(costEl.value) : 0;
 
   if (!stringName) { showToast(_t('str_toast_need_name')); return; }
   if (!date) { showToast(_t('str_toast_need_date')); return; }
 
-  // 프로필 필드에 저장
-  const stringKey   = rn === 1 ? 'string'     : 'string2';
-  const tensionKey  = rn === 1 ? 'tension'    : 'tension2';
-  const dateKey     = rn === 1 ? 'stringDate' : 'stringDate2';
-  state.profile[stringKey]  = stringName;
-  state.profile[tensionKey] = tension;
-  state.profile[dateKey]    = date;
-  if (rn === 1) { state.lastStringDate = date; state.stringInterval  = interval; }
-  else          { state.stringInterval2 = interval; }
+  // 프로필 필드에 저장 (라켓1은 접미사 없음, 라켓2/3는 숫자 접미사 — 기존 데이터와 호환)
+  const suf = rn === 1 ? '' : rn;
+  const p = state.profile;
+  p['string' + suf]  = stringName;
+  p['tension' + suf] = tension;
+  p['stringDate' + suf] = date;
+  p['hybrid' + rn] = isHybrid;
+  p['crossString' + rn]  = crossString;
+  p['crossTension' + rn] = crossTension;
+  if (rn === 1) { state.lastStringDate = date; }
+  state['stringInterval' + suf] = interval;
+  if (limitEl) state['stringGameLimit' + rn] = parseInt(limitEl.value) || 30;
 
   // 교체 이력에 자동 기록 (같은 라켓·날짜·내용의 중복 기록은 남기지 않음)
   if (!state.stringingHistory) state.stringingHistory = [];
-  const histName = tension ? `${stringName} ${tension}lb` : stringName;
+  let histName = tension ? `${stringName} ${tension}lb` : stringName;
+  if (crossString) histName += ` / ${crossString}${crossTension ? ' ' + crossTension + 'lb' : ''}`;
   const isDup = state.stringingHistory.some(h =>
     (h.racket == rn || (!h.racket && rn === 1)) && h.date === date && h.name === histName);
   if (!isDup) {
-    state.stringingHistory.push({ id: Date.now(), name: histName, date, racket: rn });
+    state.stringingHistory.push({ id: Date.now(), name: histName, date, racket: rn, reason, cost: cost || undefined });
   }
 
   save();
@@ -6532,23 +6719,76 @@ function deleteStringingHistory(id) {
   const histForRacket = [...state.stringingHistory]
     .filter(h => (h.racket == rn) || (!h.racket && rn === 1))
     .sort((a,b) => b.date.localeCompare(a.date));
-  if (rn === 1) {
-    if (histForRacket.length) {
-      state.lastStringDate = histForRacket[0].date;
-      state.profile.stringDate = histForRacket[0].date;
-    } else {
-      state.lastStringDate = '';
-      state.profile.stringDate = '';
-    }
-  } else {
-    state.profile.stringDate2 = histForRacket.length ? histForRacket[0].date : '';
-  }
+  const suf = rn === 1 ? '' : rn;
+  const latestDate = histForRacket.length ? histForRacket[0].date : '';
+  state.profile['stringDate' + suf] = latestDate;
+  if (rn === 1) state.lastStringDate = latestDate;
   save();
   renderStringing();
   renderStringBanner();
   showToast(_t('str_toast_deleted'));
 }
 
+// ===== 캘린더에 다음 교체 예정일 알림 등록 (.ics 파일 다운로드) =====
+// 서버 없이도 폰의 기본 캘린더 앱에 진짜 알림을 남길 수 있도록 표준 iCalendar 파일을 생성한다.
+function addStringCalendarReminder(racketNum) {
+  const rn = racketNum || 1;
+  const suf = rn === 1 ? '' : rn;
+  const p = state.profile || {};
+  const dateStr = p['stringDate' + suf] || '';
+  if (!dateStr) { showToast(_t('str_calendar_need_date')); return; }
+
+  const intervalMonths = state['stringInterval' + suf] || 3;
+  const [ly, lm, ld] = dateStr.split('-').map(Number);
+  const dueDate = new Date(ly, lm - 1, ld);
+  dueDate.setDate(dueDate.getDate() + intervalMonths * 30);
+
+  const pad = n => String(n).padStart(2, '0');
+  const dueStr = `${dueDate.getFullYear()}${pad(dueDate.getMonth() + 1)}${pad(dueDate.getDate())}`;
+  const nextDayStr = (function() {
+    const d2 = new Date(dueDate); d2.setDate(d2.getDate() + 1);
+    return `${d2.getFullYear()}${pad(d2.getMonth() + 1)}${pad(d2.getDate())}`;
+  })();
+
+  const racketName = p['racket' + suf] || ('R' + rn);
+  const stringName = p['string' + suf] || '';
+  const summary = `🎾 ${_t('str_calendar_title')} — ${racketName}${stringName ? ' (' + stringName + ')' : ''}`;
+  const uid = 'niji-string-' + rn + '-' + Date.now() + '@niji-string-app';
+  const nowStamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//NIJI STRING//Restring Reminder//KO',
+    'CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    'UID:' + uid,
+    'DTSTAMP:' + nowStamp,
+    'DTSTART;VALUE=DATE:' + dueStr,
+    'DTEND;VALUE=DATE:' + nextDayStr,
+    'SUMMARY:' + summary,
+    'DESCRIPTION:' + _t('str_calendar_title') + ' - NIJI STRING',
+    'BEGIN:VALARM',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:' + summary,
+    'TRIGGER:-P0DT9H0M0S',
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `niji-string-r${rn}-reminder.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+  showToast(_t('str_calendar_added'));
+}
 
 function addPlayer() {
   const name = document.getElementById('newPlayerName').value.trim();
@@ -10678,6 +10918,7 @@ function setLanguage(lang) {
   // 스트링 탭 입력 순서
   var STRING_FLOW_R1 = ['str-r1-name', 'str1-string', 'str1-tension', 'str1-date'];
   var STRING_FLOW_R2 = ['str-r2-name', 'str2-string', 'str2-tension', 'str2-date'];
+  var STRING_FLOW_R3 = ['str-r3-name', 'str3-string', 'str3-tension', 'str3-date'];
 
   // 다음 입력 필드로 포커스 이동
   function focusNext(currentId, flowList) {
@@ -10700,6 +10941,7 @@ function setLanguage(lang) {
     if (MATCH_FLOW_SINGLES.indexOf(id) >= 0) return MATCH_FLOW_SINGLES;
     if (STRING_FLOW_R1.indexOf(id) >= 0) return STRING_FLOW_R1;
     if (STRING_FLOW_R2.indexOf(id) >= 0) return STRING_FLOW_R2;
+    if (STRING_FLOW_R3.indexOf(id) >= 0) return STRING_FLOW_R3;
     return null;
   }
 
