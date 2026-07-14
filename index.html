@@ -2307,7 +2307,7 @@ function _t(key) {
         <div class="acc-body" id="accOpponent">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
             <input id="oppSearch" type="text" data-lang-placeholder="stats_search_ph" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderOpponentStats()"
-              style="flex:1;font-size:16px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+              style="flex:1;min-width:0;font-size:16px;padding:5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._oppShowAll=false;renderOpponentStats();" id="oppSort" style="flex-shrink:0;min-width:128px;font-size: 0.76rem;padding:4px 22px 4px 8px;background:var(--surface2) url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 6px center;border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;">
               <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
               <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
@@ -2328,7 +2328,7 @@ function _t(key) {
         <div class="acc-body" id="accPartner">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
             <input id="partnerSearch" type="text" data-lang-placeholder="stats_search_ph" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderPartnerStats()"
-              style="flex:1;font-size:16px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+              style="flex:1;min-width:0;font-size:16px;padding:5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._partnerShowAll=false;renderPartnerStats();" id="partnerSort" style="flex-shrink:0;min-width:128px;font-size: 0.76rem;padding:4px 22px 4px 8px;background:var(--surface2) url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 6px center;border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;">
               <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
               <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
@@ -2350,7 +2350,7 @@ function _t(key) {
         <div class="acc-body" id="accSingles">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
             <input id="singlesSearch" type="text" data-lang-placeholder="stats_search_ph" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderSinglesStats()"
-              style="flex:1;font-size:16px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+              style="flex:1;min-width:0;font-size:16px;padding:5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._singlesShowAll=false;renderSinglesStats();" id="singlesSort" style="flex-shrink:0;min-width:128px;font-size: 0.76rem;padding:4px 22px 4px 8px;background:var(--surface2) url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 6px center;border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;">
               <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
               <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
@@ -2372,7 +2372,7 @@ function _t(key) {
         <div class="acc-body" id="accEnemy">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
             <input id="enemySearch" type="text" data-lang-placeholder="stats_search_ph" placeholder="🔍 이름 또는 초성 (예: ㄱㄷㅎ)" oninput="renderEnemyTeamStats()"
-              style="flex:1;font-size:16px;padding:5px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
+              style="flex:1;min-width:0;font-size:16px;padding:5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);outline:none;">
             <select onchange="window._enemyShowAll=false;renderEnemyTeamStats();" id="enemySort" style="flex-shrink:0;min-width:128px;font-size: 0.76rem;padding:4px 22px 4px 8px;background:var(--surface2) url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 6px center;border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;outline:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;">
               <option value="winrate" selected data-lang="stats_opp_sort_winrate">승률 높은 순</option>
               <option value="games" data-lang="stats_opp_sort_games">경기 많은 순</option>
