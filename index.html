@@ -5743,11 +5743,16 @@ function computeDashboardData() {
   const allMs = (state.matches || []).filter(m => (m.sport || 'tennis') === sport);
   const monthMs = allMs.filter(m => (m.date || '').slice(0, 7) === ymNow);
   const monthCount = monthMs.length;
-  const totalCount = allMs.length;
-  const winCount = allMs.filter(m => m.result === 'win').length;
+
+  // [수정] 승률/연승연패는 통계 탭(getStatsFilteredMatches)과 동일하게
+  // "최근 12개월(ATP 방식)" 데이터만 사용해야 함. 이전엔 allMs(전체 기간)로 계산해서
+  // 홈/프로필 대시보드와 통계 탭에 서로 다른 승률·연승연패 숫자가 표시되던 버그가 있었음.
+  const statsMs = getStatsFilteredMatches();
+  const totalCount = statsMs.length;
+  const winCount = statsMs.filter(m => m.result === 'win').length;
   const winRate = totalCount ? Math.round((winCount / totalCount) * 100) : null;
 
-  const sorted = [...allMs].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const sorted = [...statsMs].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   let streakNum = 0, streakIsWin = true;
   if (sorted.length) {
     let streak = 1;
@@ -7178,7 +7183,15 @@ function renderAIInsight(ms) {
   const el = document.getElementById('aiInsightCard');
   if (!el) return;
   if (!ms) ms = getStatsFilteredMatches();
-  if (!ms.length || ms.length < 3) { el.style.display = 'none'; el.innerHTML = ''; return; }
+
+  // [수정] 카드 제목이 "📊 이번 달 분석"인데 실제로는 최근 12개월 데이터 중
+  // "최근 10경기"를 분석해서 제목과 내용이 맞지 않던 버그.
+  // → 제목 그대로 이번 달(KST 기준) 경기만 집계하도록 수정.
+  const kstNow = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  const thisYM = kstNow.toISOString().slice(0, 7);
+  const monthMs = ms.filter(m => (m.date || '').slice(0, 7) === thisYM);
+
+  if (!monthMs.length || monthMs.length < 3) { el.style.display = 'none'; el.innerHTML = ''; return; }
 
   // [수정] state.lang은 실제로 어디서도 설정되지 않는 값이라 항상 undefined였음
   // → 이 카드가 언어 토글과 상관없이 늘 한국어로만 표시되던 버그. 앱 전역에서 쓰는
@@ -7186,18 +7199,15 @@ function renderAIInsight(ms) {
   const isEn = _nijiGetLang() === 'en';
   const lines = [];
 
-  // 최근 10경기
-  const recent = [...ms].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 10);
-  const rw = recent.length ? recent.filter(m => m.result === 'win').length : 0;
-  if (recent.length) {
-    lines.push(isEn
-      ? `🎾 ${rw}W ${recent.length - rw}L in your last ${recent.length} matches.`
-      : `🎾 최근 ${recent.length}경기에서 ${rw}승 ${recent.length - rw}패입니다.`);
-  }
+  // 이번 달 전적
+  const rw = monthMs.filter(m => m.result === 'win').length;
+  lines.push(isEn
+    ? `🎾 ${rw}W ${monthMs.length - rw}L this month.`
+    : `🎾 이번 달 ${monthMs.length}경기에서 ${rw}승 ${monthMs.length - rw}패입니다.`);
 
-  // 단식/복식 비교
-  const singles = ms.filter(m => m.format === 'singles');
-  const doubles = ms.filter(m => m.format === 'doubles');
+  // 단식/복식 비교 (이번 달 기준)
+  const singles = monthMs.filter(m => m.format === 'singles');
+  const doubles = monthMs.filter(m => m.format === 'doubles');
   const sRate = singles.length ? Math.round(singles.filter(m => m.result === 'win').length / singles.length * 100) : null;
   const dRate = doubles.length ? Math.round(doubles.filter(m => m.result === 'win').length / doubles.length * 100) : null;
   if (sRate !== null && dRate !== null && sRate !== dRate) {
@@ -7205,9 +7215,9 @@ function renderAIInsight(ms) {
     else lines.push(isEn ? `🔥 Your singles win rate (${sRate}%) beats doubles (${dRate}%).` : `🔥 단식 승률(${sRate}%)이 복식(${dRate}%)보다 높아요.`);
   }
 
-  // 파트너 / 상대 집계 (2경기 이상만 대상)
+  // 파트너 / 상대 집계 (이번 달, 2경기 이상만 대상)
   const oppMap = {}, partnerMap = {};
-  ms.forEach(m => {
+  monthMs.forEach(m => {
     [m.opponent, m.opponent2].filter(Boolean).forEach(n => {
       if (!oppMap[n]) oppMap[n] = { w: 0, l: 0 };
       m.result === 'win' ? oppMap[n].w++ : oppMap[n].l++;
