@@ -84,6 +84,10 @@ const NIJI_DICT = {
   str_toast_need_date:     { ko: '⚠️ 교체일을 선택하세요', en: '⚠️ Please select a replacement date' },
   str_toast_saved:         { ko: '✅ 저장 완료! 교체 이력에도 자동 기록됐어요', en: '✅ Saved! Also recorded in the restring history' },
   str_toast_deleted:       { ko: '🗑️ 삭제 완료',          en: '🗑️ Deleted' },
+  str_toast_reset:         { ko: '🔄 라켓 {n} 정보가 초기화됐어요', en: '🔄 Racquet {n} info has been reset' },
+  str_reset_btn:           { ko: '🔄 이 라켓 정보 초기화',  en: '🔄 Reset this racquet' },
+  str_reset_confirm_title: { ko: '라켓 {n} 초기화할까요?',  en: 'Reset Racquet {n}?' },
+  str_reset_confirm_msg:   { ko: '라켓명·스트링·텐션·교체일·교체 이력이 모두 지워져요. 새 라켓으로 다시 입력할 수 있어요.', en: 'Racquet name, string, tension, restring date, and history will all be cleared so you can start fresh with a new racquet.' },
   toast_export_done:       { ko: '💾 내보내기 완료!',     en: '💾 Export complete!' },
   toast_import_done:       { ko: '✅ 가져오기 완료!',     en: '✅ Import complete!' },
   toast_import_failed:     { ko: '❌ 파일 형식 오류',     en: '❌ Invalid file format' },
@@ -99,11 +103,13 @@ const NIJI_DICT = {
 
   /* 스트링 관리 탭 */
   str_page_header:      { ko: '🎾 스트링 관리',                     en: '🎾 String Management' },
+  str_close_btn:        { ko: '닫기',                                en: 'Close' },
   str_page_sub:         { ko: '라켓별 스트링 교체 주기를 관리하세요', en: 'Manage restring intervals for each racquet' },
   str_cert_btn:         { ko: '🛠️ 교체 인증하기 (공유)',            en: '🛠️ Share Restring' },
   str_voice_preview_btn:{ ko: '🔊 알림음 미리듣기',                 en: '🔊 Preview Alert Sound' },
   str_racket1_ph:       { ko: '예) 윌슨 블레이드 98',                en: 'e.g. Wilson Blade 98' },
   str_racket2_ph:       { ko: '예) 요넥스 VCORE 98',                 en: 'e.g. Yonex VCORE 98' },
+  str_racket4_ph:       { ko: '예) 바볼랏 퓨어드라이브',              en: 'e.g. Babolat Pure Drive' },
   str_string_name_lbl:  { ko: '스트링명',                            en: 'String' },
   str_string1_ph:       { ko: '예) VS Touch 130',                    en: 'e.g. VS Touch 130' },
   str_string2_ph:       { ko: '예) Yonex BG65',                      en: 'e.g. Yonex BG65' },
@@ -131,9 +137,10 @@ const NIJI_DICT = {
   str_alert_games_overdue: { ko: '교체 후 {n}게임 · 게임 수 기준 교체 권장', en: '{n} games since restring · replace recommended by game count' },
   str_alert_games_soon:    { ko: '교체 후 {n}게임 · 슬슬 게임 수도 찹니다', en: '{n} games since restring · getting close on game count too' },
   str_racket3_ph:       { ko: '예) 던롭 CX200',                     en: 'e.g. Dunlop CX200' },
-  str_racket_add_btn:   { ko: '➕ 라켓 추가 (라켓 3)',               en: '➕ Add Racquet (Racquet 3)' },
-  str_racket_remove_btn:{ ko: '➖ 라켓 3 제거',                      en: '➖ Remove Racquet 3' },
+  str_racket_add_btn:   { ko: '➕ 라켓 추가 (라켓 {n})',            en: '➕ Add Racquet (Racquet {n})' },
+  str_racket_remove_btn:{ ko: '➖ 라켓 {n} 제거',                    en: '➖ Remove Racquet {n}' },
   str_history_title3:   { ko: '📋 교체 이력 (라켓 3)',               en: '📋 History (Racquet 3)' },
+  str_history_title4:   { ko: '📋 교체 이력 (라켓 4)',               en: '📋 History (Racquet 4)' },
   str_hybrid_toggle:    { ko: '🔀 하이브리드 (메인/크로스 다르게)',  en: '🔀 Hybrid (different mains/crosses)' },
   str_main_string_lbl:  { ko: '메인 스트링',                        en: 'Main String' },
   str_cross_string_lbl: { ko: '크로스 스트링',                      en: 'Cross String' },
@@ -154,7 +161,7 @@ const NIJI_DICT = {
   str_calendar_need_date:{ ko: '먼저 교체일을 저장해주세요',        en: 'Save a restring date first' },
   str_calendar_added:   { ko: '📅 캘린더 파일을 내려받았어요! 열어서 등록하세요', en: '📅 Calendar file downloaded! Open it to add the reminder' },
   str_calendar_title:   { ko: '스트링 교체 예정일',                 en: 'String restring due' },
-  str_racket3_remove_confirm: { ko: '라켓 3 정보와 이력이 화면에서 숨겨져요 (데이터는 남아있어요)', en: 'Racquet 3 will be hidden from view (its data stays saved)' },
+  str_racket_remove_confirm: { ko: '라켓 {n} 정보와 이력이 화면에서 숨겨져요 (데이터는 남아있어요)', en: 'Racquet {n} will be hidden from view (its data stays saved)' },
 
   /* 경기기록 탭 */
   match_page_header:       { ko: '경기기록',           en: 'Records' },
@@ -497,7 +504,6 @@ const NIJI_DICT = {
   pf_not_entered:          { ko: '미입력',          en: 'Not entered' },
   pf_racket_name:          { ko: '라켓명',          en: 'Racket' },
   pf_no_racket:            { ko: '라켓 정보를 입력해주세요', en: 'Enter your racket info' },
-  pf_default_name:         { ko: '선수',            en: 'Player' },
   pf_string_manage_btn:    { ko: '스트링 관리',     en: 'String Management' },
   pf_string_status_title:  { ko: '스트링 상태',     en: 'String Status' },
   pf_player_info_title:    { ko: '플레이어 정보',   en: 'Player Info' },
@@ -565,7 +571,7 @@ const NIJI_DICT = {
   manual_s1_title: { ko: '1. 프로필', en: '1. Profile' },
   manual_s1_1: { ko: '상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요', en: 'Tap the photo area at the top to set your <b>profile picture</b>' },
   manual_s1_2: { ko: '이름·클럽·나이대·손잡이·구력·스타일 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다', en: 'Tap any field (name, club, age, handedness, experience, style) to edit — changes are <b>auto-saved</b>' },
-  manual_s1_3: { ko: '라켓은 <b>기본 2자루, "라켓 추가" 버튼으로 3자루까지</b> 등록할 수 있어요. RACQUET 1·2·3 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요', en: 'You can register <b>2 racquets by default, or up to 3 with the "Add Racquet" button</b>. Tap RACQUET 1·2·3 to expand, then enter the name, string, tension, and restring date' },
+  manual_s1_3: { ko: '라켓은 <b>기본 2자루, "라켓 추가" 버튼으로 4자루까지</b> 등록할 수 있어요. RACQUET 1·2·3·4 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요', en: 'You can register <b>2 racquets by default, or up to 4 with the "Add Racquet" button</b>. Tap RACQUET 1·2·3·4 to expand, then enter the name, string, tension, and restring date' },
   manual_s1_4: { ko: '<b>스트링 선택</b> — 과거에 입력한 스트링 목록에서 고르거나, 아래 입력창에 직접 타이핑할 수 있어요. 드롭다운에서 선택하면 입력창에도 자동으로 채워져요', en: '<b>String selection</b> — pick from your past strings in the dropdown, or type directly. Selecting from the dropdown auto-fills the input field' },
   manual_s1_5: { ko: '<b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'Enter a <b>restring date</b> to see D+ days and games played automatically — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
   manual_s1_6: { ko: '프로필 하단에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼 <b>종목을 설정</b>하세요. 경기기록·통계 탭의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동해요', en: 'Set your <b>sport</b> at the bottom of the profile: 🎾 Tennis / 🏸 Badminton / 🏓 Pickleball. You can also tap <b>[Change Sport →]</b> in the Match or Stats tab' },
@@ -632,7 +638,7 @@ const NIJI_DICT = {
   manual_s6_7: { ko: '알림은 이제 <b>날짜와 게임 수</b>를 함께 봐요. 라켓 카드의 <b>게임 임계치</b>를 넘게 치면, 아직 교체일이 안 됐어도 주의/교체 알림이 떠요', en: 'Alerts now consider <b>both days and game count</b>. If you pass the <b>game limit</b> on a racquet card, you will get a caution/replace alert even before the calendar date is due' },
   manual_s6_8: { ko: '<b>🔀 하이브리드</b> 체크박스를 켜면 메인·크로스 스트링을 따로 기록할 수 있어요', en: 'Turn on <b>🔀 Hybrid</b> to record different main and cross strings' },
   manual_s6_9: { ko: '<b>📅 캘린더에 알림 등록</b> 버튼을 누르면 다음 교체 예정일이 폰 캘린더 앱에 알림으로 저장돼요 — 앱을 안 켜도 알림이 와요', en: 'Tap <b>📅 Add reminder to Calendar</b> to save the next restring date to your phone\'s calendar app — notifications work even without opening this app' },
-  manual_s6_10: { ko: '라켓 카드 아래 <b>➕ 라켓 추가</b> 버튼으로 라켓 3까지 등록할 수 있고, 저장할 때 <b>교체 사유·비용</b>도 함께 남길 수 있어요', en: 'Use <b>➕ Add Racquet</b> below the cards to register a 3rd racquet, and record the <b>reason and cost</b> each time you save a restring' },
+  manual_s6_10: { ko: '라켓 카드 아래 <b>➕ 라켓 추가</b> 버튼으로 라켓 4까지 등록할 수 있고, 저장할 때 <b>교체 사유·비용</b>도 함께 남길 수 있어요', en: 'Use <b>➕ Add Racquet</b> below the cards to register up to a 4th racquet, and record the <b>reason and cost</b> each time you save a restring' },
 
   // 7. 전술판
   manual_s7_title: { ko: '7. 전술판', en: '7. Tactics Board' },
@@ -1565,7 +1571,7 @@ function _t(key) {
   }
 
   /* 하단 콘텐츠 래퍼 */
-  .pf-content { background: var(--bg); padding: 0 16px 18px; }
+  .pf-content { background: var(--bg); padding: 0 16px 0; }
 
   /* ===== 스트링 상태: 게이지 링 카드 ===== */
   .pf-string-row {
@@ -1991,14 +1997,21 @@ function _t(key) {
         <!-- 하단 콘텐츠 (카드들) -->
         <div class="pf-content" onclick="event.stopPropagation()">
 
+          <!-- 스트링 관리 바로가기 버튼 -->
+          <div style="margin-top:14px;margin-bottom:14px;">
+            <button onclick="showPage('stringing')" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:14px;border:2px solid var(--accent);background:rgba(124,106,247,0.10);color:var(--accent);font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all .2s;">
+              🛠️ <span data-lang="pf_string_manage_btn">스트링 관리</span>
+            </button>
+          </div>
+
           <!-- 스트링 상태 카드 -->
-          <div class="card" style="margin-top:14px;">
+          <div class="card" style="margin-bottom:14px;">
             <div class="card-title">🎾 <span data-lang="pf_string_status_title">스트링 상태</span></div>
             <div id="stringStatusBanner"></div>
           </div>
 
           <!-- 플레이어 정보 카드 -->
-          <div class="card">
+          <div class="card" style="margin-bottom:0;">
             <div class="card-title">👤 <span data-lang="pf_player_info_title">플레이어 정보</span></div>
             <div class="pf-stat-row" id="profileInfoGrid"></div>
           </div>
@@ -2006,13 +2019,6 @@ function _t(key) {
         </div>
       </div>
       <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
-
-      <!-- 스트링 관리 바로가기 버튼 -->
-      <div style="padding:0 16px 0;">
-        <button onclick="showPage('stringing')" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:14px;border:2px solid var(--accent);background:rgba(124,106,247,0.10);color:var(--accent);font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all .2s;">
-          🛠️ <span data-lang="pf_string_manage_btn">스트링 관리</span>
-        </button>
-      </div>
 
       <!-- 종목 선택 카드 -->
       <div style="padding:14px 16px 16px;">
@@ -2206,7 +2212,7 @@ function _t(key) {
             <!-- 줄 6: 라켓 선택 -->
             <div style="margin-bottom:8px;" id="racketSelectGroup">
               <div class="form-label" id="racketSelectLabel" style="margin-bottom:4px;" data-lang="match_racket_lbl">🎾 사용 라켓 (선택)</div>
-              <select class="form-select" id="matchRacket" style="padding:9px 12px;font-size: 0.9333rem;">
+              <select class="form-select" id="matchRacket" onchange="onMatchRacketChange()" style="padding:9px 12px;font-size: 0.9333rem;">
                 <option value="" data-lang="match_racket_none_opt">선택 안 함</option>
               </select>
               <div id="racketNoRegMsg" style="display:none;margin-top:6px;font-size: 0.7333rem;color:var(--text-muted);">
@@ -2476,6 +2482,10 @@ function _t(key) {
 
     <!-- ===== STRINGING PAGE ===== -->
     <div class="page" id="page-stringing">
+      <div class="player-detail-back" onclick="showPage('profile')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span data-lang="str_close_btn">닫기</span>
+      </div>
       <div class="page-header" data-lang="str_page_header">🎾 스트링 관리</div>
       <div class="page-sub" data-lang="str_page_sub">라켓별 스트링 교체 주기를 관리하세요</div>
 
@@ -2491,9 +2501,9 @@ function _t(key) {
       <!-- ===== 라켓 카드 (1/2/3, JS로 생성됨) ===== -->
       <div id="racketCardsWrap"></div>
 
-      <!-- ===== 라켓 3 추가/제거 버튼 ===== -->
-      <button class="string-cert-btn" id="racket3ToggleBtn" style="background:var(--surface2);color:var(--text);margin-bottom:20px;" onclick="toggleRacket3()">
-        <span data-lang="str_racket_add_btn">➕ 라켓 추가 (라켓 3)</span>
+      <!-- ===== 라켓 추가 버튼 (라켓 3·4) ===== -->
+      <button class="string-cert-btn" id="racketAddBtn" style="background:var(--surface2);color:var(--text);margin-bottom:20px;" onclick="addRacket()">
+        <span id="racketAddBtnLabel">➕ 라켓 추가</span>
       </button>
     </div>
 
@@ -3088,11 +3098,13 @@ let state = {
   stringInterval: 3,
   stringInterval2: 3,
   stringInterval3: 3,
+  stringInterval4: 3,
   stringGameLimit1: 30,
   stringGameLimit2: 30,
   stringGameLimit3: 30,
-  showRacket3: false,
-  stringingHistory: [], // { id, name, date, racket: 1|2|3, reason, cost }
+  stringGameLimit4: 30,
+  racketCount: 2, // 2~4: 스트링 관리에 표시할 라켓 수
+  stringingHistory: [], // { id, name, date, racket: 1|2|3|4, reason, cost }
   tnTournaments: [],  // 토너먼트 데이터
 };
 
@@ -3737,10 +3749,19 @@ function _applyFirebaseData(parsed) {
     state.stringInterval = parsed.stringInterval || 3;
     state.stringInterval2 = parsed.stringInterval2 || 3;
     state.stringInterval3 = parsed.stringInterval3 || 3;
+    state.stringInterval4 = parsed.stringInterval4 || 3;
     state.stringGameLimit1 = parsed.stringGameLimit1 || 30;
     state.stringGameLimit2 = parsed.stringGameLimit2 || 30;
     state.stringGameLimit3 = parsed.stringGameLimit3 || 30;
-    state.showRacket3 = !!parsed.showRacket3 || !!(parsed.profile && parsed.profile.racket3);
+    state.stringGameLimit4 = parsed.stringGameLimit4 || 30;
+    // 라켓 표시 개수: 신버전 racketCount 우선, 없으면 구버전 showRacket3/라켓 데이터 유무로 추정
+    let _rc = parsed.racketCount;
+    if (!_rc) {
+      if (parsed.profile && parsed.profile.racket4) _rc = 4;
+      else if (parsed.showRacket3 || (parsed.profile && parsed.profile.racket3)) _rc = 3;
+      else _rc = 2;
+    }
+    state.racketCount = Math.max(2, Math.min(4, parseInt(_rc) || 2));
 
     // 배열 데이터 (Firebase 객체→배열 변환 포함)
     state.matches          = _toArray(parsed.matches);
@@ -3919,6 +3940,7 @@ function showPage(name) {
   if (name === 'players') renderPlayers();
   if (name === 'match') { renderMatchList(); if (!state.editingMatchId) setTodayDate(); updateMatchSportBadge(); updateMatchRacketOptions(); }
   if (name === 'stringing') renderStringing();
+  if (name === 'profile') renderStringBanner();
   if (name === 'tournament') {
     // 탭 진입 시 현재 선택된 탭 기준으로 렌더링 (setTimeout으로 DOM이 먼저 표시되게 보장)
     setTimeout(function() {
@@ -4647,9 +4669,11 @@ function renderStringBanner() {
   const date1 = p.stringDate  || '';
   const date2 = p.stringDate2 || '';
   const date3 = p.stringDate3 || '';
+  const date4 = p.stringDate4 || '';
   const diff1 = calcDiff(date1);
   const diff2 = calcDiff(date2);
   const diff3 = calcDiff(date3);
+  const diff4 = calcDiff(date4);
 
   const racket1 = p.racket  || '';
   const string1 = p.string  || '';
@@ -4660,10 +4684,14 @@ function renderStringBanner() {
   const racket3 = p.racket3  || '';
   const string3 = p.string3  || '';
   const tension3 = p.tension3 || '';
+  const racket4 = p.racket4  || '';
+  const string4 = p.string4  || '';
+  const tension4 = p.tension4 || '';
 
   const games1 = date1 ? countGamesAfterRestring(date1, p.stringDateTime  || '', 'racket1') : 0;
   const games2 = date2 ? countGamesAfterRestring(date2, p.stringDate2Time || '', 'racket2') : 0;
   const games3 = date3 ? countGamesAfterRestring(date3, p.stringDate3Time || '', 'racket3') : 0;
+  const games4 = date4 ? countGamesAfterRestring(date4, p.stringDate4Time || '', 'racket4') : 0;
 
   // 라켓 한 줄 생성: 게이지 링 + 라켓/스트링 정보 + 상태뱃지
   function racketRow(num, racket, string, tension, diff, games) {
@@ -4737,17 +4765,19 @@ function renderStringBanner() {
     </div>`;
   }
 
+  const rCount = Math.max(2, Math.min(4, state.racketCount || 2));
   const row1 = racketRow(1, racket1, string1, tension1, diff1, games1);
   const row2 = racketRow(2, racket2, string2, tension2, diff2, games2);
-  const row3 = racketRow(3, racket3, string3, tension3, diff3, games3);
-  const hasAny = row1 || row2 || row3;
+  const row3 = rCount >= 3 ? racketRow(3, racket3, string3, tension3, diff3, games3) : '';
+  const row4 = rCount >= 4 ? racketRow(4, racket4, string4, tension4, diff4, games4) : '';
+  const hasAny = row1 || row2 || row3 || row4;
 
   if (!hasAny) {
     banner.innerHTML = `<div style="font-size: 0.8rem;color:var(--text-muted);padding:4px 2px;">${_t('pf_no_racket')}</div>`;
     return;
   }
 
-  banner.innerHTML = `${row1}${row2}${row3}`;
+  banner.innerHTML = `${row1}${row2}${row3}${row4}`;
 
   // lastStringDate 동기화 (라켓1 교체일 기준 유지)
   if (date1) state.lastStringDate = date1;
@@ -4763,12 +4793,11 @@ function pfDebounceSave(key, value) {
 }
 
 function saveProfileField(key, value) {
+  // [정리] 이 함수는 name/club/age/hand/career/style 필드에서만 호출됨
+  // (getProfileFields() 참고). 라켓/스트링/교체일 관련 분기는 실제로
+  // 호출될 일이 없는 죽은 코드였어서 제거함 — 해당 값들은 saveStrField()에서 처리됨.
   state.profile[key] = typeof value === 'string' ? value.trim() : value;
   state.profile.photo = state.profile.photo || '';
-  // 스트링교체일 변경 시 lastStringDate도 동기화
-  if (key === 'stringDate') {
-    state.lastStringDate = state.profile[key];
-  }
   save();
   const p = state.profile;
   const name = (p.name && p.name.trim()) ? p.name.trim() : _t('pf_default_name');
@@ -4776,8 +4805,6 @@ function saveProfileField(key, value) {
   _updateProfileHeader(p, name, initial);
   const avatarInitialEl = document.getElementById('avatarInitial');
   if (!p.photo && avatarInitialEl) avatarInitialEl.textContent = initial;
-  // 스트링교체일 또는 라켓명 변경 시 배너 즉시 갱신
-  if (key === 'stringDate' || key === 'stringDate2' || key === 'racket' || key === 'racket2') renderStringBanner();
 }
 
 // ===== 프로필 사진: 드래그로 위치 조정 =====
@@ -4877,11 +4904,27 @@ function uploadPhoto(input) {
 }
 
 // ===== MATCH =====
-function selectFormat(fmt) {
+function selectFormat(fmt, autoFocus) {
   document.getElementById('matchFormat').value = fmt;
   document.getElementById('btnSingles').classList.toggle('selected', fmt === 'singles');
   document.getElementById('btnDoubles').classList.toggle('selected', fmt === 'doubles');
   togglePartner();
+  // 단식/복식 전환 시 예전에 열려 있던 선수 자동완성 추천 목록을 모두 닫음 (화면 겹침 방지)
+  ['ac-partner', 'ac-opponent', 'ac-opponent1', 'ac-opponent2'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  // 형식 선택 후 바로 입력할 수 있게 자동 포커스 (단식→상대, 복식→파트너)
+  if (autoFocus !== false) {
+    var _nextId = fmt === 'doubles' ? 'matchPartner' : 'matchOpponent';
+    setTimeout(function() {
+      var _nextEl = document.getElementById(_nextId);
+      if (_nextEl && _nextEl.offsetParent !== null) {
+        _nextEl.focus();
+        if (_nextEl.select) _nextEl.select();
+      }
+    }, 80);
+  }
 }
 function togglePartner() {
   const fmt = document.getElementById('matchFormat').value;
@@ -4889,6 +4932,13 @@ function togglePartner() {
   const doublesRow = document.getElementById('doublesRow');
   if (singlesRow) singlesRow.style.display = fmt === 'doubles' ? 'none' : 'block';
   if (doublesRow) doublesRow.style.display = fmt === 'doubles' ? 'block' : 'none';
+}
+// 라켓 선택(드롭다운) 값이 바뀌면 자동으로 메모칸으로 이동 (연속 입력 흐름 유지)
+function onMatchRacketChange() {
+  setTimeout(function() {
+    var memoEl = document.getElementById('matchMemo');
+    if (memoEl && memoEl.offsetParent !== null) memoEl.focus();
+  }, 80);
 }
 function setResult(r) {
   state.currentResult = r;
@@ -4966,7 +5016,8 @@ function saveMatch() {
   // 라켓이 등록된 경우에만 선택 필수
   const _racketVal = document.getElementById('matchRacket').value;
   const _p = state.profile || {};
-  const _hasRacket = (_p.racket || '').trim() !== '' || (_p.racket2 || '').trim() !== '' || (_p.racket3 || '').trim() !== '';
+  const _rc = Math.max(2, Math.min(4, state.racketCount || 2));
+  const _hasRacket = (_p.racket || '').trim() !== '' || (_p.racket2 || '').trim() !== '' || (_rc >= 3 && (_p.racket3 || '').trim() !== '') || (_rc >= 4 && (_p.racket4 || '').trim() !== '');
   if (_hasRacket && !_racketVal) { showToast(_t('match_toast_need_racket')); return; }
 
   const matchData = {
@@ -5022,7 +5073,7 @@ function saveMatch() {
 
   save();
   state._matchPage = 0; // 저장 후 목록 첫 페이지로
-  // 폼 먼저 닫기
+  // 폼 닫기
   closeMatchForm();
   // 폼 초기화
   state.currentResult = null;
@@ -5090,7 +5141,7 @@ function _matchCardHTML(m) {
     </div>` : ''}
     ${m.racketUsed ? (function(){
       const p = state.profile || {};
-      const rMap = { racket1: [1, p.racket], racket2: [2, p.racket2], racket3: [3, p.racket3] };
+      const rMap = { racket1: [1, p.racket], racket2: [2, p.racket2], racket3: [3, p.racket3], racket4: [4, p.racket4] };
       const rInfo = rMap[m.racketUsed] || [1, p.racket];
       const rNum = rInfo[0], rName = rInfo[1] || ('R' + rInfo[0]);
       return `<div style="margin-top:6px;font-size: 0.6667rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:6px;">🎾 R${rNum} ${escHtml(rName)}</div>`;
@@ -5219,8 +5270,8 @@ function selectPlayerAC(inputId, listId, name) {
   setTimeout(function() {
     var fmt = (document.getElementById('matchFormat') || {}).value || '';
     var flow = fmt === 'doubles'
-      ? ['matchPartner','matchOpponent1','matchOpponent2','myScore','oppScore','myTiebreak','oppTiebreak','matchMemo']
-      : ['matchOpponent','myScore','oppScore','myTiebreak','oppTiebreak','matchMemo'];
+      ? ['matchPartner','matchOpponent1','matchOpponent2','myScore','oppScore','myTiebreak','oppTiebreak','matchRacket','matchMemo']
+      : ['matchOpponent','myScore','oppScore','myTiebreak','oppTiebreak','matchRacket','matchMemo'];
     var idx = flow.indexOf(inputId);
     if (idx < 0) return;
     for (var i = idx + 1; i < flow.length; i++) {
@@ -5228,6 +5279,9 @@ function selectPlayerAC(inputId, listId, name) {
       if (nextEl && nextEl.offsetParent !== null) {
         nextEl.focus();
         if (nextEl.select) nextEl.select();
+        if (nextEl.tagName === 'SELECT' && typeof nextEl.showPicker === 'function') {
+          try { nextEl.showPicker(); } catch (err) { /* 무시 */ }
+        }
         break;
       }
     }
@@ -5280,19 +5334,23 @@ function updateMatchRacketOptions() {
   const racketLabel = document.getElementById('racketSelectLabel');
   if (!sel) return;
   const p = state.profile || {};
+  const rCount = Math.max(2, Math.min(4, state.racketCount || 2));
   const r1 = p.racket  || '';
   const r2 = p.racket2 || '';
   const r3 = p.racket3 || '';
+  const r4 = p.racket4 || '';
   const hasR1 = r1.trim() !== '';
   const hasR2 = r2.trim() !== '';
-  const hasR3 = r3.trim() !== '';
-  const hasAny = hasR1 || hasR2 || hasR3;
+  const hasR3 = rCount >= 3 && r3.trim() !== '';
+  const hasR4 = rCount >= 4 && r4.trim() !== '';
+  const hasAny = hasR1 || hasR2 || hasR3 || hasR4;
 
   // 라켓 등록된 경우: 필수 선택 / 미등록: 선택 안 함 허용
   let options = hasAny ? `<option value="">${_t('match_racket_sel_ph')}</option>` : `<option value="">${_t('match_racket_none_opt')}</option>`;
   if (hasR1) options += `<option value="racket1">🎾 R1 · ${escHtml(r1)}</option>`;
   if (hasR2) options += `<option value="racket2">🎾 R2 · ${escHtml(r2)}</option>`;
   if (hasR3) options += `<option value="racket3">🎾 R3 · ${escHtml(r3)}</option>`;
+  if (hasR4) options += `<option value="racket4">🎾 R4 · ${escHtml(r4)}</option>`;
 
   sel.innerHTML = options;
 
@@ -5303,7 +5361,7 @@ function updateMatchRacketOptions() {
 
   // 라켓이 하나도 없으면 안내 메시지 표시
   if (noRegMsg) {
-    noRegMsg.style.display = (!hasR1 && !hasR2) ? 'block' : 'none';
+    noRegMsg.style.display = !hasAny ? 'block' : 'none';
   }
 }
 function openMatchForm() {
@@ -5338,7 +5396,7 @@ function editMatch(id) {
 
   // 폼에 값 채우기
   document.getElementById('matchDate').value = m.date;
-  selectFormat(m.format);
+  selectFormat(m.format, false);
   document.getElementById('matchPartner').value = m.partner || '';
   if (m.format === 'doubles') {
     document.getElementById('matchOpponent').value = '';
@@ -6208,13 +6266,17 @@ function playStringReplaceVoice(msg) {
   } catch (e) { /* 음성 실패는 무시 */ }
 }
 
-// ===== 라켓 카드 HTML 생성 (라켓 1/2/3 공용 템플릿) =====
+// ===== 라켓 카드 HTML 생성 (라켓 1/2/3/4 공용 템플릿) =====
 function buildRacketCard(num) {
-  const accent = num === 1 ? 'var(--accent)' : num === 2 ? 'var(--accent2)' : '#c9a961';
+  const accentMap = { 1: 'var(--accent)', 2: 'var(--accent2)', 3: '#c9a961', 4: '#6fbf8f' };
+  const accent = accentMap[num] || 'var(--accent)';
   const ph = 'str_racket' + num + '_ph';
-  const removeBtn = num === 3
-    ? `<button onclick="toggleRacket3()" style="background:none;border:none;color:var(--text-muted);font-size:1.05rem;cursor:pointer;padding:2px 6px;" title="${_t('str_racket_remove_btn')}">✕</button>`
+  // 마지막(가장 큰 번호) 추가 라켓에만 ✕ 제거 버튼 표시 (라켓 1·2는 항상 유지)
+  const removeBtn = (num > 2 && num === state.racketCount)
+    ? `<button onclick="removeRacket(${num})" style="background:none;border:none;color:var(--text-muted);font-size:1.05rem;cursor:pointer;padding:2px 6px;" title="${escHtml(_t('str_racket_remove_btn').replace('{n}', num))}">✕</button>`
     : '';
+  // 스트링/텐션 placeholder 예시는 라켓1·2 예시를 번갈아 재사용
+  const phFallback = ((num - 1) % 2) + 1;
   return `
   <div class="card" style="margin-bottom:14px;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
@@ -6232,11 +6294,11 @@ function buildRacketCard(num) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
       <div>
         <label class="form-label" id="str${num}-string-lbl" style="font-size:0.72rem;">${_t('str_string_name_lbl')}</label>
-        <input class="form-input" id="str${num}-string" data-lang-placeholder="str_string${num === 1 ? '1' : num === 2 ? '2' : '1'}_ph" placeholder="${escHtml(_t('str_string' + (num === 3 ? '1' : num) + '_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-tension');if(n){n.focus();n.select();}}">
+        <input class="form-input" id="str${num}-string" data-lang-placeholder="str_string${phFallback}_ph" placeholder="${escHtml(_t('str_string' + phFallback + '_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-tension');if(n){n.focus();n.select();}}">
       </div>
       <div>
         <label class="form-label" style="font-size:0.72rem;">${_t('str_tension_lbl')}</label>
-        <input class="form-input" id="str${num}-tension" placeholder="${escHtml(_t('str_tension' + (num === 3 ? '1' : num) + '_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-date');if(n)n.focus();}">
+        <input class="form-input" id="str${num}-tension" placeholder="${escHtml(_t('str_tension' + phFallback + '_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-date');if(n)n.focus();}">
       </div>
     </div>
 
@@ -6289,12 +6351,13 @@ function buildRacketCard(num) {
       </div>
       <div>
         <label class="form-label" style="font-size:0.72rem;">${_t('str_cost_lbl')}</label>
-        <input type="number" min="0" class="form-input" id="str${num}-cost" placeholder="${escHtml(_t('str_cost_ph'))}" style="font-size:16px;padding:7px 10px;">
+        <input type="number" min="0" class="form-input" id="str${num}-cost" placeholder="${escHtml(_t('str_cost_ph'))}" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(${num})">
       </div>
     </div>
 
     <button class="btn btn-primary" style="width:100%;font-size:0.88rem;padding:10px;margin-bottom:8px;" onclick="saveStringingInfo(${num})"><span>${_t('str_save_btn')}</span></button>
     <button class="btn" style="width:100%;font-size:0.82rem;padding:9px;margin-bottom:4px;background:var(--surface2);color:var(--text);" onclick="addStringCalendarReminder(${num})"><span>${_t('str_calendar_btn')}</span></button>
+    <button class="btn" style="width:100%;font-size:0.76rem;padding:8px;margin-bottom:4px;background:none;color:var(--text-muted);border:1px dashed var(--border);" onclick="resetRacket(${num})"><span>${_t('str_reset_btn')}</span></button>
 
     <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:8px;">
@@ -6306,44 +6369,82 @@ function buildRacketCard(num) {
   </div>`;
 }
 
-// ===== 라켓 카드 컨테이너 렌더 (라켓3는 showRacket3일 때만) =====
+// ===== 라켓 카드 컨테이너 렌더 (라켓3·4는 state.racketCount에 따라 표시) =====
 // 참고: 매번 innerHTML을 새로 만들면 입력 중이던 필드의 포커스/커서가 날아가므로,
-// 라켓3 표시 여부나 언어가 실제로 바뀌었을 때만 DOM을 다시 만든다.
-let _stringCardsMeta = { built: false, showR3: null, lang: null };
+// 표시 라켓 수나 언어가 실제로 바뀌었을 때만 DOM을 다시 만든다.
+let _stringCardsMeta = { built: false, count: null, lang: null };
 function renderRacketCards(force) {
   const wrap = document.getElementById('racketCardsWrap');
   if (!wrap) return;
   const lang = _nijiGetLang() || 'ko';
-  const needed = !!state.showRacket3;
-  if (!force && _stringCardsMeta.built && _stringCardsMeta.showR3 === needed && _stringCardsMeta.lang === lang) {
+  const count = Math.max(2, Math.min(4, state.racketCount || 2));
+  state.racketCount = count;
+  if (!force && _stringCardsMeta.built && _stringCardsMeta.count === count && _stringCardsMeta.lang === lang) {
     return;
   }
-  let html = buildRacketCard(1) + buildRacketCard(2);
-  if (needed) html += buildRacketCard(3);
+  let html = '';
+  for (let n = 1; n <= count; n++) html += buildRacketCard(n);
   wrap.innerHTML = html;
-  _stringCardsMeta = { built: true, showR3: needed, lang: lang };
+  _stringCardsMeta = { built: true, count: count, lang: lang };
 
-  const toggleBtn = document.getElementById('racket3ToggleBtn');
-  if (toggleBtn) {
-    toggleBtn.querySelector('span').textContent = needed
-      ? _t('str_racket_remove_btn') : _t('str_racket_add_btn');
+  const addBtn = document.getElementById('racketAddBtn');
+  const addBtnLabel = document.getElementById('racketAddBtnLabel');
+  if (addBtn) {
+    if (count >= 4) {
+      addBtn.style.display = 'none';
+    } else {
+      addBtn.style.display = '';
+      if (addBtnLabel) addBtnLabel.textContent = _t('str_racket_add_btn').replace('{n}', count + 1);
+    }
   }
 }
 
-function toggleRacket3() {
-  if (state.showRacket3) {
-    showConfirm(_t('str_racket_remove_btn'), _t('str_racket3_remove_confirm'), '➖', () => {
-      state.showRacket3 = false;
-      save();
-      renderRacketCards(true);
-      renderStringing();
-    });
-  } else {
-    state.showRacket3 = true;
+// 라켓 추가 (최대 4자루)
+function addRacket() {
+  if ((state.racketCount || 2) >= 4) return;
+  state.racketCount = (state.racketCount || 2) + 1;
+  save();
+  renderRacketCards(true);
+  renderStringing();
+  renderStringBanner();
+}
+
+// 라켓 제거 (가장 마지막 번호 라켓만 제거 가능 — 데이터는 남아있고 화면에서만 숨김)
+function removeRacket(num) {
+  showConfirm(_t('str_racket_remove_btn').replace('{n}', num), _t('str_racket_remove_confirm').replace('{n}', num), '➖', () => {
+    state.racketCount = num - 1;
     save();
     renderRacketCards(true);
     renderStringing();
-  }
+    renderStringBanner();
+  });
+}
+
+// 라켓 N번 슬롯 초기화 (새 라켓으로 교체할 때 사용) — 정보 + 교체 이력 모두 삭제
+function resetRacket(num) {
+  showConfirm(_t('str_reset_confirm_title').replace('{n}', num), _t('str_reset_confirm_msg'), '🔄', () => {
+    const suf = num === 1 ? '' : num;
+    const p = state.profile;
+    p['racket' + suf] = '';
+    p['string' + suf] = '';
+    p['tension' + suf] = '';
+    p['stringDate' + suf] = '';
+    p['stringDate' + suf + 'Time'] = '';
+    p['hybrid' + num] = false;
+    p['crossString' + num] = '';
+    p['crossTension' + num] = '';
+    state['stringInterval' + suf] = 3;
+    state['stringGameLimit' + num] = 30;
+    if (num === 1) state.lastStringDate = '';
+    // 해당 라켓의 교체 이력도 함께 삭제
+    state.stringingHistory = (state.stringingHistory || []).filter(h =>
+      !((h.racket == num) || (!h.racket && num === 1)));
+    save();
+    renderRacketCards(true);
+    renderStringing();
+    renderStringBanner();
+    showToast(_t('str_toast_reset').replace('{n}', num));
+  });
 }
 
 // 하이브리드 체크박스 토글: 크로스 입력칸 표시/숨김 + 저장
@@ -6382,8 +6483,8 @@ function renderStringing() {
   const p = state.profile || {};
   const today = getTodayStr();
 
-  [1, 2, 3].forEach(num => {
-    if (num === 3 && !state.showRacket3) return;
+  [1, 2, 3, 4].forEach(num => {
+    if (num > (state.racketCount || 2)) return;
     const suf = num === 1 ? '' : num;
 
     const nameEl = document.getElementById('str-r' + num + '-name');
@@ -6661,7 +6762,7 @@ function shareStringCert() {
     return t;
   }
 
-  const blocks = [1, 2, 3].map(block).filter(Boolean);
+  const blocks = [1, 2, 3, 4].map(block).filter(Boolean);
   let txt = `🛠️ 스트링 교체 완료!\n`;
   txt += `━━━━━━━━━━━━━━━━\n`;
   txt += blocks.join('\n');
@@ -10944,8 +11045,8 @@ function setLanguage(lang) {
 (function autoNextInput() {
 
   // 경기 입력 폼 순서 정의
-  var MATCH_FLOW_SINGLES = ['matchOpponent', 'myScore', 'oppScore', 'myTiebreak', 'oppTiebreak', 'matchMemo'];
-  var MATCH_FLOW_DOUBLES = ['matchPartner', 'matchOpponent1', 'matchOpponent2', 'myScore', 'oppScore', 'myTiebreak', 'oppTiebreak', 'matchMemo'];
+  var MATCH_FLOW_SINGLES = ['matchOpponent', 'myScore', 'oppScore', 'myTiebreak', 'oppTiebreak', 'matchRacket', 'matchMemo'];
+  var MATCH_FLOW_DOUBLES = ['matchPartner', 'matchOpponent1', 'matchOpponent2', 'myScore', 'oppScore', 'myTiebreak', 'oppTiebreak', 'matchRacket', 'matchMemo'];
 
   // 스트링 탭 입력 순서
   var STRING_FLOW_R1 = ['str-r1-name', 'str1-string', 'str1-tension', 'str1-date'];
@@ -10959,7 +11060,14 @@ function setLanguage(lang) {
     for (var i = idx + 1; i < flowList.length; i++) {
       var nextEl = document.getElementById(flowList[i]);
       if (nextEl && nextEl.offsetParent !== null) { // 보이는 필드만
-        setTimeout(function(el) { el.focus(); el.select && el.select(); }, 80, nextEl);
+        setTimeout(function(el) {
+          el.focus();
+          el.select && el.select();
+          // 라켓 선택칸(select)이면 드롭다운을 자동으로 열어줌
+          if (el.tagName === 'SELECT' && typeof el.showPicker === 'function') {
+            try { el.showPicker(); } catch (err) { /* 브라우저가 허용 안 하면 무시 */ }
+          }
+        }, 80, nextEl);
         return true;
       }
     }
@@ -10983,10 +11091,22 @@ function setLanguage(lang) {
     var id = el.id;
     var tag = el.tagName;
 
-    // Enter 키: textarea 제외, 자동완성 목록이 열려있으면 제외
-    if (e.key === 'Enter' && tag !== 'TEXTAREA') {
+    // Enter 키: 자동완성 목록이 열려있으면 제외
+    if (e.key === 'Enter') {
       var ac = document.querySelector('.player-ac-list[style*="block"]');
       if (ac) return; // 자동완성 사용 중이면 Enter는 자동완성 선택으로 처리
+
+      // 메모칸(마지막 칸)에서 Enter → 저장 실행 (Shift+Enter는 줄바꿈)
+      if (id === 'matchMemo') {
+        if (!e.shiftKey) {
+          e.preventDefault();
+          if (typeof saveMatch === 'function') saveMatch();
+        }
+        return;
+      }
+
+      if (tag === 'TEXTAREA') return; // 그 외 textarea는 기본 줄바꿈 유지
+
       var flow = getFlow(id);
       if (flow) {
         var moved = focusNext(id, flow);
