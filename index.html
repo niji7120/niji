@@ -1569,17 +1569,23 @@ function _t(key) {
 
   /* ===== 스트링 상태: 게이지 링 카드 ===== */
   .pf-string-row {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 10px;
     padding: 8px 0;
   }
   .pf-string-row + .pf-string-row { border-top: 1px solid var(--border); }
-  .pf-gauge { flex-shrink: 0; position: relative; width: 52px; height: 52px; }
-  .pf-gauge svg { transform: rotate(-90deg); }
+  .pf-gauge-group { flex-shrink: 0; display: flex; gap: 6px; }
+  .pf-gauge-col { display: flex; flex-direction: column; align-items: center; }
+  .pf-gauge { flex-shrink: 0; position: relative; width: 46px; height: 46px; }
+  .pf-gauge svg { width: 46px; height: 46px; transform: rotate(-90deg); }
   .pf-gauge-pct {
-    position: absolute; inset: 0;
+    position: absolute; top: 0; left: 0; width: 46px; height: 46px;
     display: flex; align-items: center; justify-content: center;
     font-family: 'Cormorant Garamond', serif;
-    font-size: 0.7333rem; font-weight: 900; color: var(--text);
+    font-size: 0.6667rem; font-weight: 900; color: var(--text);
+  }
+  .pf-gauge-cap {
+    text-align: center; font-size: 0.5667rem; color: var(--text-muted);
+    margin-top: 2px; letter-spacing: .3px;
   }
   .pf-string-body { flex: 1; min-width: 0; }
   .pf-string-name {
@@ -4676,19 +4682,45 @@ function renderStringBanner() {
     const metaParts = [string, tension].filter(Boolean);
     const meta = metaParts.length ? escHtml(metaParts.join(' · ')) : (isEn ? 'No string info' : '스트링 정보 없음');
 
-    // 게이지 링 SVG (r=22, circumference≈138.2)
-    const R = 22, C = 2 * Math.PI * R;
+    // 게이지 링 SVG (r=17, circumference≈106.8) — 일수(신선도) 게이지
+    const R = 17, C = 2 * Math.PI * R;
     const offset = pct !== null ? C - (C * pct / 100) : 0;
     const ringStroke = pct !== null ? dColor : 'var(--border)';
-    const gauge = `
-      <div class="pf-gauge">
-        <svg width="52" height="52" viewBox="0 0 52 52">
-          <circle cx="26" cy="26" r="${R}" fill="none" stroke="var(--surface2)" stroke-width="5"/>
-          ${pct !== null ? `<circle cx="26" cy="26" r="${R}" fill="none" stroke="${ringStroke}" stroke-width="5"
-            stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${offset}"/>` : ''}
-        </svg>
-        <div class="pf-gauge-pct">${pct !== null ? pct + '%' : '–'}</div>
+    const dayGauge = `
+      <div class="pf-gauge-col">
+        <div class="pf-gauge">
+          <svg viewBox="0 0 46 46">
+            <circle cx="23" cy="23" r="${R}" fill="none" stroke="var(--surface2)" stroke-width="4.5"/>
+            ${pct !== null ? `<circle cx="23" cy="23" r="${R}" fill="none" stroke="${ringStroke}" stroke-width="4.5"
+              stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${offset}"/>` : ''}
+          </svg>
+          <div class="pf-gauge-pct">${pct !== null ? pct + '%' : '–'}</div>
+        </div>
+        <div class="pf-gauge-cap">${isEn ? 'DAY' : '일수'}</div>
       </div>`;
+
+    // 게임 수 기준 게이지 (임계치 대비 잔여율)
+    let gamesPct = null, gamesRingStroke = 'var(--border)';
+    if (diff !== null) {
+      gamesPct = Math.max(0, Math.min(100, Math.round(100 - (games / limit) * 100)));
+      const gamesCls = games < limit ? 'green' : games < limit * 1.3 ? 'yellow' : 'red';
+      gamesRingStroke = dayColor(gamesCls);
+    }
+    const gamesOffset = gamesPct !== null ? C - (C * gamesPct / 100) : 0;
+    const gameGauge = `
+      <div class="pf-gauge-col">
+        <div class="pf-gauge">
+          <svg viewBox="0 0 46 46">
+            <circle cx="23" cy="23" r="${R}" fill="none" stroke="var(--surface2)" stroke-width="4.5"/>
+            ${gamesPct !== null ? `<circle cx="23" cy="23" r="${R}" fill="none" stroke="${gamesRingStroke}" stroke-width="4.5"
+              stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${gamesOffset}"/>` : ''}
+          </svg>
+          <div class="pf-gauge-pct">${gamesPct !== null ? gamesPct + '%' : '–'}</div>
+        </div>
+        <div class="pf-gauge-cap">${_t('contest_games')}</div>
+      </div>`;
+
+    const gauge = `<div class="pf-gauge-group">${dayGauge}${gameGauge}</div>`;
 
     const sideHtml = diff !== null
       ? `<span class="pf-string-status ${cls}">${statusLabel(cls)}</span>
