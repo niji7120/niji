@@ -74,6 +74,59 @@ const NIJI_DICT = {
   toast_photo_save_failed: { ko: '⚠️ 사진 저장 실패. 기기 저장공간을 확인해 주세요.', en: '⚠️ Failed to save photo. Please check your device storage.' },
   toast_offline_synced:    { ko: '✅ 오프라인 기록이 클라우드에 동기화됐어요!', en: '✅ Offline records synced to the cloud!' },
   toast_cache_cleared:     { ko: '🧹 저장공간 정리 완료!', en: '🧹 Cache cleared!' },
+  toast_sport_changed:     { ko: '📊 {sport} 통계로 변경', en: '📊 Switched to {sport} stats' },
+  /* 로그인 / 회원가입 메시지 */
+  login_signing_in:        { ko: '로그인 중...', en: 'Signing in...' },
+  login_err_fields:        { ko: '이메일과 비밀번호를 입력해 주세요.', en: 'Please enter your email and password.' },
+  login_err_not_found:     { ko: '등록되지 않은 이메일이에요.', en: 'This email is not registered.' },
+  login_err_wrong_pw:      { ko: '비밀번호가 틀렸어요.', en: 'Incorrect password.' },
+  login_err_invalid_email: { ko: '이메일 형식이 올바르지 않아요.', en: 'Invalid email format.' },
+  login_err_too_many:      { ko: '시도 횟수 초과. 잠시 후 다시 시도해 주세요.', en: 'Too many attempts. Please try again later.' },
+  login_err_generic:       { ko: '로그인 실패.', en: 'Sign-in failed.' },
+  login_err_ios:           { ko: 'iOS 로그인 오류. 이메일 로그인을 이용해 주세요.', en: 'iOS sign-in error. Please use email sign-in instead.' },
+  login_err_google:        { ko: '구글 로그인 실패. 다시 시도해 주세요.', en: 'Google sign-in failed. Please try again.' },
+  signup_err_email_req:    { ko: '이메일 주소를 입력해 주세요.', en: 'Please enter your email address.' },
+  signup_err_pw_req:       { ko: '비밀번호를 입력해 주세요.', en: 'Please enter a password.' },
+  signup_err_pw_short:     { ko: '비밀번호는 6자 이상이어야 해요.', en: 'Password must be at least 6 characters.' },
+  signup_err_pw_mismatch:  { ko: '비밀번호가 일치하지 않아요. 다시 확인해 주세요.', en: 'Passwords do not match. Please check again.' },
+  signup_signing_up:       { ko: '가입 중...', en: 'Signing up...' },
+  signup_success:          { ko: '✅ 가입 완료! 로그인 중...', en: '✅ Signup complete! Signing in...' },
+  signup_err_email_in_use: { ko: '이미 사용 중인 이메일이에요.\n로그인 화면에서 로그인해 주세요.', en: 'This email is already in use.\nPlease sign in from the login screen.' },
+  signup_err_invalid_email:{ ko: '이메일 형식이 올바르지 않아요.\n예: tennis@naver.com', en: 'Invalid email format.\nExample: tennis@naver.com' },
+  signup_err_weak_pw:      { ko: '비밀번호가 너무 짧아요. (6자 이상 필요)', en: 'Password is too short. (6+ characters required)' },
+  signup_err_generic:      { ko: '회원가입 실패. 다시 시도해 주세요.', en: 'Signup failed. Please try again.' },
+  resetpw_need_email:      { ko: '위에 이메일을 입력한 후 눌러주세요.', en: 'Please enter your email above, then tap this.' },
+  resetpw_success:         { ko: '✅ {email}로 재설정 메일을 보냈어요!', en: '✅ Reset email sent to {email}!' },
+  resetpw_err_generic:     { ko: '메일 발송 실패. 이메일을 확인해 주세요.', en: 'Failed to send email. Please check your email address.' },
+  /* 온보딩 (첫 사용자 안내) */
+  ob_skip:                 { ko: '건너뛰기', en: 'Skip' },
+  ob_step_of:              { ko: '{cur} / {total}', en: '{cur} / {total}' },
+  ob1_title:               { ko: '니지스트링에\n오신 걸 환영해요! 🎾', en: 'Welcome to\nNIJI STRING! 🎾' },
+  ob1_desc:                { ko: '경기 기록부터 전적 통계, 선수·대회 관리까지\n라켓 스포츠 생활을 이 앱 하나로 관리해보세요.', en: 'From match records to stats,\nplayers, and tournaments — manage it all in one app.' },
+  ob1_btn:                 { ko: '시작하기', en: 'Get Started' },
+  ob2_title:                { ko: '어떤 종목을\n즐기세요?', en: 'Which sport\ndo you play?' },
+  ob2_desc:                { ko: '나중에 프로필 탭에서 언제든 바꿀 수 있어요', en: 'You can change this anytime in the Profile tab' },
+  ob3_title:               { ko: '이름을\n알려주세요', en: "What's your\nname?" },
+  ob3_desc:                { ko: '경기 기록과 통계에 표시될 이름이에요', en: 'This name will appear on your match records and stats' },
+  ob3_ph:                  { ko: '예: 홍길동', en: 'e.g. John Smith' },
+  ob3_required:            { ko: '이름을 입력해 주세요', en: 'Please enter your name' },
+  ob4_title:               { ko: '준비 완료! 🎉', en: 'All set! 🎉' },
+  ob4_desc:                { ko: '이제 첫 경기를 기록해볼까요?\n상대 이름과 결과만 입력하면\n통계가 자동으로 쌓여요.', en: "Let's log your first match.\nJust enter your opponent and result —\nstats build up automatically." },
+  ob4_btn:                 { ko: '경기 기록하러 가기', en: 'Log My First Match' },
+  ob_btn_next:             { ko: '다음', en: 'Next' },
+  ob_toast_done:           { ko: '👋 환영해요! 편하게 둘러보세요', en: '👋 Welcome! Feel free to look around' },
+  /* 경기 결과 공유 카드 */
+  sc_win_label:            { ko: '🏆 승리!', en: '🏆 Win!' },
+  sc_lose_label:           { ko: '💪 패배', en: '💪 Lose' },
+  sc_opp_default:          { ko: '상대', en: 'Opponent' },
+  sc_tiebreak_prefix:      { ko: '타이브레이크', en: 'Tiebreak' },
+  sc_share_date:           { ko: '날짜', en: 'Date' },
+  sc_share_result:         { ko: '결과', en: 'Result' },
+  sc_share_score:          { ko: '스코어', en: 'Score' },
+  sc_share_opp:            { ko: '상대', en: 'Opponent' },
+  sc_share_myname:         { ko: '내 이름', en: 'My name' },
+  sc_share_title:          { ko: '경기 결과', en: 'match result' },
+  sc_share_opp_unknown:    { ko: '?', en: '?' },
   toast_cache_clear_failed:{ ko: '❌ 정리 실패: ', en: '❌ Clear failed: ' },
   toast_photo_size_limit:  { ko: '⚠️ 사진 크기는 15MB 이하여야 합니다', en: '⚠️ Photo must be under 15MB' },
   toast_photo_uploaded:    { ko: '📷 사진 업로드 완료! 위아래로 드래그해서 위치를 조정할 수 있어요', en: '📷 Photo uploaded! Drag up and down to adjust the position' },
@@ -594,7 +647,7 @@ const NIJI_DICT = {
   manual_s3_1: { ko: '통계 탭 상단에 현재 선택된 종목이 표시됩니다. <b>[종목 변경 →]</b> 버튼을 누르면 프로필 탭에서 종목을 바꿀 수 있어요', en: 'The current sport is shown at the top. Tap <b>[Change Sport →]</b> to switch sports in the profile tab' },
   manual_s3_2: { ko: '<b>연승·연패 배너</b> — 현재 연속 기록이 자동으로 표시됩니다', en: '<b>Win/Loss Streak banner</b> — your current streak is shown automatically' },
   manual_s3_3: { ko: '<b>상세 요약</b> — 이번 달 성적, 단식·복식 승률, 가장 많이 이긴 상대·가장 어려운 상대', en: '<b>Summary</b> — this month\'s record, singles/doubles win rates, best and toughest opponents' },
-  manual_s3_4: { ko: '<b>월별 승률 그래프</b> — 최근 6개월 성적 추이를 바 차트로 확인', en: '<b>Monthly win rate chart</b> — view your last 6 months of performance as a bar chart' },
+  manual_s3_4: { ko: '<b>월별 승률 그래프</b> — 최근 12개월 성적 추이를 바 차트로 확인', en: '<b>Monthly win rate chart</b> — view your last 12 months of performance as a bar chart' },
   manual_s3_5: { ko: '<b>상대 전적 · 파트너 궁합 · 상대팀 상성</b>을 각각 분석해줘요. 기본 상위 5명만 표시되고, <b>[더보기]</b> 버튼으로 전체를 볼 수 있어요', en: 'Analyzes <b>opponent records, partner chemistry, and rival team matchups</b>. Top 5 shown by default — tap <b>[Show More]</b> for all' },
   manual_s3_6: { ko: '각 섹션 상단 <b>🔍 검색창</b>에서 이름 또는 초성으로 바로 찾을 수 있어요', en: 'Use the <b>🔍 search bar</b> at the top of each section to find by name' },
   manual_s3_7: { ko: '각 항목은 탭하면 펼쳐지는 <b>아코디언 방식</b>으로 필요한 것만 열어볼 수 있어요', en: 'Each item uses an <b>accordion style</b> — tap to expand only what you need' },
@@ -1929,6 +1982,48 @@ function _t(key) {
     }
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== 온보딩 (첫 사용자 안내) ===== */
+  #onboardOverlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg); display: none;
+    flex-direction: column;
+  }
+  .ob-topbar { display:flex; align-items:center; justify-content:space-between; padding:16px 20px 0; flex-shrink:0; }
+  .ob-progress { flex:1; display:flex; gap:6px; margin-right:14px; }
+  .ob-progress-dot { flex:1; height:4px; border-radius:4px; background:var(--border); transition:background .3s; }
+  .ob-progress-dot.done { background:var(--accent); }
+  .ob-skip-btn { background:none; border:none; color:var(--text-muted); font-size:0.8667rem; font-weight:600; cursor:pointer; padding:6px 8px; white-space:nowrap; }
+  .ob-steps { flex:1; position:relative; overflow:hidden; }
+  .ob-step {
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:20px 28px; gap:18px;
+    opacity:0; transform:translateX(40px); pointer-events:none;
+    transition: opacity .35s ease, transform .35s ease;
+  }
+  .ob-step.active { opacity:1; transform:translateX(0); pointer-events:auto; }
+  .ob-step.leaving { opacity:0; transform:translateX(-40px); }
+  .ob-emoji { font-size:3.6rem; line-height:1; }
+  .ob-title { font-size:1.5rem; font-weight:900; color:var(--text); white-space:pre-line; line-height:1.35; }
+  .ob-desc { font-size:0.9333rem; color:var(--text-muted); white-space:pre-line; line-height:1.6; max-width:320px; }
+  .ob-sport-row { display:flex; gap:10px; width:100%; max-width:340px; margin-top:4px; }
+  .ob-sport-btn {
+    flex:1; padding:18px 8px; border-radius:16px; border:1.5px solid var(--border); background:var(--surface2);
+    color:var(--text-muted); cursor:pointer; font-family:inherit; transition:all .2s; display:flex; flex-direction:column; gap:6px; align-items:center;
+  }
+  .ob-sport-btn .ob-sport-icon { font-size:1.8rem; }
+  .ob-sport-btn.selected { border-color:var(--accent); background:rgba(201,169,97,.12); color:var(--accent); }
+  .ob-name-input {
+    width:100%; max-width:320px; padding:14px 16px; margin-top:4px; font-size:1.0667rem; text-align:center;
+    background:var(--surface2); border:1.5px solid var(--border); border-radius:14px; color:var(--text); font-family:inherit; outline:none;
+  }
+  .ob-name-input:focus { border-color:var(--accent); }
+  .ob-bottom { padding:16px 24px calc(20px + env(safe-area-inset-bottom)); flex-shrink:0; }
+  .ob-next-btn {
+    width:100%; padding:15px; border:none; border-radius:14px; background:var(--accent); color:#fff;
+    font-size:1rem; font-weight:800; cursor:pointer; font-family:inherit; transition:opacity .2s;
+  }
+  .ob-next-btn:disabled { opacity:.4; cursor:default; }
 </style>
 </head>
 <body>
@@ -1948,6 +2043,65 @@ function _t(key) {
   <div id="loadingMsg" style="font-size: 0.8rem; color:#8a998f;">서버 연결 중...</div>
   <script>(function(){try{var l=document.getElementById('loadingMsg');var lang=localStorage.getItem('niji_language');if(l&&lang==='en')l.textContent='Connecting to server...';}catch(e){}})();</script>
 </div>
+<!-- ===== ONBOARDING (첫 사용자 안내) ===== -->
+<div id="onboardOverlay">
+  <div class="ob-topbar">
+    <div class="ob-progress" id="obProgress">
+      <div class="ob-progress-dot" data-i="0"></div>
+      <div class="ob-progress-dot" data-i="1"></div>
+      <div class="ob-progress-dot" data-i="2"></div>
+      <div class="ob-progress-dot" data-i="3"></div>
+    </div>
+    <button class="ob-skip-btn" onclick="obSkip()" data-lang="ob_skip">건너뛰기</button>
+  </div>
+
+  <div class="ob-steps">
+    <!-- STEP 1: 환영 -->
+    <div class="ob-step" id="ob-step-0">
+      <div class="ob-emoji">🎾</div>
+      <div class="ob-title" data-lang="ob1_title">니지스트링에\n오신 걸 환영해요! 🎾</div>
+      <div class="ob-desc" data-lang="ob1_desc">경기 기록부터 전적 통계, 선수·대회 관리까지\n라켓 스포츠 생활을 이 앱 하나로 관리해보세요.</div>
+    </div>
+
+    <!-- STEP 2: 종목 선택 -->
+    <div class="ob-step" id="ob-step-1">
+      <div class="ob-emoji">🏆</div>
+      <div class="ob-title" data-lang="ob2_title">어떤 종목을\n즐기세요?</div>
+      <div class="ob-desc" data-lang="ob2_desc">나중에 프로필 탭에서 언제든 바꿀 수 있어요</div>
+      <div class="ob-sport-row">
+        <button class="ob-sport-btn" data-sport="tennis" onclick="obSelectSport('tennis')">
+          <span class="ob-sport-icon">🎾</span><span data-lang="pf_tennis">테니스</span>
+        </button>
+        <button class="ob-sport-btn" data-sport="badminton" onclick="obSelectSport('badminton')">
+          <span class="ob-sport-icon">🏸</span><span data-lang="pf_badminton">배드민턴</span>
+        </button>
+        <button class="ob-sport-btn" data-sport="pickleball" onclick="obSelectSport('pickleball')">
+          <span class="ob-sport-icon">🥒</span><span data-lang="pf_pickleball">피클볼</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 3: 이름 입력 -->
+    <div class="ob-step" id="ob-step-2">
+      <div class="ob-emoji">✍️</div>
+      <div class="ob-title" data-lang="ob3_title">이름을\n알려주세요</div>
+      <div class="ob-desc" data-lang="ob3_desc">경기 기록과 통계에 표시될 이름이에요</div>
+      <input type="text" class="ob-name-input" id="obNameInput" data-lang-placeholder="ob3_ph" placeholder="예: 홍길동" oninput="obOnNameInput()" onkeydown="if(event.key==='Enter')obNext()">
+    </div>
+
+    <!-- STEP 4: 경기기록 안내 -->
+    <div class="ob-step" id="ob-step-3">
+      <div class="ob-emoji">🎉</div>
+      <div class="ob-title" data-lang="ob4_title">준비 완료! 🎉</div>
+      <div class="ob-desc" data-lang="ob4_desc">이제 첫 경기를 기록해볼까요?\n상대 이름과 결과만 입력하면\n통계가 자동으로 쌓여요.</div>
+    </div>
+  </div>
+
+  <div class="ob-bottom">
+    <button class="ob-next-btn" id="obNextBtn" onclick="obNext()">다음</button>
+  </div>
+</div>
+
 <div id="app">
   <div class="topbar">
     <span class="topbar-logo">NIJI STRING</span>
@@ -2428,31 +2582,31 @@ function _t(key) {
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
               <select class="form-select" id="newPlayerGender">
                 <option value="" data-lang="players_gender_lbl">성별</option>
-                <option data-lang="players_gender_m">남자</option><option data-lang="players_gender_f">여자</option>
+                <option value="남자" data-lang="players_gender_m">남자</option><option value="여자" data-lang="players_gender_f">여자</option>
               </select>
               <input class="form-input" id="newPlayerGrade" data-lang-placeholder="players_grade_add_ph" placeholder="등급 (예: 14)" inputmode="numeric" onkeydown="if(event.key==='Enter')addPlayer()" style="font-size: 1.0667rem;">
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
               <select class="form-select" id="newPlayerAge">
                 <option value="" data-lang="players_age_lbl">나이대</option>
-                <option data-lang="players_age_10s">10대</option><option data-lang="players_age_20s">20대</option><option data-lang="players_age_30s">30대</option>
-                <option data-lang="players_age_40s">40대</option><option data-lang="players_age_50s">50대</option><option data-lang="players_age_60s">60대 이상</option>
+                <option value="10대" data-lang="players_age_10s">10대</option><option value="20대" data-lang="players_age_20s">20대</option><option value="30대" data-lang="players_age_30s">30대</option>
+                <option value="40대" data-lang="players_age_40s">40대</option><option value="50대" data-lang="players_age_50s">50대</option><option value="60대 이상" data-lang="players_age_60s">60대 이상</option>
               </select>
               <select class="form-select" id="newPlayerHand">
                 <option value="" data-lang="players_hand_lbl">손잡이</option>
-                <option data-lang="players_hand_r">오른손</option><option data-lang="players_hand_l">왼손</option>
+                <option value="오른손" data-lang="players_hand_r">오른손</option><option value="왼손" data-lang="players_hand_l">왼손</option>
               </select>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
               <select class="form-select" id="newPlayerCareer">
                 <option value="" data-lang="players_career_lbl">구력</option>
-                <option data-lang="players_career_1">6개월 미만</option><option data-lang="players_career_2">6개월~1년</option><option data-lang="players_career_3">1~2년</option>
-                <option data-lang="players_career_4">2~5년</option><option data-lang="players_career_5">5~10년</option><option data-lang="players_career_6">10년 이상</option>
+                <option value="6개월 미만" data-lang="players_career_1">6개월 미만</option><option value="6개월~1년" data-lang="players_career_2">6개월~1년</option><option value="1~2년" data-lang="players_career_3">1~2년</option>
+                <option value="2~5년" data-lang="players_career_4">2~5년</option><option value="5~10년" data-lang="players_career_5">5~10년</option><option value="10년 이상" data-lang="players_career_6">10년 이상</option>
               </select>
               <select class="form-select" id="newPlayerStyle">
                 <option value="" data-lang="players_style_lbl">플레이스타일</option>
-                <option data-lang="players_style_1">공격형</option><option data-lang="players_style_2">수비형</option><option data-lang="players_style_3">올라운드</option>
-                <option data-lang="players_style_4">네트플레이</option><option data-lang="players_style_5">베이스라인</option>
+                <option value="공격형" data-lang="players_style_1">공격형</option><option value="수비형" data-lang="players_style_2">수비형</option><option value="올라운드" data-lang="players_style_3">올라운드</option>
+                <option value="네트플레이" data-lang="players_style_4">네트플레이</option><option value="베이스라인" data-lang="players_style_5">베이스라인</option>
               </select>
             </div>
             <div class="form-group" style="margin-bottom:12px;" id="newPlayerClubWrap">
@@ -2835,7 +2989,7 @@ function _t(key) {
         <div class="manual-items">
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_1">상단 사진 영역을 탭하면 <b>프로필 사진</b>을 등록할 수 있어요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_2">이름·클럽·나이대·손잡이·구력·스타일 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_3">라켓은 <b>기본 2자루, "라켓 추가" 버튼으로 3자루까지</b> 등록할 수 있어요. RACQUET 1·2·3 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_3">라켓은 <b>기본 2자루, "라켓 추가" 버튼으로 4자루까지</b> 등록할 수 있어요. RACQUET 1·2·3·4 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_4"><b>스트링 선택</b> — 과거에 입력한 스트링 목록에서 고르거나, 아래 입력창에 직접 타이핑할 수 있어요. 드롭다운에서 선택하면 입력창에도 자동으로 채워져요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_5"><b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s1_6">프로필 하단에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼 <b>종목을 설정</b>하세요. 경기기록·통계 탭의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동해요</span></div>
@@ -2874,7 +3028,7 @@ function _t(key) {
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_1">통계 탭 상단에 현재 선택된 종목이 표시됩니다. <b>[종목 변경 →]</b> 버튼을 누르면 프로필 탭에서 종목을 바꿀 수 있어요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_2"><b>연승·연패 배너</b> — 현재 연속 기록이 자동으로 표시됩니다</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_3"><b>상세 요약</b> — 이번 달 성적, 단식·복식 승률, 가장 많이 이긴 상대·가장 어려운 상대</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_4"><b>월별 승률 그래프</b> — 최근 6개월 성적 추이를 바 차트로 확인</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_4"><b>월별 승률 그래프</b> — 최근 12개월 성적 추이를 바 차트로 확인</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_5"><b>상대 전적 · 파트너 궁합 · 상대팀 상성</b>을 각각 분석해줘요. 기본 상위 5명만 표시되고, <b>[더보기]</b> 버튼으로 전체를 볼 수 있어요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_6">각 섹션 상단 <b>🔍 검색창</b>에서 이름 또는 초성으로 바로 찾을 수 있어요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s3_7">각 항목은 탭하면 펼쳐지는 <b>아코디언 방식</b>으로 필요한 것만 열어볼 수 있어요</span></div>
@@ -2942,7 +3096,7 @@ function _t(key) {
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_7">알림은 이제 <b>날짜와 게임 수</b>를 함께 봐요. 라켓 카드의 <b>게임 임계치</b>를 넘게 치면, 아직 교체일이 안 됐어도 주의/교체 알림이 떠요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_8">🔀 하이브리드 체크박스를 켜면 메인·크로스 스트링을 따로 기록할 수 있어요</span></div>
           <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_9">📅 캘린더에 알림 등록 버튼을 누르면 다음 교체 예정일이 폰 캘린더 앱에 알림으로 저장돼요 — 앱을 안 켜도 알림이 와요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_10">라켓 카드 아래 ➕ 라켓 추가 버튼으로 라켓 3까지 등록할 수 있고, 저장할 때 교체 사유·비용도 함께 남길 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s6_10">라켓 카드 아래 ➕ 라켓 추가 버튼으로 라켓 4까지 등록할 수 있고, 저장할 때 교체 사유·비용도 함께 남길 수 있어요</span></div>
         </div>
       </div>
 
@@ -3515,7 +3669,7 @@ function _showLoginScreen() {
 function signInWithGoogle() {
   var btn = document.getElementById('googleLoginBtn');
   var msgEl = document.getElementById('loginMsg');
-  if (btn) { btn.disabled = true; btn.textContent = '로그인 중...'; }
+  if (btn) { btn.disabled = true; btn.textContent = _t('login_signing_in'); }
   if (msgEl) msgEl.textContent = '';
   var provider = new firebase.auth.GoogleAuthProvider();
 
@@ -3525,7 +3679,7 @@ function signInWithGoogle() {
       window._firebaseAuth.signInWithRedirect(provider);
     } catch(e) {
       if (btn) { btn.disabled = false; btn.innerHTML = _googleBtnHTML(); }
-      if (msgEl) msgEl.textContent = 'iOS 로그인 오류. 이메일 로그인을 이용해 주세요.';
+      if (msgEl) msgEl.textContent = _t('login_err_ios');
     }
     return;
   }
@@ -3536,7 +3690,7 @@ function signInWithGoogle() {
         window._firebaseAuth.signInWithRedirect(provider);
       } else {
         if (btn) { btn.disabled = false; btn.innerHTML = _googleBtnHTML(); }
-        if (msgEl) msgEl.textContent = '구글 로그인 실패. 다시 시도해 주세요.';
+        if (msgEl) msgEl.textContent = _t('login_err_google');
       }
     });
 }
@@ -3546,15 +3700,15 @@ function signInWithEmail() {
   var email = (document.getElementById('loginEmail') || {}).value || '';
   var pw = (document.getElementById('loginPassword') || {}).value || '';
   var msgEl = document.getElementById('loginMsg');
-  if (!email || !pw) { if (msgEl) msgEl.textContent = '이메일과 비밀번호를 입력해 주세요.'; return; }
+  if (!email || !pw) { if (msgEl) msgEl.textContent = _t('login_err_fields'); return; }
   if (msgEl) msgEl.textContent = '';
   window._firebaseAuth.signInWithEmailAndPassword(email, pw)
     .catch(function(e) {
-      var msg = '로그인 실패.';
-      if (e.code === 'auth/user-not-found') msg = '등록되지 않은 이메일이에요.';
-      else if (e.code === 'auth/wrong-password') msg = '비밀번호가 틀렸어요.';
-      else if (e.code === 'auth/invalid-email') msg = '이메일 형식이 올바르지 않아요.';
-      else if (e.code === 'auth/too-many-requests') msg = '시도 횟수 초과. 잠시 후 다시 시도해 주세요.';
+      var msg = _t('login_err_generic');
+      if (e.code === 'auth/user-not-found') msg = _t('login_err_not_found');
+      else if (e.code === 'auth/wrong-password') msg = _t('login_err_wrong_pw');
+      else if (e.code === 'auth/invalid-email') msg = _t('login_err_invalid_email');
+      else if (e.code === 'auth/too-many-requests') msg = _t('login_err_too_many');
       if (msgEl) msgEl.textContent = msg;
     });
 }
@@ -3587,20 +3741,20 @@ function _submitSignup() {
   function _setMsg(txt, color) {
     if (msgEl) { msgEl.style.color = color || '#f87171'; msgEl.textContent = txt; }
   }
-  if (!email) { _setMsg('이메일 주소를 입력해 주세요.'); return; }
-  if (!pw) { _setMsg('비밀번호를 입력해 주세요.'); return; }
-  if (pw.length < 6) { _setMsg('비밀번호는 6자 이상이어야 해요.'); return; }
-  if (pw !== pw2) { _setMsg('비밀번호가 일치하지 않아요. 다시 확인해 주세요.'); return; }
-  _setMsg('가입 중...', '#c9a961');
+  if (!email) { _setMsg(_t('signup_err_email_req')); return; }
+  if (!pw) { _setMsg(_t('signup_err_pw_req')); return; }
+  if (pw.length < 6) { _setMsg(_t('signup_err_pw_short')); return; }
+  if (pw !== pw2) { _setMsg(_t('signup_err_pw_mismatch')); return; }
+  _setMsg(_t('signup_signing_up'), '#c9a961');
   window._firebaseAuth.createUserWithEmailAndPassword(email, pw)
     .then(function() {
-      _setMsg('✅ 가입 완료! 로그인 중...', '#4ade80');
+      _setMsg(_t('signup_success'), '#4ade80');
     })
     .catch(function(e) {
-      var msg = '회원가입 실패. 다시 시도해 주세요.';
-      if (e.code === 'auth/email-already-in-use') msg = '이미 사용 중인 이메일이에요.\n로그인 화면에서 로그인해 주세요.';
-      else if (e.code === 'auth/invalid-email') msg = '이메일 형식이 올바르지 않아요.\n예: tennis@naver.com';
-      else if (e.code === 'auth/weak-password') msg = '비밀번호가 너무 짧아요. (6자 이상 필요)';
+      var msg = _t('signup_err_generic');
+      if (e.code === 'auth/email-already-in-use') msg = _t('signup_err_email_in_use');
+      else if (e.code === 'auth/invalid-email') msg = _t('signup_err_invalid_email');
+      else if (e.code === 'auth/weak-password') msg = _t('signup_err_weak_pw');
       _setMsg(msg, '#f87171');
     });
 }
@@ -3609,10 +3763,10 @@ function _submitSignup() {
 function resetPassword() {
   var email = (document.getElementById('loginEmail') || {}).value || '';
   var msgEl = document.getElementById('loginMsg');
-  if (!email) { if (msgEl) { msgEl.style.color='#c9a961'; msgEl.textContent = '위에 이메일을 입력한 후 눌러주세요.'; } return; }
+  if (!email) { if (msgEl) { msgEl.style.color='#c9a961'; msgEl.textContent = _t('resetpw_need_email'); } return; }
   window._firebaseAuth.sendPasswordResetEmail(email)
-    .then(function() { if (msgEl) { msgEl.style.color='#4ade80'; msgEl.textContent = '✅ ' + email + '로 재설정 메일을 보냈어요!'; } })
-    .catch(function() { if (msgEl) { msgEl.style.color='#f87171'; msgEl.textContent = '메일 발송 실패. 이메일을 확인해 주세요.'; } });
+    .then(function() { if (msgEl) { msgEl.style.color='#4ade80'; msgEl.textContent = _t('resetpw_success').replace('{email}', email); } })
+    .catch(function() { if (msgEl) { msgEl.style.color='#f87171'; msgEl.textContent = _t('resetpw_err_generic'); } });
 }
 
 // 로그아웃
@@ -3894,6 +4048,123 @@ function _initApp() {
   setTimeout(_showNavAndProfile, 0);
   // 100ms 후 한 번 더 보장 (Firebase 비동기 렌더 완료 후 대비)
   setTimeout(_showNavAndProfile, 100);
+
+  // 첫 사용자라면 온보딩 화면 표시 (프로필 이름이 비어있고, 아직 완료 기록이 없을 때만)
+  setTimeout(obStart, 150);
+}
+
+// ===== 온보딩 (첫 사용자 안내) =====
+var _obStep = 0;
+var _obSport = null;
+var _obTotalSteps = 4;
+
+function _obStorageKey() {
+  var uid = window._userId || 'local';
+  return 'nijiOnboardDone_' + uid;
+}
+
+// 온보딩을 보여줄지 판단: (1) 완료 기록이 없고, (2) 아직 이름을 입력한 적 없는 진짜 신규 사용자일 때만
+// → 캐시 정리 등으로 완료 기록만 사라진 기존 사용자에게는 다시 뜨지 않도록 이중 체크
+function obStart() {
+  try {
+    var done = localStorage.getItem(_obStorageKey());
+    var hasName = !!(state.profile && state.profile.name && state.profile.name.trim());
+    if (done || hasName) return;
+  } catch(e) { return; }
+
+  _obStep = 0;
+  _obSport = null;
+  var input = document.getElementById('obNameInput');
+  if (input) input.value = '';
+  var overlay = document.getElementById('onboardOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  _obRenderStep(0, null);
+}
+
+function _obRenderStep(idx, fromIdx) {
+  document.querySelectorAll('.ob-step').forEach(function(el, i) {
+    el.classList.remove('active', 'leaving');
+    if (i === fromIdx) el.classList.add('leaving');
+    if (i === idx) el.classList.add('active');
+  });
+  document.querySelectorAll('.ob-progress-dot').forEach(function(dot) {
+    var i = parseInt(dot.getAttribute('data-i'));
+    dot.classList.toggle('done', i <= idx);
+  });
+
+  var btn = document.getElementById('obNextBtn');
+  if (idx === 0) {
+    btn.textContent = _t('ob1_btn');
+    btn.disabled = false;
+  } else if (idx === 1) {
+    btn.textContent = _t('ob_btn_next');
+    btn.disabled = !_obSport;
+  } else if (idx === 2) {
+    btn.textContent = _t('ob_btn_next');
+    var nameVal = (document.getElementById('obNameInput') || {}).value || '';
+    btn.disabled = !nameVal.trim();
+    setTimeout(function() { var el = document.getElementById('obNameInput'); if (el) el.focus(); }, 350);
+  } else if (idx === 3) {
+    btn.textContent = _t('ob4_btn');
+    btn.disabled = false;
+  }
+}
+
+function obSelectSport(sport) {
+  _obSport = sport;
+  document.querySelectorAll('.ob-sport-btn').forEach(function(b) {
+    b.classList.toggle('selected', b.getAttribute('data-sport') === sport);
+  });
+  var btn = document.getElementById('obNextBtn');
+  if (btn) btn.disabled = false;
+}
+
+function obOnNameInput() {
+  var btn = document.getElementById('obNextBtn');
+  var val = (document.getElementById('obNameInput') || {}).value || '';
+  if (btn) btn.disabled = !val.trim();
+}
+
+function obNext() {
+  if (_obStep === 1 && !_obSport) return;
+  if (_obStep === 2) {
+    var name = (document.getElementById('obNameInput') || {}).value || '';
+    if (!name.trim()) { showToast(_t('ob3_required')); return; }
+  }
+  if (_obStep === 3) { obFinish(); return; }
+  var next = _obStep + 1;
+  var prev = _obStep;
+  _obStep = next;
+  _obRenderStep(next, prev);
+}
+
+function obSkip() {
+  try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
+  var overlay = document.getElementById('onboardOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function obFinish() {
+  var name = ((document.getElementById('obNameInput') || {}).value || '').trim();
+  if (!state.profile) state.profile = {};
+  state.profile.name = name;
+  if (_obSport) state.sportType = _obSport;
+  save();
+  try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
+
+  var overlay = document.getElementById('onboardOverlay');
+  if (overlay) overlay.style.display = 'none';
+
+  renderProfile();
+  showPage('match');
+  showToast(_t('ob_toast_done'));
+  setTimeout(function() {
+    var body = document.getElementById('matchFormBody');
+    if (body && body.style.display === 'none') toggleMatchForm();
+    var header = document.getElementById('matchFormAccHeader');
+    if (header) header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 200);
 }
 
 // ===== 저장공간 정리 =====
@@ -4327,9 +4598,14 @@ function tvSyncToMatch(t, ri, gi) {
 
   const result = Number(myScore) > Number(oppScore) ? 'win' : 'lose';
 
-  // 기존 대회 기록 찾기 (라운드+게임 인덱스로 정확히 식별 → 중복 방지)
+  // 기존 대회 기록 찾기 (대회 id + 라운드/게임 인덱스로 식별 → 대회 이름을 나중에 바꿔도 중복 안 생기게 함)
+  // [수정] 예전에는 매치 메모 문자열(대회 이름 포함)로만 식별했는데,
+  // 대회 이름을 수정(tvEdit)한 뒤 점수를 입력하면 새 이름으로 만든 메모가 기존 기록과 달라져서
+  // 같은 경기가 계속 중복으로 쌓이는 문제가 있었음 → 이름과 무관한 tvKey로 식별하도록 수정.
   const matchMemo = `[${t.name}] ${t.rounds[ri].gameNum}게임 R${ri}G${gi}`;
-  const existIdx = state.matches.findIndex(m => m.memo && m.memo === matchMemo);
+  const tvKey = 'tv-' + t.id + '-R' + ri + 'G' + gi;
+  let existIdx = state.matches.findIndex(m => m.tvKey === tvKey);
+  if (existIdx < 0) existIdx = state.matches.findIndex(m => m.memo && m.memo === matchMemo); // 이전 버전 데이터 호환
 
   const matchData = {
     id: existIdx >= 0 ? state.matches[existIdx].id : state.nextMatchId++,
@@ -4345,6 +4621,7 @@ function tvSyncToMatch(t, ri, gi) {
     myTiebreak: '',
     oppTiebreak: '',
     memo: matchMemo,
+    tvKey,
   };
 
   if (existIdx >= 0) {
@@ -5025,7 +5302,6 @@ function saveMatch() {
     savedAt: new Date().toISOString(),
     format,
     sport: state.sportType || 'tennis',
-    pickleballScoreType: '',
     partner: format === 'doubles' ? document.getElementById('matchPartner').value.trim() : '',
     opponent,
     opponent2: format === 'doubles' ? document.getElementById('matchOpponent2').value.trim() : '',
@@ -5109,13 +5385,12 @@ function _matchCardHTML(m) {
   const fmtLabel = m.format === 'doubles' ? _t('match_doubles') : _t('match_singles');
   // 종목 아이콘
   const sportIcon = m.sport === 'pickleball' ? sportIconHTML('pickleball', 14) : (m.sport === 'tennis' ? '🎾' : '🏸');
-  const pickleLabel = '';
   return `<div class="match-item">
     <div class="match-item-top">
       <span class="match-badge ${win ? 'badge-win' : 'badge-lose'}">${win ? _t('match_result_win') : _t('match_result_lose')}</span>
       <div class="match-date">
         <span>${m.date}</span>
-        <span class="format-badge">${sportIcon} ${fmtLabel}${pickleLabel}</span>
+        <span class="format-badge">${sportIcon} ${fmtLabel}</span>
       </div>
       <div class="match-item-actions">
         <button class="match-share-btn" onclick="openShareModal(${m.id})" title="공유" style="min-width:40px;min-height:40px;padding:9px;">
@@ -5505,8 +5780,8 @@ function selectSportTab(sport) {
   renderStats();
   updateMatchSportBadge();
   updateStatsSportBadge();
-  const sportLabel = sport === 'badminton' ? '배드민턴' : sport === 'tennis' ? '테니스' : '피클볼';
-  showToast(`📊 ${sportLabel} 통계로 변경`);
+  const sportLabel = sport === 'badminton' ? _t('pf_badminton') : sport === 'tennis' ? _t('pf_tennis') : _t('pf_pickleball');
+  showToast(_t('toast_sport_changed').replace('{sport}', sportLabel));
 }
 
 // 종목별 아이콘 HTML 반환 (피클볼은 SVG, 나머지는 이모지)
@@ -5786,7 +6061,7 @@ function renderOpponentStats(ms) {
     }).join('') : '';
     return `<div class="matchup-row" style="flex-direction:column;align-items:stretch;cursor:${hasCombos?'pointer':'default'};" ${hasCombos?`onclick="document.getElementById('${comboId}').style.display=document.getElementById('${comboId}').style.display==='none'?'block':'none';this.querySelector('.opp-toggle-arrow').textContent=document.getElementById('${comboId}').style.display==='none'?'▼':'▲'"`:''}>
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="matchup-avatar">${name.charAt(0)}</div>
+        <div class="matchup-avatar">${escHtml(name.charAt(0))}</div>
         <div class="matchup-info" style="flex:1;">
           <div class="matchup-name">${escHtml(name)}${badge}${hasCombos?'<span class="opp-toggle-arrow" style="font-size: 0.6667rem;color:var(--text-muted);margin-left:6px;">▼</span>':''}</div>
           <div class="matchup-bar-wrap"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
@@ -5842,7 +6117,7 @@ function renderPartnerStats(ms) {
     const fillCls = rate >= 60 ? 'good' : rate < 40 ? 'bad' : '';
     const emoji = rate >= 70 ? '🔥' : rate >= 50 ? '👍' : '😅';
     return `<div class="matchup-row">
-      <div class="matchup-avatar">${name.charAt(0)}</div>
+      <div class="matchup-avatar">${escHtml(name.charAt(0))}</div>
       <div class="matchup-info">
         <div class="matchup-name">${escHtml(name)} ${emoji}</div>
         <div class="matchup-bar-wrap"><div class="matchup-bar-fill ${fillCls}" style="width:${rate}%"></div></div>
@@ -5900,7 +6175,7 @@ function renderSinglesStats(ms) {
     const badge = rate >= 60 ? `<span class="enemy-badge weak">${_t('stats_badge_strong')}</span>` : rate < 40 ? `<span class="enemy-badge strong">${_t('stats_badge_weak')}</span>` : '';
     return `<div class="enemy-team-row">
       <div style="display:flex;gap:4px;flex-shrink:0;">
-        <div class="matchup-avatar" style="width:28px;height:28px;font-size: 0.8rem;">${opp.charAt(0)}</div>
+        <div class="matchup-avatar" style="width:28px;height:28px;font-size: 0.8rem;">${escHtml(opp.charAt(0))}</div>
       </div>
       <div class="enemy-team-names" style="flex:1;min-width:0;margin:0 8px;">
         <div style="font-size: 0.6rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;">${_t('stats_singles_opp_label')}</div>
@@ -5966,8 +6241,8 @@ function renderEnemyTeamStats(ms) {
       : `${_t('stats_partner_main')} <span style="color:var(--text-muted);">${_t('stats_partner_solo')}</span>`;
     return `<div class="enemy-team-row">
       <div style="display:flex;gap:4px;flex-shrink:0;">
-        <div class="matchup-avatar" style="width:28px;height:28px;font-size: 0.8rem;">${names[0].charAt(0)}</div>
-        ${names[1] ? `<div class="matchup-avatar" style="width:28px;height:28px;font-size: 0.8rem;">${names[1].charAt(0)}</div>` : ''}
+        <div class="matchup-avatar" style="width:28px;height:28px;font-size: 0.8rem;">${escHtml(names[0].charAt(0))}</div>
+        ${names[1] ? `<div class="matchup-avatar" style="width:28px;height:28px;font-size: 0.8rem;">${escHtml(names[1].charAt(0))}</div>` : ''}
       </div>
       <div class="enemy-team-names" style="flex:1;min-width:0;margin:0 8px;">
         <div style="font-size: 0.6rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;">${_t('stats_enemy_team_label')}</div>
@@ -6035,6 +6310,12 @@ function renderClubTags() {
 }
 
 function setPlayerClubFilter(club) {
+  // [정리] 필터 버튼은 현재 언어로 번역된 글자를 넘겨주는데, 이 값을 그대로 저장하면
+  // 나중에 언어를 바꿨을 때 저장된 값과 새 언어 문구가 달라져서
+  // "전체"를 선택했었는데도 선수 목록이 텅 비어 보이는 오류가 있었음.
+  // → 항상 한국어 기준값으로 정규화해서 저장 (언어를 몇 번을 바꿔도 안전하게 동작)
+  if (club === _t('player_all_filter')) club = '전체';
+  else if (club === _t('player_no_club_filter')) club = '클럽 없음';
   state.playerClubFilter = club;
   renderPlayers();
 }
@@ -6133,7 +6414,7 @@ function renderMonthlyGraph(ms) {
     return;
   }
 
-  // 최근 6개월 데이터
+  // 최근 12개월 데이터 (getStatsFilteredMatches가 이미 12개월로 필터링함)
   const monthMap = {};
   ms.forEach(m => {
     const ym = m.date.slice(0, 7); // "2025-03"
@@ -6617,10 +6898,10 @@ function openShareModal(matchId) {
 
   const win = m.result === 'win';
   const sportIcon = m.sport === 'pickleball' ? '🥒' : (m.sport === 'tennis' ? '🎾' : '🏸');
-  const sportName = m.sport === 'pickleball' ? '피클볼' : (m.sport === 'tennis' ? '테니스' : '배드민턴');
-  const fmtLabel = m.format === 'doubles' ? '복식' : '단식';
+  const sportName = m.sport === 'pickleball' ? _t('pf_pickleball') : (m.sport === 'tennis' ? _t('pf_tennis') : _t('pf_badminton'));
+  const fmtLabel = m.format === 'doubles' ? _t('match_doubles') : _t('match_singles');
   const opps = [m.opponent, m.opponent2].filter(Boolean).join(', ');
-  const myName = state.profile.name || '나';
+  const myName = state.profile.name || _t('pf_default_name');
 
   // 종목 뱃지 색상
   const sportColor = m.sport === 'tennis' ? '#4ade80' : m.sport === 'pickleball' ? '#fbbf24' : '#c9a961';
@@ -6633,12 +6914,12 @@ function openShareModal(matchId) {
   document.getElementById('sc-date').textContent = m.date || '';
 
   const badge = document.getElementById('sc-result-badge');
-  badge.textContent = win ? '🏆 승리!' : '💪 패배';
+  badge.textContent = win ? _t('sc_win_label') : _t('sc_lose_label');
   badge.style.background = win ? '#4ade8022' : '#f8717122';
   badge.style.color = win ? '#4ade80' : '#f87171';
 
   document.getElementById('sc-myname').textContent = myName;
-  document.getElementById('sc-oppname').textContent = opps || '상대';
+  document.getElementById('sc-oppname').textContent = opps || _t('sc_opp_default');
 
   const myScoreEl = document.getElementById('sc-myscore');
   const oppScoreEl = document.getElementById('sc-oppscore');
@@ -6657,7 +6938,7 @@ function openShareModal(matchId) {
 
   const tbEl = document.getElementById('sc-tiebreak');
   if (m.myTiebreak && m.oppTiebreak) {
-    tbEl.textContent = `타이브레이크 ${m.myTiebreak}-${m.oppTiebreak}`;
+    tbEl.textContent = `${_t('sc_tiebreak_prefix')} ${m.myTiebreak}-${m.oppTiebreak}`;
     tbEl.style.display = 'block';
   } else {
     tbEl.style.display = 'none';
@@ -6684,21 +6965,23 @@ function _buildShareText(matchId) {
   if (!m) return '';
   const win = m.result === 'win';
   const sportIcon = m.sport === 'pickleball' ? '🥒' : (m.sport === 'tennis' ? '🎾' : '🏸');
-  const sportName = m.sport === 'pickleball' ? '피클볼' : (m.sport === 'tennis' ? '테니스' : '배드민턴');
+  const sportName = m.sport === 'pickleball' ? _t('pf_pickleball') : (m.sport === 'tennis' ? _t('pf_tennis') : _t('pf_badminton'));
   const opps = [m.opponent, m.opponent2].filter(Boolean).join(', ');
-  const myName = state.profile.name || '나';
-  const fmtLabel = m.format === 'doubles' ? '복식' : '단식';
-  const resultWord = win ? '승리 🏆' : '패배 💪';
+  const myName = state.profile.name || _t('pf_default_name');
+  const fmtLabel = m.format === 'doubles' ? _t('match_doubles') : _t('match_singles');
+  // [수정] 승리 이모지를 지우려고 한 코드가 같은 문자열로 바꿔서(자기 자신 치환) 실제로는 안 지워지고 있었음
+  // → "🎯 결과: 🏆 승리" 처럼 트로피 이모지가 중복으로 남던 문제를 고침
+  const resultWord = win ? _t('sc_win_label').replace('🏆 ', '').replace('!','') : _t('sc_lose_label');
   const scoreStr = (m.myScore !== '' && m.oppScore !== '') ? `${m.myScore} : ${m.oppScore}` : '';
-  const tbStr = (m.myTiebreak && m.oppTiebreak) ? ` (타이브레이크 ${m.myTiebreak}-${m.oppTiebreak})` : '';
+  const tbStr = (m.myTiebreak && m.oppTiebreak) ? ` (${_t('sc_tiebreak_prefix')} ${m.myTiebreak}-${m.oppTiebreak})` : '';
 
-  let txt = `${sportIcon} ${sportName} ${fmtLabel} 경기 결과\n`;
+  let txt = `${sportIcon} ${sportName} ${fmtLabel} ${_t('sc_share_title')}\n`;
   txt += `━━━━━━━━━━━━━━━━\n`;
-  txt += `📅 날짜: ${m.date}\n`;
-  txt += `🎯 결과: ${resultWord}\n`;
-  if (scoreStr) txt += `📊 스코어: ${scoreStr}${tbStr}\n`;
-  txt += `🆚 상대: ${opps || '?'}\n`;
-  if (myName) txt += `👤 내 이름: ${myName}\n`;
+  txt += `📅 ${_t('sc_share_date')}: ${m.date}\n`;
+  txt += `🎯 ${_t('sc_share_result')}: ${resultWord}\n`;
+  if (scoreStr) txt += `📊 ${_t('sc_share_score')}: ${scoreStr}${tbStr}\n`;
+  txt += `🆚 ${_t('sc_share_opp')}: ${opps || _t('sc_share_opp_unknown')}\n`;
+  if (myName) txt += `👤 ${_t('sc_share_myname')}: ${myName}\n`;
   if (m.memo) txt += `📝 ${m.memo}\n`;
   txt += `━━━━━━━━━━━━━━━━\n`;
   txt += `#NIJI_STRING #${sportName}`;
@@ -6984,13 +7267,15 @@ function renderPlayers() {
   }
 
   // 필터 적용
+  // [수정] 클럽 이름과 정확히 일치할 때만 해당 클럽으로 필터링하고,
+  // "클럽 없음"도 아니면 그 외 값(전체/All/예전에 잘못 저장된 값 등)은 전부 "전체 보기"로 처리.
+  // → 언어를 바꾼 뒤 목록이 텅 비어 보이던 문제의 근본 원인을 제거함.
   let filtered = state.players;
-  if (state.playerClubFilter !== '전체' && state.playerClubFilter !== _t('player_all_filter')) {
-    if (state.playerClubFilter === '클럽 없음' || state.playerClubFilter === _t('player_no_club_filter')) {
-      filtered = state.players.filter(p => !p.clubs || p.clubs.length === 0);
-    } else {
-      filtered = state.players.filter(p => p.clubs && p.clubs.includes(state.playerClubFilter));
-    }
+  const cf = state.playerClubFilter;
+  if (cf && state.clubs.includes(cf)) {
+    filtered = state.players.filter(p => p.clubs && p.clubs.includes(cf));
+  } else if (cf === '클럽 없음' || cf === _t('player_no_club_filter')) {
+    filtered = state.players.filter(p => !p.clubs || p.clubs.length === 0);
   }
 
   // 정렬
@@ -7040,7 +7325,7 @@ function renderPlayers() {
   }
 
   if (!filtered.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">${state.playerClubFilter === '전체' || state.playerClubFilter === _t('player_all_filter') ? _t('player_add_placeholder') : _t('player_no_club')}</div></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">${(cf && state.clubs.includes(cf)) || cf === '클럽 없음' || cf === _t('player_no_club_filter') ? _t('player_no_club') : _t('player_add_placeholder')}</div></div>`;
     return;
   }
   el.innerHTML = filtered.map(p => {
@@ -7204,12 +7489,12 @@ function showPlayerDetail(playerId) {
   const pGrade  = player.grade  || '';
   const pClubs  = player.clubs  || [];
   const profileItems = [
-    { lbl:_t('players_gender_lbl'),  val:pGender, key:'gender', type:'select', opts:[_t('players_gender_m'),_t('players_gender_f')] },
+    { lbl:_t('players_gender_lbl'),  val:pGender, key:'gender', type:'select', opts:[_t('players_gender_m'),_t('players_gender_f')], optsKo:['남자','여자'] },
     { lbl:_t('players_grade_lbl'),   val:pGrade,  key:'grade',  type:'input',  placeholder:_t('players_grade_ph') },
-    { lbl:_t('players_age_lbl'),     val:pAge,    key:'age',    type:'select', opts:[_t('players_age_10s'),_t('players_age_20s'),_t('players_age_30s'),_t('players_age_40s'),_t('players_age_50s'),_t('players_age_60s')] },
-    { lbl:_t('players_hand_lbl'),    val:pHand,   key:'hand',   type:'select', opts:[_t('players_hand_r'),_t('players_hand_l')] },
-    { lbl:_t('players_career_lbl'),  val:pCareer, key:'career', type:'select', opts:[_t('players_career_1'),_t('players_career_2'),_t('players_career_3'),_t('players_career_4'),_t('players_career_5'),_t('players_career_6')] },
-    { lbl:_t('players_style_lbl'),   val:pStyle,  key:'style',  type:'select', opts:[_t('players_style_1'),_t('players_style_2'),_t('players_style_3'),_t('players_style_4'),_t('players_style_5')] },
+    { lbl:_t('players_age_lbl'),     val:pAge,    key:'age',    type:'select', opts:[_t('players_age_10s'),_t('players_age_20s'),_t('players_age_30s'),_t('players_age_40s'),_t('players_age_50s'),_t('players_age_60s')], optsKo:['10대','20대','30대','40대','50대','60대 이상'] },
+    { lbl:_t('players_hand_lbl'),    val:pHand,   key:'hand',   type:'select', opts:[_t('players_hand_r'),_t('players_hand_l')], optsKo:['오른손','왼손'] },
+    { lbl:_t('players_career_lbl'),  val:pCareer, key:'career', type:'select', opts:[_t('players_career_1'),_t('players_career_2'),_t('players_career_3'),_t('players_career_4'),_t('players_career_5'),_t('players_career_6')], optsKo:['6개월 미만','6개월~1년','1~2년','2~5년','5~10년','10년 이상'] },
+    { lbl:_t('players_style_lbl'),   val:pStyle,  key:'style',  type:'select', opts:[_t('players_style_1'),_t('players_style_2'),_t('players_style_3'),_t('players_style_4'),_t('players_style_5')], optsKo:['공격형','수비형','올라운드','네트플레이','베이스라인'] },
   ];
   const profileGrid = profileItems.map(item => {
     if (item.type === 'input') {
@@ -7229,7 +7514,11 @@ function showPlayerDetail(playerId) {
         data-pid="${player.id}" data-key="${item.key}"
         onchange="savePlayerProfile(parseInt(this.dataset.pid),this.dataset.key,this.value);this.classList.toggle('unset',!this.value)">
         <option value="">${_t('players_unset')}</option>
-        ${item.opts.map(o=>`<option${item.val===o?' selected':''}>${o}</option>`).join('')}
+        ${item.optsKo.map((koOpt,i)=>{
+          const displayOpt = item.opts[i];
+          const isSelected = (item.val === koOpt) || (item.val === displayOpt);
+          return `<option value="${escHtml(koOpt)}"${isSelected?' selected':''}>${escHtml(displayOpt)}</option>`;
+        }).join('')}
       </select>
     </div>`;
   }).join('');
