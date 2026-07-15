@@ -54,6 +54,8 @@ const NIJI_DICT = {
   share_manual_sec:  { ko: '사용 방법',          en: 'Help' },
   share_manual_item: { ko: '사용 설명서 보기',   en: 'View User Guide' },
   share_manual_sub:  { ko: '앱 사용법 안내',     en: 'How to use this app' },
+  share_onboard_item: { ko: '온보딩 다시 보기', en: 'Replay Onboarding' },
+  share_onboard_sub:  { ko: '처음 시작 화면을 다시 확인해요', en: 'See the welcome screens again' },
   /* 하단 탭 */
   nav_profile:       { ko: '프로필',   en: 'Profile' },
   nav_match:         { ko: '경기기록', en: 'Records' },
@@ -355,6 +357,7 @@ const NIJI_DICT = {
   players_memo_preview:    { ko: '📝 메모: ',          en: '📝 Memo: ' },
   players_club_assign_label: { ko: '🏠 클럽 배정 (복수 선택 가능)', en: '🏠 Assign Clubs (multiple allowed)' },
   players_club_no_reg:     { ko: '등록된 클럽이 없습니다', en: 'No clubs registered' },
+  players_club_count_suffix: { ko: '명', en: ' members' },
   players_delete_club_title: { ko: '클럽 삭제',        en: 'Delete Club' },
   players_unset:           { ko: '미설정',             en: 'Not set' },
   players_saved_toast:     { ko: '저장됐어요 ✅',      en: 'Saved ✅' },
@@ -2757,6 +2760,13 @@ function _t(key) {
             <div class="share-sub" data-lang="share_manual_sub">앱 사용법 안내</div>
           </div>
         </div>
+        <div class="share-item" onclick="obReplay()">
+          <div class="share-icon" style="background:rgba(124,106,247,.1);">🚀</div>
+          <div>
+            <div class="share-text" data-lang="share_onboard_item">온보딩 다시 보기</div>
+            <div class="share-sub" data-lang="share_onboard_sub">처음 시작 화면을 다시 확인해요</div>
+          </div>
+        </div>
       </div>
     </div>
     <!-- ===== 대회 페이지 ===== -->
@@ -4057,6 +4067,18 @@ function _initApp() {
 var _obStep = 0;
 var _obSport = null;
 var _obTotalSteps = 4;
+
+// 공유 탭 "온보딩 다시 보기" 버튼용 — obStart()와 달리 신규 사용자 여부를 따지지 않고 무조건 보여줌
+function obReplay() {
+  _obStep = 0;
+  _obSport = null;
+  var input = document.getElementById('obNameInput');
+  if (input) input.value = state.profile && state.profile.name ? state.profile.name : '';
+  var overlay = document.getElementById('onboardOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  _obRenderStep(0, null);
+}
 
 function _obStorageKey() {
   var uid = window._userId || 'local';
@@ -6301,12 +6323,13 @@ function renderClubTags() {
     el.innerHTML = `<span style="font-size: 0.8rem;color:var(--text-muted);">${_t('players_club_no_reg')}</span>`;
     return;
   }
-  el.innerHTML = state.clubs.map(c =>
-    `<div class="club-tag">
-      <span>${escHtml(c)}</span>
+  el.innerHTML = state.clubs.map(c => {
+    const cnt = state.players.filter(p => p.clubs && p.clubs.includes(c)).length;
+    return `<div class="club-tag">
+      <span>${escHtml(c)} <span style="opacity:.65;font-weight:400;">(${cnt}${_t('players_club_count_suffix')})</span></span>
       <button class="club-tag-del" onclick="deleteClub(this.dataset.club)" data-club="${escHtml(c)}" title="${_t('players_delete_club_title')}">✕</button>
-    </div>`
-  ).join('');
+    </div>`;
+  }).join('');
 }
 
 function setPlayerClubFilter(club) {
