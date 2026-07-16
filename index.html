@@ -101,45 +101,22 @@ const NIJI_DICT = {
   resetpw_success:         { ko: '✅ {email}로 재설정 메일을 보냈어요!', en: '✅ Reset email sent to {email}!' },
   resetpw_err_generic:     { ko: '메일 발송 실패. 이메일을 확인해 주세요.', en: 'Failed to send email. Please check your email address.' },
   /* 온보딩 (첫 사용자 안내) */
-  ob_step_label:     { ko: 'STEP {n} / 4', en: 'STEP {n} / 4' },
-  ob_skip:           { ko: '건너뛰기', en: 'Skip' },
-  ob1_title:         { ko: '어떤 종목을 즐기세요?', en: 'Which sport do you play?' },
-  ob1_sub:           { ko: '선택한 종목 기준으로 기록과 통계가 관리돼요', en: 'Your records and stats will be tracked by this sport' },
-  ob1_tennis:        { ko: '테니스', en: 'Tennis' },
-  ob1_badminton:     { ko: '배드민턴', en: 'Badminton' },
-  ob1_pickleball:    { ko: '피클볼', en: 'Pickleball' },
-  ob_next:           { ko: '다음', en: 'Next' },
-  ob2_title:         { ko: '내 정보를 알려주세요', en: 'Tell us about yourself' },
-  ob2_sub:           { ko: '이름만 입력해도 바로 시작할 수 있어요', en: 'Just a name is enough to get started' },
-  ob2_name_ph:       { ko: '👤 이름 (필수)', en: '👤 Name (required)' },
-  ob2_club_ph:       { ko: '🏠 클럽 (선택)', en: '🏠 Club (optional)' },
-  ob2_name_empty:    { ko: '이름을 입력해주세요', en: 'Please enter your name' },
-  ob3_title:         { ko: '라켓을 등록해볼까요?', en: 'Register your racket' },
-  ob3_sub:           { ko: '스트링 교체 시기를 자동으로 알려드려요', en: "We'll auto-remind you when it's time to restring" },
-  ob3_racket_ph:     { ko: '🎾 라켓명 (예: Wilson Blade 98)', en: '🎾 Racket (e.g. Wilson Blade 98)' },
-  ob3_string_ph:     { ko: '🧵 스트링명 (예: Luxilon 4G)', en: '🧵 String (e.g. Luxilon 4G)' },
-  ob3_tension_ph:    { ko: '💪 텐션 (예: 46/44)', en: '💪 Tension (e.g. 46/44)' },
-  ob_later:          { ko: '나중에 하기', en: 'Do it later' },
-  ob4_title:         { ko: '첫 경기를 기록해볼까요?', en: 'Log your first match' },
-  ob4_sub:           { ko: '가장 최근 경기 하나만 간단히 남겨보세요', en: 'Just add one recent match to try it out' },
-  ob4_opp_ph:        { ko: '🆚 상대 이름', en: '🆚 Opponent name' },
-  ob4_partner_ph:    { ko: '🤝 파트너 이름 (선택)', en: '🤝 Partner name (optional)' },
-  ob4_opp1_ph:       { ko: '🆚 상대 1', en: '🆚 Opponent 1' },
-  ob4_opp2_ph:       { ko: '🆚 상대 2', en: '🆚 Opponent 2' },
-  ob4_win:           { ko: '🏆 승', en: '🏆 Win' },
-  ob4_lose:          { ko: '패', en: 'Loss' },
-  ob4_need_opp:      { ko: '상대 이름을 입력해주세요', en: "Please enter your opponent's name" },
-  ob4_need_result:   { ko: '승/패를 선택해주세요', en: 'Please select win or loss' },
-  ob4_save:          { ko: '저장하고 완료', en: 'Save & Finish' },
-  ob4_skip:          { ko: '나중에 입력할게요', en: "I'll add this later" },
-  ob_done_toast:     { ko: '🎉 준비 완료!', en: '🎉 All set!' },
-  ob5_title:         { ko: 'NIJI STRING 준비 완료!', en: 'NIJI STRING is ready!' },
-  ob5_f1:            { ko: '🎾 스트링 관리', en: '🎾 String Management' },
-  ob5_f2:            { ko: '📊 경기 통계', en: '📊 Match Stats' },
-  ob5_f3:            { ko: '🏆 대회 기능', en: '🏆 Tournaments' },
-  ob5_f4:            { ko: '👥 선수 관리', en: '👥 Player Management' },
-  ob5_sub:           { ko: '모든 기능을 사용할 수 있어요', en: "Now you're all set to use every feature" },
-  ob5_start:         { ko: '앱 시작하기', en: 'Start the App' },
+  ob_skip:                 { ko: '건너뛰기', en: 'Skip' },
+  ob_step_of:              { ko: '{cur} / {total}', en: '{cur} / {total}' },
+  ob1_title:               { ko: '니지스트링에\n오신 걸 환영해요! 🎾', en: 'Welcome to\nNIJI STRING! 🎾' },
+  ob1_desc:                { ko: '경기 기록부터 전적 통계, 선수·대회 관리까지\n라켓 스포츠 생활을 이 앱 하나로 관리해보세요.', en: 'From match records to stats,\nplayers, and tournaments — manage it all in one app.' },
+  ob1_btn:                 { ko: '시작하기', en: 'Get Started' },
+  ob2_title:                { ko: '어떤 종목을\n즐기세요?', en: 'Which sport\ndo you play?' },
+  ob2_desc:                { ko: '나중에 프로필 탭에서 언제든 바꿀 수 있어요', en: 'You can change this anytime in the Profile tab' },
+  ob3_title:               { ko: '이름을\n알려주세요', en: "What's your\nname?" },
+  ob3_desc:                { ko: '경기 기록과 통계에 표시될 이름이에요', en: 'This name will appear on your match records and stats' },
+  ob3_ph:                  { ko: '예: 홍길동', en: 'e.g. John Smith' },
+  ob3_required:            { ko: '이름을 입력해 주세요', en: 'Please enter your name' },
+  ob4_title:               { ko: '준비 완료! 🎉', en: 'All set! 🎉' },
+  ob4_desc:                { ko: '이제 첫 경기를 기록해볼까요?\n상대 이름과 결과만 입력하면\n통계가 자동으로 쌓여요.', en: "Let's log your first match.\nJust enter your opponent and result —\nstats build up automatically." },
+  ob4_btn:                 { ko: '경기 기록하러 가기', en: 'Log My First Match' },
+  ob_btn_next:             { ko: '다음', en: 'Next' },
+  ob_toast_done:           { ko: '👋 환영해요! 편하게 둘러보세요', en: '👋 Welcome! Feel free to look around' },
   /* 경기 결과 공유 카드 */
   sc_win_label:            { ko: '🏆 승리!', en: '🏆 Win!' },
   sc_lose_label:           { ko: '💪 패배', en: '💪 Lose' },
@@ -2009,85 +1986,47 @@ function _t(key) {
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ===== 온보딩 ===== */
-  .ob-overlay {
-    position: fixed; inset: 0; z-index: 10000;
-    background: radial-gradient(ellipse at top, #142720 0%, var(--bg) 60%);
-    display: none; align-items: center; justify-content: center;
-    padding: 20px; padding-top: max(20px, env(safe-area-inset-top));
-    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  /* ===== 온보딩 (첫 사용자 안내) ===== */
+  #onboardOverlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg); display: none;
+    flex-direction: column;
   }
-  .ob-overlay.open { display: flex; }
-  .ob-card {
-    width: 100%; max-width: 440px; max-height: 100%;
-    display: flex; flex-direction: column; overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+  .ob-topbar { display:flex; align-items:center; justify-content:space-between; padding:16px 20px 0; flex-shrink:0; }
+  .ob-progress { flex:1; display:flex; gap:6px; margin-right:14px; }
+  .ob-progress-dot { flex:1; height:4px; border-radius:4px; background:var(--border); transition:background .3s; }
+  .ob-progress-dot.done { background:var(--accent); }
+  .ob-skip-btn { background:none; border:none; color:var(--text-muted); font-size:0.8667rem; font-weight:600; cursor:pointer; padding:6px 8px; white-space:nowrap; }
+  .ob-steps { flex:1; position:relative; overflow:hidden; }
+  .ob-step {
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:20px 28px; gap:18px;
+    opacity:0; transform:translateX(40px); pointer-events:none;
+    transition: opacity .35s ease, transform .35s ease;
   }
-  .ob-skip {
-    align-self: flex-end; font-size: 0.7333rem; color: var(--text-muted);
-    background: none; border: none; cursor: pointer; padding: 6px 4px; margin-bottom: 4px;
+  .ob-step.active { opacity:1; transform:translateX(0); pointer-events:auto; }
+  .ob-step.leaving { opacity:0; transform:translateX(-40px); }
+  .ob-emoji { font-size:3.6rem; line-height:1; }
+  .ob-title { font-size:1.5rem; font-weight:900; color:var(--text); white-space:pre-line; line-height:1.35; }
+  .ob-desc { font-size:0.9333rem; color:var(--text-muted); white-space:pre-line; line-height:1.6; max-width:320px; }
+  .ob-sport-row { display:flex; gap:10px; width:100%; max-width:340px; margin-top:4px; }
+  .ob-sport-btn {
+    flex:1; padding:18px 8px; border-radius:16px; border:1.5px solid var(--border); background:var(--surface2);
+    color:var(--text-muted); cursor:pointer; font-family:inherit; transition:all .2s; display:flex; flex-direction:column; gap:6px; align-items:center;
   }
-  .ob-progress-wrap { margin-bottom: 22px; }
-  .ob-progress-label { font-size: 0.7333rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; letter-spacing: .5px; }
-  .ob-progress-bar { height: 6px; border-radius: 999px; background: var(--surface2); overflow: hidden; }
-  .ob-progress-fill { height: 100%; width: 25%; border-radius: 999px; background: linear-gradient(90deg, var(--accent2), var(--accent)); transition: width .35s ease; }
-  .ob-step { animation: obStepIn .35s ease; }
-  @keyframes obStepIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
-  .ob-step-icon { font-size: 2.6667rem; text-align: center; margin-bottom: 10px; }
-  .ob-step-title { font-size: 1.3333rem; font-weight: 900; text-align: center; margin-bottom: 6px; }
-  .ob-step-sub { font-size: 0.8667rem; color: var(--text-muted); text-align: center; margin-bottom: 24px; line-height: 1.5; }
-  .ob-sport-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 26px; }
-  .ob-sport-card {
-    background: var(--surface); border: 2px solid var(--border); border-radius: 18px;
-    padding: 18px 6px; display: flex; flex-direction: column; align-items: center; gap: 8px;
-    cursor: pointer; transition: all .18s ease; color: var(--text); font-size: 0.8667rem; font-weight: 700;
+  .ob-sport-btn .ob-sport-icon { font-size:1.8rem; }
+  .ob-sport-btn.selected { border-color:var(--accent); background:rgba(201,169,97,.12); color:var(--accent); }
+  .ob-name-input {
+    width:100%; max-width:320px; padding:14px 16px; margin-top:4px; font-size:1.0667rem; text-align:center;
+    background:var(--surface2); border:1.5px solid var(--border); border-radius:14px; color:var(--text); font-family:inherit; outline:none;
   }
-  .ob-sport-card .ob-sport-emoji { font-size: 2rem; }
-  .ob-sport-card.selected { border-color: var(--accent); background: var(--gold-soft); transform: translateY(-2px); box-shadow: var(--shadow-lux); }
-  .ob-format-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .ob-format-btn {
-    padding: 14px 6px; border-radius: 14px; border: 2px solid var(--border); background: var(--surface);
-    color: var(--text); font-size: 0.9333rem; font-weight: 800; cursor: pointer; font-family: inherit; transition: all .18s ease;
+  .ob-name-input:focus { border-color:var(--accent); }
+  .ob-bottom { padding:16px 24px calc(20px + env(safe-area-inset-bottom)); flex-shrink:0; }
+  .ob-next-btn {
+    width:100%; padding:15px; border:none; border-radius:14px; background:var(--accent); color:#fff;
+    font-size:1rem; font-weight:800; cursor:pointer; font-family:inherit; transition:opacity .2s;
   }
-  .ob-format-btn.selected { border-color: var(--accent); background: var(--gold-soft); color: var(--accent); box-shadow: var(--shadow-lux); }
-  .ob-field { margin-bottom: 12px; }
-  .ob-field input, .ob-field select {
-    width: 100%; padding: 14px 16px; font-size: 1rem; background: var(--surface2);
-    border: 1.5px solid var(--border); border-radius: 14px; color: var(--text); outline: none; font-family: inherit;
-  }
-  .ob-field input:focus, .ob-field select:focus { border-color: var(--accent); }
-  .ob-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
-  .ob-result-btn {
-    padding: 18px 6px; border-radius: 16px; border: 2px solid var(--border); background: var(--surface);
-    color: var(--text); font-size: 1rem; font-weight: 800; cursor: pointer; transition: all .18s ease; font-family: inherit;
-  }
-  .ob-result-btn.selected.win { border-color: var(--success); background: rgba(74,222,128,.14); color: var(--success); transform: translateY(-2px); }
-  .ob-result-btn.selected.lose { border-color: var(--danger); background: rgba(248,113,113,.14); color: var(--danger); transform: translateY(-2px); }
-  .ob-btn-primary {
-    width: 100%; padding: 16px; margin-top: 14px; border: none; border-radius: 16px;
-    background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #0b1512;
-    font-size: 1rem; font-weight: 900; cursor: pointer; box-shadow: var(--shadow-lux); transition: opacity .18s; font-family: inherit;
-  }
-  .ob-btn-primary:disabled { opacity: .4; cursor: not-allowed; }
-  .ob-btn-secondary {
-    width: 100%; padding: 13px; margin-top: 8px; border: none; border-radius: 16px;
-    background: none; color: var(--text-muted); font-size: 0.8667rem; font-weight: 700; cursor: pointer; font-family: inherit;
-  }
-  .ob-done-icon { font-size: 3.3333rem; text-align: center; margin-bottom: 12px; }
-  .ob-done-title { font-size: 1.4667rem; font-weight: 900; text-align: center; margin-bottom: 18px; color: var(--text); }
-  .ob-feature-list { margin-bottom: 20px; }
-  .ob-feature-row {
-    display: flex; align-items: center; gap: 12px; padding: 11px 4px;
-    font-size: 0.9333rem; font-weight: 600; color: var(--text);
-    border-bottom: 1px solid var(--border);
-  }
-  .ob-feature-row:last-child { border-bottom: none; }
-  .ob-feature-check {
-    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
-    background: var(--gold-soft); color: var(--accent);
-    display: flex; align-items: center; justify-content: center; font-size: 0.7333rem; font-weight: 900;
-  }
-  .ob-done-sub { font-size: 0.8667rem; color: var(--text-muted); text-align: center; margin-bottom: 6px; }
+  .ob-next-btn:disabled { opacity:.4; cursor:default; }
 </style>
 </head>
 <body>
@@ -2108,115 +2047,63 @@ function _t(key) {
   <script>(function(){try{var l=document.getElementById('loadingMsg');var lang=localStorage.getItem('niji_language');if(l&&lang==='en')l.textContent='Connecting to server...';}catch(e){}})();</script>
 </div>
 <!-- ===== ONBOARDING (첫 사용자 안내) ===== -->
-<div id="onboardingOverlay" class="ob-overlay">
-  <div class="ob-card">
-    <button class="ob-skip" onclick="obSkipAll()" data-lang="ob_skip">건너뛰기</button>
+<div id="onboardOverlay">
+  <div class="ob-topbar">
+    <div class="ob-progress" id="obProgress">
+      <div class="ob-progress-dot" data-i="0"></div>
+      <div class="ob-progress-dot" data-i="1"></div>
+      <div class="ob-progress-dot" data-i="2"></div>
+      <div class="ob-progress-dot" data-i="3"></div>
+    </div>
+    <button class="ob-skip-btn" onclick="obSkip()" data-lang="ob_skip">건너뛰기</button>
+  </div>
 
-    <div class="ob-progress-wrap" id="obProgressWrap">
-      <div class="ob-progress-label" id="obProgressLabel">STEP 1 / 4</div>
-      <div class="ob-progress-bar"><div class="ob-progress-fill" id="obProgressFill" style="width:25%;"></div></div>
+  <div class="ob-steps">
+    <!-- STEP 1: 환영 -->
+    <div class="ob-step" id="ob-step-0">
+      <div class="ob-emoji">🎾</div>
+      <div class="ob-title" data-lang="ob1_title">니지스트링에\n오신 걸 환영해요! 🎾</div>
+      <div class="ob-desc" data-lang="ob1_desc">경기 기록부터 전적 통계, 선수·대회 관리까지\n라켓 스포츠 생활을 이 앱 하나로 관리해보세요.</div>
     </div>
 
-    <!-- STEP 1: 종목 선택 -->
-    <div class="ob-step" id="obStep1" data-step="1">
-      <div class="ob-step-icon">🎾</div>
-      <div class="ob-step-title" data-lang="ob1_title">어떤 종목을 즐기세요?</div>
-      <div class="ob-step-sub" data-lang="ob1_sub">선택한 종목 기준으로 기록과 통계가 관리돼요</div>
-      <div class="ob-sport-grid">
-        <button class="ob-sport-card" id="obSport-tennis" onclick="obSelectSport('tennis')">
-          <div class="ob-sport-emoji">🎾</div><div data-lang="ob1_tennis">테니스</div>
+    <!-- STEP 2: 종목 선택 -->
+    <div class="ob-step" id="ob-step-1">
+      <div class="ob-emoji">🏆</div>
+      <div class="ob-title" data-lang="ob2_title">어떤 종목을\n즐기세요?</div>
+      <div class="ob-desc" data-lang="ob2_desc">나중에 프로필 탭에서 언제든 바꿀 수 있어요</div>
+      <div class="ob-sport-row">
+        <button class="ob-sport-btn" data-sport="tennis" onclick="obSelectSport('tennis')">
+          <span class="ob-sport-icon">🎾</span><span data-lang="pf_tennis">테니스</span>
         </button>
-        <button class="ob-sport-card" id="obSport-badminton" onclick="obSelectSport('badminton')">
-          <div class="ob-sport-emoji">🏸</div><div data-lang="ob1_badminton">배드민턴</div>
+        <button class="ob-sport-btn" data-sport="badminton" onclick="obSelectSport('badminton')">
+          <span class="ob-sport-icon">🏸</span><span data-lang="pf_badminton">배드민턴</span>
         </button>
-        <button class="ob-sport-card" id="obSport-pickleball" onclick="obSelectSport('pickleball')">
-          <div class="ob-sport-emoji">🏓</div><div data-lang="ob1_pickleball">피클볼</div>
+        <button class="ob-sport-btn" data-sport="pickleball" onclick="obSelectSport('pickleball')">
+          <span class="ob-sport-icon">🥒</span><span data-lang="pf_pickleball">피클볼</span>
         </button>
       </div>
-      <button class="ob-btn-primary" id="obStep1NextBtn" onclick="obGoStep(2)" disabled data-lang="ob_next">다음</button>
     </div>
 
-    <!-- STEP 2: 내 정보 -->
-    <div class="ob-step" id="obStep2" data-step="2" style="display:none;">
-      <div class="ob-step-icon">👤</div>
-      <div class="ob-step-title" data-lang="ob2_title">내 정보를 알려주세요</div>
-      <div class="ob-step-sub" data-lang="ob2_sub">이름만 입력해도 바로 시작할 수 있어요</div>
-      <div class="ob-field"><input id="obName" type="text" data-lang-placeholder="ob2_name_ph" placeholder="👤 이름 (필수)"></div>
-      <div class="ob-field"><input id="obClub" type="text" data-lang-placeholder="ob2_club_ph" placeholder="🏠 클럽 (선택)"></div>
-      <div class="ob-field">
-        <select id="obAge">
-          <option value="" data-lang="players_age_lbl">📅 나이대 (선택)</option>
-          <option data-lang="players_age_10s">10대</option><option data-lang="players_age_20s">20대</option><option data-lang="players_age_30s">30대</option>
-          <option data-lang="players_age_40s">40대</option><option data-lang="players_age_50s">50대</option><option data-lang="players_age_60s">60대 이상</option>
-        </select>
-      </div>
-      <div class="ob-field">
-        <select id="obHand">
-          <option value="" data-lang="players_hand_lbl">🤚 손잡이 (선택)</option>
-          <option data-lang="players_hand_r">오른손</option><option data-lang="players_hand_l">왼손</option>
-        </select>
-      </div>
-      <div class="ob-field">
-        <select id="obStyle">
-          <option value="" data-lang="players_style_lbl">🎯 플레이스타일 (선택)</option>
-          <option value="공격형" data-lang="players_style_1">공격형</option><option value="수비형" data-lang="players_style_2">수비형</option><option value="올라운드" data-lang="players_style_3">올라운드</option>
-          <option value="네트플레이" data-lang="players_style_4">네트플레이</option><option value="베이스라인" data-lang="players_style_5">베이스라인</option>
-        </select>
-      </div>
-      <button class="ob-btn-primary" onclick="obStep2Next()" data-lang="ob_next">다음</button>
+    <!-- STEP 3: 이름 입력 -->
+    <div class="ob-step" id="ob-step-2">
+      <div class="ob-emoji">✍️</div>
+      <div class="ob-title" data-lang="ob3_title">이름을\n알려주세요</div>
+      <div class="ob-desc" data-lang="ob3_desc">경기 기록과 통계에 표시될 이름이에요</div>
+      <input type="text" class="ob-name-input" id="obNameInput" data-lang-placeholder="ob3_ph" placeholder="예: 홍길동" oninput="obOnNameInput()" onkeydown="if(event.key==='Enter')obNext()">
     </div>
 
-    <!-- STEP 3: 라켓 등록 -->
-    <div class="ob-step" id="obStep3" data-step="3" style="display:none;">
-      <div class="ob-step-icon">🎾</div>
-      <div class="ob-step-title" data-lang="ob3_title">라켓을 등록해볼까요?</div>
-      <div class="ob-step-sub" data-lang="ob3_sub">스트링 교체 시기를 자동으로 알려드려요</div>
-      <div class="ob-field"><input id="obRacket" type="text" data-lang-placeholder="ob3_racket_ph" placeholder="🎾 라켓명 (예: Wilson Blade 98)"></div>
-      <div class="ob-field"><input id="obString" type="text" data-lang-placeholder="ob3_string_ph" placeholder="🧵 스트링명 (예: Luxilon 4G)"></div>
-      <div class="ob-field"><input id="obTension" type="text" data-lang-placeholder="ob3_tension_ph" placeholder="💪 텐션 (예: 46/44)"></div>
-      <button class="ob-btn-primary" onclick="obStep3Next()" data-lang="ob_next">다음</button>
-      <button class="ob-btn-secondary" onclick="obGoStep(4)" data-lang="ob_later">나중에 하기</button>
-    </div>
-
-    <!-- STEP 4: 첫 경기 입력 -->
-    <div class="ob-step" id="obStep4" data-step="4" style="display:none;">
-      <div class="ob-step-icon">🏆</div>
-      <div class="ob-step-title" data-lang="ob4_title">첫 경기를 기록해볼까요?</div>
-      <div class="ob-step-sub" data-lang="ob4_sub">가장 최근 경기 하나만 간단히 남겨보세요</div>
-      <div class="ob-format-grid">
-        <button class="ob-format-btn selected" id="obFormat-singles" onclick="obSelectFormat('singles')" data-lang="match_singles">단식</button>
-        <button class="ob-format-btn" id="obFormat-doubles" onclick="obSelectFormat('doubles')" data-lang="match_doubles">복식</button>
-      </div>
-      <div class="ob-field" id="obSinglesRow"><input id="obOpponent" type="text" data-lang-placeholder="ob4_opp_ph" placeholder="🆚 상대 이름"></div>
-      <div id="obDoublesRow" style="display:none;">
-        <div class="ob-field"><input id="obPartner" type="text" data-lang-placeholder="ob4_partner_ph" placeholder="🤝 파트너 이름 (선택)"></div>
-        <div class="ob-field"><input id="obOpponent1" type="text" data-lang-placeholder="ob4_opp1_ph" placeholder="🆚 상대 1"></div>
-        <div class="ob-field"><input id="obOpponent2" type="text" data-lang-placeholder="ob4_opp2_ph" placeholder="🆚 상대 2"></div>
-      </div>
-      <div class="ob-result-grid">
-        <button class="ob-result-btn win" id="obResultWin" onclick="obSelectResult('win')" data-lang="ob4_win">🏆 승</button>
-        <button class="ob-result-btn lose" id="obResultLose" onclick="obSelectResult('lose')" data-lang="ob4_lose">패</button>
-      </div>
-      <button class="ob-btn-primary" onclick="obStep4Save()" data-lang="ob4_save">저장하고 완료</button>
-      <button class="ob-btn-secondary" onclick="obGoStep(5)" data-lang="ob4_skip">나중에 입력할게요</button>
-    </div>
-
-    <!-- STEP 5: 완료 화면 -->
-    <div class="ob-step" id="obStep5" data-step="5" style="display:none;">
-      <div class="ob-done-icon">🎉</div>
-      <div class="ob-done-title" data-lang="ob5_title">NIJI STRING 준비 완료!</div>
-      <div class="ob-feature-list">
-        <div class="ob-feature-row"><span class="ob-feature-check">✓</span><span data-lang="ob5_f1">🎾 스트링 관리</span></div>
-        <div class="ob-feature-row"><span class="ob-feature-check">✓</span><span data-lang="ob5_f2">📊 경기 통계</span></div>
-        <div class="ob-feature-row"><span class="ob-feature-check">✓</span><span data-lang="ob5_f3">🏆 대회 기능</span></div>
-        <div class="ob-feature-row"><span class="ob-feature-check">✓</span><span data-lang="ob5_f4">👥 선수 관리</span></div>
-      </div>
-      <div class="ob-done-sub" data-lang="ob5_sub">모든 기능을 사용할 수 있어요</div>
-      <button class="ob-btn-primary" onclick="obFinish()" data-lang="ob5_start">앱 시작하기</button>
+    <!-- STEP 4: 경기기록 안내 -->
+    <div class="ob-step" id="ob-step-3">
+      <div class="ob-emoji">🎉</div>
+      <div class="ob-title" data-lang="ob4_title">준비 완료! 🎉</div>
+      <div class="ob-desc" data-lang="ob4_desc">이제 첫 경기를 기록해볼까요?\n상대 이름과 결과만 입력하면\n통계가 자동으로 쌓여요.</div>
     </div>
   </div>
-</div>
 
+  <div class="ob-bottom">
+    <button class="ob-next-btn" id="obNextBtn" onclick="obNext()">다음</button>
+  </div>
+</div>
 
 <div id="app">
   <div class="topbar">
@@ -2873,7 +2760,7 @@ function _t(key) {
             <div class="share-sub" data-lang="share_manual_sub">앱 사용법 안내</div>
           </div>
         </div>
-        <div class="share-item" onclick="obOpen(true)">
+        <div class="share-item" onclick="obReplay()">
           <div class="share-icon" style="background:rgba(124,106,247,.1);">🚀</div>
           <div>
             <div class="share-text" data-lang="share_onboard_item">온보딩 다시 보기</div>
@@ -4172,211 +4059,134 @@ function _initApp() {
   // 100ms 후 한 번 더 보장 (Firebase 비동기 렌더 완료 후 대비)
   setTimeout(_showNavAndProfile, 100);
 
-  // 최초 실행 사용자에게만 온보딩 표시 (기존 데이터가 있는 사용자는 자동으로 건너뜀)
-  setTimeout(maybeShowOnboarding, 200);
+  // 첫 사용자라면 온보딩 화면 표시 (프로필 이름이 비어있고, 아직 완료 기록이 없을 때만)
+  setTimeout(obStart, 150);
 }
 
-// ===== 온보딩 =====
-window._ob = { step: 1, sport: null, result: null, format: 'singles' };
+// ===== 온보딩 (첫 사용자 안내) =====
+var _obStep = 0;
+var _obSport = null;
+var _obTotalSteps = 4;
 
-function _obKey() {
-  return 'nijiOnboardingDone_' + (window._userId || 'local');
-}
-
-// 최초 실행 여부 확인 후 필요할 때만 온보딩 오픈.
-// 이미 이름/경기 데이터가 있는 기존 사용자는 온보딩을 본 적 없어도 자동으로 완료 처리해 건너뜀.
-function maybeShowOnboarding() {
-  try {
-    var done = localStorage.getItem(_obKey());
-    if (done) return;
-    var hasData = (state.profile && state.profile.name) || (state.matches && state.matches.length > 0);
-    if (hasData) {
-      localStorage.setItem(_obKey(), '1');
-      return;
-    }
-    obOpen(false);
-  } catch (e) { /* localStorage 접근 불가 시 온보딩 생략 */ }
-}
-
-// 공유 탭 "온보딩 다시 보기" 버튼용 — isReplay=true면 기존 이름/종목을 미리 채워줌
-function obOpen(isReplay) {
-  window._ob = { step: 1, sport: state.sportType || null, result: null, format: 'singles' };
-  var overlay = document.getElementById('onboardingOverlay');
+// 공유 탭 "온보딩 다시 보기" 버튼용 — obStart()와 달리 신규 사용자 여부를 따지지 않고 무조건 보여줌
+function obReplay() {
+  _obStep = 0;
+  _obSport = null;
+  var input = document.getElementById('obNameInput');
+  if (input) input.value = state.profile && state.profile.name ? state.profile.name : '';
+  var overlay = document.getElementById('onboardOverlay');
   if (!overlay) return;
-  // 언어 적용
-  var lang = (typeof _nijiGetLang === 'function' ? _nijiGetLang() : 'ko') || 'ko';
-  overlay.querySelectorAll('[data-lang]').forEach(function(el) {
-    var key = el.getAttribute('data-lang');
-    if (NIJI_DICT[key] && NIJI_DICT[key][lang]) el.innerHTML = NIJI_DICT[key][lang];
-  });
-  overlay.querySelectorAll('[data-lang-placeholder]').forEach(function(el) {
-    var key = el.getAttribute('data-lang-placeholder');
-    if (NIJI_DICT[key] && NIJI_DICT[key][lang]) el.placeholder = NIJI_DICT[key][lang];
-  });
-  // 다시보기일 때는 기존 이름/종목을 미리 채워줌
-  if (isReplay) {
-    var nameEl = document.getElementById('obName');
-    if (nameEl) nameEl.value = (state.profile && state.profile.name) || '';
-    var clubEl = document.getElementById('obClub');
-    if (clubEl) clubEl.value = (state.profile && state.profile.club) || '';
-  }
-  if (window._ob.sport) {
-    document.querySelectorAll('.ob-sport-card').forEach(function(c) { c.classList.remove('selected'); });
-    var sel = document.getElementById('obSport-' + window._ob.sport);
-    if (sel) sel.classList.add('selected');
-    var nextBtn = document.getElementById('obStep1NextBtn');
-    if (nextBtn) nextBtn.disabled = false;
-  }
-  obGoStep(1, true);
-  obSelectFormat('singles');
-  overlay.classList.add('open');
+  overlay.style.display = 'flex';
+  _obRenderStep(0, null);
 }
 
-function obGoStep(n, skipAnim) {
-  window._ob.step = n;
-  for (var i = 1; i <= 5; i++) {
-    var el = document.getElementById('obStep' + i);
-    if (!el) continue;
-    if (i === n) {
-      el.style.display = '';
-      if (!skipAnim) { el.classList.remove('ob-step'); void el.offsetWidth; el.classList.add('ob-step'); }
-    } else {
-      el.style.display = 'none';
-    }
-  }
-  var progressWrap = document.getElementById('obProgressWrap');
-  var label = document.getElementById('obProgressLabel');
-  var fill = document.getElementById('obProgressFill');
-  if (n >= 5) {
-    if (progressWrap) progressWrap.style.display = 'none';
-  } else {
-    if (progressWrap) progressWrap.style.display = '';
-    var lang = (typeof _nijiGetLang === 'function' ? _nijiGetLang() : 'ko') || 'ko';
-    var tpl = (NIJI_DICT.ob_step_label && NIJI_DICT.ob_step_label[lang]) || 'STEP {n} / 4';
-    if (label) label.textContent = tpl.replace('{n}', n);
-    if (fill) fill.style.width = (n * 25) + '%';
+function _obStorageKey() {
+  var uid = window._userId || 'local';
+  return 'nijiOnboardDone_' + uid;
+}
+
+// 온보딩을 보여줄지 판단: (1) 완료 기록이 없고, (2) 아직 이름을 입력한 적 없는 진짜 신규 사용자일 때만
+// → 캐시 정리 등으로 완료 기록만 사라진 기존 사용자에게는 다시 뜨지 않도록 이중 체크
+function obStart() {
+  try {
+    var done = localStorage.getItem(_obStorageKey());
+    var hasName = !!(state.profile && state.profile.name && state.profile.name.trim());
+    if (done || hasName) return;
+  } catch(e) { return; }
+
+  _obStep = 0;
+  _obSport = null;
+  var input = document.getElementById('obNameInput');
+  if (input) input.value = '';
+  var overlay = document.getElementById('onboardOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  _obRenderStep(0, null);
+}
+
+function _obRenderStep(idx, fromIdx) {
+  document.querySelectorAll('.ob-step').forEach(function(el, i) {
+    el.classList.remove('active', 'leaving');
+    if (i === fromIdx) el.classList.add('leaving');
+    if (i === idx) el.classList.add('active');
+  });
+  document.querySelectorAll('.ob-progress-dot').forEach(function(dot) {
+    var i = parseInt(dot.getAttribute('data-i'));
+    dot.classList.toggle('done', i <= idx);
+  });
+
+  var btn = document.getElementById('obNextBtn');
+  if (idx === 0) {
+    btn.textContent = _t('ob1_btn');
+    btn.disabled = false;
+  } else if (idx === 1) {
+    btn.textContent = _t('ob_btn_next');
+    btn.disabled = !_obSport;
+  } else if (idx === 2) {
+    btn.textContent = _t('ob_btn_next');
+    var nameVal = (document.getElementById('obNameInput') || {}).value || '';
+    btn.disabled = !nameVal.trim();
+    setTimeout(function() { var el = document.getElementById('obNameInput'); if (el) el.focus(); }, 350);
+  } else if (idx === 3) {
+    btn.textContent = _t('ob4_btn');
+    btn.disabled = false;
   }
 }
 
 function obSelectSport(sport) {
-  window._ob.sport = sport;
-  document.querySelectorAll('.ob-sport-card').forEach(function(c) { c.classList.remove('selected'); });
-  var sel = document.getElementById('obSport-' + sport);
-  if (sel) sel.classList.add('selected');
-  var nextBtn = document.getElementById('obStep1NextBtn');
-  if (nextBtn) nextBtn.disabled = false;
-  // 즉시 반영 + 저장 (온보딩 중간에 앱을 닫아도 진행상황 유지)
-  state.sportType = sport;
-  var sportSel = document.getElementById('sportType');
-  if (sportSel) sportSel.value = sport;
-  save();
-}
-
-function obStep2Next() {
-  var name = (document.getElementById('obName').value || '').trim();
-  if (!name) { showToast(_t('ob2_name_empty')); return; }
-  var club = (document.getElementById('obClub').value || '').trim();
-  var age = document.getElementById('obAge').value || '';
-  var hand = document.getElementById('obHand').value || '';
-  var style = document.getElementById('obStyle').value || '';
-  saveProfileField('name', name);
-  if (club) saveProfileField('club', club);
-  if (age) saveProfileField('age', age);
-  if (hand) saveProfileField('hand', hand);
-  if (style) saveProfileField('style', style);
-  obGoStep(3);
-}
-
-function obStep3Next() {
-  var racket = (document.getElementById('obRacket').value || '').trim();
-  var string = (document.getElementById('obString').value || '').trim();
-  var tension = (document.getElementById('obTension').value || '').trim();
-  if (racket) saveStrField(1, 'racket', racket);
-  if (string) saveStrField(1, 'string', string);
-  if (tension) saveStrField(1, 'tension', tension);
-  if (racket && state.profile) {
-    state.profile.stringDate = (typeof getTodayStr === 'function') ? getTodayStr() : state.profile.stringDate;
-    save();
-  }
-  obGoStep(4);
-}
-
-function obSelectFormat(fmt) {
-  window._ob.format = fmt;
-  var sBtn = document.getElementById('obFormat-singles');
-  var dBtn = document.getElementById('obFormat-doubles');
-  if (sBtn) sBtn.classList.toggle('selected', fmt === 'singles');
-  if (dBtn) dBtn.classList.toggle('selected', fmt === 'doubles');
-  var singlesRow = document.getElementById('obSinglesRow');
-  var doublesRow = document.getElementById('obDoublesRow');
-  if (singlesRow) singlesRow.style.display = fmt === 'doubles' ? 'none' : '';
-  if (doublesRow) doublesRow.style.display = fmt === 'doubles' ? '' : 'none';
-}
-
-function obSelectResult(result) {
-  window._ob.result = result;
-  var winBtn = document.getElementById('obResultWin');
-  var loseBtn = document.getElementById('obResultLose');
-  if (winBtn) winBtn.classList.toggle('selected', result === 'win');
-  if (loseBtn) loseBtn.classList.toggle('selected', result === 'lose');
-}
-
-function obStep4Save() {
-  var fmt = window._ob.format || 'singles';
-  var opponent = '', opponent2 = '', partner = '';
-  if (fmt === 'doubles') {
-    opponent = (document.getElementById('obOpponent1').value || '').trim();
-    opponent2 = (document.getElementById('obOpponent2').value || '').trim();
-    partner = (document.getElementById('obPartner').value || '').trim();
-    if (!opponent || !opponent2) { showToast(_t('ob4_need_opp')); return; }
-  } else {
-    opponent = (document.getElementById('obOpponent').value || '').trim();
-    if (!opponent) { showToast(_t('ob4_need_opp')); return; }
-  }
-  if (!window._ob.result) { showToast(_t('ob4_need_result')); return; }
-  var match = {
-    id: state.nextMatchId++,
-    date: (typeof getTodayStr === 'function') ? getTodayStr() : new Date().toISOString().slice(0, 10),
-    savedAt: new Date().toISOString(),
-    format: fmt,
-    sport: state.sportType || 'tennis',
-    pickleballScoreType: '',
-    partner: partner,
-    opponent: opponent,
-    opponent2: opponent2,
-    result: window._ob.result,
-    myScore: '', oppScore: '', myTiebreak: '', oppTiebreak: '',
-    memo: '', racketUsed: ''
-  };
-  state.matches.unshift(match);
-  [opponent, opponent2].forEach(function(n) {
-    if (n && !state.players.find(function(p) { return p.name === n; })) {
-      state.players.push({ id: state.nextPlayerId++, name: n, memo: '', clubs: [], age: '', career: '', hand: '', style: '' });
-    }
+  _obSport = sport;
+  document.querySelectorAll('.ob-sport-btn').forEach(function(b) {
+    b.classList.toggle('selected', b.getAttribute('data-sport') === sport);
   });
-  save();
-  showToast(_t('ob_done_toast'));
-  obGoStep(5);
+  var btn = document.getElementById('obNextBtn');
+  if (btn) btn.disabled = false;
+}
+
+function obOnNameInput() {
+  var btn = document.getElementById('obNextBtn');
+  var val = (document.getElementById('obNameInput') || {}).value || '';
+  if (btn) btn.disabled = !val.trim();
+}
+
+function obNext() {
+  if (_obStep === 1 && !_obSport) return;
+  if (_obStep === 2) {
+    var name = (document.getElementById('obNameInput') || {}).value || '';
+    if (!name.trim()) { showToast(_t('ob3_required')); return; }
+  }
+  if (_obStep === 3) { obFinish(); return; }
+  var next = _obStep + 1;
+  var prev = _obStep;
+  _obStep = next;
+  _obRenderStep(next, prev);
+}
+
+function obSkip() {
+  try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
+  var overlay = document.getElementById('onboardOverlay');
+  if (overlay) overlay.style.display = 'none';
 }
 
 function obFinish() {
-  try { localStorage.setItem(_obKey(), '1'); } catch (e) {}
-  var overlay = document.getElementById('onboardingOverlay');
-  if (overlay) overlay.classList.remove('open');
-  // 온보딩 중 입력한 데이터를 앱 전체 화면에 반영
-  if (typeof renderProfile === 'function') renderProfile();
-  if (typeof renderProfileDashboard === 'function') renderProfileDashboard();
-  if (typeof renderStringBanner === 'function') renderStringBanner();
-  if (typeof renderStringing === 'function') renderStringing();
-  if (typeof syncSportTab === 'function') syncSportTab();
-  if (typeof renderMatchList === 'function') renderMatchList();
-  if (typeof renderPlayers === 'function') renderPlayers();
-  if (typeof updateMatchSportBadge === 'function') updateMatchSportBadge();
-  if (typeof renderStats === 'function') renderStats();
-}
+  var name = ((document.getElementById('obNameInput') || {}).value || '').trim();
+  if (!state.profile) state.profile = {};
+  state.profile.name = name;
+  if (_obSport) state.sportType = _obSport;
+  save();
+  try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
 
-function obSkipAll() {
-  obFinish();
+  var overlay = document.getElementById('onboardOverlay');
+  if (overlay) overlay.style.display = 'none';
+
+  renderProfile();
+  showPage('match');
+  showToast(_t('ob_toast_done'));
+  setTimeout(function() {
+    var body = document.getElementById('matchFormBody');
+    if (body && body.style.display === 'none') toggleMatchForm();
+    var header = document.getElementById('matchFormAccHeader');
+    if (header) header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 200);
 }
 
 // ===== 저장공간 정리 =====
