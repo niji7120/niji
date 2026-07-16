@@ -2,8 +2,6 @@
 
 
 
-
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -395,7 +393,6 @@ const NIJI_DICT = {
   ctab_hanul:              { ko: '🔄 한울방식',         en: '🔄 Hanul' },
   ctab_tour:               { ko: '🏆 토너먼트',         en: '🏆 Tournament' },
   ctab_score:              { ko: '🎾 스코어',            en: '🎾 Score' },
-  ctab_tactics:            { ko: '📋 전술판',            en: '📋 Tactics' },
 
   // 한울방식 목록
   tv_list_sub:             { ko: '파트너·상대방 순환 복식 대회', en: 'Rotating Doubles Format' },
@@ -696,42 +693,27 @@ const NIJI_DICT = {
   manual_s6_9: { ko: '<b>📅 캘린더에 알림 등록</b> 버튼을 누르면 다음 교체 예정일이 폰 캘린더 앱에 알림으로 저장돼요 — 앱을 안 켜도 알림이 와요', en: 'Tap <b>📅 Add reminder to Calendar</b> to save the next restring date to your phone\'s calendar app — notifications work even without opening this app' },
   manual_s6_10: { ko: '라켓 카드 아래 <b>➕ 라켓 추가</b> 버튼으로 라켓 4까지 등록할 수 있고, 저장할 때 <b>교체 사유·비용</b>도 함께 남길 수 있어요', en: 'Use <b>➕ Add Racquet</b> below the cards to register up to a 4th racquet, and record the <b>reason and cost</b> each time you save a restring' },
 
-  // 7. 전술판
-  manual_s7_title: { ko: '7. 전술판', en: '7. Tactics Board' },
-  manual_s7_1: { ko: '<b>대회</b> 탭 상단의 <b>📋 전술판</b> 버튼을 탭하면 전용 화면이 열려요', en: 'Tap <b>📋 Tactics Board</b> at the top of the Tournament tab to open the dedicated screen' },
-  manual_s7_2: { ko: '코트에서 <b>선수(원형 아이콘)를 드래그</b>해서 위치를 자유롭게 움직일 수 있어요', en: '<b>Drag player icons</b> (circles) on the court to freely reposition them' },
-  manual_s7_3: { ko: '선수를 <b>한 번 탭</b>하면 타구각 표시, <b>두 번 탭</b>하면 이름·번호·포지션·색상을 편집할 수 있어요', en: '<b>Single tap</b> a player to show shot angles. <b>Double tap</b> to edit name, number, position, and color' },
-  manual_s7_4: { ko: '상단 버튼으로 <b>기본·양쪽전위·양쪽후위·I포메이션·호주</b> 5가지 대형을 바로 적용할 수 있어요', en: 'Use the top buttons to instantly apply 5 formations: <b>Default, Both Net, Both Back, I-Formation, Australian</b>' },
-  manual_s7_5: { ko: '☰ 버튼(화면 오른쪽 가운데)을 탭하면 조작 버튼이 나타나요', en: 'Tap the ☰ button (middle right of screen) to show the control panel' },
-  manual_s7_6: { ko: '<b>➡️ 화살표</b> — 선수 탭 후 드래그: 이동 화살표 / 빈 곳 드래그: 자유 화살표', en: '<b>➡️ Arrow</b> — tap a player then drag: movement arrow / drag empty space: free arrow' },
-  manual_s7_7: { ko: '<b>✏️ 그리기</b> — 손가락으로 코트 위에 자유롭게 선을 그을 수 있어요', en: '<b>✏️ Draw</b> — draw freely on the court with your finger' },
-  manual_s7_8: { ko: '<b>⭕ 커버존 / 🎾 공 / 📐 타구각</b> — 각각 탭해서 표시/숨기기 전환', en: '<b>⭕ Cover zone / 🎾 Ball / 📐 Shot angle</b> — tap each to toggle show/hide' },
-  manual_s7_9: { ko: '<b>🎨 보드설정</b> — 코트 색상(그린·클레이·하드·다크·잔디), 그리기 색상 변경', en: '<b>🎨 Board settings</b> — change court color (green, clay, hard, dark, grass) and drawing color' },
-  manual_s7_10: { ko: '<b>💾 저장 / 📂 불러오기</b> — 전술판 배치를 이름 붙여 저장하고 나중에 다시 불러올 수 있어요 (최대 20개)', en: '<b>💾 Save / 📂 Load</b> — save your board layout with a name and reload it later (up to 20 saves)' },
-  manual_s7_11: { ko: '<b>🔗 공유</b> — 현재 전술판을 URL 링크로 만들어 카카오톡 등으로 공유할 수 있어요', en: '<b>🔗 Share</b> — generate a URL link of the current board and share it via KakaoTalk or other apps' },
-  manual_s7_12: { ko: '<b>🗑️ 삭제</b>는 화살표·그리기만 지워요. <b>🔄 초기화</b>는 선수 위치까지 원래대로 돌아가요', en: '<b>🗑️ Delete</b> clears only arrows and drawings. <b>🔄 Reset</b> also returns players to their original positions' },
+  // 7. 공유 & 백업
+  manual_s7_title: { ko: '7. 공유 & 백업', en: '7. Share & Backup' },
+  manual_s7_1: { ko: '데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 같은 구글 계정으로 로그인하면 그대로 유지돼요', en: 'Data is <b>automatically saved to the cloud (Firebase)</b>. Log in with the same Google account on a new phone to restore everything' },
+  manual_s7_2: { ko: '<b>💾 데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요', en: '<b>💾 Export Data</b> — save all records as a JSON file for an extra backup' },
+  manual_s7_3: { ko: '<b>📂 가져오기</b> — 백업한 JSON 파일을 불러와 데이터를 복원할 수 있어요', en: '<b>📂 Import</b> — load a backed-up JSON file to restore your data' },
+  manual_s7_4: { ko: '🧹 <b>저장공간 정리</b> — 기기 캐시만 삭제돼요. 클라우드 데이터는 안전하게 유지됩니다', en: '🧹 <b>Clear Storage</b> — clears only the device cache. Your cloud data stays safe' },
+  manual_s7_5: { ko: '💬 <b>카카오 오픈채팅</b> — 공유 탭에서 참여해 동호인들과 소통하세요', en: '💬 <b>KakaoTalk Open Chat</b> — join from the Share tab to connect with other players' },
 
-  // 8. 공유 & 백업
-  manual_s8_title: { ko: '8. 공유 & 백업', en: '8. Share & Backup' },
-  manual_s8_1: { ko: '데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 같은 구글 계정으로 로그인하면 그대로 유지돼요', en: 'Data is <b>automatically saved to the cloud (Firebase)</b>. Log in with the same Google account on a new phone to restore everything' },
-  manual_s8_2: { ko: '<b>💾 데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요', en: '<b>💾 Export Data</b> — save all records as a JSON file for an extra backup' },
-  manual_s8_3: { ko: '<b>📂 가져오기</b> — 백업한 JSON 파일을 불러와 데이터를 복원할 수 있어요', en: '<b>📂 Import</b> — load a backed-up JSON file to restore your data' },
-  manual_s8_4: { ko: '🧹 <b>저장공간 정리</b> — 기기 캐시만 삭제돼요. 클라우드 데이터는 안전하게 유지됩니다', en: '🧹 <b>Clear Storage</b> — clears only the device cache. Your cloud data stays safe' },
-  manual_s8_5: { ko: '💬 <b>카카오 오픈채팅</b> — 공유 탭에서 참여해 동호인들과 소통하세요', en: '💬 <b>KakaoTalk Open Chat</b> — join from the Share tab to connect with other players' },
+  // 8. 자주 묻는 질문
+  manual_s8_title: { ko: '8. 자주 묻는 질문', en: '8. FAQ' },
+  manual_s8_1: { ko: '<b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요', en: '<b>Matches not showing in stats?</b> — Check that the correct sport (🎾 Tennis, etc.) is selected in your profile. Stats only show for the current sport' },
+  manual_s8_2: { ko: '<b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 \'화면을 가로로 돌려주세요\' 안내가 나와요', en: '<b>Scoreboard not showing?</b> — The scoreboard requires <b>landscape mode</b>. In portrait, a "Please rotate" message appears' },
+  manual_s8_3: { ko: '<b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요', en: '<b>App not updating?</b> — Tap Share tab → Clear Storage, or on iPhone Safari go to Settings → Clear History and Website Data' },
+  manual_s8_4: { ko: '<b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요', en: '<b>App running slowly?</b> — Tap Share tab → Clear Storage to improve performance' },
+  manual_s8_5: { ko: '<b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다', en: '<b>Data disappeared?</b> — Sign out and log back in with the same Google account to restore your data' },
+  manual_s8_6: { ko: '<b>HTML 파일로 직접 열면 오류가 나요</b> — 반드시 인터넷이 연결된 상태에서 <b>웹 주소(URL)</b>로 접속하세요', en: '<b>Error when opening the HTML file directly?</b> — Always access the app via its <b>web URL</b> with an internet connection' },
 
-  // 9. 자주 묻는 질문
-  manual_s9_title: { ko: '9. 자주 묻는 질문', en: '9. FAQ' },
-  manual_s9_1: { ko: '<b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요', en: '<b>Matches not showing in stats?</b> — Check that the correct sport (🎾 Tennis, etc.) is selected in your profile. Stats only show for the current sport' },
-  manual_s9_2: { ko: '<b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 \'화면을 가로로 돌려주세요\' 안내가 나와요', en: '<b>Scoreboard not showing?</b> — The scoreboard requires <b>landscape mode</b>. In portrait, a "Please rotate" message appears' },
-  manual_s9_3: { ko: '<b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요', en: '<b>App not updating?</b> — Tap Share tab → Clear Storage, or on iPhone Safari go to Settings → Clear History and Website Data' },
-  manual_s9_4: { ko: '<b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요', en: '<b>App running slowly?</b> — Tap Share tab → Clear Storage to improve performance' },
-  manual_s9_5: { ko: '<b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다', en: '<b>Data disappeared?</b> — Sign out and log back in with the same Google account to restore your data' },
-  manual_s9_6: { ko: '<b>HTML 파일로 직접 열면 오류가 나요</b> — 반드시 인터넷이 연결된 상태에서 <b>웹 주소(URL)</b>로 접속하세요', en: '<b>Error when opening the HTML file directly?</b> — Always access the app via its <b>web URL</b> with an internet connection' },
-
-  // 10. 니지스트링 커뮤니티
-  manual_s10_title: { ko: '10. 니지스트링 커뮤니티', en: '10. NIJI STRING Community' },
-  manual_s10_1: { ko: '공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요', en: 'Join the <b>KakaoTalk Open Chat</b> from the Share tab to connect with fellow players' },
-  manual_s10_2: { ko: '스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요', en: 'Use <b>NIJI STRING</b> professional services: restringing, racquet repair, custom watch strap crafting, and more' },
+  // 9. 니지스트링 커뮤니티
+  manual_s9_title: { ko: '9. 니지스트링 커뮤니티', en: '9. NIJI STRING Community' },
+  manual_s9_1: { ko: '공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요', en: 'Join the <b>KakaoTalk Open Chat</b> from the Share tab to connect with fellow players' },
+  manual_s9_2: { ko: '스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요', en: 'Use <b>NIJI STRING</b> professional services: restringing, racquet repair, custom watch strap crafting, and more' },
 
   // ── 스코어보드 UI ──
   sb_close:       { ko: '✕ 닫기',            en: '✕ Close' },
@@ -766,49 +748,6 @@ const NIJI_DICT = {
   sb_winner_title:{ ko: '🏆 경기 승자',       en: '🏆 Match Winner' },
   sb_new_match:   { ko: '↺ 새 경기 시작',    en: '↺ New Match' },
 
-  // ── 전술판 ──
-  tc_back:           { ko: '← 돌아가기',         en: '← Back' },
-  tc_title:          { ko: '🎾 복식 전술판',      en: '🎾 Doubles Tactics Board' },
-  tc_preset_basic:   { ko: '기본',               en: 'Basic' },
-  tc_preset_bothup:  { ko: '양쪽전위',            en: 'Both Up' },
-  tc_preset_bothback:{ ko: '양쪽후위',            en: 'Both Back' },
-  tc_preset_iform:   { ko: 'I포메이션',           en: 'I-Formation' },
-  tc_preset_aus:     { ko: '호주',               en: 'Australian' },
-  tc_btn_arrow:      { ko: '➡️ 화살표',           en: '➡️ Arrow' },
-  tc_btn_draw:       { ko: '✏️ 그리기',           en: '✏️ Draw' },
-  tc_btn_cover:      { ko: '⭕ 커버존',           en: '⭕ Cover Zone' },
-  tc_btn_ball:       { ko: '🎾 공',              en: '🎾 Ball' },
-  tc_btn_angle:      { ko: '📐 타구각',           en: '📐 Shot Angle' },
-  tc_btn_del:        { ko: '🗑️ 삭제',            en: '🗑️ Delete' },
-  tc_btn_reset:      { ko: '🔄 초기화',           en: '🔄 Reset' },
-  tc_btn_board:      { ko: '🎨 보드설정',         en: '🎨 Board Setup' },
-  tc_btn_save:       { ko: '💾 저장',            en: '💾 Save' },
-  tc_btn_load:       { ko: '📂 불러오기',         en: '📂 Load' },
-  tc_btn_share:      { ko: '🔗 공유',            en: '🔗 Share' },
-  tc_guide:          { ko: '선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동', en: 'Player tab → select (shot angle) &nbsp;·&nbsp; Double-tap → edit &nbsp;·&nbsp; Drag → move' },
-  tc_edit_title:     { ko: '✏️ 선수 편집',        en: '✏️ Edit Player' },
-  tc_edit_name:      { ko: '이름',               en: 'Name' },
-  tc_edit_position:  { ko: '포지션',              en: 'Position' },
-  tc_edit_color:     { ko: '선수 색상',           en: 'Player Color' },
-  tc_cancel:         { ko: '취소',               en: 'Cancel' },
-  tc_ok:             { ko: '확인',               en: 'OK' },
-  tc_close:          { ko: '닫기',               en: 'Close' },
-  tc_apply:          { ko: '적용',               en: 'Apply' },
-  tc_board_title:    { ko: '🎨 보드 설정',        en: '🎨 Board Settings' },
-  tc_board_theme:    { ko: '코트 테마',           en: 'Court Theme' },
-  tc_theme_green:    { ko: '🟩 그린',            en: '🟩 Green' },
-  tc_theme_clay:     { ko: '🧱 클레이',           en: '🧱 Clay' },
-  tc_theme_hard:     { ko: '🔵 하드',            en: '🔵 Hard' },
-  tc_theme_dark:     { ko: '⚫ 다크',            en: '⚫ Dark' },
-  tc_theme_grass:    { ko: '🌿 잔디',            en: '🌿 Grass' },
-  tc_board_drawcolor:{ ko: '그리기 색상',         en: 'Drawing Color' },
-  tc_save_title:     { ko: '💾 전술판 저장',      en: '💾 Save Tactics Board' },
-  tc_save_label:     { ko: '저장 이름',           en: 'Save Name' },
-  tc_save_ok:        { ko: '저장',               en: 'Save' },
-  tc_load_title:     { ko: '📂 저장된 전술판',    en: '📂 Saved Boards' },
-  tc_share_title:    { ko: '🔗 보드 공유',        en: '🔗 Share Board' },
-  tc_share_desc:     { ko: '현재 전술판이 URL에 담겼어요.<br>복사해서 카카오톡으로 보내세요!', en: 'The current tactics board has been encoded into a URL.<br>Copy and share it via KakaoTalk!' },
-  tc_share_copy:     { ko: '📋 링크 복사',        en: '📋 Copy Link' },
 };
 
 // ── 글자 크기 변경 ──────────────────────────────────
@@ -2785,10 +2724,6 @@ function _t(key) {
           style="flex:1;padding:12px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);transition:all .2s;min-height:44px;">
           <span data-lang="ctab_score">🎾 스코어</span>
         </button>
-        <button onclick="showTacticsBoard()"
-          style="flex:1;padding:12px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--surface2);color:var(--text-muted);transition:all .2s;min-height:44px;">
-          <span data-lang="ctab_tactics">📋 전술판</span>
-        </button>
       </div>
       <!-- 한울방식 섹션 -->
       <div id="tv-root"><div style="text-align:center;color:var(--text-muted);padding:30px 0;" data-lang="contest_loading">불러오는 중...</div></div>
@@ -3114,38 +3049,15 @@ function _t(key) {
 
       <div class="manual-section">
         <div class="manual-sec-header">
-          <span class="manual-sec-icon">🎯</span>
-          <span class="manual-sec-title" data-lang="manual_s7_title">7. 전술판</span>
-        </div>
-        <div class="manual-items">
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_1"><b>대회</b> 탭 상단의 <b>📋 전술판</b> 버튼을 탭하면 전용 화면이 열려요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_2">코트에서 <b>선수(원형 아이콘)를 드래그</b>해서 위치를 자유롭게 움직일 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_3">선수를 <b>한 번 탭</b>하면 타구각 표시, <b>두 번 탭</b>하면 이름·번호·포지션·색상을 편집할 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_4">상단 버튼으로 <b>기본·양쪽전위·양쪽후위·I포메이션·호주</b> 5가지 대형을 바로 적용할 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_5">☰ 버튼(화면 오른쪽 가운데)을 탭하면 조작 버튼이 나타나요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_6"><b>➡️ 화살표</b> — 선수 탭 후 드래그: 이동 화살표 / 빈 곳 드래그: 자유 화살표</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_7"><b>✏️ 그리기</b> — 손가락으로 코트 위에 자유롭게 선을 그을 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_8"><b>⭕ 커버존 / 🎾 공 / 📐 타구각</b> — 각각 탭해서 표시/숨기기 전환</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_9"><b>🎨 보드설정</b> — 코트 색상(그린·클레이·하드·다크·잔디), 그리기 색상 변경</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_10"><b>💾 저장 / 📂 불러오기</b> — 전술판 배치를 이름 붙여 저장하고 나중에 다시 불러올 수 있어요 (최대 20개)</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_11"><b>🔗 공유</b> — 현재 전술판을 URL 링크로 만들어 카카오톡 등으로 공유할 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_12"><b>🗑️ 삭제</b>는 화살표·그리기만 지워요. <b>🔄 초기화</b>는 선수 위치까지 원래대로 돌아가요</span></div>
-        </div>
-      </div>
-
-      <div class="manual-divider"></div>
-
-      <div class="manual-section">
-        <div class="manual-sec-header">
           <span class="manual-sec-icon">🔗</span>
-          <span class="manual-sec-title" data-lang="manual_s8_title">8. 공유 &amp; 백업</span>
+          <span class="manual-sec-title" data-lang="manual_s7_title">7. 공유 &amp; 백업</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_1">데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 같은 구글 계정으로 로그인하면 그대로 유지돼요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_2"><b>💾 데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_3"><b>📂 가져오기</b> — 백업한 JSON 파일을 불러와 데이터를 복원할 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_4">🧹 <b>저장공간 정리</b> — 기기 캐시만 삭제돼요. 클라우드 데이터는 안전하게 유지됩니다</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_5">💬 <b>카카오 오픈채팅</b> — 공유 탭에서 참여해 동호인들과 소통하세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_1">데이터는 <b>클라우드(Firebase)에 자동 저장</b>됩니다. 폰을 바꿔도 같은 구글 계정으로 로그인하면 그대로 유지돼요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_2"><b>💾 데이터 내보내기</b> — 모든 기록을 JSON 파일로 저장해 추가 백업할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_3"><b>📂 가져오기</b> — 백업한 JSON 파일을 불러와 데이터를 복원할 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_4">🧹 <b>저장공간 정리</b> — 기기 캐시만 삭제돼요. 클라우드 데이터는 안전하게 유지됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s7_5">💬 <b>카카오 오픈채팅</b> — 공유 탭에서 참여해 동호인들과 소통하세요</span></div>
         </div>
       </div>
 
@@ -3154,15 +3066,15 @@ function _t(key) {
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">⚠️</span>
-          <span class="manual-sec-title" data-lang="manual_s9_title">9. 자주 묻는 질문</span>
+          <span class="manual-sec-title" data-lang="manual_s8_title">8. 자주 묻는 질문</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_1"><b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_2"><b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 '화면을 가로로 돌려주세요' 안내가 나와요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_3"><b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_4"><b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_5"><b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_6"><b>HTML 파일로 직접 열면 오류가 나요</b> — 반드시 인터넷이 연결된 상태에서 <b>웹 주소(URL)</b>로 접속하세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_1"><b>경기가 통계에 안 보여요</b> — 프로필 탭에서 올바른 종목(🎾 테니스 등)이 선택되어 있는지 확인하세요. 종목이 다르면 통계에 안 나와요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_2"><b>스코어보드가 안 보여요</b> — 스코어보드는 <b>폰을 가로로 돌려야</b> 표시됩니다. 세로 모드에서는 '화면을 가로로 돌려주세요' 안내가 나와요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_3"><b>앱이 최신 버전으로 안 바뀌어요</b> — 공유 탭 → 저장공간 정리를 탭하거나, 아이폰 사파리에서 설정 → 방문 기록 및 웹 사이트 데이터 지우기를 해보세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_4"><b>앱이 느려요</b> — 공유 탭 → 저장공간 정리를 탭하면 빨라질 수 있어요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_5"><b>데이터가 사라졌어요</b> — 로그아웃 후 같은 구글 계정으로 다시 로그인하면 복구됩니다</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s8_6"><b>HTML 파일로 직접 열면 오류가 나요</b> — 반드시 인터넷이 연결된 상태에서 <b>웹 주소(URL)</b>로 접속하세요</span></div>
         </div>
       </div>
 
@@ -3171,11 +3083,11 @@ function _t(key) {
       <div class="manual-section">
         <div class="manual-sec-header">
           <span class="manual-sec-icon">💬</span>
-          <span class="manual-sec-title" data-lang="manual_s10_title">10. 니지스트링 커뮤니티</span>
+          <span class="manual-sec-title" data-lang="manual_s9_title">9. 니지스트링 커뮤니티</span>
         </div>
         <div class="manual-items">
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s10_1">공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요</span></div>
-          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s10_2">스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_1">공유 탭에서 <b>카카오 오픈채팅</b>에 참여해 동호인들과 소통하세요</span></div>
+          <div class="manual-item"><span class="manual-dot"></span><span data-lang="manual_s9_2">스트링 교체, 라켓 수리, 시계줄 맞춤 제작 등 <b>니지스트링</b> 전문 서비스를 이용하세요</span></div>
         </div>
       </div>
 
@@ -3234,7 +3146,6 @@ function _t(key) {
      - 한울방식 (순환 복식 대회)                 ......... genHanul(), tvCreate()
      - 토너먼트 (대진표)                         ......... tnCreate(), tnBuildBracket()
      - 스코어보드 (실시간 점수판, 전체화면)       ......... openScoreboardOverlay()
-     - 전술판                                    ......... (showTacticsBoard 관련)
 
    [공유 탭]
      - 경기결과 공유 / 데이터 백업·복원          ......... exportData(), importData()
@@ -10390,646 +10301,6 @@ if ('serviceWorker' in navigator) {
 // 아래 로직은 파일 하단의 popstate 핸들러 하나로 통합함.
 </script>
 
-<!-- ===== TACTICS BOARD MODAL ===== -->
-<div id="tacticsModal" style="display:none;position:fixed;inset:0;z-index:9999;background:#05111f;flex-direction:column;">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(5,17,31,0.97);border-bottom:1px solid rgba(56,217,245,0.15);flex-shrink:0;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <button onclick="closeTacticsBoard()" style="background:rgba(255,255,255,0.08);border:none;color:#7aacbf;font-size: 0.8667rem;font-weight:700;padding:7px 14px;border-radius:18px;cursor:pointer;" data-lang="tc_back">← 돌아가기</button>
-      <span style="font-size: 0.9333rem;font-weight:900;color:#fff;letter-spacing:1px;" data-lang="tc_title">🎾 복식 전술판</span>
-    </div>
-    <button id="tc-toggleHint" onclick="tcToggleUI()" style="background:rgba(56,217,245,0.18);border:none;color:#38d9f5;font-size: 0.9333rem;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;">☰</button>
-  </div>
-
-  <!-- 프리셋 및 설명 -->
-  <div id="tc-topUI" style="padding:8px 10px;background:rgba(5,17,31,0.95);flex-shrink:0;display:none;">
-    <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:6px;" id="tc-presets">
-      <button class="tc-preset-btn tc-active" data-preset="basic" data-lang="tc_preset_basic">기본</button>
-      <button class="tc-preset-btn" data-preset="bothUp" data-lang="tc_preset_bothup">양쪽전위</button>
-      <button class="tc-preset-btn" data-preset="bothBack" data-lang="tc_preset_bothback">양쪽후위</button>
-      <button class="tc-preset-btn" data-preset="iForm" data-lang="tc_preset_iform">I포메이션</button>
-      <button class="tc-preset-btn" data-preset="aus" data-lang="tc_preset_aus">호주</button>
-    </div>
-    <div id="tc-descBox" style="background:rgba(56,217,245,0.07);border:1px solid rgba(56,217,245,0.14);border-radius:8px;padding:4px 12px;text-align:center;font-size: 0.7333rem;color:#7fc8de;">💡 전위/후위 기본 대형</div>
-  </div>
-
-  <!-- 캔버스 -->
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-    <canvas id="tc-court" style="display:block;touch-action:none;"></canvas>
-  </div>
-
-  <!-- 컨트롤 패널 -->
-  <div id="tc-bottomUI" style="padding:8px 8px 12px;background:rgba(5,17,31,0.97);border-top:1px solid rgba(56,217,245,0.15);flex-shrink:0;display:none;">
-    <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:4px;">
-      <button class="tc-ctrl-btn" id="tc-btnArrow" onclick="tcSetMode('arrow')" data-lang="tc_btn_arrow">➡️ 화살표</button>
-      <button class="tc-ctrl-btn" id="tc-btnDraw" onclick="tcSetMode('draw')" data-lang="tc_btn_draw">✏️ 그리기</button>
-      <button class="tc-ctrl-btn tc-cover-on" id="tc-btnCover" onclick="tcToggleCover()" data-lang="tc_btn_cover">⭕ 커버존</button>
-      <button class="tc-ctrl-btn tc-ball-on" id="tc-btnBall" onclick="tcToggleBall()" data-lang="tc_btn_ball">🎾 공</button>
-      <button class="tc-ctrl-btn tc-angle-on" id="tc-btnAngle" onclick="tcToggleAngle()" data-lang="tc_btn_angle">📐 타구각</button>
-      <button class="tc-ctrl-btn tc-del" onclick="tcDelDrawings()" data-lang="tc_btn_del">🗑️ 삭제</button>
-      <button class="tc-ctrl-btn tc-reset" onclick="tcReset()" data-lang="tc_btn_reset">🔄 초기화</button>
-    </div>
-    <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:4px;">
-      <button class="tc-ctrl-btn" onclick="tcOpenBoardStyle()" data-lang="tc_btn_board">🎨 보드설정</button>
-      <button class="tc-ctrl-btn" onclick="tcSave()" data-lang="tc_btn_save">💾 저장</button>
-      <button class="tc-ctrl-btn" onclick="tcLoad()" data-lang="tc_btn_load">📂 불러오기</button>
-      <button class="tc-ctrl-btn" onclick="tcShare()" data-lang="tc_btn_share">🔗 공유</button>
-    </div>
-    <div id="tc-guide" style="font-size: 0.6667rem;color:#3e5f70;text-align:center;line-height:1.5;" data-lang="tc_guide">선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동</div>
-  </div>
-</div>
-
-<!-- 전술판 선수 편집 모달 -->
-<div id="tc-modalPlayer" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-  <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
-    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_edit_title">✏️ 선수 편집</div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_name">이름</div><input id="tc-editName" maxlength="6" placeholder="이름 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size:16px;outline:none;"></div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_position">포지션</div><input id="tc-editPosition" maxlength="6" placeholder="포지션 입력" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size:16px;outline:none;"></div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_edit_color">선수 색상</div><div id="tc-colorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
-    <div style="display:flex;gap:8px;margin-top:14px;">
-      <button onclick="document.getElementById('tc-modalPlayer').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_cancel">취소</button>
-      <button onclick="tcEditOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;" data-lang="tc_ok">확인</button>
-    </div>
-  </div>
-</div>
-
-<!-- 보드 설정 모달 -->
-<div id="tc-modalBoard" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-  <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;">
-    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_board_title">🎨 보드 설정</div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_board_theme">코트 테마</div>
-      <div id="tc-themeRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
-        <button class="tc-theme-chip tc-theme-sel" data-theme="green" data-lang="tc_theme_green">🟩 그린</button>
-        <button class="tc-theme-chip" data-theme="clay" data-lang="tc_theme_clay">🧱 클레이</button>
-        <button class="tc-theme-chip" data-theme="hard" data-lang="tc_theme_hard">🔵 하드</button>
-        <button class="tc-theme-chip" data-theme="dark" data-lang="tc_theme_dark">⚫ 다크</button>
-        <button class="tc-theme-chip" data-theme="grass" data-lang="tc_theme_grass">🌿 잔디</button>
-      </div>
-    </div>
-    <div style="margin-bottom:12px;"><div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_board_drawcolor">그리기 색상</div><div id="tc-drawColorSwatches" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;"></div></div>
-    <div style="display:flex;gap:8px;margin-top:14px;">
-      <button onclick="document.getElementById('tc-modalBoard').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_close">닫기</button>
-      <button onclick="tcBoardOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;" data-lang="tc_apply">적용</button>
-    </div>
-  </div>
-</div>
-
-<!-- 저장 이름 모달 -->
-<div id="tc-modalSave" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-  <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;">
-    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_save_title">💾 전술판 저장</div>
-    <div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:4px;" data-lang="tc_save_label">저장 이름</div>
-    <input id="tc-saveNameInput" placeholder="예: 서브 후 전술" maxlength="20" style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.07);border:1px solid rgba(56,217,245,0.2);border-radius:8px;color:#fff;font-size:16px;outline:none;">
-    <div style="display:flex;gap:8px;margin-top:14px;">
-      <button onclick="document.getElementById('tc-modalSave').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_cancel">취소</button>
-      <button onclick="tcSaveOk()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;" data-lang="tc_save_ok">저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- 불러오기 모달 -->
-<div id="tc-modalLoad" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-  <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:320px;max-width:92vw;">
-    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_load_title">📂 저장된 전술판</div>
-    <div id="tc-slotList" style="max-height:260px;overflow-y:auto;"></div>
-    <button onclick="document.getElementById('tc-modalLoad').style.display='none'" style="width:100%;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;margin-top:14px;" data-lang="tc_close">닫기</button>
-  </div>
-</div>
-
-<!-- 공유 모달 -->
-<div id="tc-modalShare" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-  <div style="background:#0d2035;border:1px solid rgba(56,217,245,0.25);border-radius:16px;padding:20px;min-width:300px;max-width:92vw;">
-    <div style="font-size: 1rem;font-weight:900;color:#38d9f5;margin-bottom:14px;text-align:center;" data-lang="tc_share_title">🔗 보드 공유</div>
-    <div style="font-size: 0.7333rem;color:#7aacbf;margin-bottom:6px;line-height:1.6;" data-lang="tc_share_desc">현재 전술판이 URL에 담겼어요.<br>복사해서 카카오톡으로 보내세요!</div>
-    <div id="tc-shareLinkBox" style="background:rgba(255,255,255,0.05);border:1px solid rgba(56,217,245,0.2);border-radius:8px;padding:8px 10px;font-size: 0.7333rem;color:#7aacbf;word-break:break-all;margin-bottom:8px;max-height:80px;overflow-y:auto;">—</div>
-    <div style="display:flex;gap:8px;">
-      <button onclick="document.getElementById('tc-modalShare').style.display='none'" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.1);color:#7aacbf;" data-lang="tc_close">닫기</button>
-      <button onclick="tcCopyShare()" style="flex:1;padding:10px;border:none;border-radius:10px;font-size: 0.8667rem;font-weight:700;cursor:pointer;background:#38d9f5;color:#060e1a;" data-lang="tc_share_copy">📋 링크 복사</button>
-    </div>
-  </div>
-</div>
-
-<!-- 전술판 토스트 -->
-<div id="tc-toast" style="position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(56,217,245,0.92);color:#060e1a;padding:8px 18px;border-radius:20px;font-size: 0.8rem;font-weight:700;opacity:0;pointer-events:none;transition:opacity 0.3s;z-index:10002;white-space:nowrap;"></div>
-
-<style>
-.tc-preset-btn{padding:5px 12px;border-radius:20px;border:none;cursor:pointer;font-size: 0.8rem;font-weight:700;background:rgba(255,255,255,0.07);color:#7aacbf;transition:all .15s;}
-.tc-preset-btn.tc-active{background:#38d9f5;color:#060e1a;}
-.tc-ctrl-btn{padding:7px 13px;border-radius:18px;border:none;cursor:pointer;font-size: 0.8rem;font-weight:700;background:rgba(255,255,255,0.09);color:#7aacbf;transition:all .15s;}
-.tc-ctrl-btn.tc-arrow-on{background:#FFD93D;color:#060e1a;}
-.tc-ctrl-btn.tc-draw-on{background:#ff6bcb;color:#fff;}
-.tc-ctrl-btn.tc-cover-on{background:rgba(56,217,245,0.18);color:#38d9f5;}
-.tc-ctrl-btn.tc-ball-on{background:rgba(200,244,0,0.15);color:#b8e800;}
-.tc-ctrl-btn.tc-angle-on{background:rgba(255,180,0,0.22);color:#ffb800;}
-.tc-ctrl-btn.tc-del{color:#f87171;}
-.tc-ctrl-btn.tc-reset{color:#4ade80;}
-.tc-theme-chip{padding:6px 12px;border-radius:20px;border:none;cursor:pointer;font-size: 0.8rem;font-weight:700;background:rgba(255,255,255,0.07);color:#7aacbf;transition:all .15s;}
-.tc-theme-chip.tc-theme-sel{background:#38d9f5;color:#060e1a;}
-.tc-color-swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0;}
-.tc-color-swatch.tc-sel{border-color:#fff;transform:scale(1.2);}
-</style>
-
-<script>
-// ===== 전술판 모듈 =====
-(function(){
-  // 논리 좌표
-  const LW=520,LH=820,MARGIN_X=80,MARGIN_T=60,MARGIN_B=60;
-  const CL=MARGIN_X,CR=LW-MARGIN_X,CT=MARGIN_T,CB=LH-MARGIN_B;
-  const CW=CR-CL,CH=CB-CT;
-  const NET_Y=(CT+CB)/2;
-  const ALLY_W=CW*0.107,ALLY_L=CL+ALLY_W,ALLY_R=CR-ALLY_W;
-  const SVC_GAP=CH*0.228,SVC_T=CT+SVC_GAP,SVC_B=CB-SVC_GAP;
-  const CX_L=(CL+CR)/2;
-
-  const COLOR_PALETTE=["#38d9f5","#4ade80","#f87171","#fb923c","#c084fc","#4aa886","#facc15","#60a5fa","#34d399","#ff6b6b","#e3c988","#fbbf24"];
-  const DRAW_COLORS=["#ff6bcb","#FFD93D","#4ade80","#f87171","#38d9f5","#ffffff","#000000"];
-
-  const THEMES={
-    green:{bg:"#1a3d25",courtGrad:["#1c7840","#186535","#155d2e","#125228"],ally:"rgba(0,0,0,0.07)",net:"rgba(0,0,0,0.18)",l1:"rgba(56,217,245,0.3)",l2:"rgba(248,113,113,0.3)"},
-    clay:{bg:"#3d2010",courtGrad:["#c4622d","#b5561f","#a84e18","#9a4712"],ally:"rgba(0,0,0,0.09)",net:"rgba(0,0,0,0.2)",l1:"rgba(255,220,150,0.4)",l2:"rgba(255,180,100,0.4)"},
-    hard:{bg:"#0d1f3d",courtGrad:["#1a3a7c","#163272","#122b68","#0e245e"],ally:"rgba(255,255,255,0.05)",net:"rgba(0,0,0,0.2)",l1:"rgba(100,200,255,0.35)",l2:"rgba(255,150,100,0.35)"},
-    dark:{bg:"#0a0a0a",courtGrad:["#1a1a2e","#16213e","#0f3460","#1a1a2e"],ally:"rgba(255,255,255,0.04)",net:"rgba(0,0,0,0.3)",l1:"rgba(130,130,255,0.35)",l2:"rgba(255,100,130,0.35)"},
-    grass:{bg:"#0d2e10",courtGrad:["#2d6a30","#255e28","#1e5222","#174618"],ally:"rgba(0,0,0,0.06)",net:"rgba(0,0,0,0.18)",l1:"rgba(180,255,140,0.35)",l2:"rgba(255,200,100,0.35)"},
-  };
-
-  let TC={
-    PINFO:{
-      M1:{main:"#38d9f5",dark:"#0ea5c9",shadow:"rgba(56,217,245,0.6)",label:"우1",team:"mine",name:"",number:"",position:"",size:1},
-      M2:{main:"#4ade80",dark:"#16a34a",shadow:"rgba(74,222,128,0.6)",label:"우2",team:"mine",name:"",number:"",position:"",size:1},
-      O1:{main:"#f87171",dark:"#dc2626",shadow:"rgba(248,113,113,0.6)",label:"상1",team:"opp",name:"",number:"",position:"",size:1},
-      O2:{main:"#fb923c",dark:"#ea580c",shadow:"rgba(251,146,60,0.6)",label:"상2",team:"opp",name:"",number:"",position:"",size:1},
-    },
-    KEYS:["M1","M2","O1","O2"],
-    players:{}, ball:{x:CX_L,y:NET_Y+60},
-    arrows:[], arrowDraw:null, mousePos:{x:0,y:0},
-    mode:"drag",
-    showCover:true, showBall:true, showAngle:true,
-    dragging:null, dragMoved:false,
-    activePreset:"basic",
-    selectedKeys:new Set(),
-    drawPaths:[], currentPath:null, isDrawing:false,
-    lastTap:{key:null,time:0},
-    tapStartPos:null,
-    currentTheme:"green",
-    drawColor:"#ff6bcb",
-    uiVisible:false,
-    editingKey:null,
-    initialized:false,
-  };
-
-  const PRESETS={
-    basic:{desc:{ko:"💡 전위/후위 기본 대형",en:"💡 Net & Back formation"},M1:{x:CX_L-50,y:CB-60},M2:{x:CX_L+50,y:SVC_B+30},O1:{x:CX_L+50,y:CT+60},O2:{x:CX_L-50,y:SVC_T-30}},
-    bothUp:{desc:{ko:"💡 둘 다 네트 앞으로",en:"💡 Both at the net"},M1:{x:CX_L-55,y:SVC_B+40},M2:{x:CX_L+55,y:SVC_B+40},O1:{x:CX_L+55,y:SVC_T-40},O2:{x:CX_L-55,y:SVC_T-40}},
-    bothBack:{desc:{ko:"💡 둘 다 베이스라인 수비",en:"💡 Both at baseline"},M1:{x:CX_L-60,y:CB-40},M2:{x:CX_L+60,y:CB-40},O1:{x:CX_L+60,y:CT+40},O2:{x:CX_L-60,y:CT+40}},
-    iForm:{desc:{ko:"💡 서버+전위 센터에 겹치기",en:"💡 I-Formation center stack"},M1:{x:CX_L,y:CB-50},M2:{x:CX_L,y:SVC_B+30},O1:{x:CX_L+60,y:CT+50},O2:{x:CX_L-50,y:SVC_T-30}},
-    aus:{desc:{ko:"💡 서버+전위 같은 사이드",en:"💡 Australian same side"},M1:{x:CX_L-60,y:CB-50},M2:{x:CX_L-60,y:SVC_B+30},O1:{x:CX_L+60,y:CT+50},O2:{x:CX_L+60,y:SVC_T-30}},
-  };
-
-  function shadeHex(hex,amt){let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);r=Math.max(0,Math.min(255,r+amt));g=Math.max(0,Math.min(255,g+amt));b=Math.max(0,Math.min(255,b+amt));return"#"+[r,g,b].map(x=>x.toString(16).padStart(2,"0")).join("");}
-  function hexToRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}
-  function updateDarkTC(key){TC.PINFO[key].dark=shadeHex(TC.PINFO[key].main,-40);TC.PINFO[key].shadow=hexToRgba(TC.PINFO[key].main,0.6);}
-
-  const canvas=document.getElementById("tc-court");
-  const ctx=canvas.getContext("2d");
-
-  function px(v){return v*canvas.width/LW;}
-  function py(v){return v*canvas.height/LH;}
-  function line(x1,y1,x2,y2){ctx.beginPath();ctx.moveTo(px(x1),py(y1));ctx.lineTo(px(x2),py(y2));ctx.stroke();}
-
-  function tcLayoutCanvas(){
-    const modal=document.getElementById("tacticsModal");
-    const header=modal.querySelector("div:first-child");
-    const headerH=header?header.offsetHeight:56;
-    const topH=TC.uiVisible?(document.getElementById("tc-topUI").offsetHeight||70):0;
-    const botH=TC.uiVisible?(document.getElementById("tc-bottomUI").offsetHeight||120):0;
-    const avW=window.innerWidth;
-    const avH=window.innerHeight-headerH-topH-botH;
-    const ratio=LW/LH;let cw,ch;
-    if(avW/avH<ratio){cw=avW;ch=avW/ratio;}else{ch=avH;cw=avH*ratio;}
-    cw=Math.floor(cw);ch=Math.floor(ch);
-    const dpr=window.devicePixelRatio||1;
-    canvas.width=cw*dpr;canvas.height=ch*dpr;
-    canvas.style.width=cw+"px";canvas.style.height=ch+"px";
-    tcDraw();
-  }
-
-  function tcApplyPreset(key){
-    TC.activePreset=key;TC.selectedKeys.clear();
-    const p=PRESETS[key];
-    TC.KEYS.forEach(k=>{TC.players[k]={x:p[k].x,y:p[k].y};});
-    TC.arrows=[];TC.arrowDraw=null;TC.drawPaths=[];
-    const lang=_nijiGetLang()||'ko';
-    document.getElementById("tc-descBox").textContent=typeof p.desc==='object'?p.desc[lang]||p.desc.ko:p.desc;
-    document.querySelectorAll(".tc-preset-btn").forEach(b=>b.classList.toggle("tc-active",b.dataset.preset===key));
-    tcDraw();
-  }
-
-  function isNearNetTC(key,pos){const m=key.startsWith("M");return(m?pos.y<NET_Y-30:pos.y>NET_Y+30);}
-  function getLabelTC(key){return TC.PINFO[key].number||TC.PINFO[key].label;}
-
-  function drawPersonTC(key,pos){
-    const c=TC.PINFO[key];
-    const S=py(28)*(c.size||1);
-    const isSel=TC.selectedKeys.has(key);
-    const cx=px(pos.x),cy=py(pos.y);
-    const volley=isNearNetTC(key,pos);
-    ctx.save();
-    if(isSel){ctx.shadowBlur=28;ctx.shadowColor=c.shadow;ctx.strokeStyle=c.main;ctx.lineWidth=px(3.5);ctx.beginPath();ctx.ellipse(cx,cy-S*0.6,S*0.78,S*1.18,0,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;}
-    ctx.fillStyle="rgba(0,0,0,0.25)";ctx.beginPath();ctx.ellipse(cx+px(2),cy+py(2),S*0.5,S*0.18,0,0,Math.PI*2);ctx.fill();
-    // 몸통
-    ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=px(1.5);ctx.shadowBlur=10;ctx.shadowColor=c.shadow;
-    if(volley){
-      ctx.beginPath();ctx.moveTo(cx-S*0.40,cy-S*0.62);ctx.lineTo(cx+S*0.30,cy-S*0.68);ctx.lineTo(cx+S*0.20,cy-S*0.20);ctx.lineTo(cx-S*0.20,cy-S*0.18);ctx.closePath();ctx.fill();ctx.stroke();
-    }else{
-      ctx.beginPath();ctx.moveTo(cx-S*0.40,cy-S*0.68);ctx.lineTo(cx+S*0.36,cy-S*0.65);ctx.lineTo(cx+S*0.24,cy-S*0.22);ctx.lineTo(cx-S*0.24,cy-S*0.22);ctx.closePath();ctx.fill();ctx.stroke();
-    }
-    ctx.shadowBlur=0;
-    // 머리
-    ctx.shadowBlur=8;ctx.shadowColor=c.shadow;ctx.fillStyle=c.main;ctx.strokeStyle=c.dark;ctx.lineWidth=px(2);
-    const hcy=volley?cy-S*0.95:cy-S*0.92;
-    const hcx=volley?cx-S*0.05:cx;
-    ctx.beginPath();ctx.arc(hcx,hcy,S*0.28,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;
-    // 번호
-    const lw=py(20),lh=py(12);
-    ctx.fillStyle="rgba(0,0,0,0.5)";ctx.beginPath();ctx.roundRect(hcx-lw/2,hcy-lh/2,lw,lh,3);ctx.fill();
-    ctx.fillStyle=c.main;ctx.font=`900 ${py(11)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";
-    ctx.fillText(getLabelTC(key),hcx,hcy);
-    // 이름
-    const name=c.name||"",pos2=c.position||"";
-    if(name||pos2){
-      const iy=hcy+S*0.42;const iw=py(name?46:32),ih=py(name&&pos2?22:13);
-      ctx.fillStyle="rgba(0,0,0,0.55)";ctx.beginPath();ctx.roundRect(hcx-iw/2,iy-ih/2,iw,ih,4);ctx.fill();
-      ctx.fillStyle=c.main;
-      if(name&&pos2){ctx.font=`700 ${py(9)}px sans-serif`;ctx.fillText(name,hcx,iy-py(5));ctx.fillStyle="rgba(255,255,255,0.6)";ctx.font=`${py(8)}px sans-serif`;ctx.fillText(pos2,hcx,iy+py(5));}
-      else if(name){ctx.font=`700 ${py(9)}px sans-serif`;ctx.fillText(name,hcx,iy);}
-      else{ctx.fillStyle="rgba(255,255,255,0.7)";ctx.font=`${py(8)}px sans-serif`;ctx.fillText(pos2,hcx,iy);}
-    }
-    ctx.restore();
-  }
-
-  function drawCoverZoneTC(key,pos){
-    const r=(key.startsWith("M")?pos.y>NET_Y+60:pos.y<NET_Y-60)?90:60;
-    const c=TC.PINFO[key];
-    ctx.save();ctx.fillStyle=hexToRgba(c.main,0.13);ctx.beginPath();ctx.arc(px(pos.x),py(pos.y),px(r),0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle=hexToRgba(c.main,0.5);ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.beginPath();ctx.arc(px(pos.x),py(pos.y),px(r),0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.restore();
-  }
-
-  function drawShotAnglesTC(key,pos){
-    const c=TC.PINFO[key];const bx=pos.x,by=pos.y;
-    const isMy=key.startsWith("M");
-    const tYf=isMy?CT:CB,tYn=isMy?NET_Y+8:NET_Y-8;
-    const corners=[{x:CL,y:tYf},{x:CR,y:tYf},{x:CL,y:tYn},{x:CR,y:tYn}];
-    const angs=corners.map(co=>Math.atan2(co.y-by,co.x-bx));
-    let mn=Math.min(...angs),mx=Math.max(...angs);
-    if(mx-mn>Math.PI)[mn,mx]=[mx,mn+Math.PI*2];
-    const fanR=LH*0.52;
-    ctx.save();ctx.globalAlpha=0.13;ctx.fillStyle=c.main;
-    ctx.beginPath();ctx.moveTo(px(bx),py(by));ctx.arc(px(bx),py(by),px(fanR),mn,mx,false);ctx.closePath();ctx.fill();
-    ctx.globalAlpha=0.7;ctx.strokeStyle=c.main;ctx.lineWidth=1.8;ctx.setLineDash([7,4]);
-    ctx.beginPath();ctx.moveTo(px(bx),py(by));ctx.lineTo(px(bx+fanR*Math.cos(mn)),py(by+fanR*Math.sin(mn)));ctx.stroke();
-    ctx.beginPath();ctx.moveTo(px(bx),py(by));ctx.lineTo(px(bx+fanR*Math.cos(mx)),py(by+fanR*Math.sin(mx)));ctx.stroke();
-    ctx.globalAlpha=0.45;ctx.beginPath();ctx.arc(px(bx),py(by),px(fanR*0.32),mn,mx,false);ctx.stroke();ctx.setLineDash([]);
-    const deg=Math.round(Math.abs(mx-mn)*180/Math.PI);const mid=(mn+mx)/2,lr=fanR*0.38;
-    const lx=bx+lr*Math.cos(mid),ly=by+lr*Math.sin(mid);
-    ctx.globalAlpha=1;const tw=py(32),th=py(18);ctx.fillStyle="rgba(0,0,0,0.55)";ctx.beginPath();ctx.roundRect(px(lx)-tw/2,py(ly)-th/2,tw,th,4);ctx.fill();
-    ctx.fillStyle=c.main;ctx.font=`bold ${py(12)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(deg+"°",px(lx),py(ly));ctx.restore();
-  }
-
-  function drawArrowTC(x1,y1,x2,y2,color,dashed){
-    const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);if(len<12)return;
-    const ang=Math.atan2(dy,dx),ex=x2-13*Math.cos(ang),ey=y2-13*Math.sin(ang);
-    ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=2.5;ctx.globalAlpha=0.9;ctx.lineCap="round";
-    if(dashed)ctx.setLineDash([7,4]);
-    ctx.beginPath();ctx.moveTo(px(x1),py(y1));ctx.lineTo(px(ex),py(ey));ctx.stroke();ctx.setLineDash([]);
-    ctx.beginPath();ctx.moveTo(px(x2),py(y2));ctx.lineTo(px(ex-7*Math.sin(ang)),py(ey+7*Math.cos(ang)));ctx.lineTo(px(ex+7*Math.sin(ang)),py(ey-7*Math.cos(ang)));ctx.closePath();ctx.fill();ctx.restore();
-  }
-
-  function drawBallTC(x,y){
-    ctx.save();ctx.fillStyle="rgba(0,0,0,0.28)";ctx.beginPath();ctx.arc(px(x+2),py(y+3),px(11),0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#c8f400";ctx.beginPath();ctx.arc(px(x),py(y),px(11),0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle="#8faa00";ctx.lineWidth=1.8;ctx.beginPath();ctx.arc(px(x),py(y),px(11),0,Math.PI*2);ctx.stroke();ctx.restore();
-  }
-
-  function drawFreeLinesTC(){
-    [...TC.drawPaths,(TC.currentPath||null)].filter(Boolean).forEach(path=>{
-      if(path.points.length<2)return;
-      ctx.save();ctx.strokeStyle=path.color;ctx.lineWidth=path.width*(canvas.width/LW);ctx.lineCap="round";ctx.lineJoin="round";ctx.globalAlpha=0.85;
-      ctx.beginPath();ctx.moveTo(px(path.points[0].x),py(path.points[0].y));
-      for(let i=1;i<path.points.length;i++)ctx.lineTo(px(path.points[i].x),py(path.points[i].y));
-      ctx.stroke();ctx.restore();
-    });
-  }
-
-  // 성능 최적화: touchmove/mousemove 이벤트는 화면 주사율보다 훨씬 빠르게 발생할 수 있어서
-  // 매번 즉시 tcDraw()를 실행하면 같은 프레임 안에서 캔버스 전체를 여러 번 다시 그리는
-  // 낭비가 생김. requestAnimationFrame으로 묶어서 프레임당 최대 1번만 실제로 그리도록 함.
-  // (마지막 상태 기준으로 그리므로 화면에 보이는 결과는 기존과 동일함)
-  let _tcDrawScheduled = false;
-  function tcDraw(){
-    if (_tcDrawScheduled) return;
-    _tcDrawScheduled = true;
-    requestAnimationFrame(_tcDrawImmediate);
-  }
-  function _tcDrawImmediate(){
-    _tcDrawScheduled = false;
-    if(!canvas.width)return;
-    const W=canvas.width,H=canvas.height,T=THEMES[TC.currentTheme];
-    ctx.clearRect(0,0,W,H);
-    ctx.fillStyle=T.bg;ctx.beginPath();ctx.roundRect(0,0,W,H,0);ctx.fill();
-    const cg=ctx.createLinearGradient(0,0,0,H);
-    cg.addColorStop(0,T.courtGrad[0]);cg.addColorStop(0.49,T.courtGrad[1]);cg.addColorStop(0.51,T.courtGrad[2]);cg.addColorStop(1,T.courtGrad[3]);
-    ctx.fillStyle=cg;ctx.fillRect(px(CL),py(CT),px(CR-CL),py(CB-CT));
-    ctx.fillStyle=T.ally;ctx.fillRect(px(CL),py(CT),px(ALLY_W),py(CB-CT));ctx.fillRect(px(ALLY_R),py(CT),px(ALLY_W),py(CB-CT));
-    if(TC.showCover)TC.KEYS.forEach(k=>drawCoverZoneTC(k,TC.players[k]));
-    if(TC.showAngle&&TC.selectedKeys.size>0)TC.selectedKeys.forEach(k=>drawShotAnglesTC(k,TC.players[k]));
-    ctx.strokeStyle="rgba(255,255,255,0.85)";ctx.lineWidth=2.5;ctx.strokeRect(px(CL),py(CT),px(CR-CL),py(CB-CT));
-    ctx.strokeStyle="rgba(255,255,255,0.7)";ctx.lineWidth=1.8;
-    line(ALLY_L,CT,ALLY_L,CB);line(ALLY_R,CT,ALLY_R,CB);
-    ctx.strokeStyle="rgba(255,255,255,0.65)";line(ALLY_L,SVC_T,ALLY_R,SVC_T);line(ALLY_L,SVC_B,ALLY_R,SVC_B);
-    ctx.strokeStyle="rgba(255,255,255,0.5)";ctx.lineWidth=1.5;line(CX_L,SVC_T,CX_L,SVC_B);
-    ctx.fillStyle=T.net;ctx.fillRect(0,py(NET_Y-5),W,py(10));
-    ctx.shadowBlur=10;ctx.shadowColor="rgba(255,255,255,0.7)";ctx.strokeStyle="white";ctx.lineWidth=3;line(0,NET_Y,LW,NET_Y);ctx.shadowBlur=0;
-    ctx.fillStyle="#c8a05a";ctx.fillRect(px(CL-8),py(NET_Y-14),px(10),py(28));ctx.fillRect(px(CR-2),py(NET_Y-14),px(10),py(28));
-    ctx.fillStyle="rgba(255,255,255,0.3)";ctx.font=`${py(8)}px sans-serif`;ctx.textAlign="center";ctx.textBaseline="alphabetic";ctx.fillText("NET",px(CX_L),py(NET_Y-8));
-    const isEnLang=_nijiGetLang()==='en';
-    ctx.font=`bold ${py(9)}px sans-serif`;ctx.fillStyle=T.l1;ctx.fillText(isEnLang?"Our Court":"우리팀 코트",px(CX_L),py(CB-10));ctx.fillStyle=T.l2;ctx.fillText(isEnLang?"Opp. Court":"상대팀 코트",px(CX_L),py(CT+20));
-    drawFreeLinesTC();
-    TC.arrows.forEach(a=>drawArrowTC(a.x1,a.y1,a.x2,a.y2,a.color,!a.fromKey));
-    if(TC.arrowDraw)drawArrowTC(TC.arrowDraw.x1,TC.arrowDraw.y1,TC.mousePos.x,TC.mousePos.y,TC.arrowDraw.color,!TC.arrowDraw.fromKey);
-    if(TC.showBall)drawBallTC(TC.ball.x,TC.ball.y);
-    TC.KEYS.forEach(k=>drawPersonTC(k,TC.players[k]));
-  }
-
-  function getLogPos(e){
-    const rect=canvas.getBoundingClientRect();const t=e.touches?(e.touches[0]||e.changedTouches[0]):e;
-    return{x:Math.max(0,Math.min(LW,(t.clientX-rect.left)/rect.width*LW)),y:Math.max(0,Math.min(LH,(t.clientY-rect.top)/rect.height*LH))};
-  }
-  function hitPlayerTC(pos){for(let i=TC.KEYS.length-1;i>=0;i--){const k=TC.KEYS[i],p=TC.players[k];const dx=pos.x-p.x,dy=pos.y-p.y;if(Math.abs(dx)<35&&dy>-65&&dy<18)return k;}return null;}
-  function hitBallTC(pos){const dx=pos.x-TC.ball.x,dy=pos.y-TC.ball.y;return Math.sqrt(dx*dx+dy*dy)<18;}
-
-  canvas.addEventListener("mousedown",tcDown);canvas.addEventListener("touchstart",tcDown,{passive:false});
-  canvas.addEventListener("mousemove",tcMove);canvas.addEventListener("touchmove",tcMove,{passive:false});
-  canvas.addEventListener("mouseup",tcUp);canvas.addEventListener("touchend",tcUp);
-
-  function tcDown(e){
-    e.preventDefault();const pos=getLogPos(e);TC.dragMoved=false;TC.tapStartPos={x:pos.x,y:pos.y};
-    if(TC.mode==="draw"){TC.currentPath={color:TC.drawColor,width:3,points:[pos]};TC.isDrawing=true;return;}
-    const pk=hitPlayerTC(pos);
-    if(TC.mode==="arrow"){
-      if(pk)TC.arrowDraw={x1:TC.players[pk].x,y1:TC.players[pk].y,color:TC.PINFO[pk].main,fromKey:pk};
-      else TC.arrowDraw={x1:pos.x,y1:pos.y,color:"rgba(255,255,255,0.75)",fromKey:null};
-      TC.mousePos=pos;return;
-    }
-    if(pk)TC.dragging=pk;else if(TC.showBall&&hitBallTC(pos))TC.dragging="ball";
-  }
-  function tcMove(e){
-    e.preventDefault();const pos=getLogPos(e);TC.mousePos=pos;
-    if(TC.mode==="draw"&&TC.isDrawing&&TC.currentPath){TC.currentPath.points.push(pos);tcDraw();return;}
-    if(TC.dragging&&TC.tapStartPos){const dx=pos.x-TC.tapStartPos.x,dy=pos.y-TC.tapStartPos.y;if(Math.sqrt(dx*dx+dy*dy)>15)TC.dragMoved=true;}
-    if(TC.dragMoved){
-      if(TC.dragging==="ball"){TC.ball.x=pos.x;TC.ball.y=pos.y;}
-      else if(TC.dragging){TC.players[TC.dragging].x=pos.x;TC.players[TC.dragging].y=pos.y;}
-      tcDraw();
-    }
-    if(TC.mode==="arrow"&&TC.arrowDraw)tcDraw();
-  }
-  function tcUp(e){
-    if(TC.mode==="draw"&&TC.isDrawing&&TC.currentPath){
-      if(TC.currentPath.points.length>1)TC.drawPaths.push({...TC.currentPath});
-      TC.currentPath=null;TC.isDrawing=false;tcDraw();return;
-    }
-    if(TC.mode==="arrow"&&TC.arrowDraw){
-      const pos=getLogPos(e);const dx=pos.x-TC.arrowDraw.x1,dy=pos.y-TC.arrowDraw.y1;
-      if(Math.sqrt(dx*dx+dy*dy)>20)TC.arrows.push({...TC.arrowDraw,x2:pos.x,y2:pos.y});
-      TC.arrowDraw=null;
-    } else if(!TC.dragMoved&&TC.dragging&&TC.dragging!=="ball"){
-      const now=Date.now();
-      if(TC.lastTap.key===TC.dragging&&now-TC.lastTap.time<400){tcOpenPlayerEdit(TC.dragging);TC.lastTap={key:null,time:0};}
-      else{TC.lastTap={key:TC.dragging,time:now};if(TC.selectedKeys.has(TC.dragging))TC.selectedKeys.delete(TC.dragging);else TC.selectedKeys.add(TC.dragging);}
-    } else if(!TC.dragMoved&&!TC.dragging){
-      const pos=getLogPos(e);if(!hitPlayerTC(pos)&&!(TC.showBall&&hitBallTC(pos)))TC.selectedKeys.clear();
-    }
-    TC.dragging=null;TC.dragMoved=false;TC.tapStartPos=null;tcDraw();
-  }
-
-  // 공개 함수들
-  window.showTacticsBoard=function(){
-    const modal=document.getElementById("tacticsModal");
-    modal.style.display="flex";
-    if(!TC.initialized){
-      tcApplyPreset("basic");
-      document.querySelectorAll(".tc-preset-btn").forEach(b=>b.addEventListener("click",()=>tcApplyPreset(b.dataset.preset)));
-      TC.initialized=true;
-    }
-    setTimeout(()=>{tcLayoutCanvas();},50);
-    // 언어 적용 (영어 상태에서 열 때 data-lang 텍스트 갱신)
-    if(typeof applyLang === 'function') applyLang();
-    // URL에서 공유 데이터 체크
-    const p=new URLSearchParams(location.search),s=p.get("tc");
-    if(s){try{tcLoadState(JSON.parse(decodeURIComponent(escape(atob(s)))));tcShowToast(_nijiGetLang()==='en'?"Shared tactics board loaded! 🔗":"공유된 전술판을 불러왔어요! 🔗");}catch(e){}}
-  };
-  window.closeTacticsBoard=function(){
-    document.getElementById("tacticsModal").style.display="none";
-  };
-  window.tcToggleUI=function(){
-    TC.uiVisible=!TC.uiVisible;
-    document.getElementById("tc-topUI").style.display=TC.uiVisible?"block":"none";
-    document.getElementById("tc-bottomUI").style.display=TC.uiVisible?"flex":"none";
-    document.getElementById("tc-bottomUI").style.flexDirection="column";
-    setTimeout(tcLayoutCanvas,50);
-  };
-  window.tcSetMode=function(m){
-    if(TC.mode===m)TC.mode="drag"; else TC.mode=m;
-    TC.arrowDraw=null;
-    const isEn=_nijiGetLang()==='en';
-    const ba=document.getElementById("tc-btnArrow"),bd=document.getElementById("tc-btnDraw");
-    ba.classList.toggle("tc-arrow-on",TC.mode==="arrow");bd.classList.toggle("tc-draw-on",TC.mode==="draw");
-    ba.textContent=TC.mode==="arrow"?(isEn?"✏️ Arrow ON":"✏️ 화살표 ON"):(isEn?"➡️ Arrow":"➡️ 화살표");
-    bd.textContent=TC.mode==="draw"?(isEn?"✏️ Draw ON":"✏️ 그리기 ON"):(isEn?"✏️ Draw":"✏️ 그리기");
-    const g=document.getElementById("tc-guide");
-    if(TC.mode==="arrow")g.innerHTML=isEn?"Player tap→drag: move arrow &nbsp;·&nbsp; Empty drag: free arrow":"선수 탭→드래그: 이동 화살표 &nbsp;·&nbsp; 빈 곳 드래그: 자유 화살표";
-    else if(TC.mode==="draw")g.innerHTML=isEn?"Draw freely with your finger &nbsp;·&nbsp; Use Delete to erase":"손가락으로 자유롭게 그리세요 &nbsp;·&nbsp; 삭제 버튼으로 지우기";
-    else g.innerHTML=isEn?"Player tap → select (shot angle) &nbsp;·&nbsp; Double-tap → edit &nbsp;·&nbsp; Drag → move":"선수 탭 → 선택(타구각) &nbsp;·&nbsp; 더블탭 → 편집 &nbsp;·&nbsp; 드래그 → 이동";
-  };
-  window.tcToggleCover=function(){TC.showCover=!TC.showCover;const isEn=_nijiGetLang()==='en';const b=document.getElementById("tc-btnCover");b.textContent=TC.showCover?(isEn?"⭕ Cover ON":"⭕ 커버존 ON"):(isEn?"⭕ Cover OFF":"⭕ 커버존 OFF");b.classList.toggle("tc-cover-on",TC.showCover);tcDraw();};
-  window.tcToggleBall=function(){TC.showBall=!TC.showBall;const isEn=_nijiGetLang()==='en';const b=document.getElementById("tc-btnBall");b.textContent=TC.showBall?(isEn?"🎾 Ball ON":"🎾 공 ON"):(isEn?"🎾 Ball OFF":"🎾 공 OFF");b.classList.toggle("tc-ball-on",TC.showBall);tcDraw();};
-  window.tcToggleAngle=function(){TC.showAngle=!TC.showAngle;const isEn=_nijiGetLang()==='en';const b=document.getElementById("tc-btnAngle");b.textContent=TC.showAngle?(isEn?"📐 Angle ON":"📐 타구각 ON"):(isEn?"📐 Angle OFF":"📐 타구각 OFF");b.classList.toggle("tc-angle-on",TC.showAngle);tcDraw();};
-  window.tcDelDrawings=function(){const isEn=_nijiGetLang()==='en';TC.arrows=[];TC.arrowDraw=null;TC.drawPaths=[];tcDraw();tcShowToast(isEn?"Arrows & drawings cleared":"화살표·그리기 삭제됨");};
-  window.tcReset=function(){const isEn=_nijiGetLang()==='en';TC.selectedKeys.clear();tcApplyPreset(TC.activePreset);TC.ball={x:CX_L,y:NET_Y+60};TC.arrows=[];TC.drawPaths=[];tcDraw();tcShowToast(isEn?"Reset complete":"초기화 완료");};
-
-  function tcOpenPlayerEdit(key){
-    TC.editingKey=key;const p=TC.PINFO[key];
-    document.getElementById("tc-editName").value=p.name||"";
-
-    document.getElementById("tc-editPosition").value=p.position||"";
-    const sw=document.getElementById("tc-colorSwatches");sw.innerHTML="";
-    COLOR_PALETTE.forEach(col=>{
-      const d=document.createElement("div");d.className="tc-color-swatch"+(col===p.main?" tc-sel":"");d.style.background=col;
-      d.onclick=()=>{sw.querySelectorAll(".tc-color-swatch").forEach(x=>x.classList.remove("tc-sel"));d.classList.add("tc-sel");};sw.appendChild(d);
-    });
-    document.getElementById("tc-modalPlayer").style.display="flex";
-  }
-  window.tcEditOk=function(){
-    const key=TC.editingKey,p=TC.PINFO[key];
-    p.name=document.getElementById("tc-editName").value.trim();
-
-    p.position=document.getElementById("tc-editPosition").value.trim();
-    const sel=document.querySelector("#tc-colorSwatches .tc-color-swatch.tc-sel");
-    if(sel){p.main=sel.style.background;updateDarkTC(key);}
-    document.getElementById("tc-modalPlayer").style.display="none";
-    tcDraw();tcShowToast(_nijiGetLang()==='en'?"Player saved ✓":"선수 정보 저장됨 ✓");
-  };
-
-  window.tcOpenBoardStyle=function(){
-    document.querySelectorAll(".tc-theme-chip").forEach(b=>b.classList.toggle("tc-theme-sel",b.dataset.theme===TC.currentTheme));
-    const ds=document.getElementById("tc-drawColorSwatches");ds.innerHTML="";
-    DRAW_COLORS.forEach(col=>{
-      const d=document.createElement("div");d.className="tc-color-swatch"+(col===TC.drawColor?" tc-sel":"");d.style.background=col;
-      if(col==="#ffffff")d.style.border="2px solid rgba(255,255,255,0.4)";
-      d.onclick=()=>{ds.querySelectorAll(".tc-color-swatch").forEach(x=>x.classList.remove("tc-sel"));d.classList.add("tc-sel");};ds.appendChild(d);
-    });
-    document.getElementById("tc-themeRow").onclick=function(e){const btn=e.target.closest(".tc-theme-chip");if(!btn)return;document.querySelectorAll(".tc-theme-chip").forEach(b=>b.classList.remove("tc-theme-sel"));btn.classList.add("tc-theme-sel");};
-    document.getElementById("tc-modalBoard").style.display="flex";
-  };
-  window.tcBoardOk=function(){
-    const sel=document.querySelector(".tc-theme-chip.tc-theme-sel");if(sel)TC.currentTheme=sel.dataset.theme;
-    const dc=document.querySelector("#tc-drawColorSwatches .tc-color-swatch.tc-sel");if(dc)TC.drawColor=dc.style.background;
-    document.getElementById("tc-modalBoard").style.display="none";tcDraw();tcShowToast(_nijiGetLang()==='en'?"Board settings applied ✓":"보드 설정 적용됨 ✓");
-  };
-
-  function tcGetState(){return{players:JSON.parse(JSON.stringify(TC.players)),ball:{...TC.ball},arrows:JSON.parse(JSON.stringify(TC.arrows)),drawPaths:JSON.parse(JSON.stringify(TC.drawPaths)),PINFO:JSON.parse(JSON.stringify(TC.PINFO)),currentTheme:TC.currentTheme,activePreset:TC.activePreset,showCover:TC.showCover,showBall:TC.showBall,showAngle:TC.showAngle,drawColor:TC.drawColor};}
-  function tcLoadState(s){if(!s)return;if(s.players)TC.players=s.players;if(s.ball)TC.ball=s.ball;if(s.arrows)TC.arrows=s.arrows;if(s.drawPaths)TC.drawPaths=s.drawPaths;if(s.PINFO)TC.PINFO=s.PINFO;if(s.currentTheme)TC.currentTheme=s.currentTheme;if(s.activePreset)TC.activePreset=s.activePreset;if(s.showCover!==undefined)TC.showCover=s.showCover;if(s.showBall!==undefined)TC.showBall=s.showBall;if(s.showAngle!==undefined)TC.showAngle=s.showAngle;if(s.drawColor)TC.drawColor=s.drawColor;tcDraw();}
-
-  // [코드감사 수정] 전술판 localStorage 읽기/쓰기 공용 헬퍼 - 손상된 데이터/저장공간 초과 시에도 앱이 멈추지 않도록 try/catch로 보호
-  function _tcSavesGet(){
-    try{
-      return JSON.parse(localStorage.getItem("niji_tactics_saves")||"[]");
-    }catch(e){
-      console.warn('전술판 목록 읽기 실패:', e);
-      return [];
-    }
-  }
-  function _tcSavesSet(arr){
-    try{
-      localStorage.setItem("niji_tactics_saves", JSON.stringify(arr));
-      return true;
-    }catch(e){
-      console.warn('전술판 목록 저장 실패:', e);
-      tcShowToast(_nijiGetLang()==='en' ? '⚠️ Failed to save (storage full)' : '⚠️ 저장 실패 (저장공간 부족)');
-      return false;
-    }
-  }
-
-  window.tcSave=function(){document.getElementById("tc-saveNameInput").value="";document.getElementById("tc-modalSave").style.display="flex";setTimeout(()=>document.getElementById("tc-saveNameInput").focus(),100);};
-  window.tcSaveOk=function(){
-    const isEn=_nijiGetLang()==='en';
-    const name=document.getElementById("tc-saveNameInput").value.trim()||(isEn?"Tactics":"전술판");
-    const newEntry={name,date:new Date().toLocaleString("ko-KR"),state:tcGetState()};
-
-    // Firebase 저장 (로그인된 경우)
-    if(window._firebaseDB && window._userId){
-      const ref=window._firebaseDB.ref('users/'+window._userId+'/tacticsSaves');
-      ref.once('value').then(snap=>{
-        const saves=[];
-        snap.forEach(child=>{saves.push({key:child.key,...child.val()});});
-        // 최대 20개 제한: 20개 초과시 가장 오래된 것 삭제
-        if(saves.length>=20){
-          const oldest=saves[saves.length-1];
-          if(oldest&&oldest.key) ref.child(oldest.key).remove();
-        }
-        ref.push({name:newEntry.name,date:newEntry.date,state:newEntry.state});
-      }).catch(()=>{
-        // Firebase 실패시 localStorage 폴백
-        const saves=_tcSavesGet();
-        saves.unshift(newEntry);
-        if(saves.length>20)saves.pop();
-        _tcSavesSet(saves);
-      });
-    } else {
-      // 비로그인: localStorage 사용
-      const saves=_tcSavesGet();
-      saves.unshift(newEntry);
-      if(saves.length>20)saves.pop();
-      _tcSavesSet(saves);
-    }
-    document.getElementById("tc-modalSave").style.display="none";
-    tcShowToast(isEn?`"${name}" saved! 💾`:`"${name}" 저장 완료! 💾`);
-  };
-
-  window.tcLoad=function(){
-    const list=document.getElementById("tc-slotList");
-    const isEn=_nijiGetLang()==='en';
-    list.innerHTML=`<div style='text-align:center;color:#8a998f;font-size: 0.8rem;padding:20px;'>${isEn?'Loading...':'불러오는 중...'}</div>`;
-    document.getElementById("tc-modalLoad").style.display="flex";
-
-    function renderTcSaveList(saves){
-      list.innerHTML="";
-      if(!saves||saves.length===0){list.innerHTML=`<div style='text-align:center;color:#8a998f;font-size: 0.8rem;padding:20px;'>${isEn?'No saved tactics boards':'저장된 전술판이 없어요'}</div>`;return;}
-      saves.forEach(s=>{
-        const row=document.createElement("div");
-        row.style.cssText="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.05);margin-bottom:6px;cursor:pointer;";
-        row.innerHTML=`<div style="flex:1;"><div style="font-size: 0.8667rem;color:#ddf0f8;">${s.name}</div><div style="font-size: 0.6667rem;color:#4e7a8a;">${s.date}</div></div><button style="padding:2px 8px;border-radius:8px;border:none;background:rgba(248,113,113,0.15);color:#f87171;font-size: 0.7333rem;cursor:pointer;" data-key="${s.key||''}" data-i="${s.localIdx!==undefined?s.localIdx:''}">${isEn?'Del':'삭제'}</button>`;
-        row.addEventListener("click",e=>{
-          const delBtn=e.target.closest("button[data-key],button[data-i]");
-          if(delBtn){
-            const fbKey=delBtn.dataset.key;
-            const localIdx=delBtn.dataset.i;
-            if(fbKey&&window._firebaseDB&&window._userId){
-              window._firebaseDB.ref('users/'+window._userId+'/tacticsSaves/'+fbKey).remove().then(()=>window.tcLoad());
-            } else if(localIdx!==''){
-              const arr=_tcSavesGet();
-              arr.splice(parseInt(localIdx),1);
-              _tcSavesSet(arr);
-              window.tcLoad();
-            }
-            return;
-          }
-          tcLoadState(s.state);document.getElementById("tc-modalLoad").style.display="none";tcShowToast(isEn?`"${s.name}" loaded! 📂`:`"${s.name}" 불러오기 완료! 📂`);
-        });list.appendChild(row);
-      });
-    }
-
-    // Firebase 우선 로드
-    if(window._firebaseDB&&window._userId){
-      window._firebaseDB.ref('users/'+window._userId+'/tacticsSaves').orderByChild('date').once('value')
-        .then(snap=>{
-          const saves=[];
-          snap.forEach(child=>{saves.unshift({key:child.key,...child.val()});});
-          // localStorage에 기존 데이터 있으면 Firebase로 마이그레이션
-          const old=_tcSavesGet();
-          if(old.length>0&&saves.length===0){
-            const ref=window._firebaseDB.ref('users/'+window._userId+'/tacticsSaves');
-            old.forEach(o=>ref.push(o));
-            localStorage.removeItem("niji_tactics_saves");
-            window.tcLoad(); return;
-          }
-          renderTcSaveList(saves);
-        }).catch(()=>{
-          const saves=_tcSavesGet();
-          renderTcSaveList(saves.map((s,i)=>({...s,localIdx:i})));
-        });
-    } else {
-      const saves=_tcSavesGet();
-      renderTcSaveList(saves.map((s,i)=>({...s,localIdx:i})));
-    }
-  };
-
-  window.tcShare=function(){
-    const json=JSON.stringify(tcGetState());const b64=btoa(unescape(encodeURIComponent(json)));
-    const url=location.href.split("?")[0]+"?tc="+b64;
-    document.getElementById("tc-shareLinkBox").textContent=url;document.getElementById("tc-modalShare").style.display="flex";
-  };
-  window.tcCopyShare=function(){
-    const link=document.getElementById("tc-shareLinkBox").textContent;
-    navigator.clipboard.writeText(link).then(()=>tcShowToast("링크 복사됨! 카카오톡에 붙여넣기 🔗")).catch(()=>{const ta=document.createElement("textarea");ta.value=link;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);tcShowToast("링크 복사됨! 📋");});
-    document.getElementById("tc-modalShare").style.display="none";
-  };
-
-  let tcToastTimer=null;
-  window.tcShowToast=function(msg){const t=document.getElementById("tc-toast");t.textContent=msg;t.style.opacity="1";clearTimeout(tcToastTimer);tcToastTimer=setTimeout(()=>t.style.opacity="0",2200);};
-
-  window.addEventListener("resize",()=>{if(document.getElementById("tacticsModal").style.display!=="none")tcLayoutCanvas();});
-})();
-</script>
 
 <!-- 폴더블폰 접고 펼칠 때 레이아웃 자동 재조정 -->
 <script>
