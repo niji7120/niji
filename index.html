@@ -2,7 +2,6 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -53,6 +52,8 @@ const NIJI_DICT = {
   share_manual_sec:  { ko: '사용 방법',          en: 'Help' },
   share_manual_item: { ko: '사용 설명서 보기',   en: 'View User Guide' },
   share_manual_sub:  { ko: '앱 사용법 안내',     en: 'How to use this app' },
+  share_onboard_item: { ko: '온보딩 다시 보기', en: 'Replay Onboarding' },
+  share_onboard_sub:  { ko: '처음 시작 화면을 다시 확인해요', en: 'See the welcome screens again' },
   /* 하단 탭 */
   nav_profile:       { ko: '프로필',   en: 'Profile' },
   nav_match:         { ko: '경기기록', en: 'Records' },
@@ -97,13 +98,32 @@ const NIJI_DICT = {
   resetpw_need_email:      { ko: '위에 이메일을 입력한 후 눌러주세요.', en: 'Please enter your email above, then tap this.' },
   resetpw_success:         { ko: '✅ {email}로 재설정 메일을 보냈어요!', en: '✅ Reset email sent to {email}!' },
   resetpw_err_generic:     { ko: '메일 발송 실패. 이메일을 확인해 주세요.', en: 'Failed to send email. Please check your email address.' },
-  /* 체험 튜토리얼 (실제 화면 체험 모드) */
-  tut_login_btn:           { ko: '🔍 로그인 없이 둘러보기', en: '🔍 Try without signing in' },
-  tut_banner_text:         { ko: '🧪 체험 모드 · 입력해도 저장되지 않아요', en: '🧪 Demo mode · nothing you enter is saved' },
-  tut_banner_exit:         { ko: '체험 종료', en: 'Exit demo' },
-  tut_toast_start:         { ko: '👋 체험 모드예요. 프로필 탭과 경기기록 탭을 자유롭게 눌러보세요!', en: '👋 This is demo mode. Feel free to explore the Profile and Match tabs!' },
-  share_onboard_item:      { ko: '체험 튜토리얼 다시 보기', en: 'Replay the demo tutorial' },
-  share_onboard_sub:       { ko: '데모 데이터로 프로필·경기기록 탭을 다시 체험해요', en: 'Explore the Profile and Match tabs again with demo data' },
+  /* 온보딩 (첫 사용자 안내) */
+  ob_skip:                 { ko: '건너뛰기', en: 'Skip' },
+  ob_step_of:              { ko: '{cur} / {total}', en: '{cur} / {total}' },
+  ob1_title:               { ko: '니지스트링에\n오신 걸 환영해요! 🎾', en: 'Welcome to\nNIJI STRING! 🎾' },
+  ob1_desc:                { ko: '경기 기록부터 전적 통계, 선수·대회 관리까지\n라켓 스포츠 생활을 이 앱 하나로 관리해보세요.', en: 'From match records to stats,\nplayers, and tournaments — manage it all in one app.' },
+  ob1_btn:                 { ko: '시작하기', en: 'Get Started' },
+  ob2_title:                { ko: '어떤 종목을\n즐기세요?', en: 'Which sport\ndo you play?' },
+  ob2_desc:                { ko: '나중에 프로필 탭에서 언제든 바꿀 수 있어요', en: 'You can change this anytime in the Profile tab' },
+  ob3_title:               { ko: '이름을\n알려주세요', en: "What's your\nname?" },
+  ob3_desc:                { ko: '경기 기록과 통계에 표시될 이름이에요', en: 'This name will appear on your match records and stats' },
+  ob3_ph:                  { ko: '예: 홍길동', en: 'e.g. John Smith' },
+  ob3_required:            { ko: '이름을 입력해 주세요', en: 'Please enter your name' },
+  ob4_title:               { ko: '준비 완료! 🎉', en: 'All set! 🎉' },
+  ob4_desc:                { ko: '딱 2가지만 더 알려드릴게요.\n금방 끝나요!', en: "Just 2 quick things to show you.\nIt'll only take a second!" },
+  ob4_btn:                 { ko: '계속하기 →', en: 'Continue →' },
+  ob_btn_next:             { ko: '다음', en: 'Next' },
+  ob_toast_done:           { ko: '👋 환영해요! 편하게 둘러보세요', en: '👋 Welcome! Feel free to look around' },
+  /* 가이드 투어 (실제 화면 위 말풍선 튜토리얼) - 프로필 탭 / 경기기록(복식) 2단계 */
+  tour_next:               { ko: '다음', en: 'Next' },
+  tour_done:               { ko: '시작하기 ✓', en: "Let's Go ✓" },
+  tour_skip:               { ko: '건너뛰기', en: 'Skip' },
+  tour_end_toast:          { ko: '🎉 좋아요! 이제 첫 경기를 기록해보세요', en: '🎉 Great! Now log your first match' },
+  tour1_title:             { ko: '👤 프로필 탭', en: '👤 Profile tab' },
+  tour1_desc:              { ko: '내 정보, 등록한 라켓, 스트링 교체 시기까지\n여기서 한눈에 확인하고 관리할 수 있어요.', en: 'Check and manage your info, registered rackets,\nand string replacement schedule all in one place.' },
+  tour2_title:             { ko: '🎾 먼저 단식/복식을 선택하세요', en: '🎾 First, choose singles or doubles' },
+  tour2_desc:              { ko: '"새 경기 입력"을 누르면 여기서 단식/복식을 고를 수 있어요.\n복식을 선택하면 파트너와 상대 두 명의\n이름까지 입력할 수 있어요.', en: 'After tapping "New Match", choose singles or doubles here.\nWith doubles, you can also enter your partner\nand both opponents\' names.' },
   /* 경기 결과 공유 카드 */
   sc_win_label:            { ko: '🏆 승리!', en: '🏆 Win!' },
   sc_lose_label:           { ko: '💪 패배', en: '💪 Lose' },
@@ -196,6 +216,15 @@ const NIJI_DICT = {
   str_reason_broken:    { ko: '끊어짐',                              en: 'Broke' },
   str_reason_damaged:   { ko: '라켓 파손',                          en: 'Racquet damage' },
   str_reason_other:     { ko: '기타',                                en: 'Other' },
+  str_reason_test:      { ko: '시타(테스트)',                        en: 'Test hit' },
+  str_view_mode_lbl:    { ko: '보기 모드',                           en: 'View Mode' },
+  str_view_basic:       { ko: '기본 보기',                           en: 'Basic' },
+  str_view_advanced:    { ko: '고급 보기',                           en: 'Advanced' },
+  str_view_hint_basic:  { ko: '핵심 항목만 표시 중 · 하이브리드·비용·캘린더·이력은 [고급 보기]에서 볼 수 있어요', en: 'Showing core fields only · Hybrid, cost, calendar & history are in [Advanced]' },
+  str_view_hint_advanced: { ko: '모든 상세 옵션 표시 중', en: 'Showing all detailed options' },
+  str_test_stat_month:  { ko: '이번 달 시타',                        en: 'Test hits this month' },
+  str_test_stat_year:   { ko: '올해 시타',                           en: 'Test hits this year' },
+  str_test_stat_unit:   { ko: '회',                                  en: 'x' },
   str_cost_lbl:         { ko: '비용 (원, 선택)',                    en: 'Cost (optional)' },
   str_cost_ph:          { ko: '예) 25000',                          en: 'e.g. 25000' },
   str_total_cost:       { ko: '누적 비용',                          en: 'Total spent' },
@@ -204,6 +233,149 @@ const NIJI_DICT = {
   str_calendar_added:   { ko: '📅 캘린더 파일을 내려받았어요! 열어서 등록하세요', en: '📅 Calendar file downloaded! Open it to add the reminder' },
   str_calendar_title:   { ko: '스트링 교체 예정일',                 en: 'String restring due' },
   str_racket_remove_confirm: { ko: '라켓 {n} 정보와 이력이 화면에서 숨겨져요 (데이터는 남아있어요)', en: 'Racquet {n} will be hidden from view (its data stays saved)' },
+
+  /* 스트링 마스터 DB */
+  strdb_manage_btn:     { ko: '📚 내 스트링 목록 관리',              en: '📚 Manage My String List' },
+  strdb_pick_btn:       { ko: '📋 목록에서 선택',                    en: '📋 Pick from list' },
+  strdb_pick_btn_short: { ko: '📋 선택',                            en: '📋 Pick' },
+  strdb_modal_title:    { ko: '📚 나의 스트링 목록',                 en: '📚 My String List' },
+  strdb_add_btn:        { ko: '➕ 새 스트링 등록하기',                en: '➕ Register New String' },
+  strdb_empty:          { ko: '등록된 스트링이 없어요.\n아래 버튼으로 첫 스트링을 등록해보세요!', en: 'No strings registered yet.\nTap the button below to add your first one!' },
+  strdb_pick_hint:      { ko: '사용할 스트링을 선택하세요',          en: 'Tap a string to select it' },
+  strdb_pick_hint_cross:{ ko: '크로스로 사용할 스트링을 선택하세요',  en: 'Tap a string to use as the cross' },
+  strdb_select_btn:     { ko: '선택', en: 'Select' },
+  strdb_edit_btn:       { ko: '✏️', en: '✏️' },
+  strdb_delete_btn:     { ko: '🗑️', en: '🗑️' },
+  strdb_delete_title:   { ko: '이 스트링을 삭제할까요?',             en: 'Delete this string?' },
+  strdb_delete_msg:     { ko: '스트링 목록에서 삭제됩니다. (교체 이력은 남아있어요)', en: 'It will be removed from your list. (Restring history stays.)' },
+  strdb_form_title_add: { ko: '➕ 새 스트링 등록',                    en: '➕ Register New String' },
+  strdb_form_title_edit:{ ko: '✏️ 스트링 정보 수정',                  en: '✏️ Edit String' },
+  strdb_brand_lbl:      { ko: '브랜드',      en: 'Brand' },
+  strdb_brand_ph:       { ko: '예) 루키론 (Luxilon)',  en: 'e.g. Luxilon' },
+  strdb_model_lbl:      { ko: '모델명',      en: 'Model' },
+  strdb_model_ph:       { ko: '예) ALU Power', en: 'e.g. ALU Power' },
+  strdb_gauge_lbl:      { ko: '게이지',      en: 'Gauge' },
+  strdb_gauge_ph:       { ko: '예) 1.25mm / 16L', en: 'e.g. 1.25mm / 16L' },
+  strdb_gauge_custom:   { ko: '직접 입력',   en: 'Custom' },
+  strdb_gauge_custom_ph:{ ko: '예) 1.30',    en: 'e.g. 1.30' },
+  strdb_material_lbl:   { ko: '재질',        en: 'Material' },
+  strdb_material_ph:    { ko: '예) 폴리에스터', en: 'e.g. Polyester' },
+  strdb_material_poly:  { ko: '폴리',        en: 'Poly' },
+  strdb_material_multi: { ko: '멀티',        en: 'Multi' },
+  strdb_material_gut:   { ko: '천연거트',    en: 'Natural Gut' },
+  strdb_material_other: { ko: '기타',        en: 'Other' },
+  strdb_shape_lbl:      { ko: '형태',        en: 'Shape' },
+  strdb_shape_ph:       { ko: '예) 라운드 / 옥타곤', en: 'e.g. Round / Octagon' },
+  strdb_shape_round:    { ko: '원형줄',      en: 'Round' },
+  strdb_shape_edged:    { ko: '각줄',        en: 'Shaped/Angled' },
+  strdb_shape_rough:    { ko: '러프',        en: 'Rough' },
+  strdb_shape_twist:    { ko: '트위스트',    en: 'Twisted' },
+  strdb_shape_other:    { ko: '기타',        en: 'Other' },
+  strdb_name_en_lbl:    { ko: '영어 이름 (선택)', en: 'English Name (optional)' },
+  strdb_name_en_ph:     { ko: '예) Luxilon ALU Power 125', en: 'e.g. Luxilon ALU Power 125' },
+  strdb_preset_lbl:     { ko: '자주 쓰는 스트링에서 선택 (선택하면 자동 입력)', en: 'Pick from common strings (auto-fills fields)' },
+  strdb_preset_ph:      { ko: '해당 없음 (아래에 직접 입력)', en: 'None of these (type below)' },
+  strdb_preset_hint:    { ko: '💡 목록에 원하는 스트링이 없으면 이 선택은 그냥 두고, 아래 브랜드·모델명 칸에 직접 입력하시면 됩니다', en: '💡 If your string isn\'t listed, just leave this and type the brand/model directly below' },
+  strdb_tension_lbl:    { ko: '권장 텐션 (lb)', en: 'Recommended Tension' },
+  strdb_tension_ph:     { ko: '예) 46/44',  en: 'e.g. 46/44' },
+  strdb_price_lbl:      { ko: '가격 (원)',  en: 'Price' },
+  strdb_price_ph:       { ko: '예) 25000',  en: 'e.g. 25000' },
+  strdb_sec_basic:      { ko: '기본 정보',  en: 'Basic Info' },
+  strdb_sec_detail:     { ko: '특징 · 장단점 · 추천 정보', en: 'Features · Pros & Cons · Recommended For' },
+  strdb_sec_rating:     { ko: '평가 (별점)', en: 'Ratings' },
+  strdb_sec_memo:       { ko: '나만의 메모', en: 'My Notes' },
+  strdb_features_lbl:   { ko: '특징',        en: 'Features' },
+  strdb_features_ph:    { ko: '예) 묵직한 타구감의 폴리 스트링', en: 'e.g. Heavy, solid feel polyester string' },
+  strdb_pros_lbl:       { ko: '장점',        en: 'Pros' },
+  strdb_pros_ph:        { ko: '예) 컨트롤이 뛰어남', en: 'e.g. Excellent control' },
+  strdb_cons_lbl:       { ko: '단점',        en: 'Cons' },
+  strdb_cons_ph:        { ko: '예) 텐션 저하가 빠름', en: 'e.g. Loses tension quickly' },
+  strdb_style_lbl:      { ko: '추천 플레이 스타일', en: 'Recommended Style' },
+  strdb_style_ph:       { ko: '예) 탑스핀, 올라운드', en: 'e.g. Topspin, All-round' },
+  strdb_career_lbl:     { ko: '추천 구력',   en: 'Recommended Experience' },
+  strdb_career_ph:      { ko: '예) 2년 이상', en: 'e.g. 2+ years' },
+  strdb_racket_lbl:     { ko: '추천 라켓',   en: 'Recommended Racquet' },
+  strdb_racket_ph:      { ko: '예) 윌슨 블레이드 98', en: 'e.g. Wilson Blade 98' },
+  strdb_memo_ph:        { ko: '이 스트링에 대한 나만의 느낌, 팁 등을 자유롭게 적어보세요', en: 'Write your own thoughts, tips, or notes about this string' },
+  strdb_rate_spin:        { ko: '스핀',        en: 'Spin' },
+  strdb_rate_power:       { ko: '반발력',      en: 'Power' },
+  strdb_rate_control:     { ko: '컨트롤',      en: 'Control' },
+  strdb_rate_feel:        { ko: '타구감',      en: 'Feel' },
+  strdb_rate_tensionHold: { ko: '텐션 유지력', en: 'Tension Hold' },
+  strdb_rate_durability:  { ko: '내구성',      en: 'Durability' },
+  strdb_rate_armStress:   { ko: '팔 부담',     en: 'Arm Stress' },
+  strdb_save_btn:       { ko: '💾 저장하기',  en: '💾 Save' },
+  strdb_cancel_btn:     { ko: '취소',        en: 'Cancel' },
+  strdb_brand_required: { ko: '브랜드와 모델명을 입력해주세요',      en: 'Please enter brand and model' },
+  strdb_saved_toast:    { ko: '스트링이 저장됐어요!',                en: 'String saved!' },
+  strdb_no_tension:     { ko: '텐션 정보 없음', en: 'No tension info' },
+
+  /* 스트링 작업 기록 - 플레이 후 평가 */
+  streval_btn:            { ko: '📝 평가', en: '📝 Rate' },
+  streval_btn_done:       { ko: '📝 평가 수정', en: '📝 Edit Rating' },
+  streval_modal_title:    { ko: '📝 플레이 후 평가', en: '📝 Post-Play Rating' },
+  streval_modal_sub:      { ko: '이 스트링을 사용해본 느낌을 남겨보세요', en: 'Record how this string felt in play' },
+  streval_rate_satisfaction: { ko: '만족도',   en: 'Satisfaction' },
+  streval_rate_feel:        { ko: '타구감',   en: 'Feel' },
+  streval_rate_spin:        { ko: '스핀',     en: 'Spin' },
+  streval_rate_power:       { ko: '반발력',   en: 'Power' },
+  streval_rate_control:     { ko: '컨트롤',   en: 'Control' },
+  streval_rate_armStress:   { ko: '팔 부담',  en: 'Arm Stress' },
+  streval_pros_lbl:       { ko: '좋았던 점',  en: 'What worked well' },
+  streval_pros_ph:        { ko: '예) 서브가 좋아짐, 포핸드가 안정적', en: 'e.g. Better serves, more stable forehand' },
+  streval_cons_lbl:       { ko: '아쉬웠던 점', en: 'What could be better' },
+  streval_cons_ph:        { ko: '예) 백핸드는 조금 딱딱함', en: 'e.g. A bit stiff on backhand' },
+  streval_memo_lbl:       { ko: '추가 메모',  en: 'Additional Notes' },
+  streval_memo_ph:        { ko: '자유롭게 메모를 남겨보세요', en: 'Write any extra notes here' },
+  streval_save_btn:       { ko: '💾 평가 저장', en: '💾 Save Rating' },
+  streval_cancel_btn:     { ko: '취소', en: 'Cancel' },
+  streval_saved_toast:    { ko: '평가가 저장됐어요!', en: 'Rating saved!' },
+  streval_style_lbl:      { ko: '이때 플레이 스타일 (선택)', en: 'Play Style at the time (optional)' },
+
+  /* 자동 분석 & 나만의 스트링 노트 */
+  stranalysis_btn:              { ko: '📊 자동 분석 & 스트링 노트', en: '📊 Auto Analysis & String Notes' },
+  stranalysis_modal_title:      { ko: '📊 나의 스트링 분석', en: '📊 My String Analysis' },
+  stranalysis_tab_summary:      { ko: '📊 자동 분석', en: '📊 Analysis' },
+  stranalysis_tab_note:         { ko: '📖 스트링 노트', en: '📖 String Notes' },
+  stranalysis_empty:            { ko: '아직 데이터가 부족해요.\n스트링 교체 기록과 평가를 남기면\n자동으로 분석해드려요!', en: 'Not enough data yet.\nSave restring records and ratings,\nand we\'ll analyze them for you!' },
+  stranalysis_most_used_string: { ko: '가장 많이 사용한 스트링', en: 'Most Used String' },
+  stranalysis_avg_tension:      { ko: '평균 텐션', en: 'Average Tension' },
+  stranalysis_best_sat_string:  { ko: '만족도가 가장 높은 스트링', en: 'Highest-Rated String' },
+  stranalysis_best_sat_tension: { ko: '만족도가 가장 높은 텐션', en: 'Highest-Rated Tension' },
+  stranalysis_most_used_racket: { ko: '가장 많이 사용한 라켓', en: 'Most Used Racquet' },
+  stranalysis_best_winter:      { ko: '겨울철 만족도가 높았던 스트링', en: 'Best String in Winter' },
+  stranalysis_best_summer:      { ko: '여름철 만족도가 높았던 스트링', en: 'Best String in Summer' },
+  stranalysis_longest_use:      { ko: '가장 오래 사용한 스트링', en: 'Longest-Used String' },
+  stranalysis_times:            { ko: '회', en: 'x' },
+  stranalysis_days:             { ko: '일', en: ' days' },
+  stranalysis_unknown:          { ko: '이름 미상 스트링', en: 'Unnamed String' },
+  stranalysis_racket_fallback:  { ko: '라켓 {n}', en: 'Racquet {n}' },
+  stranalysis_note_empty:       { ko: '기록이 없습니다', en: 'No records' },
+  stranalysis_cross_lbl:        { ko: '크로스', en: 'Cross' },
+  stranalysis_style_top_title:  { ko: '플레이 스타일별 만족도 1위 스트링', en: 'Top String by Play Style' },
+
+  /* AI 추천 기능 */
+  airec_btn:              { ko: '🤖 AI 추천 스트링 보기', en: '🤖 View AI String Recommendation' },
+  airec_modal_title:      { ko: '🤖 AI 추천 스트링', en: '🤖 AI Recommended String' },
+  airec_empty:            { ko: '아직 추천할 만한 데이터가 부족해요.\n스트링 교체 기록과 평가를 남기거나,\n내 스트링 목록에 스트링을 등록해보세요!', en: 'Not enough data for a recommendation yet.\nSave restring records and ratings,\nor register strings in My String List!' },
+  airec_source_history:   { ko: '📊 나의 플레이 기록 기반 추천', en: '📊 Based on your play history' },
+  airec_source_db:        { ko: '📚 내 스트링 목록 + 프로필 기반 추천', en: '📚 Based on your string list & profile' },
+  airec_string_lbl:       { ko: '추천 스트링', en: 'Recommended String' },
+  airec_tension_lbl:      { ko: '추천 텐션', en: 'Recommended Tension' },
+  airec_reason_lbl:       { ko: '추천 이유', en: 'Why This' },
+  airec_refresh_btn:      { ko: '🔄 다시 분석하기', en: '🔄 Re-analyze' },
+  airec_reason_best_sat:      { ko: '지금까지 기록 중 만족도가 가장 높음 (⭐{avg})', en: 'Highest satisfaction so far (⭐{avg})' },
+  airec_reason_best_tension:  { ko: '{tension}lb 텐션에서 만족도가 가장 높았음 (⭐{avg})', en: 'Highest satisfaction at {tension}lb (⭐{avg})' },
+  airec_reason_style:         { ko: '{style} 스타일에서 만족도가 가장 높음 (⭐{avg})', en: 'Top-rated for {style} style (⭐{avg})' },
+  airec_reason_winter:        { ko: '겨울철에도 만족도가 높았음 (⭐{avg})', en: 'Also rated highly in winter (⭐{avg})' },
+  airec_reason_summer:        { ko: '여름철에도 만족도가 높았음 (⭐{avg})', en: 'Also rated highly in summer (⭐{avg})' },
+  airec_reason_longevity:     { ko: '가장 오래 사용해도 성능이 유지됨 (평균 {days}일)', en: 'Holds up longest in use (avg {days} days)' },
+  airec_reason_most_used:     { ko: '지금까지 가장 많이 사용한 스트링 ({count}회)', en: 'Most used string so far ({count}x)' },
+  airec_reason_db_registered: { ko: '내 스트링 목록에 등록된 스트링 중 하나예요', en: 'Selected from your registered string list' },
+  airec_reason_db_match:      { ko: '등록하신 플레이 스타일 · 구력 정보와 잘 맞아요', en: 'Matches your registered play style / experience level' },
+  airec_reason_db_rating:     { ko: '스트링 목록에서 직접 남기신 평점이 높아요 (⭐{avg})', en: 'You rated it highly in your string list (⭐{avg})' },
+  airec_reason_hybrid_combo:  { ko: '크로스로 {cross}를 함께 썼을 때 만족도가 가장 높았어요 (⭐{avg})', en: 'Best satisfaction when paired with {cross} as the cross (⭐{avg})' },
+  airec_cross_lbl:            { ko: '추천 하이브리드 조합', en: 'Recommended Hybrid Pairing' },
 
   /* 경기기록 탭 */
   match_page_header:       { ko: '경기기록',           en: 'Records' },
@@ -549,6 +721,44 @@ const NIJI_DICT = {
   pf_string_manage_btn:    { ko: '스트링 관리',     en: 'String Management' },
   pf_string_status_title:  { ko: '스트링 상태',     en: 'String Status' },
   pf_player_info_title:    { ko: '플레이어 정보',   en: 'Player Info' },
+
+  /* 상세 플레이 프로필 (구력/스타일 등 심화 정보) */
+  pf_detail_profile_title: { ko: '🎯 상세 플레이 프로필', en: '🎯 Detailed Play Profile' },
+  pf_style_tags_lbl:       { ko: '플레이 스타일 (복수 선택 가능)', en: 'Play Style (select multiple)' },
+  pf_style_flat:           { ko: '플랫', en: 'Flat' },
+  pf_style_topspin:        { ko: '탑스핀', en: 'Topspin' },
+  pf_style_slice:          { ko: '슬라이스', en: 'Slice' },
+  pf_style_allround:       { ko: '올라운드', en: 'All-round' },
+  pf_style_servevolley:    { ko: '서브앤발리', en: 'Serve & Volley' },
+  pf_style_counter:        { ko: '카운터펀처', en: 'Counter-puncher' },
+  pf_style_aggressive:     { ko: '공격형', en: 'Aggressive' },
+  pf_style_defensive:      { ko: '수비형', en: 'Defensive' },
+  pf_ntrp_lbl:             { ko: 'NTRP / 실력', en: 'NTRP / Level' },
+  pf_ntrp_ph:              { ko: '예) 3.5', en: 'e.g. 3.5' },
+  pf_position_lbl:         { ko: '주 포지션', en: 'Main Position' },
+  pf_position_deuce:       { ko: '듀스 사이드', en: 'Deuce side' },
+  pf_position_ad:          { ko: '애드 사이드', en: 'Ad side' },
+  pf_position_free:        { ko: '자유', en: 'Flexible' },
+  pf_swing_lbl:            { ko: '스윙 스타일', en: 'Swing Style' },
+  pf_swing_compact:        { ko: '컴팩트', en: 'Compact' },
+  pf_swing_full:           { ko: '풀스윙', en: 'Full swing' },
+  pf_swing_medium:         { ko: '중간', en: 'Medium' },
+  pf_level_low:            { ko: '낮음', en: 'Low' },
+  pf_level_mid:            { ko: '보통', en: 'Medium' },
+  pf_level_high:           { ko: '높음', en: 'High' },
+  pf_spin_tendency_lbl:    { ko: '스핀 성향', en: 'Spin Tendency' },
+  pf_power_lbl:            { ko: '파워', en: 'Power' },
+  pf_control_lbl:          { ko: '컨트롤', en: 'Control' },
+  pf_wrist_lbl:            { ko: '손목 사용 정도', en: 'Wrist Use' },
+  pf_prefer_tension_lbl:   { ko: '선호 텐션 (lb)', en: 'Preferred Tension' },
+  pf_prefer_tension_ph:    { ko: '예) 46/44', en: 'e.g. 46/44' },
+  pf_prefer_string_lbl:    { ko: '선호 스트링 종류', en: 'Preferred String Type' },
+  pf_prefer_string_poly:   { ko: '폴리에스터', en: 'Polyester' },
+  pf_prefer_string_multi:  { ko: '멀티필라멘트', en: 'Multifilament' },
+  pf_prefer_string_gut:    { ko: '천연거트', en: 'Natural Gut' },
+  pf_prefer_string_hybrid: { ko: '하이브리드', en: 'Hybrid' },
+  pf_prefer_string_synth:  { ko: '합성거트', en: 'Synthetic Gut' },
+  pf_saved_toast:          { ko: '저장됐어요!', en: 'Saved!' },
 
   stats_atp_style:         { ko: '🏆 ATP 방식',      en: '🏆 ATP Style' },
   stats_last12mo:          { ko: '최근 12개월',      en: 'Last 12 Months' },
@@ -1914,19 +2124,112 @@ function _t(key) {
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ===== 체험 튜토리얼 배너 (실제 화면 체험 모드) ===== */
-  #tutorialBanner {
-    display:none; align-items:center; justify-content:space-between; gap:10px;
-    flex-shrink:0; padding:9px 14px; padding-top:calc(9px + env(safe-area-inset-top));
-    background:linear-gradient(135deg,#c9a961,#a9822f); color:#fff;
-    font-size:0.7667rem; font-weight:700; line-height:1.3;
+  /* ===== 온보딩 (첫 사용자 안내) ===== */
+  #onboardOverlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg); display: none;
+    flex-direction: column;
   }
-  #tutorialBanner span { flex:1; }
-  #tutorialBanner button {
-    flex-shrink:0; border:1.5px solid rgba(255,255,255,.7); background:rgba(0,0,0,.15);
-    color:#fff; font-family:inherit; font-size:0.7333rem; font-weight:800;
-    padding:6px 12px; border-radius:20px; cursor:pointer; white-space:nowrap;
+  .ob-topbar { display:flex; align-items:center; justify-content:space-between; padding:16px 20px 0; flex-shrink:0; }
+  .ob-progress { flex:1; display:flex; gap:6px; margin-right:14px; }
+  .ob-progress-dot { flex:1; height:4px; border-radius:4px; background:var(--border); transition:background .3s; }
+  .ob-progress-dot.done { background:var(--accent); }
+  .ob-skip-btn { background:none; border:none; color:var(--text-muted); font-size:0.8667rem; font-weight:600; cursor:pointer; padding:6px 8px; white-space:nowrap; }
+  .ob-steps { flex:1; position:relative; overflow:hidden; }
+  .ob-step {
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:20px 28px; gap:18px;
+    opacity:0; transform:translateX(40px); pointer-events:none;
+    transition: opacity .35s ease, transform .35s ease;
   }
+  .ob-step.active { opacity:1; transform:translateX(0); pointer-events:auto; }
+  .ob-step.leaving { opacity:0; transform:translateX(-40px); }
+  .ob-emoji { font-size:3.6rem; line-height:1; }
+  .ob-title { font-size:1.5rem; font-weight:900; color:var(--text); white-space:pre-line; line-height:1.35; }
+  .ob-desc { font-size:0.9333rem; color:var(--text-muted); white-space:pre-line; line-height:1.6; max-width:320px; }
+  .ob-sport-row { display:flex; gap:10px; width:100%; max-width:340px; margin-top:4px; }
+  .ob-sport-btn {
+    flex:1; padding:18px 8px; border-radius:16px; border:1.5px solid var(--border); background:var(--surface2);
+    color:var(--text-muted); cursor:pointer; font-family:inherit; transition:all .2s; display:flex; flex-direction:column; gap:6px; align-items:center;
+  }
+  .ob-sport-btn .ob-sport-icon { font-size:1.8rem; }
+  .ob-sport-btn.selected { border-color:var(--accent); background:rgba(201,169,97,.12); color:var(--accent); }
+  .ob-name-input {
+    width:100%; max-width:320px; padding:14px 16px; margin-top:4px; font-size:1.0667rem; text-align:center;
+    background:var(--surface2); border:1.5px solid var(--border); border-radius:14px; color:var(--text); font-family:inherit; outline:none;
+  }
+  .ob-name-input:focus { border-color:var(--accent); }
+  .ob-bottom { padding:16px 24px calc(20px + env(safe-area-inset-bottom)); flex-shrink:0; }
+  .ob-next-btn {
+    width:100%; padding:15px; border:none; border-radius:14px; background:var(--accent); color:#fff;
+    font-size:1rem; font-weight:800; cursor:pointer; font-family:inherit; transition:opacity .2s;
+  }
+  .ob-next-btn:disabled { opacity:.4; cursor:default; }
+
+  /* ===== 가이드 투어 (실제 화면 위 말풍선) ===== */
+  #tourOverlay { position:fixed; inset:0; z-index:10000; display:none; }
+  .tour-backdrop { position:absolute; inset:0; }
+  .tour-spotlight {
+    position:fixed; border-radius:14px; pointer-events:none;
+    box-shadow:0 0 0 9999px rgba(5,10,8,.78);
+    border:2px solid var(--accent);
+    transition:top .35s ease, left .35s ease, width .35s ease, height .35s ease, opacity .25s ease;
+    opacity:0;
+  }
+  .tour-spotlight.show { opacity:1; }
+  .tour-arrow {
+    position:fixed; width:14px; height:14px; background:var(--surface);
+    border-left:1px solid var(--border); border-top:1px solid var(--border);
+    transform:rotate(45deg); z-index:10001; pointer-events:none;
+    transition:top .35s ease, left .35s ease, opacity .25s ease; opacity:0;
+  }
+  .tour-arrow.show { opacity:1; }
+  .tour-arrow.below { transform:rotate(225deg); }
+  .tour-tooltip {
+    position:fixed; width:min(300px, calc(100vw - 32px)); background:var(--surface);
+    border:1px solid var(--border); border-radius:16px; padding:16px 18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.4); z-index:10002; opacity:0;
+    transition:top .35s ease, left .35s ease, opacity .25s ease;
+  }
+  .tour-tooltip.show { opacity:1; }
+  .tour-tip-progress { font-size:0.7333rem; color:var(--accent); font-weight:800; margin-bottom:6px; letter-spacing:.3px; }
+  .tour-tip-title { font-size:1rem; font-weight:800; color:var(--text); margin-bottom:6px; white-space:pre-line; }
+  .tour-tip-desc { font-size:0.8667rem; color:var(--text-muted); line-height:1.55; white-space:pre-line; margin-bottom:14px; }
+  .tour-tip-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .tour-tip-skip { background:none; border:none; color:var(--text-muted); font-size:0.8rem; font-weight:600; cursor:pointer; padding:6px 4px; font-family:inherit; }
+  .tour-tip-next { background:var(--accent); color:#fff; border:none; border-radius:10px; padding:9px 18px; font-size:0.8667rem; font-weight:800; cursor:pointer; font-family:inherit; white-space:nowrap; }
+
+  /* ══════════════════════════════════════════════════════════
+     스트링DB / 자동분석 / AI추천 기능용 터치 피드백 공통 클래스
+     - 버튼을 눌렀을 때 눈에 띄게 눌린 느낌이 나도록(스케일+투명도) 처리
+     - 아이콘 버튼도 최소 40px 탭 영역을 갖도록 하여 오터치 방지
+     ══════════════════════════════════════════════════════════ */
+  .niji-tapbtn {
+    cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none;
+    touch-action:manipulation;
+    transition:transform .12s ease, opacity .12s ease, background-color .15s ease, box-shadow .15s ease;
+  }
+  .niji-tapbtn:active {
+    transform:scale(0.93);
+    opacity:0.72;
+  }
+  .niji-icon-btn {
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:40px; min-height:40px;
+    border-radius:12px; background:var(--surface2);
+    font-size:1.05rem; border:1px solid var(--border);
+  }
+  .niji-icon-btn:active {
+    background:var(--accent);
+    transform:scale(0.90);
+    opacity:1;
+  }
+  .niji-star-tap {
+    display:inline-flex; align-items:center; justify-content:center;
+    min-width:30px; min-height:34px; font-size:1.25rem;
+  }
+  .niji-star-tap:active { transform:scale(1.25); }
+  .niji-chip-tap:active { transform:scale(0.94); opacity:0.85; }
 </style>
 </head>
 <body>
@@ -1946,12 +2249,82 @@ function _t(key) {
   <div id="loadingMsg" style="font-size: 0.8rem; color:#8a998f;">서버 연결 중...</div>
   <script>(function(){try{var l=document.getElementById('loadingMsg');var lang=localStorage.getItem('niji_language');if(l&&lang==='en')l.textContent='Connecting to server...';}catch(e){}})();</script>
 </div>
-<div id="app">
-  <!-- ===== 체험 튜토리얼 배너 (로그인 없이 둘러볼 때만 표시) ===== -->
-  <div id="tutorialBanner">
-    <span data-lang="tut_banner_text">🧪 체험 모드 · 입력해도 저장되지 않아요</span>
-    <button onclick="exitTutorial()" data-lang="tut_banner_exit">체험 종료</button>
+<!-- ===== ONBOARDING (첫 사용자 안내) ===== -->
+<div id="onboardOverlay">
+  <div class="ob-topbar">
+    <div class="ob-progress" id="obProgress">
+      <div class="ob-progress-dot" data-i="0"></div>
+      <div class="ob-progress-dot" data-i="1"></div>
+      <div class="ob-progress-dot" data-i="2"></div>
+      <div class="ob-progress-dot" data-i="3"></div>
+    </div>
+    <button class="ob-skip-btn" onclick="obSkip()" data-lang="ob_skip">건너뛰기</button>
   </div>
+
+  <div class="ob-steps">
+    <!-- STEP 1: 환영 -->
+    <div class="ob-step" id="ob-step-0">
+      <div class="ob-emoji">🎾</div>
+      <div class="ob-title" data-lang="ob1_title">니지스트링에\n오신 걸 환영해요! 🎾</div>
+      <div class="ob-desc" data-lang="ob1_desc">경기 기록부터 전적 통계, 선수·대회 관리까지\n라켓 스포츠 생활을 이 앱 하나로 관리해보세요.</div>
+    </div>
+
+    <!-- STEP 2: 종목 선택 -->
+    <div class="ob-step" id="ob-step-1">
+      <div class="ob-emoji">🏆</div>
+      <div class="ob-title" data-lang="ob2_title">어떤 종목을\n즐기세요?</div>
+      <div class="ob-desc" data-lang="ob2_desc">나중에 프로필 탭에서 언제든 바꿀 수 있어요</div>
+      <div class="ob-sport-row">
+        <button class="ob-sport-btn" data-sport="tennis" onclick="obSelectSport('tennis')">
+          <span class="ob-sport-icon">🎾</span><span data-lang="pf_tennis">테니스</span>
+        </button>
+        <button class="ob-sport-btn" data-sport="badminton" onclick="obSelectSport('badminton')">
+          <span class="ob-sport-icon">🏸</span><span data-lang="pf_badminton">배드민턴</span>
+        </button>
+        <button class="ob-sport-btn" data-sport="pickleball" onclick="obSelectSport('pickleball')">
+          <span class="ob-sport-icon">🥒</span><span data-lang="pf_pickleball">피클볼</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 3: 이름 입력 -->
+    <div class="ob-step" id="ob-step-2">
+      <div class="ob-emoji">✍️</div>
+      <div class="ob-title" data-lang="ob3_title">이름을\n알려주세요</div>
+      <div class="ob-desc" data-lang="ob3_desc">경기 기록과 통계에 표시될 이름이에요</div>
+      <input type="text" class="ob-name-input" id="obNameInput" data-lang-placeholder="ob3_ph" placeholder="예: 홍길동" oninput="obOnNameInput()" onkeydown="if(event.key==='Enter')obNext()">
+    </div>
+
+    <!-- STEP 4: 경기기록 안내 -->
+    <div class="ob-step" id="ob-step-3">
+      <div class="ob-emoji">🎉</div>
+      <div class="ob-title" data-lang="ob4_title">준비 완료! 🎉</div>
+      <div class="ob-desc" data-lang="ob4_desc">이제 첫 경기를 기록해볼까요?\n상대 이름과 결과만 입력하면\n통계가 자동으로 쌓여요.</div>
+    </div>
+  </div>
+
+  <div class="ob-bottom">
+    <button class="ob-next-btn" id="obNextBtn" onclick="obNext()">다음</button>
+  </div>
+</div>
+
+<!-- ===== GUIDED TOUR (실제 화면 위 말풍선 튜토리얼) ===== -->
+<div id="tourOverlay">
+  <div class="tour-backdrop" onclick="tourNext()"></div>
+  <div class="tour-spotlight" id="tourSpotlight"></div>
+  <div class="tour-arrow" id="tourArrow"></div>
+  <div class="tour-tooltip" id="tourTooltip" onclick="event.stopPropagation()">
+    <div class="tour-tip-progress" id="tourProgress">1 / 11</div>
+    <div class="tour-tip-title" id="tourTitle"></div>
+    <div class="tour-tip-desc" id="tourDesc"></div>
+    <div class="tour-tip-row">
+      <button class="tour-tip-skip" onclick="tourSkip()" data-lang="tour_skip">건너뛰기</button>
+      <button class="tour-tip-next" id="tourNextBtn" onclick="tourNext()" data-lang="tour_next">다음</button>
+    </div>
+  </div>
+</div>
+
+<div id="app">
   <div class="topbar">
     <span class="topbar-logo">NIJI STRING</span>
     <div style="display:flex;align-items:center;gap:8px;">
@@ -2002,7 +2375,7 @@ function _t(key) {
 
           <!-- 스트링 관리 바로가기 버튼 -->
           <div style="margin-top:14px;margin-bottom:14px;">
-            <button onclick="showPage('stringing')" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:14px;border:2px solid var(--accent);background:rgba(124,106,247,0.10);color:var(--accent);font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all .2s;">
+            <button id="pfStringManageBtn" onclick="showPage('stringing')" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:14px;border:2px solid var(--accent);background:rgba(124,106,247,0.10);color:var(--accent);font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all .2s;">
               🛠️ <span data-lang="pf_string_manage_btn">스트링 관리</span>
             </button>
           </div>
@@ -2014,9 +2387,21 @@ function _t(key) {
           </div>
 
           <!-- 플레이어 정보 카드 -->
-          <div class="card" style="margin-bottom:0;">
+          <div class="card" style="margin-bottom:14px;">
             <div class="card-title">👤 <span data-lang="pf_player_info_title">플레이어 정보</span></div>
             <div class="pf-stat-row" id="profileInfoGrid"></div>
+          </div>
+
+          <!-- 상세 플레이 프로필 (아코디언) -->
+          <div class="acc-wrap" style="margin-bottom:0;">
+            <button class="acc-header" onclick="toggleAcc('accDetailProfile')">
+              <span data-lang="pf_detail_profile_title">🎯 상세 플레이 프로필</span><span class="acc-arrow" id="accDetailProfile-arrow">▼</span>
+            </button>
+            <div class="acc-body" id="accDetailProfile">
+              <div style="font-size:0.72rem;color:var(--text-muted);font-weight:700;letter-spacing:.5px;margin-bottom:8px;" data-lang="pf_style_tags_lbl">플레이 스타일 (복수 선택 가능)</div>
+              <div id="pfStyleTagsWrap" style="display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px;"></div>
+              <div class="pd-profile-grid" id="pfDetailProfileGrid"></div>
+            </div>
           </div>
 
         </div>
@@ -2125,7 +2510,7 @@ function _t(key) {
             <!-- 줄 1b: 형식 -->
             <div style="margin-bottom:8px;">
               <div class="form-label" style="margin-bottom:4px;" data-lang="match_format_lbl">형식</div>
-              <div class="format-toggle" style="display:flex;gap:8px;">
+              <div class="format-toggle" id="matchFormatToggle" style="display:flex;gap:8px;">
                 <button class="format-btn" id="btnSingles" onclick="selectFormat('singles')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="12" cy="7" r="4"/><path d="M12 13c-5 0-8 2.5-8 4v1h16v-1c0-1.5-3-4-8-4z"/></svg> <span data-lang="match_singles">단식</span></button>
                 <button class="format-btn" id="btnDoubles" onclick="selectFormat('doubles')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;"><svg width="22" height="16" viewBox="0 0 32 24" fill="currentColor" style="vertical-align:middle;flex-shrink:0;"><circle cx="10" cy="7" r="4"/><path d="M10 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/><circle cx="22" cy="7" r="4"/><path d="M22 13c-4.5 0-7 2.2-7 3.5V17h14v-.5c0-1.3-2.5-3.5-7-3.5z"/></svg> <span data-lang="match_doubles">복식</span></button>
               </div>
@@ -2492,6 +2877,20 @@ function _t(key) {
       <div class="page-header" data-lang="str_page_header">🎾 스트링 관리</div>
       <div class="page-sub" data-lang="str_page_sub">라켓별 스트링 교체 주기를 관리하세요</div>
 
+      <!-- 기본/고급 보기 토글 -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:6px;background:var(--surface2);border-radius:12px;padding:4px;">
+        <button type="button" class="niji-tapbtn" id="strViewBtnBasic" onclick="setStringViewMode('basic')" style="flex:1;border:none;border-radius:9px;padding:9px 8px;font-size:0.8rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;">
+          <span data-lang="str_view_basic">기본 보기</span>
+        </button>
+        <button type="button" class="niji-tapbtn" id="strViewBtnAdvanced" onclick="setStringViewMode('advanced')" style="flex:1;border:none;border-radius:9px;padding:9px 8px;font-size:0.8rem;font-weight:700;cursor:pointer;background:transparent;color:var(--text-muted);">
+          <span data-lang="str_view_advanced">고급 보기</span>
+        </button>
+      </div>
+      <div id="strViewModeHint" style="text-align:center;font-size:0.68rem;color:var(--text-muted);margin-bottom:10px;line-height:1.4;"></div>
+
+      <!-- 시타(테스트) 통계 -->
+      <div id="strTestStatBox" style="display:none;justify-content:center;gap:14px;font-size:0.74rem;color:var(--text-muted);margin-bottom:10px;"></div>
+
       <!-- 스트링 교체 인증 공유 버튼 -->
       <button class="string-cert-btn" onclick="shareStringCert()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -2499,6 +2898,15 @@ function _t(key) {
       </button>
       <button class="string-cert-btn" style="background:var(--surface2);color:var(--text);margin-top:8px;" onclick="playStringReplaceVoice()">
         <span data-lang="str_voice_preview_btn">🔊 알림음 미리듣기</span>
+      </button>
+      <button class="string-cert-btn niji-tapbtn" style="background:var(--surface2);color:var(--text);margin-top:8px;" onclick="openStringDBModal('manage')">
+        <span data-lang="strdb_manage_btn">📚 내 스트링 목록 관리</span>
+      </button>
+      <button class="string-cert-btn niji-tapbtn" style="background:var(--surface2);color:var(--text);margin-top:8px;" onclick="openStringAnalysisModal()">
+        <span data-lang="stranalysis_btn">📊 자동 분석 & 스트링 노트</span>
+      </button>
+      <button class="string-cert-btn niji-tapbtn" style="background:linear-gradient(135deg,var(--accent),#9b8cff);color:#fff;margin-top:8px;" onclick="openAIRecoModal()">
+        <span data-lang="airec_btn">🤖 AI 추천 스트링 보기</span>
       </button>
 
       <!-- ===== 라켓 카드 (1/2/3, JS로 생성됨) ===== -->
@@ -2606,7 +3014,7 @@ function _t(key) {
             <div class="share-sub" data-lang="share_manual_sub">앱 사용법 안내</div>
           </div>
         </div>
-        <div class="share-item" onclick="startTutorial()">
+        <div class="share-item" onclick="obReplay()">
           <div class="share-icon" style="background:rgba(124,106,247,.1);">🚀</div>
           <div>
             <div class="share-text" data-lang="share_onboard_item">온보딩 다시 보기</div>
@@ -2618,7 +3026,7 @@ function _t(key) {
     <!-- ===== 대회 페이지 ===== -->
     <div class="page" id="page-tournament">
       <!-- 대회 타입 탭 -->
-      <div style="display:flex;gap:8px;margin-bottom:16px;padding-top:4px;">
+      <div id="contestTabRow" style="display:flex;gap:8px;margin-bottom:16px;padding-top:4px;">
         <button id="ctab-hanul" onclick="switchContestTab('hanul')"
           style="flex:1;padding:12px;border:none;border-radius:10px;font-size: 0.9333rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;transition:all .2s;min-height:44px;">
           <span data-lang="ctab_hanul">🔄 한울방식</span>
@@ -2822,6 +3230,203 @@ function _t(key) {
       </div>
     </div>
     <div id="tn-modal-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px;padding-bottom:max(20px,env(safe-area-inset-bottom));"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="stringDBModal">
+  <div class="modal" style="display:flex;flex-direction:column;max-height:92vh;padding:0;">
+    <div class="modal-header">
+      <span class="modal-title" data-lang="strdb_modal_title">📚 나의 스트링 목록</span>
+      <button class="modal-close" onclick="closeModal('stringDBModal')">✕</button>
+    </div>
+    <div style="overflow-y:auto;padding:16px;flex:1;">
+
+      <!-- LIST VIEW -->
+      <div id="stringDBListView">
+        <div id="stringDBPickHint" style="display:none;color:var(--accent);font-size:0.8rem;margin-bottom:10px;font-weight:700;" data-lang="strdb_pick_hint">사용할 스트링을 선택하세요</div>
+        <button class="btn btn-primary niji-tapbtn" style="width:100%;margin-bottom:14px;" onclick="showStringDBFormView()"><span data-lang="strdb_add_btn">➕ 새 스트링 등록하기</span></button>
+        <div id="stringDBListWrap"></div>
+      </div>
+
+      <!-- FORM VIEW -->
+      <div id="stringDBFormView" style="display:none;">
+        <div id="stringDBFormTitle" style="font-weight:800;font-size:1rem;margin-bottom:12px;"></div>
+
+        <div class="acc-wrap" style="margin-bottom:10px;">
+          <button class="acc-header" onclick="toggleAcc('strdbAccBasic')">
+            <span data-lang="strdb_sec_basic">기본 정보</span><span class="acc-arrow open" id="strdbAccBasic-arrow">▼</span>
+          </button>
+          <div class="acc-body open" id="strdbAccBasic">
+            <div style="margin-bottom:10px;">
+              <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_preset_lbl">자주 쓰는 스트링에서 선택 (선택시 자동 입력)</label>
+              <select class="form-select" id="strdb-preset" style="font-size:0.85rem;padding:7px 10px;width:100%;" onchange="applyStrDBPreset(this.value)">
+                <option value="" data-lang="strdb_preset_ph">직접 입력 또는 목록에서 선택</option>
+              </select>
+              <div style="font-size:0.66rem;color:var(--text-muted);margin-top:5px;line-height:1.4;" data-lang="strdb_preset_hint">💡 목록에 원하는 스트링이 없으면 이 선택은 그냥 두고, 아래 브랜드·모델명 칸에 직접 입력하시면 됩니다</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+              <div><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_brand_lbl">브랜드</label><input class="form-input" id="strdb-brand" data-lang-placeholder="strdb_brand_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
+              <div><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_model_lbl">모델명</label><input class="form-input" id="strdb-model" data-lang-placeholder="strdb_model_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
+            </div>
+            <div style="margin-bottom:8px;"><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_name_en_lbl">영어 이름 (선택)</label><input class="form-input" id="strdb-name-en" data-lang-placeholder="strdb_name_en_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+              <div>
+                <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_gauge_lbl">게이지</label>
+                <select class="form-select" id="strdb-gauge-select" style="font-size:0.85rem;padding:7px 10px;width:100%;" onchange="onStrDBGaugeChange(this.value)">
+                  <option value="1.18">1.18</option>
+                  <option value="1.20">1.20</option>
+                  <option value="1.25">1.25</option>
+                  <option value="custom" data-lang="strdb_gauge_custom">직접 입력</option>
+                </select>
+                <input class="form-input" id="strdb-gauge" data-lang-placeholder="strdb_gauge_custom_ph" style="display:none;margin-top:6px;font-size:16px;padding:7px 10px;width:100%;">
+              </div>
+              <div>
+                <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_material_lbl">재질</label>
+                <select class="form-select" id="strdb-material" style="font-size:0.85rem;padding:7px 10px;width:100%;">
+                  <option value="폴리" data-lang="strdb_material_poly">폴리</option>
+                  <option value="멀티" data-lang="strdb_material_multi">멀티</option>
+                  <option value="천연거트" data-lang="strdb_material_gut">천연거트</option>
+                  <option value="기타" data-lang="strdb_material_other">기타</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+              <div>
+                <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_shape_lbl">형태</label>
+                <select class="form-select" id="strdb-shape" style="font-size:0.85rem;padding:7px 10px;width:100%;">
+                  <option value="원형줄" data-lang="strdb_shape_round">원형줄</option>
+                  <option value="각줄" data-lang="strdb_shape_edged">각줄</option>
+                  <option value="러프" data-lang="strdb_shape_rough">러프</option>
+                  <option value="트위스트" data-lang="strdb_shape_twist">트위스트</option>
+                  <option value="기타" data-lang="strdb_shape_other">기타</option>
+                </select>
+              </div>
+              <div><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_tension_lbl">권장 텐션 (lb)</label><input class="form-input" id="strdb-tension" data-lang-placeholder="strdb_tension_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
+            </div>
+            <div><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_price_lbl">가격 (원)</label><input type="number" min="0" class="form-input" id="strdb-price" data-lang-placeholder="strdb_price_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
+          </div>
+        </div>
+
+        <div class="acc-wrap" style="margin-bottom:10px;">
+          <button class="acc-header" onclick="toggleAcc('strdbAccDetail')">
+            <span data-lang="strdb_sec_detail">특징 · 장단점 · 추천 정보</span><span class="acc-arrow" id="strdbAccDetail-arrow">▼</span>
+          </button>
+          <div class="acc-body" id="strdbAccDetail">
+            <div style="margin-bottom:8px;"><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_features_lbl">특징</label><textarea class="form-input" id="strdb-features" data-lang-placeholder="strdb_features_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;"></textarea></div>
+            <div style="margin-bottom:8px;"><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_pros_lbl">장점</label><textarea class="form-input" id="strdb-pros" data-lang-placeholder="strdb_pros_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;"></textarea></div>
+            <div style="margin-bottom:8px;"><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_cons_lbl">단점</label><textarea class="form-input" id="strdb-cons" data-lang-placeholder="strdb_cons_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;"></textarea></div>
+            <div style="margin-bottom:8px;"><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_style_lbl">추천 플레이 스타일</label><input class="form-input" id="strdb-style" data-lang-placeholder="strdb_style_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_career_lbl">추천 구력</label><input class="form-input" id="strdb-career" data-lang-placeholder="strdb_career_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
+              <div><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_racket_lbl">추천 라켓</label><input class="form-input" id="strdb-racket" data-lang-placeholder="strdb_racket_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="acc-wrap" style="margin-bottom:10px;">
+          <button class="acc-header" onclick="toggleAcc('strdbAccRating')">
+            <span data-lang="strdb_sec_rating">평가 (별점)</span><span class="acc-arrow" id="strdbAccRating-arrow">▼</span>
+          </button>
+          <div class="acc-body" id="strdbAccRating">
+            <div id="strdbRatingRows"></div>
+          </div>
+        </div>
+
+        <div class="acc-wrap" style="margin-bottom:14px;">
+          <button class="acc-header" onclick="toggleAcc('strdbAccMemo')">
+            <span data-lang="strdb_sec_memo">나만의 메모</span><span class="acc-arrow" id="strdbAccMemo-arrow">▼</span>
+          </button>
+          <div class="acc-body" id="strdbAccMemo">
+            <textarea class="form-input" id="strdb-memo" data-lang-placeholder="strdb_memo_ph" rows="3" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;"></textarea>
+          </div>
+        </div>
+
+        <button class="btn btn-primary niji-tapbtn" style="width:100%;margin-bottom:10px;" onclick="saveStringDBForm()"><span data-lang="strdb_save_btn">💾 저장하기</span></button>
+        <button class="btn niji-tapbtn" style="width:100%;background:var(--surface2);color:var(--text);" onclick="showStringDBListView()"><span data-lang="strdb_cancel_btn">취소</span></button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="strEvalModal">
+  <div class="modal" style="display:flex;flex-direction:column;max-height:92vh;padding:0;">
+    <div class="modal-header">
+      <span class="modal-title" data-lang="streval_modal_title">📝 플레이 후 평가</span>
+      <button class="modal-close" onclick="closeModal('strEvalModal')">✕</button>
+    </div>
+    <div style="overflow-y:auto;padding:16px;flex:1;">
+      <div style="color:var(--text-muted);font-size:0.8rem;margin-bottom:14px;" data-lang="streval_modal_sub">이 스트링을 사용해본 느낌을 남겨보세요</div>
+
+      <div id="strevalRatingRows" style="margin-bottom:10px;"></div>
+
+      <div style="margin-bottom:14px;">
+        <label class="form-label" style="font-size:0.72rem;" data-lang="streval_style_lbl">이때 플레이 스타일 (선택)</label>
+        <select class="form-select" id="streval-style" style="font-size:0.85rem;padding:7px 10px;width:100%;">
+          <option value="" data-lang="pf_unset">미설정</option>
+          <option value="flat" data-lang="pf_style_flat">플랫</option>
+          <option value="topspin" data-lang="pf_style_topspin">탑스핀</option>
+          <option value="slice" data-lang="pf_style_slice">슬라이스</option>
+          <option value="allround" data-lang="pf_style_allround">올라운드</option>
+          <option value="servevolley" data-lang="pf_style_servevolley">서브앤발리</option>
+          <option value="counter" data-lang="pf_style_counter">카운터펀처</option>
+          <option value="aggressive" data-lang="pf_style_aggressive">공격형</option>
+          <option value="defensive" data-lang="pf_style_defensive">수비형</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <label class="form-label" style="font-size:0.72rem;" data-lang="streval_pros_lbl">좋았던 점</label>
+        <textarea class="form-input" id="streval-pros" data-lang-placeholder="streval_pros_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;"></textarea>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label class="form-label" style="font-size:0.72rem;" data-lang="streval_cons_lbl">아쉬웠던 점</label>
+        <textarea class="form-input" id="streval-cons" data-lang-placeholder="streval_cons_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;"></textarea>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label class="form-label" style="font-size:0.72rem;" data-lang="streval_memo_lbl">추가 메모</label>
+        <textarea class="form-input" id="streval-memo" data-lang-placeholder="streval_memo_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;"></textarea>
+      </div>
+
+      <button class="btn btn-primary niji-tapbtn" style="width:100%;margin-bottom:10px;" onclick="saveStrEvalForm()"><span data-lang="streval_save_btn">💾 평가 저장</span></button>
+      <button class="btn niji-tapbtn" style="width:100%;background:var(--surface2);color:var(--text);" onclick="closeModal('strEvalModal')"><span data-lang="streval_cancel_btn">취소</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="strAnalysisModal">
+  <div class="modal" style="display:flex;flex-direction:column;max-height:92vh;padding:0;">
+    <div class="modal-header">
+      <span class="modal-title" data-lang="stranalysis_modal_title">📊 나의 스트링 분석</span>
+      <button class="modal-close" onclick="closeModal('strAnalysisModal')">✕</button>
+    </div>
+    <div style="display:flex;gap:10px;padding:12px 16px 0;">
+      <button id="strAnalysisTabBtn-summary" class="niji-tapbtn" onclick="switchStrAnalysisTab('summary')"
+        style="flex:1;padding:12px 8px;border:none;border-radius:10px;font-size:0.85rem;font-weight:700;background:var(--accent);color:#fff;">
+        <span data-lang="stranalysis_tab_summary">📊 자동 분석</span>
+      </button>
+      <button id="strAnalysisTabBtn-note" class="niji-tapbtn" onclick="switchStrAnalysisTab('note')"
+        style="flex:1;padding:12px 8px;border:none;border-radius:10px;font-size:0.85rem;font-weight:700;background:var(--surface2);color:var(--text-muted);">
+        <span data-lang="stranalysis_tab_note">📖 스트링 노트</span>
+      </button>
+    </div>
+    <div style="overflow-y:auto;padding:16px;flex:1;">
+      <div id="strAnalysisSummaryView"><div id="strAnalysisWrap"></div></div>
+      <div id="strAnalysisNoteView" style="display:none;"><div id="strNoteWrap"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="aiRecoModal">
+  <div class="modal" style="display:flex;flex-direction:column;max-height:92vh;padding:0;">
+    <div class="modal-header">
+      <span class="modal-title" data-lang="airec_modal_title">🤖 AI 추천 스트링</span>
+      <button class="modal-close" onclick="closeModal('aiRecoModal')">✕</button>
+    </div>
+    <div style="overflow-y:auto;padding:16px;flex:1;">
+      <div id="aiRecoWrap"></div>
+      <button class="btn niji-tapbtn" style="width:100%;margin-top:14px;background:var(--surface2);color:var(--text);" onclick="renderAIRecommendation()"><span data-lang="airec_refresh_btn">🔄 다시 분석하기</span></button>
+    </div>
   </div>
 </div>
 
@@ -3087,7 +3692,9 @@ let state = {
   stringGameLimit4: 30,
   racketCount: 2, // 2~4: 스트링 관리에 표시할 라켓 수
   stringingHistory: [], // { id, name, date, racket: 1|2|3|4, reason, cost }
+  stringViewMode: 'basic', // 'basic' | 'advanced' - 스트링 관리 화면 기본/고급 보기
   tnTournaments: [],  // 토너먼트 데이터
+  stringMasterDB: [], // 스트링 마스터 DB { id, brand, model, gauge, material, shape, color, country, tension, price, features, pros, cons, style, career, racket, ratings:{spin,power,control,feel,tensionHold,durability,armStress}, memo }
 };
 
 let confirmCallback = null;
@@ -3102,8 +3709,6 @@ function _getDbRef() {
 }
 
 function save() {
-  // 체험 튜토리얼 모드: 실제 저장을 완전히 막아서 데모 데이터가 남지 않게 함
-  if (window._tutorialMode) return;
   try {
     var saveState = JSON.parse(JSON.stringify(state));
     var photo = saveState.profile ? saveState.profile.photo : '';
@@ -3315,8 +3920,7 @@ function _showLoginScreen() {
     pwPh:      { ko: '비밀번호', en: 'Password' },
     signin:    { ko: '로그인', en: 'Sign In' },
     signup:    { ko: '✉️ 이메일로 회원가입', en: '✉️ Sign Up with Email' },
-    forgot:    { ko: '비밀번호를 잊으셨나요?', en: 'Forgot password?' },
-    tutorial:  { ko: '🔍 로그인 없이 둘러보기', en: '🔍 Try without signing in' }
+    forgot:    { ko: '비밀번호를 잊으셨나요?', en: 'Forgot password?' }
   };
   var _loginLang = _nijiGetLang() || 'ko';
   function _ld(key) { return (_loginDict[key] && _loginDict[key][_loginLang]) || _loginDict[key]['ko']; }
@@ -3336,7 +3940,6 @@ function _showLoginScreen() {
     el = document.getElementById('login-signin-btn'); if(el) el.textContent = _ld('signin');
     el = document.getElementById('login-signup-btn'); if(el) el.textContent = _ld('signup');
     el = document.getElementById('login-forgot-btn'); if(el) el.textContent = _ld('forgot');
-    el = document.getElementById('login-tutorial-btn'); if(el) el.textContent = _ld('tutorial');
     // 언어 버튼 강조
     ['ko','en'].forEach(function(l) {
       var btn = document.getElementById('loginLangBtn-' + l);
@@ -3427,13 +4030,6 @@ function _showLoginScreen() {
         style="width:100%;padding:14px;background:transparent;color:#c9a961;
           border:2px solid #c9a961;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;">
         ✉️ 이메일로 회원가입
-      </button>
-
-      <!-- 로그인 없이 둘러보기 (체험 튜토리얼) -->
-      <button id="login-tutorial-btn" onclick="startTutorial()"
-        style="width:100%;padding:12px;margin-top:10px;background:none;color:#8a998f;
-          border:1.5px dashed #3a3a4e;border-radius:12px;font-size:0.9rem;font-weight:700;cursor:pointer;">
-        🔍 로그인 없이 둘러보기
       </button>
 
       <div id="loginMsg" style="font-size:0.85rem;color:#f87171;min-height:20px;margin-top:12px;text-align:center;"></div>
@@ -3778,6 +4374,7 @@ function _applyFirebaseData(parsed) {
       return t;
     }).filter(Boolean);
     state.stringingHistory = _toArray(parsed.stringingHistory);
+    state.stringMasterDB = _toArray(parsed.stringMasterDB);
     // tnTournaments: bracket 내부 games 배열도 변환 필요
     state.tnTournaments = _toArray(parsed.tnTournaments).map(function(t) {
       if (!t) return null;
@@ -3887,73 +4484,256 @@ function _initApp() {
   setTimeout(_showNavAndProfile, 0);
   // 100ms 후 한 번 더 보장 (Firebase 비동기 렌더 완료 후 대비)
   setTimeout(_showNavAndProfile, 100);
+
+  // 첫 사용자라면 온보딩 화면 표시 (프로필 이름이 비어있고, 아직 완료 기록이 없을 때만)
+  setTimeout(obStart, 150);
 }
 
-// ===== 체험 튜토리얼 (로그인 전, 실제 프로필/경기기록 탭을 데모 데이터로 체험) =====
-// 핵심 원리: state는 메모리에만 있는 객체라서, save()만 막아두면
-// 화면의 모든 버튼·입력이 실제 앱과 100% 동일하게 동작하면서도 아무것도 저장되지 않음.
-var _tutBeforeState = null;
+// ===== 온보딩 (첫 사용자 안내) =====
+var _obStep = 0;
+var _obSport = null;
+var _obTotalSteps = 4;
 
-function startTutorial() {
+// 공유 탭 "온보딩 다시 보기" 버튼용 — obStart()와 달리 신규 사용자 여부를 따지지 않고 무조건 보여줌
+function obReplay() {
+  _obStep = 0;
+  _obSport = null;
+  var input = document.getElementById('obNameInput');
+  if (input) input.value = state.profile && state.profile.name ? state.profile.name : '';
+  var overlay = document.getElementById('onboardOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  _obRenderStep(0, null);
+}
+
+function _obStorageKey() {
+  var uid = window._userId || 'local';
+  return 'nijiOnboardDone_' + uid;
+}
+
+// 온보딩을 보여줄지 판단: (1) 완료 기록이 없고, (2) 아직 이름을 입력한 적 없는 진짜 신규 사용자일 때만
+// → 캐시 정리 등으로 완료 기록만 사라진 기존 사용자에게는 다시 뜨지 않도록 이중 체크
+function obStart() {
   try {
-    // 로그인 화면 위에서 시작한 경우: 로딩화면을 가리고 앱 화면을 띄움
-    var loadingScreen = document.getElementById('loadingScreen');
-    if (loadingScreen) loadingScreen.style.display = 'none';
+    var done = localStorage.getItem(_obStorageKey());
+    var hasName = !!(state.profile && state.profile.name && state.profile.name.trim());
+    if (done || hasName) return;
+  } catch(e) { return; }
 
-    window._tutorialMode = true;
-
-    var lang = _nijiGetLang() || 'ko';
-    var demoName = lang === 'en' ? 'Demo Player' : '체험 선수';
-    var demoOpp1 = lang === 'en' ? 'Alex' : '김철수';
-    var demoOpp2 = lang === 'en' ? 'Jamie' : '이영희';
-    var today = getTodayStr();
-
-    // 데모 데이터로 state를 채움 (메모리에만 존재, 저장되지 않음)
-    state.profile = { name: demoName, age: '', career: '', hand: '', style: '', photo: '' };
-    state.sportType = 'tennis';
-    state.matches = [
-      { id: 1, date: today, savedAt: new Date().toISOString(), format: 'singles', sport: 'tennis',
-        partner: '', opponent: demoOpp1, opponent2: '', result: 'win',
-        myScore: '6', oppScore: '4', myTiebreak: '', oppTiebreak: '', memo: '', racketUsed: '' },
-      { id: 2, date: today, savedAt: new Date().toISOString(), format: 'doubles', sport: 'tennis',
-        partner: demoOpp2, opponent: demoOpp1, opponent2: demoOpp2, result: 'lose',
-        myScore: '3', oppScore: '6', myTiebreak: '', oppTiebreak: '', memo: '', racketUsed: '' }
-    ];
-    state.players = [
-      { id: 1, name: demoOpp1, memo: '', clubs: [], age: '', career: '', hand: '', style: '' },
-      { id: 2, name: demoOpp2, memo: '', clubs: [], age: '', career: '', hand: '', style: '' }
-    ];
-    state.clubs = [];
-    state.tournaments = [];
-    state.currentResult = null;
-    state.nextMatchId = 3;
-    state.nextPlayerId = 3;
-    state.lastStringDate = '';
-    state.stringingHistory = [];
-    state.tnTournaments = [];
-
-    window._userId = null;
-    window._userDisplayName = '';
-    window._userEmail = '';
-    window._userPhoto = '';
-
-    var banner = document.getElementById('tutorialBanner');
-    if (banner) banner.style.display = 'flex';
-
-    _initApp();
-    setTimeout(function() { showToast(_t('tut_toast_start')); }, 250);
-  } catch (e) { console.warn('튜토리얼 시작 오류:', e); }
+  _obStep = 0;
+  _obSport = null;
+  var input = document.getElementById('obNameInput');
+  if (input) input.value = '';
+  var overlay = document.getElementById('onboardOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  _obRenderStep(0, null);
 }
 
-// 체험 종료: 데모 데이터가 실제 계정과 절대 섞이지 않도록 새로고침으로 완전 초기화
-function exitTutorial() {
-  window._tutorialMode = false;
-  location.reload();
+function _obRenderStep(idx, fromIdx) {
+  document.querySelectorAll('.ob-step').forEach(function(el, i) {
+    el.classList.remove('active', 'leaving');
+    if (i === fromIdx) el.classList.add('leaving');
+    if (i === idx) el.classList.add('active');
+  });
+  document.querySelectorAll('.ob-progress-dot').forEach(function(dot) {
+    var i = parseInt(dot.getAttribute('data-i'));
+    dot.classList.toggle('done', i <= idx);
+  });
+
+  var btn = document.getElementById('obNextBtn');
+  if (idx === 0) {
+    btn.textContent = _t('ob1_btn');
+    btn.disabled = false;
+  } else if (idx === 1) {
+    btn.textContent = _t('ob_btn_next');
+    btn.disabled = !_obSport;
+  } else if (idx === 2) {
+    btn.textContent = _t('ob_btn_next');
+    var nameVal = (document.getElementById('obNameInput') || {}).value || '';
+    btn.disabled = !nameVal.trim();
+    setTimeout(function() { var el = document.getElementById('obNameInput'); if (el) el.focus(); }, 350);
+  } else if (idx === 3) {
+    btn.textContent = _t('ob4_btn');
+    btn.disabled = false;
+  }
 }
+
+function obSelectSport(sport) {
+  _obSport = sport;
+  document.querySelectorAll('.ob-sport-btn').forEach(function(b) {
+    b.classList.toggle('selected', b.getAttribute('data-sport') === sport);
+  });
+  var btn = document.getElementById('obNextBtn');
+  if (btn) btn.disabled = false;
+}
+
+function obOnNameInput() {
+  var btn = document.getElementById('obNextBtn');
+  var val = (document.getElementById('obNameInput') || {}).value || '';
+  if (btn) btn.disabled = !val.trim();
+}
+
+function obNext() {
+  if (_obStep === 1 && !_obSport) return;
+  if (_obStep === 2) {
+    var name = (document.getElementById('obNameInput') || {}).value || '';
+    if (!name.trim()) { showToast(_t('ob3_required')); return; }
+  }
+  if (_obStep === 3) { obFinish(); return; }
+  var next = _obStep + 1;
+  var prev = _obStep;
+  _obStep = next;
+  _obRenderStep(next, prev);
+}
+
+function obSkip() {
+  try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
+  var overlay = document.getElementById('onboardOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function obFinish() {
+  var name = ((document.getElementById('obNameInput') || {}).value || '').trim();
+  if (!state.profile) state.profile = {};
+  state.profile.name = name;
+  if (_obSport) state.sportType = _obSport;
+  save();
+  try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
+
+  var overlay = document.getElementById('onboardOverlay');
+  if (overlay) overlay.style.display = 'none';
+
+  renderProfile();
+  tourStart();
+}
+
+// ===== 가이드 투어 (실제 화면 위에서 주요 기능을 말풍선으로 안내) =====
+// 프로필 탭 → 경기기록(복식 버튼) 딱 2단계만 짚어줘서 헷갈리지 않게 구성
+var TOUR_STEPS = [
+  { page:'profile', sel:'#nav-profile', tKey:'tour1_title', dKey:'tour1_desc' },
+  { page:'match',   sel:'#matchFormatToggle', tKey:'tour2_title', dKey:'tour2_desc', beforeShow:function(){
+      var body = document.getElementById('matchFormBody');
+      if (body && body.style.display === 'none') toggleMatchForm();
+    } }
+];
+var _tourIdx = 0;
+
+function tourStart() {
+  _tourIdx = 0;
+  var overlay = document.getElementById('tourOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'block';
+  if (typeof showPage === 'function') showPage('profile');
+  setTimeout(function() { tourRenderStep(0); }, 260);
+}
+
+function tourRenderStep(i) {
+  var step = TOUR_STEPS[i];
+  if (!step) { tourEnd(); return; }
+  if (typeof showPage === 'function') showPage(step.page);
+  if (typeof step.beforeShow === 'function') step.beforeShow();
+
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      var el = document.querySelector(step.sel);
+      if (!el) { _tourIdx = i + 1; tourRenderStep(_tourIdx); return; }
+      el.scrollIntoView({ block: 'center', behavior: 'instant' });
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          tourPosition(el);
+          var progEl = document.getElementById('tourProgress');
+          if (progEl) progEl.textContent = (i + 1) + ' / ' + TOUR_STEPS.length;
+          var titleEl = document.getElementById('tourTitle');
+          if (titleEl) titleEl.textContent = _t(step.tKey);
+          var descEl = document.getElementById('tourDesc');
+          if (descEl) descEl.textContent = _t(step.dKey);
+          var nextBtn = document.getElementById('tourNextBtn');
+          if (nextBtn) nextBtn.textContent = (i === TOUR_STEPS.length - 1) ? _t('tour_done') : _t('tour_next');
+          document.getElementById('tourSpotlight').classList.add('show');
+          document.getElementById('tourTooltip').classList.add('show');
+          document.getElementById('tourArrow').classList.add('show');
+        });
+      });
+    });
+  });
+}
+
+function tourPosition(el) {
+  var r = el.getBoundingClientRect();
+  var pad = 8;
+  var sl = document.getElementById('tourSpotlight');
+  sl.style.top = (r.top - pad) + 'px';
+  sl.style.left = (r.left - pad) + 'px';
+  sl.style.width = (r.width + pad * 2) + 'px';
+  sl.style.height = (r.height + pad * 2) + 'px';
+
+  var tip = document.getElementById('tourTooltip');
+  var vh = window.innerHeight, vw = window.innerWidth;
+  var showBelow = (r.top < vh * 0.55);
+  var top;
+  if (showBelow) top = r.bottom + pad + 18;
+  else top = r.top - pad - 18 - tip.offsetHeight;
+  if (top + tip.offsetHeight > vh - 10) top = vh - tip.offsetHeight - 10;
+  if (top < 10) top = 10;
+  var left = r.left + r.width / 2 - tip.offsetWidth / 2;
+  if (left < 12) left = 12;
+  if (left + tip.offsetWidth > vw - 12) left = vw - tip.offsetWidth - 12;
+  tip.style.top = top + 'px';
+  tip.style.left = left + 'px';
+
+  var arrow = document.getElementById('tourArrow');
+  var arrowLeft = Math.min(Math.max(r.left + r.width / 2 - 7, left + 14), left + tip.offsetWidth - 22);
+  arrow.classList.toggle('below', !showBelow);
+  arrow.style.left = arrowLeft + 'px';
+  arrow.style.top = (showBelow ? (r.bottom + pad + 8) : (r.top - pad - 8 - 7)) + 'px';
+}
+
+function tourNext() {
+  var sl = document.getElementById('tourSpotlight');
+  var tip = document.getElementById('tourTooltip');
+  var arrow = document.getElementById('tourArrow');
+  if (sl) sl.classList.remove('show');
+  if (tip) tip.classList.remove('show');
+  if (arrow) arrow.classList.remove('show');
+  _tourIdx++;
+  if (_tourIdx >= TOUR_STEPS.length) { tourEnd(); return; }
+  setTimeout(function() { tourRenderStep(_tourIdx); }, 200);
+}
+
+function tourSkip() { tourEnd(); }
+
+function tourEnd() {
+  var overlay = document.getElementById('tourOverlay');
+  if (overlay) overlay.style.display = 'none';
+  var sl = document.getElementById('tourSpotlight');
+  var tip = document.getElementById('tourTooltip');
+  var arrow = document.getElementById('tourArrow');
+  if (sl) sl.classList.remove('show');
+  if (tip) tip.classList.remove('show');
+  if (arrow) arrow.classList.remove('show');
+  try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
+
+  showPage('match');
+  showToast(_t('tour_end_toast'));
+  setTimeout(function() {
+    var body = document.getElementById('matchFormBody');
+    if (body && body.style.display === 'none') toggleMatchForm();
+    var header = document.getElementById('matchFormAccHeader');
+    if (header) header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 250);
+}
+
+window.addEventListener('resize', function() {
+  var overlay = document.getElementById('tourOverlay');
+  if (overlay && overlay.style.display !== 'none' && TOUR_STEPS[_tourIdx]) {
+    var el = document.querySelector(TOUR_STEPS[_tourIdx].sel);
+    if (el) tourPosition(el);
+  }
+});
 
 // ===== 저장공간 정리 =====
 function clearLocalStorageCache() {
-  if (window._tutorialMode) { showToast(_t('tut_banner_text')); return; }
   showConfirm(_t('share_clear_title'), _t('share_clear_confirm'), '🧹', function() {
     try {
       // 현재 사용자 사진만 남기고 나머지 오래된 데이터 삭제
@@ -4570,6 +5350,89 @@ function getProfileFields() {
   ];
 }
 
+// ══════════════════════════════════════════════════════════
+// ===== 상세 플레이 프로필 (NTRP/포지션/스핀성향 등 심화 정보) =====
+// state.profile.styleTags: ['flat','topspin', ...]  (복수 선택 태그)
+// state.profile.{ntrp, position, swingStyle, spinTendency, power, control,
+//   wristUse, preferTension, preferStringType}
+// ══════════════════════════════════════════════════════════
+const PF_STYLE_TAGS = ['flat', 'topspin', 'slice', 'allround', 'servevolley', 'counter', 'aggressive', 'defensive'];
+const PF_STYLE_TAG_LABELKEY = {
+  flat: 'pf_style_flat', topspin: 'pf_style_topspin', slice: 'pf_style_slice', allround: 'pf_style_allround',
+  servevolley: 'pf_style_servevolley', counter: 'pf_style_counter', aggressive: 'pf_style_aggressive', defensive: 'pf_style_defensive',
+};
+
+function toggleProfileStyleTag(tag) {
+  if (!state.profile) state.profile = {};
+  if (!state.profile.styleTags) state.profile.styleTags = [];
+  const idx = state.profile.styleTags.indexOf(tag);
+  if (idx >= 0) state.profile.styleTags.splice(idx, 1);
+  else state.profile.styleTags.push(tag);
+  save();
+  renderDetailProfile();
+}
+
+function saveDetailProfileField(key, value) {
+  if (!state.profile) state.profile = {};
+  state.profile[key] = value;
+  save();
+  showToast(_t('pf_saved_toast'));
+}
+
+function renderDetailProfile() {
+  const p = state.profile || {};
+
+  const tagsWrap = document.getElementById('pfStyleTagsWrap');
+  if (tagsWrap) {
+    const selected = p.styleTags || [];
+    tagsWrap.innerHTML = PF_STYLE_TAGS.map(tag => {
+      const on = selected.includes(tag);
+      return `<button class="niji-chip-tap niji-tapbtn" onclick="toggleProfileStyleTag('${tag}')" style="font-size:0.8rem;padding:9px 15px;min-height:38px;border-radius:20px;border:1.5px solid ${on ? 'var(--accent)' : 'var(--border)'};background:${on ? 'rgba(124,106,247,.22)' : 'var(--surface2)'};color:${on ? 'var(--accent)' : 'var(--text-muted)'};font-weight:${on ? '800' : '600'};font-family:inherit;">${on ? '✓ ' : ''}${_t(PF_STYLE_TAG_LABELKEY[tag])}</button>`;
+    }).join('');
+  }
+
+  const gridEl = document.getElementById('pfDetailProfileGrid');
+  if (!gridEl) return;
+
+  const levelValues = ['low', 'mid', 'high'];
+  const levelLabelKeys = ['pf_level_low', 'pf_level_mid', 'pf_level_high'];
+  const selectFields = [
+    { key: 'position',         lbl: _t('pf_position_lbl'),       values: ['deuce', 'ad', 'free'], labelKeys: ['pf_position_deuce', 'pf_position_ad', 'pf_position_free'] },
+    { key: 'swingStyle',       lbl: _t('pf_swing_lbl'),          values: ['compact', 'full', 'medium'], labelKeys: ['pf_swing_compact', 'pf_swing_full', 'pf_swing_medium'] },
+    { key: 'spinTendency',     lbl: _t('pf_spin_tendency_lbl'),  values: levelValues, labelKeys: levelLabelKeys },
+    { key: 'power',            lbl: _t('pf_power_lbl'),          values: levelValues, labelKeys: levelLabelKeys },
+    { key: 'control',          lbl: _t('pf_control_lbl'),        values: levelValues, labelKeys: levelLabelKeys },
+    { key: 'wristUse',         lbl: _t('pf_wrist_lbl'),          values: levelValues, labelKeys: levelLabelKeys },
+    { key: 'preferStringType', lbl: _t('pf_prefer_string_lbl'),  values: ['poly', 'multi', 'gut', 'hybrid', 'synth'], labelKeys: ['pf_prefer_string_poly', 'pf_prefer_string_multi', 'pf_prefer_string_gut', 'pf_prefer_string_hybrid', 'pf_prefer_string_synth'] },
+  ];
+
+  let html = '';
+  html += `<div class="pd-profile-item">
+    <div class="pd-profile-lbl">${_t('pf_ntrp_lbl')}</div>
+    <input class="pd-profile-select" type="text" value="${escHtml(p.ntrp || '')}" placeholder="${_t('pf_ntrp_ph')}"
+      onchange="saveDetailProfileField('ntrp', this.value.trim())"
+      style="text-align:right;width:100%;background:transparent;border:none;outline:none;font-size:16px;font-weight:700;color:var(--text);font-family:inherit;">
+  </div>`;
+  selectFields.forEach(f => {
+    const val = p[f.key] || '';
+    html += `<div class="pd-profile-item">
+      <div class="pd-profile-lbl">${f.lbl}</div>
+      <select class="pd-profile-select${val ? '' : ' unset'}" onchange="saveDetailProfileField('${f.key}', this.value);this.classList.toggle('unset',!this.value)">
+        <option value="">${_t('pf_unset')}</option>
+        ${f.values.map((v, i) => `<option value="${v}"${val === v ? ' selected' : ''}>${escHtml(_t(f.labelKeys[i]))}</option>`).join('')}
+      </select>
+    </div>`;
+  });
+  html += `<div class="pd-profile-item">
+    <div class="pd-profile-lbl">${_t('pf_prefer_tension_lbl')}</div>
+    <input class="pd-profile-select" type="text" value="${escHtml(p.preferTension || '')}" placeholder="${_t('pf_prefer_tension_ph')}"
+      onchange="saveDetailProfileField('preferTension', this.value.trim())"
+      style="text-align:right;width:100%;background:transparent;border:none;outline:none;font-size:16px;font-weight:700;color:var(--text);font-family:inherit;">
+  </div>`;
+
+  gridEl.innerHTML = html;
+}
+
 // [정리] 아바타 버튼 글자 + 이름/클럽 표시 갱신 (renderProfile, saveProfileField 두 곳에
 // 완전히 동일한 코드가 중복돼 있던 것을 하나로 통합)
 function _updateProfileHeader(p, name, initial) {
@@ -4660,6 +5523,9 @@ function renderProfile() {
   });
 
   grid.innerHTML = html;
+
+  // 상세 플레이 프로필 (구력/스타일 심화 정보) 렌더링
+  renderDetailProfile();
 
   // ===== 스트링 상태 배너 =====
   renderStringBanner();
@@ -6353,30 +7219,36 @@ function buildRacketCard(num) {
     </div>
     <div id="stringingAlert${num}" style="margin-bottom:10px;"></div>
 
-    <label style="display:flex;align-items:center;gap:6px;font-size:0.78rem;margin-bottom:10px;cursor:pointer;color:var(--text-muted);">
+    <label class="str-adv-only" style="display:flex;align-items:center;gap:6px;font-size:0.78rem;margin-bottom:10px;cursor:pointer;color:var(--text-muted);">
       <input type="checkbox" id="str${num}-hybrid" onchange="onHybridToggle(${num})" style="width:16px;height:16px;">
       <span data-lang="str_hybrid_toggle">🔀 하이브리드 (메인/크로스 다르게)</span>
     </label>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
       <div>
-        <label class="form-label" id="str${num}-string-lbl" style="font-size:0.72rem;">${_t('str_string_name_lbl')}</label>
-        <input class="form-input" id="str${num}-string" data-lang-placeholder="str_string${phFallback}_ph" placeholder="${escHtml(_t('str_string' + phFallback + '_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-tension');if(n){n.focus();n.select();}}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:5px;">
+          <label class="form-label" id="str${num}-string-lbl" style="font-size:0.72rem;margin:0;">${_t('str_string_name_lbl')}</label>
+          <button type="button" class="niji-tapbtn" onclick="openStringDBModal('pick',${num},'main')" style="color:var(--accent);font-weight:700;font-size:0.68rem;background:rgba(124,106,247,.14);border:none;border-radius:8px;padding:7px 9px;line-height:1;white-space:nowrap;" data-lang="strdb_pick_btn_short">📋 선택</button>
+        </div>
+        <input class="form-input" id="str${num}-string" data-lang-placeholder="str_string${phFallback}_ph" placeholder="${escHtml(_t('str_string' + phFallback + '_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-tension');if(n){n.focus();n.select();}}">
       </div>
       <div>
         <label class="form-label" style="font-size:0.72rem;">${_t('str_tension_lbl')}</label>
-        <input class="form-input" id="str${num}-tension" placeholder="${escHtml(_t('str_tension' + phFallback + '_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-date');if(n)n.focus();}">
+        <input class="form-input" id="str${num}-tension" placeholder="${escHtml(_t('str_tension' + phFallback + '_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-date');if(n)n.focus();}">
       </div>
     </div>
 
-    <div id="str${num}-cross-wrap" style="display:none;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+    <div id="str${num}-cross-wrap" style="display:none;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
       <div>
-        <label class="form-label" style="font-size:0.72rem;">${_t('str_cross_string_lbl')}</label>
-        <input class="form-input" id="str${num}-cross-string" placeholder="${escHtml(_t('str_cross_string_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'crossString',this.value)">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:5px;">
+          <label class="form-label" style="font-size:0.72rem;margin:0;">${_t('str_cross_string_lbl')}</label>
+          <button type="button" class="niji-tapbtn" onclick="openStringDBModal('pick',${num},'cross')" style="color:var(--accent);font-weight:700;font-size:0.68rem;background:rgba(124,106,247,.14);border:none;border-radius:8px;padding:7px 9px;line-height:1;white-space:nowrap;" data-lang="strdb_pick_btn_short">📋 선택</button>
+        </div>
+        <input class="form-input" id="str${num}-cross-string" placeholder="${escHtml(_t('str_cross_string_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'crossString',this.value)">
       </div>
       <div>
         <label class="form-label" style="font-size:0.72rem;">${_t('str_tension_lbl')}</label>
-        <input class="form-input" id="str${num}-cross-tension" placeholder="${escHtml(_t('str_cross_tension_ph'))}" style="font-size:16px;padding:7px 10px;" oninput="saveStrField(${num},'crossTension',this.value)">
+        <input class="form-input" id="str${num}-cross-tension" placeholder="${escHtml(_t('str_cross_tension_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'crossTension',this.value)">
       </div>
     </div>
 
@@ -6385,7 +7257,7 @@ function buildRacketCard(num) {
         <label class="form-label" style="font-size:0.72rem;">${_t('str_last_replace_lbl')}</label>
         <input type="date" class="form-input" id="str${num}-date" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(${num})">
       </div>
-      <div style="min-width:100px;">
+      <div class="str-adv-only" style="min-width:100px;">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_interval_lbl')}</label>
         <select class="form-select" id="str${num}-interval" style="font-size:0.85rem;padding:7px 10px;">
           <option value="1">${_t('str_interval_1m')}</option>
@@ -6414,19 +7286,20 @@ function buildRacketCard(num) {
           <option value="broken">${_t('str_reason_broken')}</option>
           <option value="damaged">${_t('str_reason_damaged')}</option>
           <option value="other">${_t('str_reason_other')}</option>
+          <option value="test">${_t('str_reason_test')}</option>
         </select>
       </div>
-      <div>
+      <div class="str-adv-only">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_cost_lbl')}</label>
         <input type="number" min="0" class="form-input" id="str${num}-cost" placeholder="${escHtml(_t('str_cost_ph'))}" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(${num})">
       </div>
     </div>
 
     <button class="btn btn-primary" style="width:100%;font-size:0.88rem;padding:10px;margin-bottom:8px;" onclick="saveStringingInfo(${num})"><span>${_t('str_save_btn')}</span></button>
-    <button class="btn" style="width:100%;font-size:0.82rem;padding:9px;margin-bottom:4px;background:var(--surface2);color:var(--text);" onclick="addStringCalendarReminder(${num})"><span>${_t('str_calendar_btn')}</span></button>
-    <button class="btn" style="width:100%;font-size:0.76rem;padding:8px;margin-bottom:4px;background:none;color:var(--text-muted);border:1px dashed var(--border);" onclick="resetRacket(${num})"><span>${_t('str_reset_btn')}</span></button>
+    <button class="btn str-adv-only" style="width:100%;font-size:0.82rem;padding:9px;margin-bottom:4px;background:var(--surface2);color:var(--text);" onclick="addStringCalendarReminder(${num})"><span>${_t('str_calendar_btn')}</span></button>
+    <button class="btn str-adv-only" style="width:100%;font-size:0.76rem;padding:8px;margin-bottom:4px;background:none;color:var(--text-muted);border:1px dashed var(--border);" onclick="resetRacket(${num})"><span>${_t('str_reset_btn')}</span></button>
 
-    <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
+    <div class="str-adv-only" style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:8px;">
         <div class="card-title" data-lang="str_history_title${num}" style="font-size:0.82rem;">${_t('str_history_title' + num)}</div>
         <div id="stringingTotalCost${num}" style="font-size:0.68rem;color:var(--text-muted);white-space:nowrap;"></div>
@@ -6545,8 +7418,390 @@ function saveStrField(num, key, val) {
 function saveStrR1Field(key, val) { saveStrField(1, key === 'racket' ? 'racket' : key, val); }
 function saveStrR2Field(key, val) { saveStrField(2, key === 'racket2' ? 'racket' : (key === 'string2' ? 'string' : key === 'tension2' ? 'tension' : key), val); }
 
+// ══════════════════════════════════════════════════════════
+// ===== 스트링 마스터 DB (Personal String Database) =====
+// state.stringMasterDB: [{ id, brand, model, gauge, material, shape, color,
+//   country, tension, price, features, pros, cons, style, career, racket,
+//   ratings:{spin,power,control,feel,tensionHold,durability,armStress}, memo }]
+// ══════════════════════════════════════════════════════════
+const STRDB_RATE_FIELDS = [
+  { key: 'spin',        labelKey: 'strdb_rate_spin' },
+  { key: 'power',       labelKey: 'strdb_rate_power' },
+  { key: 'control',     labelKey: 'strdb_rate_control' },
+  { key: 'feel',        labelKey: 'strdb_rate_feel' },
+  { key: 'tensionHold', labelKey: 'strdb_rate_tensionHold' },
+  { key: 'durability',  labelKey: 'strdb_rate_durability' },
+  { key: 'armStress',   labelKey: 'strdb_rate_armStress' },
+];
+
+window._strDBMode = 'manage';   // 'manage' | 'pick'
+window._strDBPickRacket = null; // 라켓 번호 (pick 모드일 때)
+window._strDBPickTarget = 'main'; // 'main' | 'cross' (하이브리드 크로스 스트링 선택 시)
+window._strDBEditId = null;     // 수정 중인 항목 id (null이면 신규 등록)
+window._strDBRatings = {};      // 폼에서 편집 중인 별점 값
+
+function openStringDBModal(mode, racketNum, target) {
+  window._strDBMode = mode || 'manage';
+  window._strDBPickRacket = racketNum || null;
+  window._strDBPickTarget = target || 'main';
+  const hint = document.getElementById('stringDBPickHint');
+  if (hint) {
+    hint.style.display = (window._strDBMode === 'pick') ? 'block' : 'none';
+    hint.textContent = _t(window._strDBPickTarget === 'cross' ? 'strdb_pick_hint_cross' : 'strdb_pick_hint');
+  }
+  showStringDBListView();
+  document.getElementById('stringDBModal').classList.add('open');
+}
+
+function showStringDBListView() {
+  document.getElementById('stringDBListView').style.display = 'block';
+  document.getElementById('stringDBFormView').style.display = 'none';
+  renderStringDBList();
+}
+
+// ===== 자주 쓰는 스트링 프리셋 (선택시 게이지/재질/형태 자동 입력) =====
+const STRING_PRESETS = [
+  { brandKo: '룩실론',      modelKo: 'ALU 파워 125',          nameEn: 'Luxilon ALU Power 125',        gauge: '1.25', material: '폴리', shape: '원형줄' },
+  { brandKo: '룩실론',      modelKo: '4G 125',                nameEn: 'Luxilon 4G 125',                gauge: '1.25', material: '폴리', shape: '각줄' },
+  { brandKo: '바볼랏',      modelKo: 'RPM 블라스트 125',       nameEn: 'Babolat RPM Blast 125',         gauge: '1.25', material: '폴리', shape: '각줄' },
+  { brandKo: '솔린코',      modelKo: '하이퍼-G 125',           nameEn: 'Solinco Hyper-G 125',           gauge: '1.25', material: '폴리', shape: '각줄' },
+  { brandKo: '테크니화이버', modelKo: '엑스원 바이페이즈 125',  nameEn: 'Tecnifibre X-One Biphase 125',  gauge: '1.25', material: '멀티', shape: '원형줄' },
+  { brandKo: '윌슨',        modelKo: 'NXT 16',                nameEn: 'Wilson NXT 16',                 gauge: '1.30', material: '멀티', shape: '원형줄' },
+  { brandKo: '요넥스',      modelKo: '폴리투어 프로 125',      nameEn: 'Yonex Poly Tour Pro 125',       gauge: '1.25', material: '폴리', shape: '원형줄' },
+  { brandKo: '요넥스',      modelKo: 'BG65',                  nameEn: 'Yonex BG65',                    gauge: '0.70', material: '멀티', shape: '원형줄' },
+  { brandKo: '요넥스',      modelKo: 'BG80',                  nameEn: 'Yonex BG80',                    gauge: '0.68', material: '폴리', shape: '원형줄' },
+  { brandKo: '요넥스',      modelKo: '에어로바이트',           nameEn: 'Yonex Aerobite',                gauge: '0.67', material: '멀티', shape: '원형줄' },
+  { brandKo: '셀커크',      modelKo: '피클볼 스트링',          nameEn: 'Selkirk Pickleball String',     gauge: '1.25', material: '폴리', shape: '원형줄' },
+];
+
+function renderStrDBPresetOptions() {
+  const sel = document.getElementById('strdb-preset');
+  if (!sel) return;
+  const isEn = (_nijiGetLang && _nijiGetLang() === 'en');
+  const optsHtml = STRING_PRESETS.map((p, i) => `<option value="${i}">${escHtml(isEn ? p.nameEn : (p.brandKo + ' ' + p.modelKo))}</option>`).join('');
+  sel.innerHTML = `<option value="" data-lang="strdb_preset_ph">${escHtml(_t('strdb_preset_ph'))}</option>` + optsHtml;
+}
+
+function applyStrDBPreset(idx) {
+  if (idx === '' || idx === undefined || idx === null) return;
+  const p = STRING_PRESETS[parseInt(idx, 10)];
+  if (!p) return;
+  const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+  setVal('strdb-brand', p.brandKo);
+  setVal('strdb-model', p.modelKo);
+  setVal('strdb-name-en', p.nameEn);
+  setVal('strdb-material', p.material);
+  setVal('strdb-shape', p.shape);
+  const gaugeSel = document.getElementById('strdb-gauge-select');
+  const gaugeCustom = document.getElementById('strdb-gauge');
+  const presetGauges = ['1.18', '1.20', '1.25'];
+  if (gaugeSel) {
+    if (presetGauges.includes(p.gauge)) {
+      gaugeSel.value = p.gauge;
+      if (gaugeCustom) { gaugeCustom.style.display = 'none'; gaugeCustom.value = ''; }
+    } else {
+      gaugeSel.value = 'custom';
+      if (gaugeCustom) { gaugeCustom.style.display = 'block'; gaugeCustom.value = p.gauge; }
+    }
+  }
+}
+
+function onStrDBGaugeChange(v) {
+  const custom = document.getElementById('strdb-gauge');
+  if (!custom) return;
+  if (v === 'custom') { custom.style.display = 'block'; custom.focus(); }
+  else { custom.style.display = 'none'; custom.value = ''; }
+}
+
+function getStrDBGaugeValue() {
+  const sel = document.getElementById('strdb-gauge-select');
+  const custom = document.getElementById('strdb-gauge');
+  if (!sel) return custom ? custom.value.trim() : '';
+  if (sel.value === 'custom') return normalizeGauge(custom ? custom.value.trim() : '');
+  return sel.value;
+}
+
+// ===== 데이터 표준화 함수 (기존 자유 입력 값도 동일한 값으로 통일) =====
+function normalizeGauge(v) {
+  if (!v) return '';
+  let s = String(v).toLowerCase().replace(/mm|게이지|gauge/g, '').trim();
+  const m = s.match(/1[.,]?\s?(1[0-9]|2[0-9]|3[0-9])/);
+  if (m) {
+    let num = m[0].replace(',', '.').replace(/\s/g, '');
+    if (!num.includes('.')) num = num.slice(0, 1) + '.' + num.slice(1);
+    const f = parseFloat(num);
+    if (!isNaN(f)) return f.toFixed(2);
+  }
+  const f2 = parseFloat(s);
+  if (!isNaN(f2) && f2 > 0 && f2 < 3) return f2.toFixed(2);
+  return s;
+}
+function normalizeMaterial(v) {
+  if (!v) return '폴리';
+  const s = String(v).toLowerCase();
+  if (s.includes('poly') || s.includes('폴리') || s.includes('코폴리') || s.includes('copoly')) return '폴리';
+  if (s.includes('multi') || s.includes('멀티')) return '멀티';
+  if (s.includes('gut') || s.includes('거트') || s.includes('천연')) return '천연거트';
+  return '기타';
+}
+function normalizeShape(v) {
+  if (!v) return '원형줄';
+  const s = String(v).toLowerCase();
+  if (s.includes('twist') || s.includes('트위스트')) return '트위스트';
+  if (s.includes('rough') || s.includes('러프')) return '러프';
+  if (s.includes('round') || s.includes('원형')) return '원형줄';
+  if (s.includes('edge') || s.includes('shape') || s.includes('각') || s.includes('octagon') || s.includes('hex')) return '각줄';
+  return '기타';
+}
+function strDBDisplayName(item) {
+  if (!item) return '';
+  const isEn = (_nijiGetLang && _nijiGetLang() === 'en');
+  if (isEn && item.nameEn) return item.nameEn;
+  return (item.brand + ' ' + item.model).trim();
+}
+
+function showStringDBFormView(editId) {
+  window._strDBEditId = editId || null;
+  const item = editId ? (state.stringMasterDB || []).find(s => s.id === editId) : null;
+  const titleEl = document.getElementById('stringDBFormTitle');
+  if (titleEl) titleEl.textContent = _t(item ? 'strdb_form_title_edit' : 'strdb_form_title_add');
+
+  renderStrDBPresetOptions();
+  const presetSel = document.getElementById('strdb-preset');
+  if (presetSel) presetSel.value = '';
+
+  const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+  setVal('strdb-brand', item && item.brand);
+  setVal('strdb-model', item && item.model);
+  setVal('strdb-name-en', item && item.nameEn);
+
+  const gaugeSel = document.getElementById('strdb-gauge-select');
+  const gaugeCustom = document.getElementById('strdb-gauge');
+  const normGauge = normalizeGauge(item && item.gauge);
+  const presetGauges = ['1.18', '1.20', '1.25'];
+  if (gaugeSel) {
+    if (normGauge && presetGauges.includes(normGauge)) {
+      gaugeSel.value = normGauge;
+      if (gaugeCustom) { gaugeCustom.style.display = 'none'; gaugeCustom.value = ''; }
+    } else {
+      gaugeSel.value = normGauge ? 'custom' : '1.25';
+      if (gaugeCustom) { gaugeCustom.style.display = normGauge ? 'block' : 'none'; gaugeCustom.value = normGauge || ''; }
+    }
+  }
+  const matSel = document.getElementById('strdb-material');
+  if (matSel) matSel.value = normalizeMaterial(item && item.material);
+  const shapeSel = document.getElementById('strdb-shape');
+  if (shapeSel) shapeSel.value = normalizeShape(item && item.shape);
+
+  setVal('strdb-tension', item && item.tension);
+  setVal('strdb-price', item && item.price);
+  setVal('strdb-features', item && item.features);
+  setVal('strdb-pros', item && item.pros);
+  setVal('strdb-cons', item && item.cons);
+  setVal('strdb-style', item && item.style);
+  setVal('strdb-career', item && item.career);
+  setVal('strdb-racket', item && item.racket);
+  setVal('strdb-memo', item && item.memo);
+
+  window._strDBRatings = (item && item.ratings) ? { ...item.ratings } : {};
+  renderStrDBRatingRows();
+
+  document.getElementById('stringDBListView').style.display = 'none';
+  document.getElementById('stringDBFormView').style.display = 'block';
+}
+
+function renderStrDBRatingRows() {
+  const wrap = document.getElementById('strdbRatingRows');
+  if (!wrap) return;
+  wrap.innerHTML = STRDB_RATE_FIELDS.map(f => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:0.84rem;color:var(--text);">${_t(f.labelKey)}</span>
+      <div id="strdb-stars-${f.key}" style="display:flex;gap:2px;">
+        ${[1, 2, 3, 4, 5].map(n => `<span class="niji-star-tap niji-tapbtn" onclick="setStrDBRating('${f.key}',${n})" data-n="${n}">☆</span>`).join('')}
+      </div>
+    </div>`).join('');
+  STRDB_RATE_FIELDS.forEach(f => renderStrDBStars(f.key));
+}
+
+function setStrDBRating(key, n) {
+  // 같은 별을 다시 탭하면 0으로 초기화 (선택 해제)
+  window._strDBRatings[key] = (window._strDBRatings[key] === n) ? 0 : n;
+  renderStrDBStars(key);
+}
+
+function renderStrDBStars(key) {
+  const wrap = document.getElementById('strdb-stars-' + key);
+  if (!wrap) return;
+  const val = window._strDBRatings[key] || 0;
+  Array.from(wrap.children).forEach(el => {
+    const n = parseInt(el.dataset.n, 10);
+    el.textContent = n <= val ? '★' : '☆';
+    el.style.color = n <= val ? 'var(--accent)' : 'var(--text-muted)';
+  });
+}
+
+function saveStringDBForm() {
+  const getVal = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const brand = getVal('strdb-brand');
+  const model = getVal('strdb-model');
+  if (!brand || !model) {
+    showConfirm(_t('strdb_brand_required'), '', '⚠️', () => {});
+    return;
+  }
+  // 색상/제조국 입력창은 화면에서 제거됐지만, 기존에 저장된 값이 있다면 데이터 보존을 위해 그대로 유지
+  const prevItem = window._strDBEditId ? (state.stringMasterDB || []).find(s => s.id === window._strDBEditId) : null;
+  const item = {
+    id: window._strDBEditId || Date.now(),
+    brand, model,
+    nameEn: getVal('strdb-name-en'),
+    gauge: getStrDBGaugeValue(),
+    material: getVal('strdb-material'),
+    shape: getVal('strdb-shape'),
+    color: prevItem ? (prevItem.color || '') : '',
+    country: prevItem ? (prevItem.country || '') : '',
+    tension: getVal('strdb-tension'),
+    price: getVal('strdb-price'),
+    features: getVal('strdb-features'),
+    pros: getVal('strdb-pros'),
+    cons: getVal('strdb-cons'),
+    style: getVal('strdb-style'),
+    career: getVal('strdb-career'),
+    racket: getVal('strdb-racket'),
+    memo: getVal('strdb-memo'),
+    ratings: { ...window._strDBRatings },
+  };
+  if (!state.stringMasterDB) state.stringMasterDB = [];
+  if (window._strDBEditId) {
+    const idx = state.stringMasterDB.findIndex(s => s.id === window._strDBEditId);
+    if (idx >= 0) state.stringMasterDB[idx] = item;
+    else state.stringMasterDB.push(item);
+  } else {
+    state.stringMasterDB.push(item);
+  }
+  save();
+  window._strDBEditId = null;
+  showStringDBListView();
+}
+
+function deleteStringDBItem(id) {
+  showConfirm(_t('strdb_delete_title'), _t('strdb_delete_msg'), '🗑️', () => {
+    state.stringMasterDB = (state.stringMasterDB || []).filter(s => s.id !== id);
+    save();
+    renderStringDBList();
+  });
+}
+
+function pickStringFromDB(id) {
+  const item = (state.stringMasterDB || []).find(s => s.id === id);
+  if (!item) return;
+  const num = window._strDBPickRacket;
+  if (!num) { closeModal('stringDBModal'); return; }
+  const isCross = window._strDBPickTarget === 'cross';
+  const fullName = strDBDisplayName(item);
+  const strFieldId = isCross ? 'str' + num + '-cross-string' : 'str' + num + '-string';
+  const tenFieldId = isCross ? 'str' + num + '-cross-tension' : 'str' + num + '-tension';
+  const strKey = isCross ? 'crossString' : 'string';
+  const tenKey = isCross ? 'crossTension' : 'tension';
+
+  const strEl = document.getElementById(strFieldId);
+  if (strEl) strEl.value = fullName;
+  saveStrField(num, strKey, fullName);
+  if (item.tension) {
+    const tenEl = document.getElementById(tenFieldId);
+    if (tenEl) tenEl.value = item.tension;
+    saveStrField(num, tenKey, item.tension);
+  }
+  closeModal('stringDBModal');
+}
+
+function strDBAvgRating(item) {
+  const vals = STRDB_RATE_FIELDS.map(f => item.ratings && item.ratings[f.key]).filter(v => v > 0);
+  if (!vals.length) return 0;
+  return vals.reduce((a, b) => a + b, 0) / vals.length;
+}
+
+function renderStringDBList() {
+  const wrap = document.getElementById('stringDBListWrap');
+  if (!wrap) return;
+  const list = state.stringMasterDB || [];
+  if (!list.length) {
+    wrap.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:30px 10px;white-space:pre-line;">${_t('strdb_empty')}</div>`;
+    return;
+  }
+  const isPick = window._strDBMode === 'pick';
+  wrap.innerHTML = list.map(item => {
+    const avg = strDBAvgRating(item);
+    const starDisplay = avg ? '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg)) : '';
+    const tensionTxt = item.tension ? item.tension + ' lb' : _t('strdb_no_tension');
+    return `
+    <div class="card" style="margin-bottom:10px;padding:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <div style="min-width:0;flex:1;">
+          <div style="font-weight:800;font-size:0.95rem;color:var(--text);line-height:1.4;">${escHtml(strDBDisplayName(item))}</div>
+          <div style="font-size:0.76rem;color:var(--text-muted);margin-top:3px;">${escHtml(item.gauge || '')}${item.gauge ? ' · ' : ''}${escHtml(tensionTxt)}</div>
+          ${starDisplay ? `<div style="color:var(--accent);font-size:0.82rem;margin-top:5px;">${starDisplay}</div>` : ''}
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0;align-items:center;">
+          ${isPick ? `<button class="btn btn-primary niji-tapbtn" style="padding:11px 16px;font-size:0.82rem;border-radius:10px;" onclick="pickStringFromDB(${item.id})">${_t('strdb_select_btn')}</button>` : `
+            <button class="niji-icon-btn niji-tapbtn" onclick="showStringDBFormView(${item.id})">${_t('strdb_edit_btn')}</button>
+            <button class="niji-icon-btn niji-tapbtn" onclick="deleteStringDBItem(${item.id})">${_t('strdb_delete_btn')}</button>
+          `}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== 기본/고급 보기 =====
+function setStringViewMode(mode) {
+  state.stringViewMode = (mode === 'advanced') ? 'advanced' : 'basic';
+  save();
+  applyStringViewMode();
+}
+
+function applyStringViewMode() {
+  const mode = state.stringViewMode || 'basic';
+  const isAdv = mode === 'advanced';
+  document.querySelectorAll('.str-adv-only').forEach(el => { el.style.display = isAdv ? '' : 'none'; });
+  const btnB = document.getElementById('strViewBtnBasic');
+  const btnA = document.getElementById('strViewBtnAdvanced');
+  if (btnB && btnA) {
+    btnB.style.background = isAdv ? 'transparent' : 'var(--accent)';
+    btnB.style.color = isAdv ? 'var(--text-muted)' : '#fff';
+    btnA.style.background = isAdv ? 'var(--accent)' : 'transparent';
+    btnA.style.color = isAdv ? '#fff' : 'var(--text-muted)';
+  }
+  const hint = document.getElementById('strViewModeHint');
+  if (hint) hint.textContent = _t(isAdv ? 'str_view_hint_advanced' : 'str_view_hint_basic');
+}
+
+// ===== 시타(테스트) 통계 =====
+function renderStrTestStats() {
+  const box = document.getElementById('strTestStatBox');
+  if (!box) return;
+  const list = (state.stringingHistory || []).filter(h => h.reason === 'test');
+  if (!list.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const now = new Date();
+  const thisMonth = now.getMonth();
+  const thisYear = now.getFullYear();
+  let monthCnt = 0, yearCnt = 0;
+  list.forEach(h => {
+    const d = h.date ? new Date(h.date) : null;
+    if (!d || isNaN(d)) return;
+    if (d.getFullYear() === thisYear) {
+      yearCnt++;
+      if (d.getMonth() === thisMonth) monthCnt++;
+    }
+  });
+  box.style.display = 'flex';
+  const unit = _t('str_test_stat_unit');
+  box.innerHTML = `<span>🧪 ${_t('str_test_stat_month')}: <b style="color:var(--text);">${monthCnt}${unit}</b></span><span>🧪 ${_t('str_test_stat_year')}: <b style="color:var(--text);">${yearCnt}${unit}</b></span>`;
+}
+
 function renderStringing() {
   renderRacketCards();
+  applyStringViewMode();
+  renderStrTestStats();
   const p = state.profile || {};
   const today = getTodayStr();
 
@@ -6647,19 +7902,27 @@ function renderStringing() {
       if (!hist.length) {
         listEl.innerHTML = `<div style="color:var(--text-muted);font-size:0.8rem;padding:8px 0 4px;">${_t('str_no_history')}</div>`;
       } else {
-        const reasonKey = { regular: 'str_reason_regular', tension: 'str_reason_tension', broken: 'str_reason_broken', damaged: 'str_reason_damaged', other: 'str_reason_other' };
+        const reasonKey = { regular: 'str_reason_regular', tension: 'str_reason_tension', broken: 'str_reason_broken', damaged: 'str_reason_damaged', other: 'str_reason_other', test: 'str_reason_test' };
         listEl.innerHTML = hist.map(h => {
           const reasonTxt = h.reason && reasonKey[h.reason] ? _t(reasonKey[h.reason]) : '';
           const costTxt = h.cost ? Number(h.cost).toLocaleString() + '원' : '';
           const metaParts = [h.date, reasonTxt, costTxt].filter(Boolean);
+          const avg = strEvalAvgRating(h);
+          const evalBadge = avg ? `<span style="color:var(--accent);font-weight:700;">⭐${avg.toFixed(1)}</span>` : '';
+          const evalBtnLabel = (h.eval && (h.eval.pros || h.eval.cons || h.eval.memo || avg)) ? _t('streval_btn_done') : _t('streval_btn');
           return `
-          <div class="stringing-history-row">
-            <div class="stringing-dot"></div>
-            <div class="stringing-history-info">
-              <div class="stringing-history-name">${escHtml(h.name)}</div>
-              <div class="stringing-history-meta">${escHtml(metaParts.join(' · '))}</div>
+          <div class="stringing-history-row" style="flex-direction:column;align-items:stretch;gap:10px;">
+            <div style="display:flex;align-items:flex-start;gap:10px;">
+              <div class="stringing-dot" style="margin-top:6px;"></div>
+              <div class="stringing-history-info">
+                <div class="stringing-history-name">${escHtml(h.name)} ${evalBadge}</div>
+                <div class="stringing-history-meta">${escHtml(metaParts.join(' · '))}</div>
+              </div>
             </div>
-            <button class="stringing-history-del" onclick="deleteStringingHistory(${h.id})">🗑️</button>
+            <div style="display:flex;gap:10px;padding-left:18px;">
+              <button class="niji-tapbtn" style="flex:1;background:rgba(124,106,247,.12);border:1px solid var(--accent);border-radius:10px;font-size:0.78rem;font-weight:700;padding:10px 8px;color:var(--accent);white-space:nowrap;" onclick="openStrEvalModal(${h.id})">${evalBtnLabel}</button>
+              <button class="niji-icon-btn niji-tapbtn" style="min-width:44px;color:var(--danger);" onclick="deleteStringingHistory(${h.id})">🗑️</button>
+            </div>
           </div>`;
         }).join('');
       }
@@ -6904,7 +8167,7 @@ function saveStringingInfo(racketNum) {
   const isDup = state.stringingHistory.some(h =>
     (h.racket == rn || (!h.racket && rn === 1)) && h.date === date && h.name === histName);
   if (!isDup) {
-    state.stringingHistory.push({ id: Date.now(), name: histName, date, racket: rn, reason, cost: cost || undefined });
+    state.stringingHistory.push({ id: Date.now(), name: histName, date, racket: rn, reason, cost: cost || undefined, stringName: stringName, tensionVal: tension || undefined, crossString: crossString || undefined, crossTension: crossTension || undefined });
   }
 
   save();
@@ -6929,6 +8192,462 @@ function deleteStringingHistory(id) {
   renderStringing();
   renderStringBanner();
   showToast(_t('str_toast_deleted'));
+}
+
+// ══════════════════════════════════════════════════════════
+// ===== 스트링 작업 기록 - 플레이 후 평가 (per-history rating) =====
+// stringingHistory 항목의 h.eval = { ratings:{satisfaction,feel,spin,power,control,armStress}, pros, cons, memo }
+// ══════════════════════════════════════════════════════════
+const STREVAL_RATE_FIELDS = [
+  { key: 'satisfaction', labelKey: 'streval_rate_satisfaction' },
+  { key: 'feel',          labelKey: 'streval_rate_feel' },
+  { key: 'spin',          labelKey: 'streval_rate_spin' },
+  { key: 'power',         labelKey: 'streval_rate_power' },
+  { key: 'control',       labelKey: 'streval_rate_control' },
+  { key: 'armStress',     labelKey: 'streval_rate_armStress' },
+];
+
+window._strEvalHistId = null;
+window._strEvalRatings = {};
+
+function openStrEvalModal(histId) {
+  window._strEvalHistId = histId;
+  const h = (state.stringingHistory || []).find(x => x.id === histId);
+  window._strEvalRatings = (h && h.eval && h.eval.ratings) ? { ...h.eval.ratings } : {};
+  renderStrEvalRatingRows();
+  const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+  setVal('streval-pros', h && h.eval && h.eval.pros);
+  setVal('streval-cons', h && h.eval && h.eval.cons);
+  setVal('streval-memo', h && h.eval && h.eval.memo);
+  setVal('streval-style', h && h.eval && h.eval.style);
+  document.getElementById('strEvalModal').classList.add('open');
+}
+
+function renderStrEvalRatingRows() {
+  const wrap = document.getElementById('strevalRatingRows');
+  if (!wrap) return;
+  wrap.innerHTML = STREVAL_RATE_FIELDS.map(f => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:0.84rem;color:var(--text);">${_t(f.labelKey)}</span>
+      <div id="streval-stars-${f.key}" style="display:flex;gap:2px;">
+        ${[1, 2, 3, 4, 5].map(n => `<span class="niji-star-tap niji-tapbtn" onclick="setStrEvalRating('${f.key}',${n})" data-n="${n}">☆</span>`).join('')}
+      </div>
+    </div>`).join('');
+  STREVAL_RATE_FIELDS.forEach(f => renderStrEvalStars(f.key));
+}
+
+function setStrEvalRating(key, n) {
+  window._strEvalRatings[key] = (window._strEvalRatings[key] === n) ? 0 : n;
+  renderStrEvalStars(key);
+}
+
+function renderStrEvalStars(key) {
+  const wrap = document.getElementById('streval-stars-' + key);
+  if (!wrap) return;
+  const val = window._strEvalRatings[key] || 0;
+  Array.from(wrap.children).forEach(el => {
+    const n = parseInt(el.dataset.n, 10);
+    el.textContent = n <= val ? '★' : '☆';
+    el.style.color = n <= val ? 'var(--accent)' : 'var(--text-muted)';
+  });
+}
+
+function saveStrEvalForm() {
+  const h = (state.stringingHistory || []).find(x => x.id === window._strEvalHistId);
+  if (!h) return;
+  const getVal = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  h.eval = {
+    ratings: { ...window._strEvalRatings },
+    pros: getVal('streval-pros'),
+    cons: getVal('streval-cons'),
+    memo: getVal('streval-memo'),
+    style: getVal('streval-style'),
+  };
+  save();
+  renderStringing();
+  closeModal('strEvalModal');
+  showToast(_t('streval_saved_toast'));
+}
+
+function strEvalAvgRating(h) {
+  if (!h || !h.eval || !h.eval.ratings) return 0;
+  const vals = STREVAL_RATE_FIELDS.map(f => h.eval.ratings[f.key]).filter(v => v > 0);
+  if (!vals.length) return 0;
+  return vals.reduce((a, b) => a + b, 0) / vals.length;
+}
+
+// ══════════════════════════════════════════════════════════
+// ===== 자동 분석 & 나만의 스트링 노트 =====
+// stringingHistory 데이터를 기반으로 통계를 자동 계산해서 보여준다.
+// ══════════════════════════════════════════════════════════
+function strAnalysisBaseName(h) {
+  if (h.stringName) return h.stringName.trim();
+  let main = (h.name || '').split(' / ')[0];
+  return main.replace(/\s*\d+(\.\d+)?lb\s*$/i, '').trim();
+}
+
+function strAnalysisTension(h) {
+  if (h.tensionVal) { const n = parseFloat(h.tensionVal); if (!isNaN(n)) return n; }
+  let main = (h.name || '').split(' / ')[0];
+  const m = main.match(/(\d+(\.\d+)?)\s*lb/i);
+  return m ? parseFloat(m[1]) : null;
+}
+
+function strAnalysisSeason(dateStr) {
+  if (!dateStr) return null;
+  const month = Number(dateStr.split('-')[1]);
+  if ([12, 1, 2].includes(month)) return 'winter';
+  if ([6, 7, 8].includes(month)) return 'summer';
+  return null;
+}
+
+// 하이브리드 크로스 스트링 정보 추출 (없으면 null)
+function strAnalysisCross(h) {
+  if (h.crossString) return { name: h.crossString.trim(), tension: h.crossTension ? parseFloat(h.crossTension) : null };
+  const parts = (h.name || '').split(' / ');
+  if (parts.length < 2) return null;
+  const raw = parts[1].trim();
+  const m = raw.match(/^(.*?)\s*(\d+(\.\d+)?)\s*lb\s*$/i);
+  if (m) return { name: m[1].trim(), tension: parseFloat(m[2]) };
+  return raw ? { name: raw, tension: null } : null;
+}
+
+function racketDisplayName(num) {
+  const suf = num === 1 ? '' : num;
+  const p = state.profile || {};
+  return p['racket' + suf] || _t('stranalysis_racket_fallback').replace('{n}', num);
+}
+
+function computeStringAnalysis() {
+  const hist = (state.stringingHistory || []).filter(h => h && h.date);
+  if (!hist.length) return null;
+
+  const freqMap = {};
+  const tensionSatMap = {};
+  const stringSatMap = {};
+  const racketMap = {};
+  const seasonSatMap = { winter: {}, summer: {} };
+  const styleSatMap = {}; // styleKey -> { baseName -> {sum,count} }
+  const comboSatMap = {}; // "메인 + 크로스" -> {sum,count} (하이브리드 조합별 만족도)
+
+  hist.forEach(h => {
+    const base = strAnalysisBaseName(h);
+    if (base) freqMap[base] = (freqMap[base] || 0) + 1;
+
+    const rn = h.racket || 1;
+    racketMap[rn] = (racketMap[rn] || 0) + 1;
+
+    const tension = strAnalysisTension(h);
+    const cross = strAnalysisCross(h);
+    const sat = (h.eval && h.eval.ratings) ? (h.eval.ratings.satisfaction || 0) : 0;
+    if (sat) {
+      if (base) {
+        if (!stringSatMap[base]) stringSatMap[base] = { sum: 0, count: 0 };
+        stringSatMap[base].sum += sat; stringSatMap[base].count++;
+      }
+      if (base && cross && cross.name) {
+        const comboKey = base + ' + ' + cross.name;
+        if (!comboSatMap[comboKey]) comboSatMap[comboKey] = { sum: 0, count: 0 };
+        comboSatMap[comboKey].sum += sat; comboSatMap[comboKey].count++;
+      }
+      if (tension != null) {
+        const tKey = Math.round(tension);
+        if (!tensionSatMap[tKey]) tensionSatMap[tKey] = { sum: 0, count: 0 };
+        tensionSatMap[tKey].sum += sat; tensionSatMap[tKey].count++;
+      }
+      const season = strAnalysisSeason(h.date);
+      if (season && base) {
+        if (!seasonSatMap[season][base]) seasonSatMap[season][base] = { sum: 0, count: 0 };
+        seasonSatMap[season][base].sum += sat; seasonSatMap[season][base].count++;
+      }
+      const style = h.eval && h.eval.style;
+      if (style && base) {
+        if (!styleSatMap[style]) styleSatMap[style] = {};
+        if (!styleSatMap[style][base]) styleSatMap[style][base] = { sum: 0, count: 0 };
+        styleSatMap[style][base].sum += sat; styleSatMap[style][base].count++;
+      }
+    }
+  });
+
+  const pickMax = (map) => {
+    let bestKey = null, bestCount = 0;
+    Object.keys(map).forEach(k => { if (map[k] > bestCount) { bestCount = map[k]; bestKey = k; } });
+    return bestKey ? { key: bestKey, count: bestCount } : null;
+  };
+  const pickBestAvg = (map) => {
+    let bestKey = null, bestAvg = 0;
+    Object.keys(map).forEach(k => {
+      const avg = map[k].sum / map[k].count;
+      if (avg > bestAvg) { bestAvg = avg; bestKey = k; }
+    });
+    return bestKey ? { key: bestKey, avg: bestAvg } : null;
+  };
+
+  const mostUsedString = pickMax(freqMap);
+  const mostUsedRacket = pickMax(racketMap);
+  const bestSatString  = pickBestAvg(stringSatMap);
+  const bestSatTension = pickBestAvg(tensionSatMap);
+  const bestWinter = pickBestAvg(seasonSatMap.winter);
+  const bestSummer = pickBestAvg(seasonSatMap.summer);
+
+  const tensions = hist.map(strAnalysisTension).filter(t => t != null);
+  const avgTension = tensions.length ? (tensions.reduce((a, b) => a + b, 0) / tensions.length) : null;
+
+  // 사용기간이 가장 길었던 스트링 (같은 라켓 내 교체 간격 계산)
+  let longestUseName = null, longestDays = 0;
+  [1, 2, 3, 4].forEach(rn => {
+    const list = hist.filter(h => (h.racket || 1) == rn).sort((a, b) => a.date.localeCompare(b.date));
+    for (let i = 0; i < list.length - 1; i++) {
+      const d1 = new Date(list[i].date), d2 = new Date(list[i + 1].date);
+      const days = Math.round((d2 - d1) / 86400000);
+      if (days > longestDays) { longestDays = days; longestUseName = strAnalysisBaseName(list[i]); }
+    }
+  });
+
+  // 플레이 스타일별 만족도 1위 스트링
+  const styleTop = {};
+  Object.keys(styleSatMap).forEach(style => {
+    const best = pickBestAvg(styleSatMap[style]);
+    if (best) styleTop[style] = best;
+  });
+
+  return { mostUsedString, mostUsedRacket, bestSatString, bestSatTension, bestWinter, bestSummer, avgTension, longestUseName, longestDays, styleTop, comboSatMap };
+}
+
+function renderStringAnalysis() {
+  const wrap = document.getElementById('strAnalysisWrap');
+  if (!wrap) return;
+  const a = computeStringAnalysis();
+  if (!a) {
+    wrap.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:30px 10px;white-space:pre-line;">${_t('stranalysis_empty')}</div>`;
+    return;
+  }
+  const rows = [];
+  if (a.mostUsedString) rows.push({ icon: '🔁', label: _t('stranalysis_most_used_string'), value: `${a.mostUsedString.key} (${a.mostUsedString.count}${_t('stranalysis_times')})` });
+  if (a.avgTension != null) rows.push({ icon: '📏', label: _t('stranalysis_avg_tension'), value: `${a.avgTension.toFixed(1)} lb` });
+  if (a.bestSatString) rows.push({ icon: '⭐', label: _t('stranalysis_best_sat_string'), value: `${a.bestSatString.key} (⭐${a.bestSatString.avg.toFixed(1)})` });
+  if (a.bestSatTension) rows.push({ icon: '🎯', label: _t('stranalysis_best_sat_tension'), value: `${a.bestSatTension.key} lb (⭐${a.bestSatTension.avg.toFixed(1)})` });
+  if (a.mostUsedRacket) rows.push({ icon: '🎾', label: _t('stranalysis_most_used_racket'), value: `${racketDisplayName(Number(a.mostUsedRacket.key))} (${a.mostUsedRacket.count}${_t('stranalysis_times')})` });
+  if (a.bestWinter) rows.push({ icon: '❄️', label: _t('stranalysis_best_winter'), value: `${a.bestWinter.key} (⭐${a.bestWinter.avg.toFixed(1)})` });
+  if (a.bestSummer) rows.push({ icon: '☀️', label: _t('stranalysis_best_summer'), value: `${a.bestSummer.key} (⭐${a.bestSummer.avg.toFixed(1)})` });
+  if (a.longestUseName) rows.push({ icon: '⏳', label: _t('stranalysis_longest_use'), value: `${a.longestUseName} (${a.longestDays}${_t('stranalysis_days')})` });
+  if (a.styleTop && Object.keys(a.styleTop).length) {
+    const lines = Object.keys(a.styleTop).map(style => {
+      const labelKey = PF_STYLE_TAG_LABELKEY[style] || null;
+      const styleLabel = labelKey ? _t(labelKey) : style;
+      const best = a.styleTop[style];
+      return `${escHtml(styleLabel)}: ${escHtml(best.key)} (⭐${best.avg.toFixed(1)})`;
+    }).join('<br>');
+    rows.push({ icon: '🎨', label: _t('stranalysis_style_top_title'), value: lines, isHtml: true });
+  }
+
+  if (!rows.length) {
+    wrap.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:30px 10px;white-space:pre-line;">${_t('stranalysis_empty')}</div>`;
+    return;
+  }
+  wrap.innerHTML = rows.map(r => `
+    <div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+      <div style="font-size:1.35rem;">${r.icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;">${r.label}</div>
+        <div style="font-size:0.9rem;font-weight:800;color:var(--text);">${r.isHtml ? r.value : escHtml(r.value)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function computeStringGroups() {
+  const hist = [...(state.stringingHistory || [])].filter(h => h && h.date);
+  const groups = {};
+  hist.forEach(h => {
+    const base = strAnalysisBaseName(h) || _t('stranalysis_unknown');
+    if (!groups[base]) groups[base] = [];
+    groups[base].push(h);
+  });
+  Object.keys(groups).forEach(k => groups[k].sort((a, b) => b.date.localeCompare(a.date)));
+  return groups;
+}
+
+// 스트링노트 카드 펼침/접힘: 화살표를 회전시켜 상태를 시각적으로 명확히 보여준다
+function toggleStrNoteBody(bodyId, headerEl) {
+  const el = document.getElementById(bodyId);
+  if (!el) return;
+  const isOpen = el.style.display === 'block';
+  el.style.display = isOpen ? 'none' : 'block';
+  const arrow = headerEl ? headerEl.querySelector('.strnote-arrow') : null;
+  if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+function renderStringNoteList() {
+  const wrap = document.getElementById('strNoteWrap');
+  if (!wrap) return;
+  const groups = computeStringGroups();
+  const keys = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
+  if (!keys.length) {
+    wrap.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:30px 10px;white-space:pre-line;">${_t('stranalysis_empty')}</div>`;
+    return;
+  }
+  wrap.innerHTML = keys.map((base, idx) => {
+    const entries = groups[base];
+    const sats = entries.map(h => (h.eval && h.eval.ratings) ? (h.eval.ratings.satisfaction || 0) : 0).filter(v => v > 0);
+    const avgSat = sats.length ? (sats.reduce((a, b) => a + b, 0) / sats.length) : 0;
+    const bodyId = 'strnote-body-' + idx;
+    const entriesHtml = entries.map(h => {
+      const tension = strAnalysisTension(h);
+      const cross = strAnalysisCross(h);
+      const sat = (h.eval && h.eval.ratings) ? (h.eval.ratings.satisfaction || 0) : 0;
+      const satTxt = sat ? ' · ' + '⭐'.repeat(sat) : '';
+      const crossTxt = cross ? `<div style="font-size:0.74rem;color:var(--accent);margin-top:3px;">🔀 ${_t('stranalysis_cross_lbl')}: ${escHtml(cross.name)}${cross.tension != null ? ' ' + cross.tension + 'lb' : ''}</div>` : '';
+      const prosTxt = h.eval && h.eval.pros ? `<div style="font-size:0.76rem;color:#4ade80;margin-top:3px;">👍 ${escHtml(h.eval.pros)}</div>` : '';
+      const consTxt = h.eval && h.eval.cons ? `<div style="font-size:0.76rem;color:#f87171;margin-top:3px;">👎 ${escHtml(h.eval.cons)}</div>` : '';
+      const memoTxt = h.eval && h.eval.memo ? `<div style="font-size:0.76rem;color:var(--text-muted);margin-top:3px;">📝 ${escHtml(h.eval.memo)}</div>` : '';
+      return `<div style="padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="font-size:0.78rem;color:var(--text-muted);">${escHtml(h.date)}${tension != null ? ' · ' + tension + 'lb' : ''}${satTxt}</div>
+        ${crossTxt}${prosTxt}${consTxt}${memoTxt}
+      </div>`;
+    }).join('');
+    return `<div class="card" style="margin-bottom:10px;padding:0;overflow:hidden;">
+      <div class="niji-tapbtn" style="display:flex;justify-content:space-between;align-items:center;padding:14px;" onclick="toggleStrNoteBody('${bodyId}', this)">
+        <div>
+          <div style="font-weight:800;font-size:0.92rem;color:var(--text);">${escHtml(base)}</div>
+          <div style="font-size:0.76rem;color:var(--text-muted);margin-top:2px;">${entries.length}${_t('stranalysis_times')}${avgSat ? ' · ⭐' + avgSat.toFixed(1) : ''}</div>
+        </div>
+        <span class="strnote-arrow" style="color:var(--text-muted);font-size:0.9rem;transition:transform .2s;">▼</span>
+      </div>
+      <div style="padding:0 14px;">
+        <div id="${bodyId}" style="display:none;padding-bottom:12px;">${entriesHtml}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openStringAnalysisModal() {
+  switchStrAnalysisTab('summary');
+  document.getElementById('strAnalysisModal').classList.add('open');
+}
+
+function switchStrAnalysisTab(tab) {
+  const isSummary = tab === 'summary';
+  document.getElementById('strAnalysisSummaryView').style.display = isSummary ? 'block' : 'none';
+  document.getElementById('strAnalysisNoteView').style.display = isSummary ? 'none' : 'block';
+  const btnSummary = document.getElementById('strAnalysisTabBtn-summary');
+  const btnNote = document.getElementById('strAnalysisTabBtn-note');
+  if (btnSummary) { btnSummary.style.background = isSummary ? 'var(--accent)' : 'var(--surface2)'; btnSummary.style.color = isSummary ? '#fff' : 'var(--text-muted)'; }
+  if (btnNote) { btnNote.style.background = !isSummary ? 'var(--accent)' : 'var(--surface2)'; btnNote.style.color = !isSummary ? '#fff' : 'var(--text-muted)'; }
+  if (isSummary) renderStringAnalysis();
+  else renderStringNoteList();
+}
+
+// ══════════════════════════════════════════════════════════
+// ===== AI 추천 기능 =====
+// 1순위: 실제 플레이 기록(stringingHistory + eval)을 기반으로 추천
+// 2순위: 기록이 부족하면 스트링 마스터 DB + 프로필(스타일/구력)을 기반으로 추천
+// ══════════════════════════════════════════════════════════
+function computeAIRecommendation() {
+  const a = computeStringAnalysis();
+  const p = state.profile || {};
+
+  // ── 1순위: 실제 플레이 데이터 기반 ──
+  if (a && a.bestSatString) {
+    const recoName = a.bestSatString.key;
+    const recoTension = a.bestSatTension ? a.bestSatTension.key : (a.avgTension != null ? Math.round(a.avgTension) : null);
+    const reasons = [];
+    reasons.push(_t('airec_reason_best_sat').replace('{avg}', a.bestSatString.avg.toFixed(1)));
+    if (a.bestSatTension) reasons.push(_t('airec_reason_best_tension').replace('{tension}', a.bestSatTension.key).replace('{avg}', a.bestSatTension.avg.toFixed(1)));
+    if (a.styleTop) {
+      Object.keys(a.styleTop).forEach(style => {
+        if (a.styleTop[style].key === recoName) {
+          const labelKey = PF_STYLE_TAG_LABELKEY[style];
+          reasons.push(_t('airec_reason_style').replace('{style}', labelKey ? _t(labelKey) : style).replace('{avg}', a.styleTop[style].avg.toFixed(1)));
+        }
+      });
+    }
+    if (a.bestWinter && a.bestWinter.key === recoName) reasons.push(_t('airec_reason_winter').replace('{avg}', a.bestWinter.avg.toFixed(1)));
+    if (a.bestSummer && a.bestSummer.key === recoName) reasons.push(_t('airec_reason_summer').replace('{avg}', a.bestSummer.avg.toFixed(1)));
+    if (a.longestUseName === recoName) reasons.push(_t('airec_reason_longevity').replace('{days}', a.longestDays));
+    if (a.mostUsedString && a.mostUsedString.key === recoName) reasons.push(_t('airec_reason_most_used').replace('{count}', a.mostUsedString.count));
+
+    // 하이브리드 조합 추천 (해당 메인 스트링으로 사용했던 크로스 조합 중 만족도가 가장 높았던 것)
+    let bestCombo = null;
+    if (a.comboSatMap) {
+      Object.keys(a.comboSatMap).forEach(comboKey => {
+        if (comboKey.indexOf(recoName + ' + ') === 0) {
+          const avg = a.comboSatMap[comboKey].sum / a.comboSatMap[comboKey].count;
+          if (!bestCombo || avg > bestCombo.avg) {
+            bestCombo = { cross: comboKey.slice((recoName + ' + ').length), avg };
+          }
+        }
+      });
+    }
+    const result = { stringName: recoName, tension: recoTension, reasons, source: 'history' };
+    if (bestCombo) {
+      result.crossSuggestion = bestCombo.cross;
+      result.crossReason = _t('airec_reason_hybrid_combo').replace('{cross}', bestCombo.cross).replace('{avg}', bestCombo.avg.toFixed(1));
+    }
+    return result;
+  }
+
+  // ── 2순위: 스트링 마스터 DB + 프로필 기반 ──
+  const db = state.stringMasterDB || [];
+  if (db.length) {
+    const styleTags = p.styleTags || [];
+    let best = null, bestScore = -1, bestMatched = false;
+    db.forEach(item => {
+      let score = 0, matched = false;
+      const itemStyle = (item.style || '');
+      styleTags.forEach(tag => {
+        const labelKey = PF_STYLE_TAG_LABELKEY[tag];
+        const label = labelKey ? _t(labelKey) : '';
+        if (label && itemStyle.includes(label)) { score += 2; matched = true; }
+      });
+      if (p.career && item.career && (item.career.includes(p.career) || p.career.includes(item.career))) { score += 1; matched = true; }
+      const avgRating = strDBAvgRating(item);
+      score += avgRating * 0.5;
+      if (score > bestScore) { bestScore = score; best = item; bestMatched = matched; }
+    });
+    if (best) {
+      const reasons = [_t('airec_reason_db_registered')];
+      if (bestMatched) reasons.push(_t('airec_reason_db_match'));
+      const avgRating = strDBAvgRating(best);
+      if (avgRating > 0) reasons.push(_t('airec_reason_db_rating').replace('{avg}', avgRating.toFixed(1)));
+      const tension = best.tension || p.preferTension || null;
+      return { stringName: (best.brand + ' ' + best.model).trim(), tension, reasons, source: 'db' };
+    }
+  }
+
+  return null;
+}
+
+function renderAIRecommendation() {
+  const wrap = document.getElementById('aiRecoWrap');
+  if (!wrap) return;
+  const r = computeAIRecommendation();
+  if (!r) {
+    wrap.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:30px 10px;white-space:pre-line;">${_t('airec_empty')}</div>`;
+    return;
+  }
+  const sourceTag = r.source === 'history' ? _t('airec_source_history') : _t('airec_source_db');
+  wrap.innerHTML = `
+    <div style="text-align:center;padding:14px 0 22px;">
+      <div style="font-size:0.72rem;color:var(--accent);font-weight:700;margin-bottom:10px;">${escHtml(sourceTag)}</div>
+      <div style="font-size:0.7rem;color:var(--text-muted);font-weight:700;margin-bottom:4px;">${_t('airec_string_lbl')}</div>
+      <div style="font-size:1.35rem;font-weight:900;color:var(--text);margin-bottom:${r.tension ? '16px' : '0'};">${escHtml(r.stringName)}</div>
+      ${r.tension ? `
+      <div style="font-size:0.7rem;color:var(--text-muted);font-weight:700;margin-bottom:4px;">${_t('airec_tension_lbl')}</div>
+      <div style="font-size:1.15rem;font-weight:800;color:var(--accent);${r.crossSuggestion ? 'margin-bottom:16px;' : ''}">${escHtml(String(r.tension))} lb</div>` : ''}
+      ${r.crossSuggestion ? `
+      <div style="font-size:0.7rem;color:var(--text-muted);font-weight:700;margin-bottom:4px;">🔀 ${_t('airec_cross_lbl')}</div>
+      <div style="font-size:1.05rem;font-weight:800;color:var(--text);">${escHtml(r.crossSuggestion)}</div>` : ''}
+    </div>
+    <div class="card" style="padding:14px;">
+      <div style="font-size:0.76rem;color:var(--text-muted);font-weight:700;margin-bottom:8px;">${_t('airec_reason_lbl')}</div>
+      ${r.reasons.map(rs => `<div style="font-size:0.85rem;color:var(--text);padding:7px 0;border-bottom:1px solid var(--border);">• ${escHtml(rs)}</div>`).join('')}
+      ${r.crossReason ? `<div style="font-size:0.85rem;color:var(--accent);padding:7px 0;border-bottom:1px solid var(--border);">• ${escHtml(r.crossReason)}</div>` : ''}
+    </div>`;
+}
+
+function openAIRecoModal() {
+  renderAIRecommendation();
+  document.getElementById('aiRecoModal').classList.add('open');
 }
 
 // ===== 캘린더에 다음 교체 예정일 알림 등록 (.ics 파일 다운로드) =====
