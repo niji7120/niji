@@ -198,6 +198,16 @@ const NIJI_DICT = {
   str_alert_ok_sub:        { ko: '마지막 교체: {date} · {n}일 경과', en: 'Last replaced: {date} · {n} days ago' },
   str_alert_games_overdue: { ko: '교체 후 {n}게임 · 게임 수 기준 교체 권장', en: '{n} games since restring · replace recommended by game count' },
   str_alert_games_soon:    { ko: '교체 후 {n}게임 · 슬슬 게임 수도 찹니다', en: '{n} games since restring · getting close on game count too' },
+  str_alert_games_limit_note: { ko: ' (기준: {limit}게임)',            en: ' (limit: {limit} games)' },
+  str_cert_title:        { ko: '🛠️ 스트링 교체 완료!',               en: '🛠️ String Restrung!' },
+  str_cert_racket_lbl:   { ko: '🎾 라켓',                            en: '🎾 Racquet' },
+  str_cert_main_lbl:     { ko: '📌 메인',                            en: '📌 Main' },
+  str_cert_cross_lbl:    { ko: '📌 크로스',                          en: '📌 Cross' },
+  str_cert_string_lbl:   { ko: '📌 스트링',                          en: '📌 String' },
+  str_cert_tension_lbl:  { ko: '💪 텐션',                            en: '💪 Tension' },
+  str_cert_date_lbl:     { ko: '📅 교체일',                          en: '📅 Restrung on' },
+  str_cert_footer:       { ko: '새 스트링으로 더 강하게! 💥',         en: 'Fresh strings, stronger game! 💥' },
+  str_cert_hashtag:      { ko: '#NIJI_STRING #스트링교체 #라켓',      en: '#NIJI_STRING #Restring #Racquet' },
   str_racket3_ph:       { ko: '예) 던롭 CX200',                     en: 'e.g. Dunlop CX200' },
   str_racket_add_btn:   { ko: '➕ 라켓 추가 (라켓 {n})',            en: '➕ Add Racquet (Racquet {n})' },
   str_racket_remove_btn:{ ko: '➖ 라켓 {n} 제거',                    en: '➖ Remove Racquet {n}' },
@@ -225,6 +235,14 @@ const NIJI_DICT = {
   str_test_stat_month:  { ko: '이번 달 시타',                        en: 'Test hits this month' },
   str_test_stat_year:   { ko: '올해 시타',                           en: 'Test hits this year' },
   str_test_stat_unit:   { ko: '회',                                  en: 'x' },
+  str_recent_top5_title:{ ko: '⏱️ 최근 사용',                        en: '⏱️ Recently used' },
+  str_reuse_btn:         { ko: '↺ 다시 사용',                        en: '↺ Reuse' },
+  str_reuse_toast:       { ko: '↺ {name} 정보를 불러왔어요 · 저장을 눌러 반영하세요', en: '↺ Loaded {name} · Tap Save to apply' },
+  str_autofill_toast:    { ko: '💡 이 라켓의 지난 기록을 불러왔어요',  en: "💡 Loaded this racquet's last record" },
+  str_status_line:       { ko: '{used}일째 사용 · {left}',            en: '{used} days in use · {left}' },
+  str_status_left_days:  { ko: '{n}일 남음',                          en: '{n} days left' },
+  str_status_left_overdue:{ ko: '{n}일 초과',                         en: '{n} days overdue' },
+  str_toast_saved_next:  { ko: '✅ 저장 완료! 다음 교체 예정일 {date} · 약 {n}일 후', en: '✅ Saved! Next restring around {date} · {n} days' },
   str_cost_lbl:         { ko: '비용 (원, 선택)',                    en: 'Cost (optional)' },
   str_cost_ph:          { ko: '예) 25000',                          en: 'e.g. 25000' },
   str_total_cost:       { ko: '누적 비용',                          en: 'Total spent' },
@@ -2230,7 +2248,13 @@ function _t(key) {
   }
   .niji-star-tap:active { transform:scale(1.25); }
   .niji-chip-tap:active { transform:scale(0.94); opacity:0.85; }
+
+  /* 스트링 관리 - 기본/고급 보기 전환: 기본 모드일 때만 고급 전용 항목을 숨긴다.
+     (inline style.display를 직접 건드리면 원래 flex/grid 레이아웃 값을 잃어버리므로,
+     상위 컨테이너에 클래스를 붙이고 !important로 제어한다) */
+  #page-stringing.str-view-basic .str-adv-only { display: none !important; }
 </style>
+      
 </head>
 <body>
 
@@ -7144,7 +7168,8 @@ function checkStringReplaceVoiceAlert() {
     const due1 = isDue(p.stringDate, state.stringInterval);
     const due2 = isDue(p.stringDate2, state.stringInterval2);
     const due3 = isDue(p.stringDate3, state.stringInterval3);
-    if (!due1 && !due2 && !due3) return; // 교체 권장 상태 아니면 알림 없음
+    const due4 = isDue(p.stringDate4, state.stringInterval4);
+    if (!due1 && !due2 && !due3 && !due4) return; // 교체 권장 상태 아니면 알림 없음
 
     const todayStr = getTodayStr();
     const lastPlayedKey = 'niji_string_voice_alert_date';
@@ -7152,7 +7177,7 @@ function checkStringReplaceVoiceAlert() {
 
     localStorage.setItem(lastPlayedKey, todayStr);
 
-    const dueNums = [due1 && 1, due2 && 2, due3 && 3].filter(Boolean);
+    const dueNums = [due1 && 1, due2 && 2, due3 && 3, due4 && 4].filter(Boolean);
     const _isEn = (_nijiGetLang() || 'ko') === 'en';
     const msg = (_isEn ? 'Racquet ' : '라켓 ') + dueNums.join(', ') + (_isEn ? ' string needs replacing' : ' 스트링 교체하세요');
 
@@ -7189,8 +7214,9 @@ function playStringReplaceVoice(msg) {
   // 음성 안내
   try {
     if ('speechSynthesis' in window) {
-      const utter = new SpeechSynthesisUtterance(msg || '스트링 교체하세요');
-      utter.lang = 'ko-KR';
+      const _isEnVoice = (_nijiGetLang() || 'ko') === 'en';
+      const utter = new SpeechSynthesisUtterance(msg || (_isEnVoice ? 'Please replace your string' : '스트링 교체하세요'));
+      utter.lang = _isEnVoice ? 'en-US' : 'ko-KR';
       utter.rate = 0.95;
       setTimeout(function () {
         window.speechSynthesis.speak(utter);
@@ -7214,7 +7240,7 @@ function buildRacketCard(num) {
   <div class="card" style="margin-bottom:14px;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
       <span style="background:${accent};color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET ${num}</span>
-      <input class="form-input" id="str-r${num}-name" data-lang-placeholder="${ph}" placeholder="${escHtml(_t(ph))}" style="flex:1;font-size:16px;padding:6px 10px;" oninput="saveStrField(${num},'racket',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-string');if(n){n.focus();n.select();}}">
+      <input class="form-input" id="str-r${num}-name" data-lang-placeholder="${ph}" placeholder="${escHtml(_t(ph))}" style="flex:1;font-size:16px;padding:6px 10px;" oninput="saveStrField(${num},'racket',this.value)" onblur="autofillFromRacketHistory(${num})" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-string');if(n){n.focus();n.select();}}">
       ${removeBtn}
     </div>
     <div id="stringingAlert${num}" style="margin-bottom:10px;"></div>
@@ -7231,6 +7257,7 @@ function buildRacketCard(num) {
           <button type="button" class="niji-tapbtn" onclick="openStringDBModal('pick',${num},'main')" style="color:var(--accent);font-weight:700;font-size:0.68rem;background:rgba(124,106,247,.14);border:none;border-radius:8px;padding:7px 9px;line-height:1;white-space:nowrap;" data-lang="strdb_pick_btn_short">📋 선택</button>
         </div>
         <input class="form-input" id="str${num}-string" data-lang-placeholder="str_string${phFallback}_ph" placeholder="${escHtml(_t('str_string' + phFallback + '_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-tension');if(n){n.focus();n.select();}}">
+        <div id="str${num}-recent-chips" style="display:none;gap:6px;overflow-x:auto;margin-top:6px;padding-bottom:2px;"></div>
       </div>
       <div>
         <label class="form-label" style="font-size:0.72rem;">${_t('str_tension_lbl')}</label>
@@ -7269,7 +7296,7 @@ function buildRacketCard(num) {
       </div>
     </div>
 
-    <div style="display:flex;gap:8px;margin-bottom:8px;">
+    <div class="str-adv-only" style="display:flex;gap:8px;margin-bottom:8px;">
       <div style="flex:1;">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_game_limit_lbl')}</label>
         <input type="number" min="1" class="form-input" id="str${num}-gamelimit" style="font-size:16px;padding:7px 10px;" oninput="saveGameLimit(${num},this.value)">
@@ -7278,7 +7305,7 @@ function buildRacketCard(num) {
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-      <div>
+      <div class="str-adv-only">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_reason_lbl')}</label>
         <select class="form-select" id="str${num}-reason" style="font-size:0.85rem;padding:7px 10px;">
           <option value="regular">${_t('str_reason_regular')}</option>
@@ -7417,6 +7444,94 @@ function saveStrField(num, key, val) {
 // 하위 호환용 별칭 (예전 코드/북마크에서 호출될 수 있음)
 function saveStrR1Field(key, val) { saveStrField(1, key === 'racket' ? 'racket' : key, val); }
 function saveStrR2Field(key, val) { saveStrField(2, key === 'racket2' ? 'racket' : (key === 'string2' ? 'string' : key === 'tension2' ? 'tension' : key), val); }
+
+// ══════════════════════════════════════════════════════════
+// ===== 최근 사용 스트링 TOP5 (전체 이력 기준, 중복 제거) =====
+// ══════════════════════════════════════════════════════════
+function getTop5RecentStrings() {
+  const hist = [...(state.stringingHistory || [])].filter(h => h && h.date && (h.stringName || h.name));
+  hist.sort((a, b) => b.date.localeCompare(a.date));
+  const seen = new Set();
+  const out = [];
+  for (const h of hist) {
+    const nm = (h.stringName || h.name.split(' / ')[0].replace(/\s*\d+(\.\d+)?lb\s*$/i, '')).trim();
+    if (!nm || seen.has(nm)) continue;
+    seen.add(nm);
+    out.push({ name: nm, tension: h.tensionVal || '' });
+    if (out.length >= 5) break;
+  }
+  return out;
+}
+
+function renderRecentChips(num) {
+  const wrap = document.getElementById('str' + num + '-recent-chips');
+  if (!wrap) return;
+  const top5 = getTop5RecentStrings();
+  if (!top5.length) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  wrap.style.display = 'flex';
+  wrap.innerHTML = top5.map(item => {
+    const safeName = escHtml(item.name).replace(/'/g, "\\'");
+    return `<button type="button" class="niji-tapbtn" onclick="applyRecentString(${num},'${safeName}','${escHtml(item.tension)}')" style="flex:0 0 auto;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:0.72rem;font-weight:600;color:var(--text);white-space:nowrap;">${escHtml(item.name)}</button>`;
+  }).join('');
+}
+
+// 최근 사용 칩 탭 → 해당 라켓의 스트링/텐션 칸에 즉시 반영
+function applyRecentString(num, name, tension) {
+  const strEl = document.getElementById('str' + num + '-string');
+  const tenEl = document.getElementById('str' + num + '-tension');
+  if (strEl) { strEl.value = name; saveStrField(num, 'string', name); }
+  if (tenEl && tension) { tenEl.value = tension; saveStrField(num, 'tension', tension); }
+  showToast(_t('str_reuse_toast').replace('{name}', name));
+}
+
+// 라켓명을 입력하고 포커스를 벗어나면, 그 라켓 슬롯의 마지막 교체 이력을 찾아
+// 스트링/텐션/교체주기/게임임계치가 비어있을 때만 자동으로 채워준다.
+function autofillFromRacketHistory(num) {
+  const strEl = document.getElementById('str' + num + '-string');
+  if (!strEl || strEl.value.trim()) return; // 이미 값이 있으면 건드리지 않음
+  const hist = (state.stringingHistory || [])
+    .filter(h => h && h.date && (h.racket == num || (!h.racket && num === 1)))
+    .sort((a, b) => b.date.localeCompare(a.date));
+  if (!hist.length) return;
+  const last = hist[0];
+  const tenEl = document.getElementById('str' + num + '-tension');
+  const intEl = document.getElementById('str' + num + '-interval');
+  const limitEl = document.getElementById('str' + num + '-gamelimit');
+  strEl.value = last.stringName || last.name.split(' / ')[0].replace(/\s*\d+(\.\d+)?lb\s*$/i, '');
+  saveStrField(num, 'string', strEl.value);
+  if (tenEl && last.tensionVal) { tenEl.value = last.tensionVal; saveStrField(num, 'tension', last.tensionVal); }
+  if (intEl) { const suf = num === 1 ? '' : num; if (state['stringInterval' + suf]) intEl.value = state['stringInterval' + suf]; }
+  if (limitEl) limitEl.value = getRacketGameLimit(num);
+  showToast(_t('str_autofill_toast'));
+}
+
+// 교체 이력의 '↺ 다시 사용' 버튼 → 그 기록의 스트링/텐션/하이브리드 정보를 해당 라켓 칸에 불러온다.
+// 날짜는 사용자가 직접 오늘 날짜로 저장하도록 그대로 두고, 저장은 별도로 눌러야 반영된다.
+function reuseStringingHistory(id) {
+  const h = (state.stringingHistory || []).find(x => x.id === id);
+  if (!h) return;
+  const num = h.racket || 1;
+  const strEl = document.getElementById('str' + num + '-string');
+  const tenEl = document.getElementById('str' + num + '-tension');
+  const hybEl = document.getElementById('str' + num + '-hybrid');
+  const crossStrEl = document.getElementById('str' + num + '-cross-string');
+  const crossTenEl = document.getElementById('str' + num + '-cross-tension');
+  const crossWrap = document.getElementById('str' + num + '-cross-wrap');
+  const name = h.stringName || h.name.split(' / ')[0].replace(/\s*\d+(\.\d+)?lb\s*$/i, '');
+  if (strEl) { strEl.value = name; saveStrField(num, 'string', name); }
+  if (tenEl && h.tensionVal) { tenEl.value = h.tensionVal; saveStrField(num, 'tension', h.tensionVal); }
+  if (h.crossString) {
+    if (hybEl) hybEl.checked = true;
+    if (crossWrap) crossWrap.style.display = 'grid';
+    state.profile['hybrid' + num] = true;
+    if (crossStrEl) { crossStrEl.value = h.crossString; saveStrField(num, 'crossString', h.crossString); }
+    if (crossTenEl && h.crossTension) { crossTenEl.value = h.crossTension; saveStrField(num, 'crossTension', h.crossTension); }
+  }
+  save();
+  showToast(_t('str_reuse_toast').replace('{name}', name));
+  const dateEl = document.getElementById('str' + num + '-date');
+  if (dateEl) dateEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
 
 // ══════════════════════════════════════════════════════════
 // ===== 스트링 마스터 DB (Personal String Database) =====
@@ -7762,7 +7877,8 @@ function setStringViewMode(mode) {
 function applyStringViewMode() {
   const mode = state.stringViewMode || 'basic';
   const isAdv = mode === 'advanced';
-  document.querySelectorAll('.str-adv-only').forEach(el => { el.style.display = isAdv ? '' : 'none'; });
+  const page = document.getElementById('page-stringing');
+  if (page) page.classList.toggle('str-view-basic', !isAdv);
   const btnB = document.getElementById('strViewBtnBasic');
   const btnA = document.getElementById('strViewBtnAdvanced');
   if (btnB && btnA) {
@@ -7835,6 +7951,8 @@ function renderStringing() {
     if (crossStrEl && document.activeElement !== crossStrEl) crossStrEl.value = p['crossString' + num] || '';
     if (crossTenEl && document.activeElement !== crossTenEl) crossTenEl.value = p['crossTension' + num] || '';
 
+    renderRecentChips(num);
+
     // ---- 알림 배너: 날짜 기준 + 게임 수 기준을 함께 반영 ----
     const alertEl = document.getElementById('stringingAlert' + num);
     if (alertEl) {
@@ -7861,7 +7979,7 @@ function renderStringing() {
         const gameOverdue = games >= limit;
         const gameSoon = !gameOverdue && games >= limit * 0.7;
 
-        let cls = 'ok', icon = '✅', title = '', sub = '';
+        let cls = 'ok', icon = '🟢', title = '', sub = '';
         if (remaining <= 0 || gameOverdue) {
           cls = 'danger'; icon = '🔴';
           if (remaining <= 0) {
@@ -7869,19 +7987,20 @@ function renderStringing() {
             sub = _t('str_alert_overdue_sub');
           } else {
             title = _t('str_alert_games_overdue').replace('{n}', games);
-            sub = _t('str_alert_overdue_sub');
+            sub = _t('str_alert_overdue_sub') + _t('str_alert_games_limit_note').replace('{limit}', limit);
           }
         } else if (remaining <= 14 || gameSoon) {
-          cls = ''; icon = '⚠️';
+          cls = ''; icon = '🟡';
           if (remaining <= 14) {
             title = _t('str_alert_soon_title').replace('{n}', remaining);
             sub = _t('str_alert_soon_sub');
           } else {
             title = _t('str_alert_games_soon').replace('{n}', games);
-            sub = _t('str_alert_soon_sub');
+            sub = _t('str_alert_soon_sub') + _t('str_alert_games_limit_note').replace('{limit}', limit);
           }
         } else {
-          title = _t('str_alert_soon_title').replace('{n}', remaining);
+          // 정상: "N일째 사용 · M일 남음" 형태로 한눈에 보이도록 결합 표시
+          title = _t('str_status_line').replace('{used}', diffDays).replace('{left}', _t('str_status_left_days').replace('{n}', remaining));
           sub = _t('str_alert_ok_sub').replace('{date}', dateStr).replace('{n}', diffDays) + ` · ${games}${_t('contest_games')}`;
         }
         alertEl.innerHTML = `<div class="stringing-alert ${cls}" style="margin-bottom:4px;">
@@ -7919,7 +8038,8 @@ function renderStringing() {
                 <div class="stringing-history-meta">${escHtml(metaParts.join(' · '))}</div>
               </div>
             </div>
-            <div style="display:flex;gap:10px;padding-left:18px;">
+            <div style="display:flex;gap:8px;padding-left:18px;">
+              <button class="niji-tapbtn" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:0.76rem;font-weight:700;padding:10px 8px;color:var(--text);white-space:nowrap;" onclick="reuseStringingHistory(${h.id})" data-lang="str_reuse_btn">${_t('str_reuse_btn')}</button>
               <button class="niji-tapbtn" style="flex:1;background:rgba(124,106,247,.12);border:1px solid var(--accent);border-radius:10px;font-size:0.78rem;font-weight:700;padding:10px 8px;color:var(--accent);white-space:nowrap;" onclick="openStrEvalModal(${h.id})">${evalBtnLabel}</button>
               <button class="niji-icon-btn niji-tapbtn" style="min-width:44px;color:var(--danger);" onclick="deleteStringingHistory(${h.id})">🗑️</button>
             </div>
@@ -8082,25 +8202,25 @@ function shareStringCert() {
     const date = num === 1 ? (p.stringDate || state.lastStringDate || '') : (p['stringDate' + num] || '');
     if (!(racket || string || date)) return '';
     let t = `[RACQUET ${num}]\n`;
-    if (racket) t += `🎾 라켓: ${racket}\n`;
+    if (racket) t += `${_t('str_cert_racket_lbl')}: ${racket}\n`;
     if (cross) {
-      if (string) t += `📌 메인: ${string}${tension ? ' ' + tension + 'lb' : ''}\n`;
-      t += `📌 크로스: ${cross}${crossTen ? ' ' + crossTen + 'lb' : ''}\n`;
+      if (string) t += `${_t('str_cert_main_lbl')}: ${string}${tension ? ' ' + tension + 'lb' : ''}\n`;
+      t += `${_t('str_cert_cross_lbl')}: ${cross}${crossTen ? ' ' + crossTen + 'lb' : ''}\n`;
     } else {
-      if (string) t += `📌 스트링: ${string}\n`;
-      if (tension) t += `💪 텐션: ${tension}lb\n`;
+      if (string) t += `${_t('str_cert_string_lbl')}: ${string}\n`;
+      if (tension) t += `${_t('str_cert_tension_lbl')}: ${tension}lb\n`;
     }
-    if (date) t += `📅 교체일: ${date}\n`;
+    if (date) t += `${_t('str_cert_date_lbl')}: ${date}\n`;
     return t;
   }
 
   const blocks = [1, 2, 3, 4].map(block).filter(Boolean);
-  let txt = `🛠️ 스트링 교체 완료!\n`;
+  let txt = `${_t('str_cert_title')}\n`;
   txt += `━━━━━━━━━━━━━━━━\n`;
   txt += blocks.join('\n');
   txt += `━━━━━━━━━━━━━━━━\n`;
-  txt += `새 스트링으로 더 강하게! 💥\n`;
-  txt += `#NIJI_STRING #스트링교체 #라켓`;
+  txt += `${_t('str_cert_footer')}\n`;
+  txt += _t('str_cert_hashtag');
 
   if (navigator.share) {
     navigator.share({ title: 'NIJI STRING 스트링 교체 인증', text: txt }).catch(() => {});
@@ -8173,7 +8293,18 @@ function saveStringingInfo(racketNum) {
   save();
   renderStringing();
   renderStringBanner();
-  showToast(_t('str_toast_saved'));
+
+  // 저장 완료 토스트에 "다음 교체 예정일"까지 함께 안내 (한 번에 알 수 있도록)
+  try {
+    const [ly, lm, ld] = date.split('-').map(Number);
+    const nextDate = new Date(ly, lm - 1, ld);
+    nextDate.setDate(nextDate.getDate() + interval * 30);
+    const nextStr = nextDate.getFullYear() + '.' + String(nextDate.getMonth() + 1).padStart(2, '0') + '.' + String(nextDate.getDate()).padStart(2, '0');
+    const daysUntil = Math.round((nextDate - new Date(ly, lm - 1, ld)) / 86400000);
+    showToast(_t('str_toast_saved_next').replace('{date}', nextStr).replace('{n}', daysUntil));
+  } catch (e) {
+    showToast(_t('str_toast_saved'));
+  }
 }
 
 function deleteStringingHistory(id) {
