@@ -175,10 +175,11 @@ const NIJI_DICT = {
   str_string_name_lbl:  { ko: '스트링명',                            en: 'String' },
   str_string1_ph:       { ko: '예) VS Touch 130',                    en: 'e.g. VS Touch 130' },
   str_string2_ph:       { ko: '예) Yonex BG65',                      en: 'e.g. Yonex BG65' },
-  str_tension_lbl:      { ko: '텐션 (lb)',                           en: 'Tension (lb)' },
+  str_tension_lbl:      { ko: '💪 텐션 (lb)',                        en: '💪 Tension (lb)' },
   str_tension1_ph:      { ko: '예) 52',                              en: 'e.g. 52' },
   str_tension2_ph:      { ko: '예) 24',                              en: 'e.g. 24' },
-  str_last_replace_lbl: { ko: '마지막 교체일',                       en: 'Last Replaced' },
+  str_last_replace_lbl: { ko: '📅 마지막 교체일',                    en: '📅 Last Replaced' },
+  str_date_today_btn:   { ko: '오늘',                                en: 'Today' },
   str_interval_lbl:     { ko: '교체 주기',                           en: 'Interval' },
   str_interval_1m:      { ko: '1개월',                               en: '1 month' },
   str_interval_2m:      { ko: '2개월',                               en: '2 months' },
@@ -3844,6 +3845,67 @@ function _loadFromLocalStorage() {
   } catch(e) { console.warn('localStorage 로드 실패:', e); }
 }
 
+// ===== 무료 체험 기간 (로그인 없이 30일 사용 가능) =====
+// 최초 실행일을 localStorage에 저장해두고, 30일이 지나기 전까지는
+// 로그인 화면을 띄우지 않고 바로 앱을 사용할 수 있게 함.
+// 저장된 데이터는 계속 'nijiData_offline' 키에 쌓이며, 이후 로그인 시
+// 기존 _migrateOfflineData()가 자동으로 Firebase 계정으로 옮겨줌.
+var NIJI_TRIAL_DAYS = 30;
+function _getTrialStatus() {
+  try {
+    var KEY = 'nijiFirstUseDate';
+    var first = localStorage.getItem(KEY);
+    var now = Date.now();
+    if (!first) {
+      first = String(now);
+      localStorage.setItem(KEY, first);
+    }
+    var daysUsed = Math.floor((now - parseInt(first, 10)) / 86400000);
+    var daysLeft = Math.max(0, NIJI_TRIAL_DAYS - daysUsed);
+    return { daysUsed: daysUsed, daysLeft: daysLeft, expired: daysUsed >= NIJI_TRIAL_DAYS };
+  } catch (e) {
+    return { daysUsed: 0, daysLeft: NIJI_TRIAL_DAYS, expired: false };
+  }
+}
+
+// 로그인 없이 로컬 데이터로 앱을 바로 실행 (체험 기간용)
+function _enterGuestMode() {
+  if (window._guestLoaded) return;
+  window._guestLoaded = true;
+  var loadingScreen = document.getElementById('loadingScreen');
+  if (loadingScreen) loadingScreen.style.display = 'none';
+  _loadFromLocalStorage();
+  _initApp();
+  var trial = _getTrialStatus();
+  _showTrialBanner(trial.daysLeft);
+}
+
+// 화면 상단에 "체험 중 · D-몇일 · 로그인하고 백업" 배너 표시
+// [수정] 화면을 덮는 고정(fixed) 방식은 topbar를 가려 화면이 잘려 보이는 문제가 있어서,
+// #app 레이아웃의 맨 위에 실제 요소로 끼워 넣어(topbar를 자연스럽게 아래로 밀어냄) 해결함.
+function _showTrialBanner(daysLeft) {
+  try {
+    var old = document.getElementById('nijiTrialBanner');
+    if (old) old.remove();
+    var lang = _nijiGetLang() || 'ko';
+    var text = (lang === 'en')
+      ? ('🎾 Free trial · ' + daysLeft + ' day(s) left · Tap to sign in & back up data')
+      : ('🎾 무료 체험 중 · ' + daysLeft + '일 남음 · 눌러서 로그인하고 데이터 백업하기');
+    var bar = document.createElement('div');
+    bar.id = 'nijiTrialBanner';
+    bar.style.cssText = 'flex-shrink:0;width:100%;box-sizing:border-box;position:relative;z-index:20;'
+      + 'background:linear-gradient(135deg,#c9a961,#2f8f6b);color:#0f0f18;'
+      + 'font-size:0.78rem;font-weight:800;padding:9px 12px;text-align:center;'
+      + 'padding-top:max(9px, env(safe-area-inset-top));'
+      + 'cursor:pointer;';
+    bar.textContent = text;
+    bar.onclick = function () { _showLoginScreen(true); };
+    var app = document.getElementById('app');
+    if (app) app.insertBefore(bar, app.firstChild);
+    else document.body.appendChild(bar);
+  } catch (e) {}
+}
+
 function load() {
   applyTheme();
 
@@ -3855,16 +3917,23 @@ function load() {
     return;
   }
 
+  var trial = _getTrialStatus();
+
   // [수정] 타임아웃: iOS는 4초, 일반 환경은 5초 - 무한 로딩 방지
   var _authTimeoutMs = _isIOSSafari() ? 4000 : 5000;
   var authTimeout = setTimeout(function() {
-    console.warn('Firebase Auth 응답 없음(' + _authTimeoutMs + 'ms) → 로그인 화면 표시');
+    console.warn('Firebase Auth 응답 없음(' + _authTimeoutMs + 'ms)');
+    if (!_getTrialStatus().expired) {
+      // 체험 기간 내: 로그인 화면 대신 바로 앱 실행
+      _enterGuestMode();
+      return;
+    }
     // [추가] iOS에서 무한 로딩 상태 강제 해제 + 안내 메시지
     var msgEl = document.getElementById('loadingMsg');
     if (msgEl && _isIOSSafari()) {
       msgEl.textContent = _nijiGetLang() === 'en' ? 'Network issue detected. Moving to sign-in screen...' : '네트워크 문제가 감지됐어요. 로그인 화면으로 이동합니다...';
     }
-    _showLoginScreen();
+    _showLoginScreen(false);
   }, _authTimeoutMs);
 
   // [수정된 부분] 중복 방지 변수를 함수 바깥(전역)처럼 작동하도록 window에 저장합니다.
@@ -3880,6 +3949,9 @@ function load() {
       // 이미 앱이 켜진 상태면 중복 실행 방지
       if (window._appLoaded) return;
       window._appLoaded = true;
+      window._guestLoaded = false;
+      var trialBanner = document.getElementById('nijiTrialBanner');
+      if (trialBanner) trialBanner.remove();
 
       window._userId = user.uid;
       window._userDisplayName = user.displayName || '';
@@ -3893,9 +3965,15 @@ function load() {
       _loadFromFirebase();
 
     } else {
-      // 로그아웃 상태: 잠금 해제 후 로그인 화면 표시
+      // 로그아웃 상태
       window._appLoaded = false;
-      _showLoginScreen();
+      if (!_getTrialStatus().expired) {
+        // 체험 기간 내: 로그인 없이 바로 사용
+        _enterGuestMode();
+      } else {
+        // 체험 기간 종료: 로그인 화면 표시 (계속 쓰려면 로그인 필요)
+        _showLoginScreen(false);
+      }
     }
   });
 }
@@ -3918,7 +3996,13 @@ function _googleBtnHTML() {
 }
 
 // [수정] _showLoginScreen: iOS 환경에서 인메모리 세션 예외처리 추가
-function _showLoginScreen() {
+// closable=true 이면 (체험 기간 중 사용자가 직접 로그인하러 온 경우) 닫기(✕) 버튼을 보여줘서
+// 취소하고 계속 체험 모드로 쓸 수 있게 함. closable=false 이면 (체험 만료) 닫을 수 없음.
+function _closeLoginScreen() {
+  var loadingScreen = document.getElementById('loadingScreen');
+  if (loadingScreen) loadingScreen.style.display = 'none';
+}
+function _showLoginScreen(closable) {
   var loadingScreen = document.getElementById('loadingScreen');
   if (!loadingScreen) return;
 
@@ -3975,8 +4059,20 @@ function _showLoginScreen() {
     });
   }
 
+  var _closeBtnHTML = closable
+    ? '<button onclick="_closeLoginScreen()" style="position:absolute;top:14px;left:14px;background:none;border:none;color:#8a998f;font-size:1.5rem;cursor:pointer;line-height:1;padding:6px;">✕</button>'
+    : '';
+  var _expiredNoticeHTML = !closable
+    ? '<div style="width:100%;background:rgba(201,169,97,0.12);border:1px solid rgba(201,169,97,0.35);border-radius:10px;padding:10px 12px;margin-bottom:18px;font-size:0.8rem;color:#c9a961;line-height:1.5;text-align:center;">'
+      + (_nijiGetLang() === 'en'
+          ? '30-day free trial ended. Sign in to keep using the app — your data will be kept.'
+          : '30일 무료 체험이 끝났어요. 로그인하면 지금까지 쓰던 데이터 그대로 계속 사용할 수 있어요.')
+      + '</div>'
+    : '';
   loadingScreen.innerHTML = `
-    <div style="display:flex;flex-direction:column;align-items:center;gap:0;padding:40px 20px;width:100%;max-width:360px;margin:0 auto;">
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:0;padding:40px 20px;width:100%;max-width:360px;margin:0 auto;">
+      ${_closeBtnHTML}
+      ${_expiredNoticeHTML}
 
       <!-- 언어 토글 버튼 -->
       <div style="display:flex;gap:6px;align-self:flex-end;margin-bottom:20px;">
@@ -7225,6 +7321,33 @@ function playStringReplaceVoice(msg) {
   } catch (e) { /* 음성 실패는 무시 */ }
 }
 
+// ===== 텐션 빠른 선택 칩 (종목별로 자주 쓰는 텐션 값) — 타이핑 없이 탭 한 번으로 입력 =====
+function getTensionChipValues() {
+  const sport = state.sportType || 'tennis';
+  if (sport === 'badminton') return [18, 20, 22, 24, 26, 28, 30];
+  return [45, 48, 50, 52, 54, 56, 58, 60]; // 테니스·피클볼 기본값
+}
+function buildTensionChips(num, target) {
+  return getTensionChipValues().map(v =>
+    `<button type="button" class="niji-tapbtn" onclick="setTensionQuick(${num},${v},'${target}')" style="flex:0 0 auto;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:0.76rem;font-weight:700;white-space:nowrap;">${v}</button>`
+  ).join('');
+}
+function setTensionQuick(num, val, target) {
+  const isCross = target === 'cross';
+  const el = document.getElementById(isCross ? `str${num}-cross-tension` : `str${num}-tension`);
+  if (!el) return;
+  el.value = val;
+  saveStrField(num, isCross ? 'crossTension' : 'tension', String(val));
+}
+// ===== 마지막 교체일에 "오늘" 한 번 탭으로 날짜 입력 =====
+function setStrDateToday(num) {
+  const el = document.getElementById(`str${num}-date`);
+  if (!el) return;
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  el.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 // ===== 라켓 카드 HTML 생성 (라켓 1/2/3/4 공용 템플릿) =====
 function buildRacketCard(num) {
   const accentMap = { 1: 'var(--accent)', 2: 'var(--accent2)', 3: '#c9a961', 4: '#6fbf8f' };
@@ -7250,7 +7373,7 @@ function buildRacketCard(num) {
       <span data-lang="str_hybrid_toggle">🔀 하이브리드 (메인/크로스 다르게)</span>
     </label>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:10px;margin-bottom:12px;">
       <div>
         <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:5px;">
           <label class="form-label" id="str${num}-string-lbl" style="font-size:0.72rem;margin:0;">${_t('str_string_name_lbl')}</label>
@@ -7261,11 +7384,12 @@ function buildRacketCard(num) {
       </div>
       <div>
         <label class="form-label" style="font-size:0.72rem;">${_t('str_tension_lbl')}</label>
-        <input class="form-input" id="str${num}-tension" placeholder="${escHtml(_t('str_tension' + phFallback + '_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-date');if(n)n.focus();}">
+        <input class="form-input" type="text" inputmode="decimal" id="str${num}-tension" placeholder="${escHtml(_t('str_tension' + phFallback + '_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-date');if(n)n.focus();}">
+        <div style="display:flex;gap:6px;overflow-x:auto;margin-top:6px;padding-bottom:2px;">${buildTensionChips(num, 'main')}</div>
       </div>
     </div>
 
-    <div id="str${num}-cross-wrap" style="display:none;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+    <div id="str${num}-cross-wrap" style="display:none;grid-template-columns:minmax(0,1fr) 84px;gap:10px;margin-bottom:12px;">
       <div>
         <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:5px;">
           <label class="form-label" style="font-size:0.72rem;margin:0;">${_t('str_cross_string_lbl')}</label>
@@ -7275,13 +7399,17 @@ function buildRacketCard(num) {
       </div>
       <div>
         <label class="form-label" style="font-size:0.72rem;">${_t('str_tension_lbl')}</label>
-        <input class="form-input" id="str${num}-cross-tension" placeholder="${escHtml(_t('str_cross_tension_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'crossTension',this.value)">
+        <input class="form-input" type="text" inputmode="decimal" id="str${num}-cross-tension" placeholder="${escHtml(_t('str_cross_tension_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'crossTension',this.value)">
+        <div style="display:flex;gap:6px;overflow-x:auto;margin-top:6px;padding-bottom:2px;">${buildTensionChips(num, 'cross')}</div>
       </div>
     </div>
 
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
       <div style="flex:1;">
-        <label class="form-label" style="font-size:0.72rem;">${_t('str_last_replace_lbl')}</label>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:5px;">
+          <label class="form-label" style="font-size:0.72rem;margin:0;">${_t('str_last_replace_lbl')}</label>
+          <button type="button" class="niji-tapbtn" onclick="setStrDateToday(${num})" style="color:var(--accent);font-weight:700;font-size:0.68rem;background:rgba(124,106,247,.14);border:none;border-radius:8px;padding:7px 9px;line-height:1;white-space:nowrap;">📅 <span data-lang="str_date_today_btn">${_t('str_date_today_btn')}</span></button>
+        </div>
         <input type="date" class="form-input" id="str${num}-date" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(${num})">
       </div>
       <div class="str-adv-only" style="min-width:100px;">
