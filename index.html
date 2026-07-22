@@ -221,6 +221,18 @@ const NIJI_DICT = {
   str_cross_tension_ph: { ko: '예) 22',                             en: 'e.g. 22' },
   str_game_limit_lbl:   { ko: '게임 임계치',                        en: 'Game Limit' },
   str_game_limit_sub:   { ko: '이 게임 수를 넘기면 교체 권장',      en: 'Replace once this many games are played' },
+  str_hour_limit_lbl:   { ko: '권장 교체시간 (시간)',                en: 'Recommended Replace Hours' },
+  str_hour_limit_sub:   { ko: '스트링 실제 사용시간이 이 시간을 넘으면 교체 권장', en: 'Replace once actual string usage passes this many hours' },
+  str_alert_toggle_lbl: { ko: '🔔 교체 알림',                       en: '🔔 Replace Alerts' },
+  str_alert_toggle_sub: { ko: '이 라켓의 교체 알림 켜기/끄기',      en: "Turn this racquet's replace alerts on/off" },
+  str_hour_remaining:   { ko: '스트링 교체까지 약 {n} 남았습니다',  en: 'About {n} left until restring' },
+  str_hour_overdue:     { ko: '스트링 교체를 권장합니다',           en: 'Restring is recommended' },
+  str_usage_summary_title: { ko: '⏱️ 스트링 사용시간',              en: '⏱️ String Usage Time' },
+  str_usage_today:      { ko: '오늘',                                en: 'Today' },
+  str_usage_week:       { ko: '이번 주',                             en: 'This week' },
+  str_usage_month:      { ko: '이번 달',                             en: 'This month' },
+  str_usage_year:       { ko: '올해',                                en: 'This year' },
+  str_usage_total:      { ko: '전체',                                en: 'All time' },
   str_reason_lbl:       { ko: '교체 사유',                          en: 'Reason' },
   str_reason_regular:   { ko: '정기 교체',                          en: 'Scheduled' },
   str_reason_tension:   { ko: '텐션 저하',                          en: 'Tension loss' },
@@ -292,7 +304,7 @@ const NIJI_DICT = {
   strdb_shape_other:    { ko: '기타',        en: 'Other' },
   strdb_name_en_lbl:    { ko: '영어 이름 (선택)', en: 'English Name (optional)' },
   strdb_name_en_ph:     { ko: '예) Luxilon ALU Power 125', en: 'e.g. Luxilon ALU Power 125' },
-  strdb_preset_lbl:     { ko: '자주 쓰는 스트링에서 선택 (선택하면 자동 입력)', en: 'Pick from common strings (auto-fills fields)' },
+  strdb_preset_lbl:     { ko: '자주 쓰는 {sport} 스트링에서 선택 (선택하면 자동 입력)', en: 'Pick from common {sport} strings (auto-fills fields)' },
   strdb_preset_ph:      { ko: '해당 없음 (아래에 직접 입력)', en: 'None of these (type below)' },
   strdb_preset_hint:    { ko: '💡 목록에 원하는 스트링이 없으면 이 선택은 그냥 두고, 아래 브랜드·모델명 칸에 직접 입력하시면 됩니다', en: '💡 If your string isn\'t listed, just leave this and type the brand/model directly below' },
   strdb_tension_lbl:    { ko: '권장 텐션 (lb)', en: 'Recommended Tension' },
@@ -444,6 +456,33 @@ const NIJI_DICT = {
   match_toast_need_opp:    { ko: '⚠️ 상대를 입력하세요', en: '⚠️ Please enter an opponent' },
   match_toast_need_result: { ko: '⚠️ 결과를 선택하세요', en: '⚠️ Please select a result' },
   match_toast_need_racket: { ko: '⚠️ 사용한 라켓을 선택하세요', en: '⚠️ Please select the racket used' },
+  match_toast_need_duration: { ko: '⚠️ 난타 시간을 입력하세요', en: '⚠️ Please enter the rally duration' },
+
+  /* 게임/난타 모드 토글 */
+  match_mode_lbl:          { ko: '기록 종류',           en: 'Record Type' },
+  match_mode_game:         { ko: '🎾 게임',             en: '🎾 Game' },
+  match_mode_rally:        { ko: '🏓 난타',             en: '🏓 Rally' },
+  match_rally_info_btn:    { ko: '?',                   en: '?' },
+  match_duration_lbl:      { ko: '⏱️ 난타 시간',        en: '⏱️ Rally Duration' },
+  match_duration_hour_ph:  { ko: '시간',                en: 'hr' },
+  match_duration_min_ph:   { ko: '분',                  en: 'min' },
+  match_gametime_lbl:      { ko: '⏱️ 예상 경기시간',     en: '⏱️ Estimated Match Time' },
+  match_gametime_auto:     { ko: '(자동계산 · 수정 가능)', en: '(auto-calculated, editable)' },
+  match_rally_save_btn:    { ko: '난타 기록 저장',      en: 'Save Rally' },
+  match_toast_saved_rally: { ko: '난타 기록 저장 완료!', en: 'Rally record saved!' },
+  match_rally_card_label:  { ko: '난타',                en: 'Rally' },
+
+  /* 스트링 평균 수명 안내 모달 */
+  strlife_modal_title:     { ko: '📚 스트링 종류별 평균 수명', en: '📚 Average String Lifespan by Type' },
+  strlife_modal_note:      { ko: '스윙 강도·텐션·사용 빈도에 따라 차이가 있을 수 있는 일반적인 참고용 수치예요.', en: 'General reference figures — actual lifespan varies by swing power, tension, and usage.' },
+  strlife_poly:            { ko: '폴리에스터', en: 'Polyester' },
+  strlife_poly_hr:         { ko: '약 10~20시간', en: 'About 10–20 hrs' },
+  strlife_multi:           { ko: '멀티필라멘트', en: 'Multifilament' },
+  strlife_multi_hr:        { ko: '약 20~30시간', en: 'About 20–30 hrs' },
+  strlife_syngut:          { ko: '인조거트(인조쉽)', en: 'Synthetic Gut' },
+  strlife_syngut_hr:       { ko: '약 25~35시간', en: 'About 25–35 hrs' },
+  strlife_natgut:          { ko: '천연거트(천연쉽)', en: 'Natural Gut' },
+  strlife_natgut_hr:       { ko: '약 30~40시간', en: 'About 30–40 hrs' },
   match_toast_edit_notfound:{ ko: '❌ 수정할 경기를 찾지 못했어요', en: '❌ Could not find the match to edit' },
   match_toast_saved:       { ko: '경기 저장 완료!',     en: 'Match saved!' },
   match_delete_done:       { ko: '🗑️ 경기 삭제 완료',  en: '🗑️ Match deleted' },
@@ -1792,12 +1831,12 @@ function _t(key) {
     padding: 8px 0;
   }
   .pf-string-row + .pf-string-row { border-top: 1px solid var(--border); }
-  .pf-gauge-group { flex-shrink: 0; display: flex; gap: 6px; }
+  .pf-gauge-group { flex-shrink: 0; display: flex; gap: 5px; }
   .pf-gauge-col { display: flex; flex-direction: column; align-items: center; }
-  .pf-gauge { flex-shrink: 0; position: relative; width: 46px; height: 46px; }
-  .pf-gauge svg { width: 46px; height: 46px; transform: rotate(-90deg); }
+  .pf-gauge { flex-shrink: 0; position: relative; width: 42px; height: 42px; }
+  .pf-gauge svg { width: 42px; height: 42px; transform: rotate(-90deg); }
   .pf-gauge-pct {
-    position: absolute; top: 0; left: 0; width: 46px; height: 46px;
+    position: absolute; top: 0; left: 0; width: 42px; height: 42px;
     display: flex; align-items: center; justify-content: center;
     font-family: 'Cormorant Garamond', serif;
     font-size: 0.6667rem; font-weight: 900; color: var(--text);
@@ -2408,6 +2447,7 @@ function _t(key) {
           <!-- 스트링 상태 카드 -->
           <div class="card" style="margin-bottom:14px;">
             <div class="card-title">🎾 <span data-lang="pf_string_status_title">스트링 상태</span></div>
+            <div id="stringUsageSummary"></div>
             <div id="stringStatusBanner"></div>
           </div>
 
@@ -2532,6 +2572,20 @@ function _t(key) {
               <div class="form-label" style="margin-bottom:4px;" data-lang="match_date_lbl">📅 날짜</div>
               <input type="date" class="form-input" id="matchDate" style="padding:9px 10px;font-size:16px;">
             </div>
+            <!-- 줄 1a: 게임/난타 모드 -->
+            <div style="margin-bottom:8px;">
+              <div class="form-label" style="margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+                <span data-lang="match_mode_lbl">기록 종류</span>
+                <button type="button" onclick="openStringLifeInfo()" title="스트링 평균 수명 안내" style="width:18px;height:18px;line-height:16px;border-radius:50%;border:1.5px solid var(--text-muted);color:var(--text-muted);background:none;font-size: 0.6667rem;font-weight:700;cursor:pointer;padding:0;">?</button>
+              </div>
+              <div class="format-toggle" id="matchModeToggle" style="display:flex;gap:8px;">
+                <button class="format-btn selected" id="btnModeGame" onclick="selectRecordType('game')" style="flex:1;" data-lang="match_mode_game">🎾 게임</button>
+                <button class="format-btn" id="btnModeRally" onclick="selectRecordType('rally')" style="flex:1;" data-lang="match_mode_rally">🏓 난타</button>
+              </div>
+              <input type="hidden" id="matchRecordType" value="game">
+            </div>
+
+            <div id="gameModeFields">
             <!-- 줄 1b: 형식 -->
             <div style="margin-bottom:8px;">
               <div class="form-label" style="margin-bottom:4px;" data-lang="match_format_lbl">형식</div>
@@ -2618,6 +2672,32 @@ function _t(key) {
                     <input type="number" class="form-input" id="oppTiebreak" placeholder="0" min="0" max="99" inputmode="numeric" pattern="[0-9]*" oninput="autoDetectResult()" style="text-align:center;padding:9px 4px;font-size:16px;font-weight:700;">
                     <span style="font-size: 0.6667rem;color:var(--text-muted);font-weight:700;white-space:nowrap;" data-lang="match_opp_label">상대</span>
                   </div>
+                </div>
+              </div>
+            </div>
+            <!-- 예상 경기시간 (자동 계산, 수정 가능) -->
+            <div style="margin-bottom:8px;">
+              <div class="form-label" style="margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <span data-lang="match_gametime_lbl">⏱️ 예상 경기시간</span>
+                <span style="font-size:0.6rem;color:var(--text-muted);font-weight:400;" data-lang="match_gametime_auto">(자동계산 · 수정 가능)</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <input type="number" class="form-input" id="matchGameDuration" placeholder="0" min="0" max="600" inputmode="numeric" pattern="[0-9]*" oninput="onMatchGameDurationInput()" style="text-align:center;padding:9px 4px;font-size:16px;font-weight:700;max-width:120px;">
+                <span style="font-size: 0.7333rem;color:var(--text-muted);white-space:nowrap;" data-lang="match_duration_min_ph">분</span>
+              </div>
+            </div>
+            </div>
+            <!-- 난타 전용: 소요시간 입력 -->
+            <div id="rallyModeFields" style="display:none;margin-bottom:8px;">
+              <div class="form-label" style="margin-bottom:4px;" data-lang="match_duration_lbl">⏱️ 난타 시간</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <input type="number" class="form-input" id="rallyHour" placeholder="0" min="0" max="23" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:16px;font-weight:700;">
+                  <span style="font-size: 0.7333rem;color:var(--text-muted);white-space:nowrap;" data-lang="match_duration_hour_ph">시간</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <input type="number" class="form-input" id="rallyMin" placeholder="0" min="0" max="59" inputmode="numeric" pattern="[0-9]*" style="text-align:center;padding:9px 4px;font-size:16px;font-weight:700;">
+                  <span style="font-size: 0.7333rem;color:var(--text-muted);white-space:nowrap;" data-lang="match_duration_min_ph">분</span>
                 </div>
               </div>
             </div>
@@ -3258,6 +3338,36 @@ function _t(key) {
   </div>
 </div>
 
+<div class="modal-overlay" id="stringLifeInfoModal">
+  <div class="modal" style="max-height:80vh;display:flex;flex-direction:column;padding:0;">
+    <div class="modal-header">
+      <span class="modal-title" data-lang="strlife_modal_title">📚 스트링 종류별 평균 수명</span>
+      <button class="modal-close" onclick="closeModal('stringLifeInfoModal')">✕</button>
+    </div>
+    <div style="padding:16px;overflow-y:auto;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:10px;">
+          <span style="font-weight:700;font-size: 0.8667rem;" data-lang="strlife_poly">폴리에스터</span>
+          <span style="color:var(--accent);font-weight:700;font-size: 0.8rem;" data-lang="strlife_poly_hr">약 10~20시간</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:10px;">
+          <span style="font-weight:700;font-size: 0.8667rem;" data-lang="strlife_multi">멀티필라멘트</span>
+          <span style="color:var(--accent);font-weight:700;font-size: 0.8rem;" data-lang="strlife_multi_hr">약 20~30시간</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:10px;">
+          <span style="font-weight:700;font-size: 0.8667rem;" data-lang="strlife_syngut">인조거트(인조쉽)</span>
+          <span style="color:var(--accent);font-weight:700;font-size: 0.8rem;" data-lang="strlife_syngut_hr">약 25~35시간</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--surface2);border-radius:10px;">
+          <span style="font-weight:700;font-size: 0.8667rem;" data-lang="strlife_natgut">천연거트(천연쉽)</span>
+          <span style="color:var(--accent);font-weight:700;font-size: 0.8rem;" data-lang="strlife_natgut_hr">약 30~40시간</span>
+        </div>
+      </div>
+      <div style="margin-top:14px;font-size: 0.7333rem;color:var(--text-muted);line-height:1.5;" data-lang="strlife_modal_note">스윙 강도·텐션·사용 빈도에 따라 차이가 있을 수 있는 일반적인 참고용 수치예요.</div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="stringDBModal">
   <div class="modal" style="display:flex;flex-direction:column;max-height:92vh;padding:0;">
     <div class="modal-header">
@@ -3283,7 +3393,7 @@ function _t(key) {
           </button>
           <div class="acc-body open" id="strdbAccBasic">
             <div style="margin-bottom:10px;">
-              <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_preset_lbl">자주 쓰는 스트링에서 선택 (선택시 자동 입력)</label>
+              <label class="form-label" id="strdb-preset-lbl" style="font-size:0.72rem;">자주 쓰는 스트링에서 선택 (선택시 자동 입력)</label>
               <select class="form-select" id="strdb-preset" style="font-size:0.85rem;padding:7px 10px;width:100%;" onchange="applyStrDBPreset(this.value)">
                 <option value="" data-lang="strdb_preset_ph">직접 입력 또는 목록에서 선택</option>
               </select>
@@ -3337,13 +3447,35 @@ function _t(key) {
             <span data-lang="strdb_sec_detail">특징 · 장단점 · 추천 정보</span><span class="acc-arrow" id="strdbAccDetail-arrow">▼</span>
           </button>
           <div class="acc-body" id="strdbAccDetail">
-            <div style="margin-bottom:8px;"><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_features_lbl">특징</label><textarea class="form-input" id="strdb-features" data-lang-placeholder="strdb_features_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;"></textarea></div>
-            <div style="margin-bottom:8px;"><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_pros_lbl">장점</label><textarea class="form-input" id="strdb-pros" data-lang-placeholder="strdb_pros_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;"></textarea></div>
-            <div style="margin-bottom:8px;"><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_cons_lbl">단점</label><textarea class="form-input" id="strdb-cons" data-lang-placeholder="strdb_cons_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;"></textarea></div>
-            <div style="margin-bottom:8px;"><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_style_lbl">추천 플레이 스타일</label><input class="form-input" id="strdb-style" data-lang-placeholder="strdb_style_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-              <div><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_career_lbl">추천 구력</label><input class="form-input" id="strdb-career" data-lang-placeholder="strdb_career_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
-              <div><label class="form-label" style="font-size:0.72rem;" data-lang="strdb_racket_lbl">추천 라켓</label><input class="form-input" id="strdb-racket" data-lang-placeholder="strdb_racket_ph" style="font-size:16px;padding:7px 10px;width:100%;"></div>
+            <div style="margin-bottom:8px;">
+              <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_features_lbl">특징</label>
+              <div id="strdb-features-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px;"></div>
+              <textarea class="form-input" id="strdb-features" data-lang-placeholder="strdb_features_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;" oninput="renderStrDBPresetChipRow('strdb-features-chips','strdb-features',STRDB_FEATURE_PRESETS)"></textarea>
+            </div>
+            <div style="margin-bottom:8px;">
+              <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_pros_lbl">장점</label>
+              <div id="strdb-pros-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px;"></div>
+              <textarea class="form-input" id="strdb-pros" data-lang-placeholder="strdb_pros_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;" oninput="renderStrDBPresetChipRow('strdb-pros-chips','strdb-pros',STRDB_PROS_PRESETS)"></textarea>
+            </div>
+            <div style="margin-bottom:8px;">
+              <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_cons_lbl">단점</label>
+              <div id="strdb-cons-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px;"></div>
+              <textarea class="form-input" id="strdb-cons" data-lang-placeholder="strdb_cons_ph" rows="2" style="font-size:16px;padding:7px 10px;width:100%;resize:vertical;" oninput="renderStrDBPresetChipRow('strdb-cons-chips','strdb-cons',STRDB_CONS_PRESETS)"></textarea>
+            </div>
+            <div style="margin-bottom:8px;">
+              <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_style_lbl">추천 플레이 스타일</label>
+              <div id="strdb-style-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px;"></div>
+              <input class="form-input" id="strdb-style" data-lang-placeholder="strdb_style_ph" style="font-size:16px;padding:7px 10px;width:100%;" oninput="renderStrDBPresetChipRow('strdb-style-chips','strdb-style',STRDB_STYLE_PRESETS)">
+            </div>
+            <div>
+              <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_career_lbl">추천 구력</label>
+              <div id="strdb-career-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px;"></div>
+              <input class="form-input" id="strdb-career" data-lang-placeholder="strdb_career_ph" style="font-size:16px;padding:7px 10px;width:100%;margin-bottom:8px;" oninput="renderStrDBPresetChipRow('strdb-career-chips','strdb-career',STRDB_CAREER_PRESETS)">
+            </div>
+            <div>
+              <label class="form-label" style="font-size:0.72rem;" data-lang="strdb_racket_lbl">추천 라켓</label>
+              <div id="strdb-racket-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px;"></div>
+              <input class="form-input" id="strdb-racket" data-lang-placeholder="strdb_racket_ph" style="font-size:16px;padding:7px 10px;width:100%;" oninput="renderStrDBPresetChipRow('strdb-racket-chips','strdb-racket',STRDB_RACKET_PRESETS)">
             </div>
           </div>
         </div>
@@ -3715,6 +3847,14 @@ let state = {
   stringGameLimit2: 30,
   stringGameLimit3: 30,
   stringGameLimit4: 30,
+  stringHourLimit1: 20,
+  stringHourLimit2: 20,
+  stringHourLimit3: 20,
+  stringHourLimit4: 20,
+  stringAlertEnabled1: true,
+  stringAlertEnabled2: true,
+  stringAlertEnabled3: true,
+  stringAlertEnabled4: true,
   racketCount: 2, // 2~4: 스트링 관리에 표시할 라켓 수
   stringingHistory: [], // { id, name, date, racket: 1|2|3|4, reason, cost }
   stringViewMode: 'basic', // 'basic' | 'advanced' - 스트링 관리 화면 기본/고급 보기
@@ -4463,6 +4603,14 @@ function _applyFirebaseData(parsed) {
     state.stringGameLimit2 = parsed.stringGameLimit2 || 30;
     state.stringGameLimit3 = parsed.stringGameLimit3 || 30;
     state.stringGameLimit4 = parsed.stringGameLimit4 || 30;
+    state.stringHourLimit1 = parsed.stringHourLimit1 || 20;
+    state.stringHourLimit2 = parsed.stringHourLimit2 || 20;
+    state.stringHourLimit3 = parsed.stringHourLimit3 || 20;
+    state.stringHourLimit4 = parsed.stringHourLimit4 || 20;
+    state.stringAlertEnabled1 = parsed.stringAlertEnabled1 !== false;
+    state.stringAlertEnabled2 = parsed.stringAlertEnabled2 !== false;
+    state.stringAlertEnabled3 = parsed.stringAlertEnabled3 !== false;
+    state.stringAlertEnabled4 = parsed.stringAlertEnabled4 !== false;
     // 라켓 표시 개수: 신버전 racketCount 우선, 없으면 구버전 showRacket3/라켓 데이터 유무로 추정
     let _rc = parsed.racketCount;
     if (!_rc) {
@@ -5410,6 +5558,10 @@ function showToast(msg) {
 
 // ===== MODAL =====
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openStringLifeInfo() {
+  const m = document.getElementById('stringLifeInfoModal');
+  if (m) m.classList.add('open');
+}
 
 // 모달 오버레이 바깥 터치시 닫기
 document.addEventListener('DOMContentLoaded', function() {
@@ -5458,7 +5610,7 @@ function getProfileFields() {
   const isEn = lang === 'en';
   // [정리] 라켓/스트링/텐션/교체일 필드는 실제로는 "스트링" 탭에서 입력·관리되고
   // 여기(프로필 탭)에서는 화면에 그려지지 않는 죽은 정의였어서 제거함.
-  // (스트링 탭 입력 관련 함수: saveStrR1Field, saveStrR2Field, saveStringingInfo 등)
+  // (스트링 탭 입력 관련 함수: saveStrField, saveStringingInfo 등)
   return [
   // ── 기본 정보 ──
   { key:'name',    lbl:'NAME',    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>',                                                type:'text',   ph: isEn ? 'Name / Nickname' : '이름 / 닉네임', full:false },
@@ -5669,16 +5821,179 @@ function countGamesAfterRestring(dateStr, dateTimeStr, racketKey) {
         return false;
       }
     }
+    // 난타 기록은 게임 수에 포함하지 않음
+    if (m.type === 'rally') return false;
     // 라켓 필터: 라켓을 선택하지 않은 경기는 카운트에서 제외
     if (!m.racketUsed) return false;
     return m.racketUsed === racketKey;
   }).length;
 }
 
+// 교체일 이후 난타(rally) 누적 시간(분) 계산 (라켓별) — countGamesAfterRestring과 동일한 필터링 로직
+function sumRallyMinutesAfterRestring(dateStr, dateTimeStr, racketKey) {
+  if (!dateStr) return 0;
+  return (state.matches || []).filter(m => {
+    if (!m.date) return false;
+    if (m.date < dateStr) return false;
+    if (m.date === dateStr) {
+      if (dateTimeStr && m.savedAt) {
+        if (m.savedAt <= dateTimeStr) return false;
+      } else if (dateTimeStr && !m.savedAt) {
+        return false;
+      }
+    }
+    if (m.type !== 'rally') return false;
+    if (!m.racketUsed) return false;
+    return m.racketUsed === racketKey;
+  }).reduce((sum, m) => sum + (Number(m.durationMin) || 0), 0);
+}
+
+// 종목별 게임 1회당 평균 소요 시간(분) — durationMin이 없는 구버전 기록에 대한 참고치(fallback)
+const AVG_MATCH_MIN = { tennis: 30, badminton: 40, pickleball: 30 };
+
+// ══════════════════════════════════════════════════════════
+// ===== 스트링 실제 사용시간 계산 (경기시간 자동 계산 + 단/복식 계수) =====
+// ══════════════════════════════════════════════════════════
+
+// 경기 형태 계수: 단식은 라켓 1개가 모든 타구를 담당(1.0), 복식은 파트너와 절반씩 나눔(0.5)
+const MATCH_FORMAT_STRING_COEF = { singles: 1.0, doubles: 0.5 };
+
+// 스코어를 기반으로 예상 경기시간(분)을 자동 계산합니다.
+// 총 게임(포인트) 수 + 접전 여부(스코어 차이) + 타이브레이크(듀스) 여부를 함께 고려합니다.
+// (참고용 추정치이며, 사용자가 실제 경기시간으로 언제든 수정할 수 있습니다)
+function estimateMatchDurationMin(myScore, oppScore, myTb, oppTb, sport) {
+  sport = sport || 'tennis';
+  const s1 = parseInt(myScore, 10);
+  const s2 = parseInt(oppScore, 10);
+  if (isNaN(s1) || isNaN(s2) || (s1 === 0 && s2 === 0)) return 0;
+
+  const hasTiebreak = (myTb !== '' && myTb != null && oppTb !== '' && oppTb != null &&
+    !isNaN(parseInt(myTb, 10)) && !isNaN(parseInt(oppTb, 10)));
+  const margin = Math.abs(s1 - s2);
+
+  if (sport === 'tennis') {
+    // 테니스(동호인 룰 세트 스코어, 예: 6:4) 기준
+    const totalGames = s1 + s2;
+    let minutes = totalGames * 3.2 - 1;
+    if (margin <= 2) minutes += 2;      // 매우 접전
+    else if (margin <= 4) minutes += 1; // 다소 접전
+    if (hasTiebreak) minutes += 3;      // 타이브레이크 추가 소요
+    return Math.max(12, Math.round(minutes));
+  } else if (sport === 'badminton') {
+    // 배드민턴(21점 랠리포인트) 기준
+    const totalPoints = s1 + s2;
+    let minutes = totalPoints * 0.5;
+    if (margin <= 2) minutes += 3; // 듀스 접전
+    return Math.max(10, Math.round(minutes));
+  } else {
+    // 피클볼(11/15/21점) 기준
+    const totalPoints = s1 + s2;
+    let minutes = totalPoints * 0.45;
+    if (margin <= 2) minutes += 2;
+    return Math.max(8, Math.round(minutes));
+  }
+}
+
+// 경기 기록 1건의 실제 "스트링 사용시간"(분)
+// = 난타시간(계수 없이 100% 그대로) + (게임시간 × 경기형태 계수[단식1.0/복식0.5])
+// durationMin이 저장되어 있지 않은 구버전 게임 기록은 스코어로 추정치를 계산해 사용합니다.
+function calcMatchStringUsageMin(m) {
+  if (!m) return 0;
+  if (m.type === 'rally') return Number(m.durationMin) || 0;
+  const gameMin = (m.durationMin !== undefined && m.durationMin !== null && m.durationMin !== '')
+    ? Number(m.durationMin)
+    : estimateMatchDurationMin(m.myScore, m.oppScore, m.myTiebreak, m.oppTiebreak, m.sport);
+  const coef = MATCH_FORMAT_STRING_COEF[m.format] != null ? MATCH_FORMAT_STRING_COEF[m.format] : 1.0;
+  return Math.round((gameMin || 0) * coef);
+}
+
+// 라켓별 총 스트링 사용시간(분) = Σ 경기별 스트링 사용시간(단/복식 계수 적용) + 난타 누적시간
+function calcRacketUsageMin(dateStr, dateTimeStr, racketKey) {
+  if (!dateStr) return { gameCount: 0, gameMin: 0, rallyMin: 0, totalMin: 0 };
+  let gameCount = 0, gameMin = 0;
+  (state.matches || []).forEach(m => {
+    if (!m.date || m.type === 'rally') return;
+    if (m.date < dateStr) return;
+    if (m.date === dateStr) {
+      if (dateTimeStr && m.savedAt) { if (m.savedAt <= dateTimeStr) return; }
+      else if (dateTimeStr && !m.savedAt) { return; }
+    }
+    if (!m.racketUsed || m.racketUsed !== racketKey) return;
+    gameCount++;
+    gameMin += calcMatchStringUsageMin(m);
+  });
+  const rallyMin = sumRallyMinutesAfterRestring(dateStr, dateTimeStr, racketKey);
+  return { gameCount, gameMin, rallyMin, totalMin: gameMin + rallyMin };
+}
+
+// ===== 기간 시작일 계산 (KST 기준, YYYY-MM-DD 문자열) — 스트링 사용시간 요약용 =====
+function getWeekStartStr() {
+  const now = new Date();
+  const kst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+  const day = kst.getUTCDay(); // 0=일 ~ 6=토
+  const diff = (day === 0 ? 6 : day - 1); // 월요일 시작
+  const monday = new Date(kst);
+  monday.setUTCDate(kst.getUTCDate() - diff);
+  return monday.toISOString().split('T')[0];
+}
+function getMonthStartStr() {
+  const t = getTodayStr();
+  return t.slice(0, 7) + '-01';
+}
+function getYearStartStr() {
+  const t = getTodayStr();
+  return t.slice(0, 4) + '-01-01';
+}
+
+// 전체 경기/난타 기록을 대상으로 오늘·이번 주·이번 달·올해·전체 누적 스트링 사용시간(분)을 계산
+function calcStringUsageSummary() {
+  const today = getTodayStr();
+  const weekStart = getWeekStartStr();
+  const monthStart = getMonthStartStr();
+  const yearStart = getYearStartStr();
+  const out = { todayMin: 0, weekMin: 0, monthMin: 0, yearMin: 0, totalMin: 0 };
+  (state.matches || []).forEach(m => {
+    if (!m.date) return;
+    const usageMin = calcMatchStringUsageMin(m);
+    if (!usageMin) return;
+    out.totalMin += usageMin;
+    if (m.date >= yearStart) out.yearMin += usageMin;
+    if (m.date >= monthStart) out.monthMin += usageMin;
+    if (m.date >= weekStart) out.weekMin += usageMin;
+    if (m.date === today) out.todayMin += usageMin;
+  });
+  return out;
+}
+
 // 라켓별 "게임 임계치" (이 게임 수를 넘기면 게임 수 기준 교체 권장). 기본 30게임.
 function getRacketGameLimit(num) {
   const v = state['stringGameLimit' + num];
   return (v && v > 0) ? v : 30;
+}
+
+// 라켓별 "권장 교체시간"(시간 단위). 기본 20시간.
+function getRacketHourLimit(num) {
+  const v = state['stringHourLimit' + num];
+  return (v && v > 0) ? v : 20;
+}
+
+// 라켓별 교체 알림 ON/OFF 여부 (기본 ON)
+function isRacketAlertEnabled(num) {
+  return state['stringAlertEnabled' + num] !== false;
+}
+
+// 실제 사용시간(분)을 권장 교체시간(시간)과 비교해 상태를 반환
+// { enabled, limitMin, usageMin, remainingMin, overdue, msg }
+function getHourLimitStatus(num, usageMin) {
+  const enabled = isRacketAlertEnabled(num);
+  const limitMin = getRacketHourLimit(num) * 60;
+  const used = usageMin || 0;
+  const remainingMin = limitMin - used;
+  const overdue = remainingMin <= 0;
+  const msg = !enabled ? '' : (overdue
+    ? _t('str_hour_overdue')
+    : _t('str_hour_remaining').replace('{n}', formatDurationMin(remainingMin)));
+  return { enabled, limitMin, usageMin: used, remainingMin, overdue, msg };
 }
 
 function renderStringBanner() {
@@ -5741,16 +6056,26 @@ function renderStringBanner() {
   const games3 = date3 ? countGamesAfterRestring(date3, p.stringDate3Time || '', 'racket3') : 0;
   const games4 = date4 ? countGamesAfterRestring(date4, p.stringDate4Time || '', 'racket4') : 0;
 
+  const usage1 = date1 ? calcRacketUsageMin(date1, p.stringDateTime  || '', 'racket1') : null;
+  const usage2 = date2 ? calcRacketUsageMin(date2, p.stringDate2Time || '', 'racket2') : null;
+  const usage3 = date3 ? calcRacketUsageMin(date3, p.stringDate3Time || '', 'racket3') : null;
+  const usage4 = date4 ? calcRacketUsageMin(date4, p.stringDate4Time || '', 'racket4') : null;
+
   // 라켓 한 줄 생성: 게이지 링 + 라켓/스트링 정보 + 상태뱃지
-  function racketRow(num, racket, string, tension, diff, games) {
+  function racketRow(num, racket, string, tension, diff, games, usage) {
     const hasData = racket || string || tension || diff !== null;
     if (!hasData) return '';
     const name = racket || `${_t('pf_racket_name')} ${num}`;
     // 날짜 기준 등급과 게임수 기준 등급 중 더 심각한 쪽을 표시 (게임 수 데이터도 반영)
     const limit = getRacketGameLimit(num);
+    const hourStatus = getHourLimitStatus(num, usage ? usage.totalMin : 0);
     let cls  = diff !== null ? colorClass(diff) : 'none';
     if (diff !== null && games >= limit && cls === 'green') cls = 'yellow';
     if (diff !== null && games >= limit * 1.3) cls = 'red';
+    if (diff !== null && hourStatus.enabled) {
+      if (hourStatus.overdue) cls = 'red';
+      else if (hourStatus.remainingMin <= hourStatus.limitMin * 0.15 && cls === 'green') cls = 'yellow';
+    }
     const dColor = diff !== null ? dayColor(cls) : 'var(--border)';
     const pct = freshnessPct(diff);
 
@@ -5796,11 +6121,39 @@ function renderStringBanner() {
         <div class="pf-gauge-cap">${_t('contest_games')}</div>
       </div>`;
 
-    const gauge = `<div class="pf-gauge-group">${dayGauge}${gameGauge}</div>`;
+    // 권장 교체시간(사용시간) 기준 게이지 (잔여율) — 알림이 켜진 라켓만 표시
+    let hourGauge = '';
+    if (hourStatus.enabled) {
+      let hourPct = null, hourRingStroke = 'var(--border)';
+      if (diff !== null) {
+        hourPct = Math.max(0, Math.min(100, Math.round(100 - (hourStatus.usageMin / hourStatus.limitMin) * 100)));
+        const hourCls = hourStatus.overdue ? 'red' : (hourStatus.remainingMin <= hourStatus.limitMin * 0.15 ? 'yellow' : 'green');
+        hourRingStroke = dayColor(hourCls);
+      }
+      const hourOffset = hourPct !== null ? C - (C * hourPct / 100) : 0;
+      hourGauge = `
+        <div class="pf-gauge-col">
+          <div class="pf-gauge">
+            <svg viewBox="0 0 46 46">
+              <circle cx="23" cy="23" r="${R}" fill="none" stroke="var(--surface2)" stroke-width="4.5"/>
+              ${hourPct !== null ? `<circle cx="23" cy="23" r="${R}" fill="none" stroke="${hourRingStroke}" stroke-width="4.5"
+                stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${hourOffset}"/>` : ''}
+            </svg>
+            <div class="pf-gauge-pct">${hourPct !== null ? hourPct + '%' : '–'}</div>
+          </div>
+          <div class="pf-gauge-cap">${isEn ? 'HR' : '시간'}</div>
+        </div>`;
+    }
+
+    const gauge = `<div class="pf-gauge-group">${dayGauge}${gameGauge}${hourGauge}</div>`;
+
+    const usageHtml = (usage && (usage.gameCount > 0 || usage.rallyMin > 0))
+      ? `<div class="pf-string-games" style="opacity:.85;">🕐 ${formatDurationMin(usage.totalMin)}${usage.rallyMin > 0 ? ` (${isEn ? 'rally' : '난타'} ${formatDurationMin(usage.rallyMin)})` : ''}</div>`
+      : '';
 
     const sideHtml = diff !== null
       ? `<span class="pf-string-status ${cls}">${statusLabel(cls)}</span>
-         <div class="pf-string-games">D+${diff} · ${games}${_t('contest_games')}</div>`
+         <div class="pf-string-games">D+${diff} · ${games}${_t('contest_games')}</div>${usageHtml}`
       : `<span style="font-size: 0.6667rem;color:var(--text-muted);">${_t('pf_not_entered')}</span>`;
 
     return `<div class="pf-string-row">
@@ -5814,14 +6167,15 @@ function renderStringBanner() {
   }
 
   const rCount = Math.max(2, Math.min(4, state.racketCount || 2));
-  const row1 = racketRow(1, racket1, string1, tension1, diff1, games1);
-  const row2 = racketRow(2, racket2, string2, tension2, diff2, games2);
-  const row3 = rCount >= 3 ? racketRow(3, racket3, string3, tension3, diff3, games3) : '';
-  const row4 = rCount >= 4 ? racketRow(4, racket4, string4, tension4, diff4, games4) : '';
+  const row1 = racketRow(1, racket1, string1, tension1, diff1, games1, usage1);
+  const row2 = racketRow(2, racket2, string2, tension2, diff2, games2, usage2);
+  const row3 = rCount >= 3 ? racketRow(3, racket3, string3, tension3, diff3, games3, usage3) : '';
+  const row4 = rCount >= 4 ? racketRow(4, racket4, string4, tension4, diff4, games4, usage4) : '';
   const hasAny = row1 || row2 || row3 || row4;
 
   if (!hasAny) {
     banner.innerHTML = `<div style="font-size: 0.8rem;color:var(--text-muted);padding:4px 2px;">${_t('pf_no_racket')}</div>`;
+    renderStringUsageSummary();
     return;
   }
 
@@ -5829,6 +6183,33 @@ function renderStringBanner() {
 
   // lastStringDate 동기화 (라켓1 교체일 기준 유지)
   if (date1) state.lastStringDate = date1;
+
+  renderStringUsageSummary();
+}
+
+// 오늘/이번 주/이번 달/올해/전체 스트링 사용시간 요약을 배너 카드에 표시
+function renderStringUsageSummary() {
+  const el = document.getElementById('stringUsageSummary');
+  if (!el) return;
+  const s = calcStringUsageSummary();
+  if (!s.totalMin) { el.innerHTML = ''; return; }
+  const rows = [
+    [_t('str_usage_today'), s.todayMin],
+    [_t('str_usage_week'),  s.weekMin],
+    [_t('str_usage_month'), s.monthMin],
+    [_t('str_usage_year'),  s.yearMin],
+    [_t('str_usage_total'), s.totalMin],
+  ];
+  el.innerHTML = `<div style="border-bottom:1px solid var(--border);margin-bottom:10px;padding-bottom:10px;">
+    <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);margin-bottom:8px;">${_t('str_usage_summary_title')}</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+      ${rows.map(([label, min]) => `
+        <div style="text-align:center;background:var(--surface2);border-radius:10px;padding:8px 4px;">
+          <div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:2px;">${label}</div>
+          <div style="font-size:0.8rem;font-weight:700;">${formatDurationMin(min)}</div>
+        </div>`).join('')}
+    </div>
+  </div>`;
 }
 
 // 프로필 입력 디바운스 (모바일에서 oninput 과도한 저장 방지)
@@ -5952,6 +6333,23 @@ function uploadPhoto(input) {
 }
 
 // ===== MATCH =====
+// 게임/난타 기록 모드 전환
+function selectRecordType(type) {
+  document.getElementById('matchRecordType').value = type;
+  const btnGame = document.getElementById('btnModeGame');
+  const btnRally = document.getElementById('btnModeRally');
+  if (btnGame) btnGame.classList.toggle('selected', type === 'game');
+  if (btnRally) btnRally.classList.toggle('selected', type === 'rally');
+  const gameFields = document.getElementById('gameModeFields');
+  const rallyFields = document.getElementById('rallyModeFields');
+  if (gameFields) gameFields.style.display = type === 'rally' ? 'none' : 'block';
+  if (rallyFields) rallyFields.style.display = type === 'rally' ? 'block' : 'none';
+  const saveBtn = document.getElementById('matchSaveBtn');
+  if (saveBtn && !state.editingMatchId) {
+    saveBtn.textContent = type === 'rally' ? _t('match_rally_save_btn') : _t('match_save_btn');
+  }
+}
+
 function selectFormat(fmt, autoFocus) {
   document.getElementById('matchFormat').value = fmt;
   document.getElementById('btnSingles').classList.toggle('selected', fmt === 'singles');
@@ -6051,39 +6449,104 @@ function autoDetectResult() {
   }
 
   if (result) setResult(result);
+  updateGameDurationEstimate();
+}
+
+// 사용자가 "예상 경기시간" 입력칸을 직접 수정했는지 여부
+// (직접 수정한 뒤에는 스코어가 바뀌어도 자동계산 값으로 덮어쓰지 않음)
+let _gameDurationEdited = false;
+function onMatchGameDurationInput() {
+  _gameDurationEdited = true;
+}
+
+// 스코어/타이브레이크 입력값을 바탕으로 "예상 경기시간" 입력칸을 자동 갱신
+function updateGameDurationEstimate() {
+  if (_gameDurationEdited) return;
+  const el = document.getElementById('matchGameDuration');
+  if (!el) return;
+  const myScoreEl = document.getElementById('myScore');
+  const oppScoreEl = document.getElementById('oppScore');
+  const myTbEl = document.getElementById('myTiebreak');
+  const oppTbEl = document.getElementById('oppTiebreak');
+  if (!myScoreEl || !oppScoreEl) return;
+  const est = estimateMatchDurationMin(
+    myScoreEl.value.trim(), oppScoreEl.value.trim(),
+    myTbEl ? myTbEl.value.trim() : '', oppTbEl ? oppTbEl.value.trim() : '',
+    state.sportType || 'tennis'
+  );
+  el.value = est > 0 ? est : '';
 }
 
 function saveMatch() {
+  const recordType = (document.getElementById('matchRecordType') || {}).value || 'game';
   const date = document.getElementById('matchDate').value;
-  const format = document.getElementById('matchFormat').value;
-  const opponent = format === 'doubles' ? document.getElementById('matchOpponent1').value.trim() : document.getElementById('matchOpponent').value.trim();
   if (!date) { showToast(_t('match_toast_need_date')); return; }
-  if (!format) { showToast(_t('match_toast_need_format')); return; }
-  if (!opponent) { showToast(_t('match_toast_need_opp')); return; }
-  if (!state.currentResult) { showToast(_t('match_toast_need_result')); return; }
-  // 라켓이 등록된 경우에만 선택 필수
+
+  // 라켓이 등록된 경우에만 선택 필수 (게임/난타 공통)
   const _racketVal = document.getElementById('matchRacket').value;
   const _p = state.profile || {};
   const _rc = Math.max(2, Math.min(4, state.racketCount || 2));
   const _hasRacket = (_p.racket || '').trim() !== '' || (_p.racket2 || '').trim() !== '' || (_rc >= 3 && (_p.racket3 || '').trim() !== '') || (_rc >= 4 && (_p.racket4 || '').trim() !== '');
   if (_hasRacket && !_racketVal) { showToast(_t('match_toast_need_racket')); return; }
 
-  const matchData = {
-    date,
-    savedAt: new Date().toISOString(),
-    format,
-    sport: state.sportType || 'tennis',
-    partner: format === 'doubles' ? document.getElementById('matchPartner').value.trim() : '',
-    opponent,
-    opponent2: format === 'doubles' ? document.getElementById('matchOpponent2').value.trim() : '',
-    result: state.currentResult,
-    myScore: document.getElementById('myScore').value,
-    oppScore: document.getElementById('oppScore').value,
-    myTiebreak: document.getElementById('myTiebreak').value,
-    oppTiebreak: document.getElementById('oppTiebreak').value,
-    memo: document.getElementById('matchMemo').value.trim(),
-    racketUsed: document.getElementById('matchRacket').value || '',
-  };
+  let opponent = '';
+  let matchData;
+
+  if (recordType === 'rally') {
+    // ===== 난타 기록 저장 =====
+    const rallyHour = parseInt(document.getElementById('rallyHour').value, 10) || 0;
+    const rallyMin  = parseInt(document.getElementById('rallyMin').value, 10) || 0;
+    const durationMin = rallyHour * 60 + rallyMin;
+    if (durationMin <= 0) { showToast(_t('match_toast_need_duration')); return; }
+
+    matchData = {
+      date,
+      savedAt: new Date().toISOString(),
+      type: 'rally',
+      sport: state.sportType || 'tennis',
+      durationMin,
+      memo: document.getElementById('matchMemo').value.trim(),
+      racketUsed: document.getElementById('matchRacket').value || '',
+    };
+  } else {
+    // ===== 게임 기록 저장 (기존 로직) =====
+    const format = document.getElementById('matchFormat').value;
+    opponent = format === 'doubles' ? document.getElementById('matchOpponent1').value.trim() : document.getElementById('matchOpponent').value.trim();
+    if (!format) { showToast(_t('match_toast_need_format')); return; }
+    if (!opponent) { showToast(_t('match_toast_need_opp')); return; }
+    if (!state.currentResult) { showToast(_t('match_toast_need_result')); return; }
+
+    const myScoreVal = document.getElementById('myScore').value;
+    const oppScoreVal = document.getElementById('oppScore').value;
+    const myTbVal = document.getElementById('myTiebreak').value;
+    const oppTbVal = document.getElementById('oppTiebreak').value;
+    const durationEl = document.getElementById('matchGameDuration');
+    // 예상 경기시간: 입력칸에 값이 있으면 그 값(자동계산 또는 사용자 수정값) 사용,
+    // 없으면 스코어로부터 즉시 추정 (스트링 사용시간 계산의 기준이 됨)
+    const durationRaw = durationEl ? parseInt(durationEl.value, 10) : NaN;
+    const durationMin = (!isNaN(durationRaw) && durationRaw > 0)
+      ? durationRaw
+      : estimateMatchDurationMin(myScoreVal, oppScoreVal, myTbVal, oppTbVal, state.sportType || 'tennis');
+
+    matchData = {
+      date,
+      savedAt: new Date().toISOString(),
+      type: 'game',
+      format,
+      sport: state.sportType || 'tennis',
+      partner: format === 'doubles' ? document.getElementById('matchPartner').value.trim() : '',
+      opponent,
+      opponent2: format === 'doubles' ? document.getElementById('matchOpponent2').value.trim() : '',
+      result: state.currentResult,
+      myScore: myScoreVal,
+      oppScore: oppScoreVal,
+      myTiebreak: myTbVal,
+      oppTiebreak: oppTbVal,
+      durationMin,
+      memo: document.getElementById('matchMemo').value.trim(),
+      racketUsed: document.getElementById('matchRacket').value || '',
+    };
+  }
 
   if (state.editingMatchId) {
     // 수정 모드 - sport는 원래 값 유지 (종목 변경 불가)
@@ -6115,7 +6578,7 @@ function saveMatch() {
       }
     });
     const _sportIcon = state.sportType === 'tennis' ? '🎾' : state.sportType === 'pickleball' ? '🏓' : '🏸';
-    showToast(_sportIcon + ' ' + _t('match_toast_saved'));
+    showToast(recordType === 'rally' ? ('🏓 ' + _t('match_toast_saved_rally')) : (_sportIcon + ' ' + _t('match_toast_saved')));
   }
 
   save();
@@ -6139,16 +6602,72 @@ function saveMatch() {
   document.getElementById('myTiebreak').value = '';
   document.getElementById('oppTiebreak').value = '';
   document.getElementById('matchMemo').value = '';
+  var matchDurationEl = document.getElementById('matchGameDuration');
+  if (matchDurationEl) matchDurationEl.value = '';
+  _gameDurationEdited = false;
   var matchRacketEl = document.getElementById('matchRacket');
   if (matchRacketEl) matchRacketEl.value = '';
+  var rallyHourEl = document.getElementById('rallyHour');
+  var rallyMinEl = document.getElementById('rallyMin');
+  if (rallyHourEl) rallyHourEl.value = '';
+  if (rallyMinEl) rallyMinEl.value = '';
+  selectRecordType('game');
   // 피클볼 점수 방식 초기화 불필요 (UI 제거됨)
   togglePartner();
   renderMatchList();
   setTodayDate();
   renderStringBanner();
 }
+// 분(minute) 값을 "1시간 30분" / "1h 30m" 형태로 표시
+function formatDurationMin(min) {
+  min = Math.round(min || 0);
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  const isEn = (_nijiGetLang() || 'ko') === 'en';
+  if (isEn) {
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  }
+  return h > 0 ? `${h}시간 ${m}분` : `${m}분`;
+}
+
+// 난타 기록 카드 HTML
+function _rallyCardHTML(m) {
+  const sportIcon = m.sport === 'pickleball' ? sportIconHTML('pickleball', 14) : (m.sport === 'tennis' ? '🎾' : '🏸');
+  return `<div class="match-item">
+    <div class="match-item-top">
+      <span class="match-badge" style="background:rgba(124,106,247,.18);color:var(--accent);">🏓 ${_t('match_rally_card_label')}</span>
+      <div class="match-date">
+        <span>${m.date}</span>
+        <span class="format-badge">${sportIcon}</span>
+      </div>
+      <div class="match-item-actions">
+        <button class="match-edit-btn" onclick="editMatch(${m.id})" title="수정" style="min-width:40px;min-height:40px;padding:9px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="match-delete-btn" onclick="deleteMatch(${m.id})" title="삭제" style="min-width:40px;min-height:40px;padding:9px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="match-item-main" style="justify-content:center;">
+      <div style="font-size:1.2rem;font-weight:700;color:var(--accent);">⏱️ ${formatDurationMin(m.durationMin)}</div>
+    </div>
+    ${m.memo ? `<div style="margin-top:8px;font-size: 0.7333rem;border-top:1px solid var(--border);padding-top:8px;">
+      <span style="color:var(--text-muted);">📝 ${escHtml(m.memo)}</span>
+    </div>` : ''}
+    ${m.racketUsed ? (function(){
+      const p = state.profile || {};
+      const rMap = { racket1: [1, p.racket], racket2: [2, p.racket2], racket3: [3, p.racket3], racket4: [4, p.racket4] };
+      const rInfo = rMap[m.racketUsed] || [1, p.racket];
+      const rNum = rInfo[0], rName = rInfo[1] || ('R' + rInfo[0]);
+      return `<div style="margin-top:6px;font-size: 0.6667rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:6px;">🎾 R${rNum} ${escHtml(rName)}</div>`;
+    })() : ''}
+  </div>`;
+}
+
 // 경기 카드 HTML 생성 (공통)
 function _matchCardHTML(m) {
+  if (m.type === 'rally') return _rallyCardHTML(m);
   const win = m.result === 'win';
   const scoreStr = (m.myScore !== '' && m.oppScore !== '') ? `${m.myScore} : ${m.oppScore}` : '';
   const tiebreakStr = (m.myTiebreak && m.myTiebreak !== '' && m.oppTiebreak && m.oppTiebreak !== '') ? ` (${m.myTiebreak}-${m.oppTiebreak})` : '';
@@ -6442,21 +6961,35 @@ function editMatch(id) {
 
   // 폼에 값 채우기
   document.getElementById('matchDate').value = m.date;
-  selectFormat(m.format, false);
-  document.getElementById('matchPartner').value = m.partner || '';
-  if (m.format === 'doubles') {
-    document.getElementById('matchOpponent').value = '';
-    document.getElementById('matchOpponent1').value = m.opponent || '';
+  selectRecordType(m.type === 'rally' ? 'rally' : 'game');
+  if (m.type === 'rally') {
+    const dur = m.durationMin || 0;
+    document.getElementById('rallyHour').value = Math.floor(dur / 60) || '';
+    document.getElementById('rallyMin').value = dur % 60 || '';
   } else {
-    document.getElementById('matchOpponent').value = m.opponent || '';
-    document.getElementById('matchOpponent1').value = '';
+    selectFormat(m.format, false);
+    document.getElementById('matchPartner').value = m.partner || '';
+    if (m.format === 'doubles') {
+      document.getElementById('matchOpponent').value = '';
+      document.getElementById('matchOpponent1').value = m.opponent || '';
+    } else {
+      document.getElementById('matchOpponent').value = m.opponent || '';
+      document.getElementById('matchOpponent1').value = '';
+    }
+    document.getElementById('matchOpponent2').value = m.opponent2 || '';
+    setResult(m.result);
+    document.getElementById('myScore').value = m.myScore || '';
+    document.getElementById('oppScore').value = m.oppScore || '';
+    document.getElementById('myTiebreak').value = m.myTiebreak || '';
+    document.getElementById('oppTiebreak').value = m.oppTiebreak || '';
+    var _editDurationEl = document.getElementById('matchGameDuration');
+    if (_editDurationEl) {
+      _editDurationEl.value = (m.durationMin != null && m.durationMin !== '')
+        ? m.durationMin
+        : estimateMatchDurationMin(m.myScore, m.oppScore, m.myTiebreak, m.oppTiebreak, m.sport);
+    }
+    _gameDurationEdited = true; // 기존 기록 수정 시엔 스코어를 바꿔도 자동계산으로 덮어쓰지 않음
   }
-  document.getElementById('matchOpponent2').value = m.opponent2 || '';
-  setResult(m.result);
-  document.getElementById('myScore').value = m.myScore || '';
-  document.getElementById('oppScore').value = m.oppScore || '';
-  document.getElementById('myTiebreak').value = m.myTiebreak || '';
-  document.getElementById('oppTiebreak').value = m.oppTiebreak || '';
   document.getElementById('matchMemo').value = m.memo || '';
   // 라켓 옵션 먼저 갱신 후 저장값 복원
   updateMatchRacketOptions();
@@ -6500,8 +7033,16 @@ function cancelEditMatch() {
   document.getElementById('myTiebreak').value = '';
   document.getElementById('oppTiebreak').value = '';
   document.getElementById('matchMemo').value = '';
+  var _cancelDurationEl = document.getElementById('matchGameDuration');
+  if (_cancelDurationEl) _cancelDurationEl.value = '';
+  _gameDurationEdited = false;
   var _cancelRacketEl = document.getElementById('matchRacket');
   if (_cancelRacketEl) _cancelRacketEl.value = '';
+  var _cancelRallyHourEl = document.getElementById('rallyHour');
+  var _cancelRallyMinEl = document.getElementById('rallyMin');
+  if (_cancelRallyHourEl) _cancelRallyHourEl.value = '';
+  if (_cancelRallyMinEl) _cancelRallyMinEl.value = '';
+  selectRecordType('game');
   togglePartner();
   closeMatchForm();
   setTodayDate();
@@ -6646,7 +7187,7 @@ function getRolling12MonthsCutoff() {
 function getStatsFilteredMatches() {
   const sport = state.sportType || 'tennis';
   const cutoff = getRolling12MonthsCutoff();
-  return state.matches.filter(m => (m.sport || 'tennis') === sport && m.date >= cutoff);
+  return state.matches.filter(m => m.type !== 'rally' && (m.sport || 'tennis') === sport && m.date >= cutoff);
 }
 
 function renderStats() {
@@ -7146,7 +7687,7 @@ function renderStreak() {
   if (!el) return;
   const sport = state.sportType || 'tennis';
   const ms = [...state.matches]
-    .filter(m => (m.sport || 'tennis') === sport)
+    .filter(m => m.type !== 'rally' && (m.sport || 'tennis') === sport)
     .sort((a,b) => b.date.localeCompare(a.date));
   if (!ms.length) { el.innerHTML = ''; return; }
 
@@ -7261,10 +7802,17 @@ function checkStringReplaceVoiceAlert() {
       return diffDays >= intervalDays; // 교체 기한 초과(🔴) 상태
     }
 
-    const due1 = isDue(p.stringDate, state.stringInterval);
-    const due2 = isDue(p.stringDate2, state.stringInterval2);
-    const due3 = isDue(p.stringDate3, state.stringInterval3);
-    const due4 = isDue(p.stringDate4, state.stringInterval4);
+    // 권장 교체시간(시간) 초과 여부 — 라켓별 알림 ON/OFF 설정을 따름
+    function isHourDue(num, dateStr, dateTimeStr) {
+      if (!dateStr || !isRacketAlertEnabled(num)) return false;
+      const usage = calcRacketUsageMin(dateStr, dateTimeStr, 'racket' + num);
+      return getHourLimitStatus(num, usage.totalMin).overdue;
+    }
+
+    const due1 = isDue(p.stringDate, state.stringInterval)   || isHourDue(1, p.stringDate,  p.stringDateTime  || '');
+    const due2 = isDue(p.stringDate2, state.stringInterval2) || isHourDue(2, p.stringDate2, p.stringDate2Time || '');
+    const due3 = isDue(p.stringDate3, state.stringInterval3) || isHourDue(3, p.stringDate3, p.stringDate3Time || '');
+    const due4 = isDue(p.stringDate4, state.stringInterval4) || isHourDue(4, p.stringDate4, p.stringDate4Time || '');
     if (!due1 && !due2 && !due3 && !due4) return; // 교체 권장 상태 아니면 알림 없음
 
     const todayStr = getTodayStr();
@@ -7380,12 +7928,10 @@ function buildRacketCard(num) {
           <button type="button" class="niji-tapbtn" onclick="openStringDBModal('pick',${num},'main')" style="color:var(--accent);font-weight:700;font-size:0.68rem;background:rgba(124,106,247,.14);border:none;border-radius:8px;padding:7px 9px;line-height:1;white-space:nowrap;" data-lang="strdb_pick_btn_short">📋 선택</button>
         </div>
         <input class="form-input" id="str${num}-string" data-lang-placeholder="str_string${phFallback}_ph" placeholder="${escHtml(_t('str_string' + phFallback + '_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'string',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-tension');if(n){n.focus();n.select();}}">
-        <div id="str${num}-recent-chips" style="display:none;gap:6px;overflow-x:auto;margin-top:6px;padding-bottom:2px;"></div>
       </div>
       <div>
         <label class="form-label" style="font-size:0.72rem;">${_t('str_tension_lbl')}</label>
-        <input class="form-input" type="text" inputmode="decimal" id="str${num}-tension" placeholder="${escHtml(_t('str_tension' + phFallback + '_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-date');if(n)n.focus();}">
-        <div style="display:flex;gap:6px;overflow-x:auto;margin-top:6px;padding-bottom:2px;">${buildTensionChips(num, 'main')}</div>
+        <input class="form-input" type="text" inputmode="text" id="str${num}-tension" placeholder="${escHtml(_t('str_tension' + phFallback + '_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'tension',this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-date');if(n)n.focus();}">
       </div>
     </div>
 
@@ -7399,8 +7945,7 @@ function buildRacketCard(num) {
       </div>
       <div>
         <label class="form-label" style="font-size:0.72rem;">${_t('str_tension_lbl')}</label>
-        <input class="form-input" type="text" inputmode="decimal" id="str${num}-cross-tension" placeholder="${escHtml(_t('str_cross_tension_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'crossTension',this.value)">
-        <div style="display:flex;gap:6px;overflow-x:auto;margin-top:6px;padding-bottom:2px;">${buildTensionChips(num, 'cross')}</div>
+        <input class="form-input" type="text" inputmode="text" id="str${num}-cross-tension" placeholder="${escHtml(_t('str_cross_tension_ph'))}" style="font-size:16px;padding:9px 10px;" oninput="saveStrField(${num},'crossTension',this.value)">
       </div>
     </div>
 
@@ -7430,6 +7975,24 @@ function buildRacketCard(num) {
         <input type="number" min="1" class="form-input" id="str${num}-gamelimit" style="font-size:16px;padding:7px 10px;" oninput="saveGameLimit(${num},this.value)">
         <div style="font-size:0.62rem;color:var(--text-muted);margin-top:2px;">${_t('str_game_limit_sub')}</div>
       </div>
+    </div>
+
+    <div class="str-adv-only" style="display:flex;gap:8px;margin-bottom:8px;">
+      <div style="flex:1;">
+        <label class="form-label" style="font-size:0.72rem;">${_t('str_hour_limit_lbl')}</label>
+        <input type="number" min="1" class="form-input" id="str${num}-hourlimit" style="font-size:16px;padding:7px 10px;" oninput="saveHourLimit(${num},this.value)">
+        <div style="font-size:0.62rem;color:var(--text-muted);margin-top:2px;">${_t('str_hour_limit_sub')}</div>
+      </div>
+    </div>
+
+    <div class="str-adv-only" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;background:var(--surface2);border-radius:10px;padding:9px 12px;">
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;">${_t('str_alert_toggle_lbl')}</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);margin-top:1px;">${_t('str_alert_toggle_sub')}</div>
+      </div>
+      <label style="flex-shrink:0;display:flex;align-items:center;">
+        <input type="checkbox" id="str${num}-alertenabled" onchange="toggleStringAlert(${num},this.checked)" style="width:22px;height:22px;accent-color:var(--accent);cursor:pointer;">
+      </label>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
@@ -7530,6 +8093,8 @@ function resetRacket(num) {
     p['crossTension' + num] = '';
     state['stringInterval' + suf] = 3;
     state['stringGameLimit' + num] = 30;
+    state['stringHourLimit' + num] = 20;
+    state['stringAlertEnabled' + num] = true;
     if (num === 1) state.lastStringDate = '';
     // 해당 라켓의 교체 이력도 함께 삭제
     state.stringingHistory = (state.stringingHistory || []).filter(h =>
@@ -7558,6 +8123,21 @@ function saveGameLimit(num, val) {
   renderStringing();
 }
 
+function saveHourLimit(num, val) {
+  const n = parseInt(val);
+  state['stringHourLimit' + num] = (n && n > 0) ? n : 20;
+  save();
+  renderStringing();
+  renderStringBanner();
+}
+
+function toggleStringAlert(num, checked) {
+  state['stringAlertEnabled' + num] = !!checked;
+  save();
+  renderStringing();
+  renderStringBanner();
+}
+
 // ===== 라켓 N 필드 저장 (스트링명/텐션/크로스 입력 중 실시간 반영용, 공용) =====
 function saveStrField(num, key, val) {
   const p = state.profile;
@@ -7569,10 +8149,6 @@ function saveStrField(num, key, val) {
   save();
   renderStringBanner();
 }
-// 하위 호환용 별칭 (예전 코드/북마크에서 호출될 수 있음)
-function saveStrR1Field(key, val) { saveStrField(1, key === 'racket' ? 'racket' : key, val); }
-function saveStrR2Field(key, val) { saveStrField(2, key === 'racket2' ? 'racket' : (key === 'string2' ? 'string' : key === 'tension2' ? 'tension' : key), val); }
-
 // ══════════════════════════════════════════════════════════
 // ===== 최근 사용 스트링 TOP5 (전체 이력 기준, 중복 제거) =====
 // ══════════════════════════════════════════════════════════
@@ -7703,31 +8279,59 @@ function showStringDBListView() {
 }
 
 // ===== 자주 쓰는 스트링 프리셋 (선택시 게이지/재질/형태 자동 입력) =====
-const STRING_PRESETS = [
-  { brandKo: '룩실론',      modelKo: 'ALU 파워 125',          nameEn: 'Luxilon ALU Power 125',        gauge: '1.25', material: '폴리', shape: '원형줄' },
-  { brandKo: '룩실론',      modelKo: '4G 125',                nameEn: 'Luxilon 4G 125',                gauge: '1.25', material: '폴리', shape: '각줄' },
-  { brandKo: '바볼랏',      modelKo: 'RPM 블라스트 125',       nameEn: 'Babolat RPM Blast 125',         gauge: '1.25', material: '폴리', shape: '각줄' },
-  { brandKo: '솔린코',      modelKo: '하이퍼-G 125',           nameEn: 'Solinco Hyper-G 125',           gauge: '1.25', material: '폴리', shape: '각줄' },
-  { brandKo: '테크니화이버', modelKo: '엑스원 바이페이즈 125',  nameEn: 'Tecnifibre X-One Biphase 125',  gauge: '1.25', material: '멀티', shape: '원형줄' },
-  { brandKo: '윌슨',        modelKo: 'NXT 16',                nameEn: 'Wilson NXT 16',                 gauge: '1.30', material: '멀티', shape: '원형줄' },
-  { brandKo: '요넥스',      modelKo: '폴리투어 프로 125',      nameEn: 'Yonex Poly Tour Pro 125',       gauge: '1.25', material: '폴리', shape: '원형줄' },
-  { brandKo: '요넥스',      modelKo: 'BG65',                  nameEn: 'Yonex BG65',                    gauge: '0.70', material: '멀티', shape: '원형줄' },
-  { brandKo: '요넥스',      modelKo: 'BG80',                  nameEn: 'Yonex BG80',                    gauge: '0.68', material: '폴리', shape: '원형줄' },
-  { brandKo: '요넥스',      modelKo: '에어로바이트',           nameEn: 'Yonex Aerobite',                gauge: '0.67', material: '멀티', shape: '원형줄' },
-  { brandKo: '셀커크',      modelKo: '피클볼 스트링',          nameEn: 'Selkirk Pickleball String',     gauge: '1.25', material: '폴리', shape: '원형줄' },
+// 종목(테니스/배드민턴/피클볼)별로 따로 관리하고, 각 종목 안에서는 실제 인기·판매 순으로 정렬함
+// 이름 끝의 "125" 같은 숫자는 게이지(굵기) 표기이므로 "1.25mm" 형식으로 통일해서 표기함
+const STRING_PRESETS_TENNIS = [
+  { brandKo: '룩실론',      modelKo: 'ALU 파워',         nameEn: 'Luxilon ALU Power',         gauge: '1.25', material: '폴리', shape: '원형줄' },
+  { brandKo: '바볼랏',      modelKo: 'RPM 블라스트',      nameEn: 'Babolat RPM Blast',         gauge: '1.25', material: '폴리', shape: '각줄' },
+  { brandKo: '솔린코',      modelKo: '하이퍼-G',          nameEn: 'Solinco Hyper-G',           gauge: '1.20', material: '폴리', shape: '각줄' },
+  { brandKo: '요넥스',      modelKo: '폴리투어 프로',      nameEn: 'Yonex Poly Tour Pro',       gauge: '1.25', material: '폴리', shape: '원형줄' },
+  { brandKo: '룩실론',      modelKo: '4G',               nameEn: 'Luxilon 4G',                gauge: '1.25', material: '폴리', shape: '각줄' },
+  { brandKo: '바볼랏',      modelKo: 'RPM 러프',          nameEn: 'Babolat RPM Rough',         gauge: '1.25', material: '폴리', shape: '각줄' },
+  { brandKo: '테크니화이버', modelKo: '엑스원 바이페이즈', nameEn: 'Tecnifibre X-One Biphase',  gauge: '1.30', material: '멀티', shape: '원형줄' },
+  { brandKo: '윌슨',        modelKo: 'NXT',              nameEn: 'Wilson NXT',                gauge: '1.30', material: '멀티', shape: '원형줄' },
 ];
+const STRING_PRESETS_BADMINTON = [
+  { brandKo: '요넥스',  modelKo: 'BG65 0.70mm',          nameEn: 'Yonex BG65 0.70mm',          gauge: '0.70', material: '멀티', shape: '원형줄' },
+  { brandKo: '요넥스',  modelKo: 'BG80 0.68mm',          nameEn: 'Yonex BG80 0.68mm',          gauge: '0.68', material: '멀티', shape: '원형줄' },
+  { brandKo: '요넥스',  modelKo: '에어로바이트 0.67mm',   nameEn: 'Yonex Aerobite 0.67mm',      gauge: '0.67', material: '멀티', shape: '원형줄' },
+  { brandKo: '요넥스',  modelKo: 'NBG95 0.65mm',         nameEn: 'Yonex NBG95 0.65mm',         gauge: '0.65', material: '멀티', shape: '원형줄' },
+  { brandKo: '요넥스',  modelKo: '엑스볼트 65 0.65mm',    nameEn: 'Yonex Exbolt 65 0.65mm',     gauge: '0.65', material: '멀티', shape: '원형줄' },
+  { brandKo: '요넥스',  modelKo: '에어로소닉 0.61mm',     nameEn: 'Yonex Aerosonic 0.61mm',     gauge: '0.61', material: '멀티', shape: '원형줄' },
+  { brandKo: '빅터',    modelKo: 'VBS-68 0.68mm',        nameEn: 'Victor VBS-68 0.68mm',       gauge: '0.68', material: '멀티', shape: '원형줄' },
+];
+const STRING_PRESETS_PICKLEBALL = [
+  { brandKo: '셀커크',  modelKo: '피클볼 스트링 1.25mm',  nameEn: 'Selkirk Pickleball String 1.25mm', gauge: '1.25', material: '폴리', shape: '원형줄' },
+];
+
+// 현재 선택된 종목(state.sportType)에 맞는 프리셋 목록 반환
+function getStrDBSportPresets() {
+  const sport = state.sportType || 'tennis';
+  if (sport === 'badminton') return STRING_PRESETS_BADMINTON;
+  if (sport === 'pickleball') return STRING_PRESETS_PICKLEBALL;
+  return STRING_PRESETS_TENNIS;
+}
 
 function renderStrDBPresetOptions() {
   const sel = document.getElementById('strdb-preset');
   if (!sel) return;
   const isEn = (_nijiGetLang && _nijiGetLang() === 'en');
-  const optsHtml = STRING_PRESETS.map((p, i) => `<option value="${i}">${escHtml(isEn ? p.nameEn : (p.brandKo + ' ' + p.modelKo))}</option>`).join('');
+  const presets = getStrDBSportPresets();
+  const optsHtml = presets.map((p, i) => `<option value="${i}">${escHtml(isEn ? p.nameEn : (p.brandKo + ' ' + p.modelKo))}</option>`).join('');
   sel.innerHTML = `<option value="" data-lang="strdb_preset_ph">${escHtml(_t('strdb_preset_ph'))}</option>` + optsHtml;
+
+  // 라벨을 "테니스 스트링 / 배드민턴 스트링 / 피클볼 스트링"으로 종목에 맞게 표시
+  const lbl = document.getElementById('strdb-preset-lbl');
+  if (lbl) {
+    const sport = state.sportType || 'tennis';
+    const sportName = _t(sport === 'badminton' ? 'pf_badminton' : sport === 'pickleball' ? 'pf_pickleball' : 'pf_tennis');
+    lbl.textContent = _t('strdb_preset_lbl').replace('{sport}', sportName);
+  }
 }
 
 function applyStrDBPreset(idx) {
   if (idx === '' || idx === undefined || idx === null) return;
-  const p = STRING_PRESETS[parseInt(idx, 10)];
+  const p = getStrDBSportPresets()[parseInt(idx, 10)];
   if (!p) return;
   const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
   setVal('strdb-brand', p.brandKo);
@@ -7803,6 +8407,105 @@ function strDBDisplayName(item) {
   return (item.brand + ' ' + item.model).trim();
 }
 
+// ===== 특징 · 장단점 · 추천정보: 기본 문구 칩 (탭해서 추가/제거 + 직접 입력도 가능) =====
+const STRDB_FEATURE_PRESETS = [
+  { ko: '묵직한 타구감', en: 'Heavy, solid feel' },
+  { ko: '부드러운 타구감', en: 'Soft, comfortable feel' },
+  { ko: '샤프한 타구감', en: 'Crisp, sharp feel' },
+  { ko: '반발력이 좋음', en: 'Good rebound/power' },
+  { ko: '스핀이 잘 걸림', en: 'Great spin potential' },
+  { ko: '컨트롤이 좋음', en: 'Great control' },
+  { ko: '내구성이 좋음', en: 'Durable' },
+  { ko: '텐션 유지력이 좋음', en: 'Holds tension well' },
+];
+const STRDB_PROS_PRESETS = [
+  { ko: '타구감이 좋음', en: 'Great feel' },
+  { ko: '스핀이 잘 걸림', en: 'Great spin' },
+  { ko: '파워가 좋음', en: 'Great power' },
+  { ko: '컨트롤이 좋음', en: 'Great control' },
+  { ko: '내구성이 좋음', en: 'Durable' },
+  { ko: '텐션 유지력이 좋음', en: 'Holds tension well' },
+  { ko: '가격이 합리적임', en: 'Good value for price' },
+  { ko: '팔에 부담이 적음', en: 'Easy on the arm' },
+];
+const STRDB_CONS_PRESETS = [
+  { ko: '내구성이 약함', en: 'Wears out quickly' },
+  { ko: '텐션 유지력이 약함', en: 'Loses tension quickly' },
+  { ko: '가격이 비쌈', en: 'Expensive' },
+  { ko: '팔에 부담이 있음', en: 'Hard on the arm' },
+  { ko: '타구감이 딱딱함', en: 'Feels stiff/harsh' },
+  { ko: '파워가 부족함', en: 'Lacks power' },
+  { ko: '스핀이 잘 안 걸림', en: 'Less spin' },
+];
+const STRDB_STYLE_PRESETS = [
+  { ko: '공격형', en: 'Aggressive' },
+  { ko: '수비형', en: 'Defensive' },
+  { ko: '올라운드형', en: 'All-round' },
+  { ko: '스핀형', en: 'Spin-heavy' },
+  { ko: '서브앤발리', en: 'Serve & Volley' },
+];
+const STRDB_CAREER_PRESETS = [
+  { ko: '6개월 미만', en: 'Under 6 months' },
+  { ko: '6개월~1년', en: '6mo–1yr' },
+  { ko: '1~2년', en: '1–2yrs' },
+  { ko: '2~5년', en: '2–5yrs' },
+  { ko: '5~10년', en: '5–10yrs' },
+  { ko: '10년 이상', en: '10+ yrs' },
+];
+const STRDB_RACKET_PRESETS = [
+  { ko: '컨트롤형 라켓', en: 'Control racquet' },
+  { ko: '파워형 라켓', en: 'Power racquet' },
+  { ko: '올라운드 라켓', en: 'All-round racquet' },
+  { ko: '초보자용 라켓', en: 'Beginner racquet' },
+  { ko: '중상급자용 라켓', en: 'Intermediate/advanced racquet' },
+];
+
+// 프리셋 칩 목록을 지정한 입력칸 위에 렌더 (탭하면 토글로 추가/제거)
+function renderStrDBPresetChipRow(containerId, fieldId, presets) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return;
+  const isEn = (_nijiGetLang && _nijiGetLang() === 'en');
+  const fieldEl = document.getElementById(fieldId);
+  const current = (fieldEl ? fieldEl.value : '').split(',').map(s => s.trim()).filter(Boolean);
+  wrap.innerHTML = presets.map(p => {
+    const text = isEn ? p.en : p.ko;
+    const on = current.includes(text);
+    const safe = text.replace(/'/g, "\\'");
+    return `<button type="button" class="niji-tapbtn" onclick="toggleStrDBPresetChip('${fieldId}','${containerId}','${safe}')"
+      style="flex:0 0 auto;border-radius:20px;padding:6px 12px;font-size:0.72rem;font-weight:${on ? 700 : 600};white-space:nowrap;
+      background:${on ? 'rgba(124,106,247,.18)' : 'var(--surface2)'};border:1px solid ${on ? 'var(--accent)' : 'var(--border)'};color:${on ? 'var(--accent)' : 'var(--text)'};">${on ? '✓ ' : ''}${escHtml(text)}</button>`;
+  }).join('');
+}
+
+// 칩 탭 → 입력칸 값에 추가/제거 (이미 있으면 빼고, 없으면 더함). 직접 타이핑한 내용은 그대로 유지됨
+function toggleStrDBPresetChip(fieldId, containerId, text) {
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  const parts = el.value.split(',').map(s => s.trim()).filter(Boolean);
+  const idx = parts.indexOf(text);
+  if (idx >= 0) parts.splice(idx, 1); else parts.push(text);
+  el.value = parts.join(', ');
+  renderStrDBPresetChipRow(containerId, fieldId, STRDB_CHIP_PRESET_MAP[containerId]);
+}
+
+const STRDB_CHIP_PRESET_MAP = {
+  'strdb-features-chips': STRDB_FEATURE_PRESETS,
+  'strdb-pros-chips': STRDB_PROS_PRESETS,
+  'strdb-cons-chips': STRDB_CONS_PRESETS,
+  'strdb-style-chips': STRDB_STYLE_PRESETS,
+  'strdb-career-chips': STRDB_CAREER_PRESETS,
+  'strdb-racket-chips': STRDB_RACKET_PRESETS,
+};
+
+function renderAllStrDBPresetChips() {
+  renderStrDBPresetChipRow('strdb-features-chips', 'strdb-features', STRDB_FEATURE_PRESETS);
+  renderStrDBPresetChipRow('strdb-pros-chips', 'strdb-pros', STRDB_PROS_PRESETS);
+  renderStrDBPresetChipRow('strdb-cons-chips', 'strdb-cons', STRDB_CONS_PRESETS);
+  renderStrDBPresetChipRow('strdb-style-chips', 'strdb-style', STRDB_STYLE_PRESETS);
+  renderStrDBPresetChipRow('strdb-career-chips', 'strdb-career', STRDB_CAREER_PRESETS);
+  renderStrDBPresetChipRow('strdb-racket-chips', 'strdb-racket', STRDB_RACKET_PRESETS);
+}
+
 function showStringDBFormView(editId) {
   window._strDBEditId = editId || null;
   const item = editId ? (state.stringMasterDB || []).find(s => s.id === editId) : null;
@@ -7845,6 +8548,7 @@ function showStringDBFormView(editId) {
   setVal('strdb-career', item && item.career);
   setVal('strdb-racket', item && item.racket);
   setVal('strdb-memo', item && item.memo);
+  renderAllStrDBPresetChips();
 
   window._strDBRatings = (item && item.ratings) ? { ...item.ratings } : {};
   renderStrDBRatingRows();
@@ -8065,12 +8769,16 @@ function renderStringing() {
     const crossTenEl = document.getElementById('str' + num + '-cross-tension');
     const crossWrap  = document.getElementById('str' + num + '-cross-wrap');
     const limitEl = document.getElementById('str' + num + '-gamelimit');
+    const hourLimitEl = document.getElementById('str' + num + '-hourlimit');
+    const alertEnabledEl = document.getElementById('str' + num + '-alertenabled');
 
     if (strEl  && document.activeElement !== strEl)  strEl.value  = p['string' + suf]  || '';
     if (tenEl  && document.activeElement !== tenEl)  tenEl.value  = p['tension' + suf] || '';
     if (dateEl && document.activeElement !== dateEl) dateEl.value = p['stringDate' + suf] || '';
     if (intEl  && document.activeElement !== intEl)  intEl.value  = state['stringInterval' + suf] || 3;
     if (limitEl && document.activeElement !== limitEl) limitEl.value = getRacketGameLimit(num);
+    if (hourLimitEl && document.activeElement !== hourLimitEl) hourLimitEl.value = getRacketHourLimit(num);
+    if (alertEnabledEl) alertEnabledEl.checked = isRacketAlertEnabled(num);
     if (dateEl && document.activeElement !== dateEl && !dateEl.value) dateEl.value = today;
 
     const isHybrid = !!p['hybrid' + num];
@@ -8106,20 +8814,30 @@ function renderStringing() {
         const limit = getRacketGameLimit(num);
         const gameOverdue = games >= limit;
         const gameSoon = !gameOverdue && games >= limit * 0.7;
+        const usage = calcRacketUsageMin(dateStr, p['stringDate' + (num === 1 ? '' : num) + 'Time'] || '', 'racket' + num);
+        const hourStatus = getHourLimitStatus(num, usage.totalMin);
+        const hourOverdue = hourStatus.enabled && hourStatus.overdue;
+        const hourSoon = hourStatus.enabled && !hourStatus.overdue && hourStatus.remainingMin <= hourStatus.limitMin * 0.15;
 
         let cls = 'ok', icon = '🟢', title = '', sub = '';
-        if (remaining <= 0 || gameOverdue) {
+        if (remaining <= 0 || gameOverdue || hourOverdue) {
           cls = 'danger'; icon = '🔴';
-          if (remaining <= 0) {
+          if (hourOverdue) {
+            title = _t('str_hour_overdue');
+            sub = `${_t('str_hour_limit_lbl')} ${getRacketHourLimit(num)}h · ${formatDurationMin(usage.totalMin)}`;
+          } else if (remaining <= 0) {
             title = _t('str_alert_overdue_title').replace('{n}', Math.abs(remaining));
             sub = _t('str_alert_overdue_sub');
           } else {
             title = _t('str_alert_games_overdue').replace('{n}', games);
             sub = _t('str_alert_overdue_sub') + _t('str_alert_games_limit_note').replace('{limit}', limit);
           }
-        } else if (remaining <= 14 || gameSoon) {
+        } else if (remaining <= 14 || gameSoon || hourSoon) {
           cls = ''; icon = '🟡';
-          if (remaining <= 14) {
+          if (hourSoon) {
+            title = _t('str_hour_remaining').replace('{n}', formatDurationMin(hourStatus.remainingMin));
+            sub = `${_t('str_hour_limit_lbl')} ${getRacketHourLimit(num)}h · ${formatDurationMin(usage.totalMin)}`;
+          } else if (remaining <= 14) {
             title = _t('str_alert_soon_title').replace('{n}', remaining);
             sub = _t('str_alert_soon_sub');
           } else {
@@ -8136,6 +8854,7 @@ function renderStringing() {
           <div class="stringing-alert-text">
             <div class="stringing-alert-title">${title}</div>
             <div class="stringing-alert-sub">${sub}</div>
+            ${(usage.gameCount > 0 || usage.rallyMin > 0) ? `<div class="stringing-alert-sub">🕐 ${formatDurationMin(usage.totalMin)}${usage.rallyMin > 0 ? ` (${(_nijiGetLang()||'ko')==='en' ? 'rally' : '난타'} ${formatDurationMin(usage.rallyMin)})` : ''}</div>` : ''}
           </div></div>`;
       }
     }
@@ -8401,6 +9120,9 @@ function saveStringingInfo(racketNum) {
   p['string' + suf]  = stringName;
   p['tension' + suf] = tension;
   p['stringDate' + suf] = date;
+  // 교체 "시각"도 함께 저장 — 교체 당일 친 경기를 새 스트링 게임수에 잘못 포함시키지 않기 위함
+  // (countGamesAfterRestring이 이 값을 기준으로 같은 날 경기의 전/후를 구분함)
+  p['stringDate' + suf + 'Time'] = new Date().toISOString();
   p['hybrid' + rn] = isHybrid;
   p['crossString' + rn]  = crossString;
   p['crossTension' + rn] = crossTension;
@@ -12397,6 +13119,13 @@ function setLanguage(lang) {
       document.getElementById('tv-root') &&
       document.getElementById('tv-root').style.display !== 'none') {
     renderTournamentList();
+  }
+
+  // 스트링 DB 등록 폼이 열려있으면 프리셋 목록/라벨도 새 언어로 새로고침
+  if (typeof renderStrDBPresetOptions === 'function' &&
+      document.getElementById('stringDBFormView') &&
+      document.getElementById('stringDBFormView').style.display !== 'none') {
+    renderStrDBPresetOptions();
   }
   if (typeof renderTnList === 'function' &&
       document.getElementById('tn-root') &&
