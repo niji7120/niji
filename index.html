@@ -101,105 +101,76 @@ const NIJI_DICT = {
   /* 온보딩 (첫 사용자 안내) */
   ob_skip:                 { ko: '건너뛰기', en: 'Skip' },
   ob_step_of:              { ko: '{cur} / {total}', en: '{cur} / {total}' },
-  ob1_title:               { ko: '니지스트링에\n오신 걸 환영해요! 🎾', en: 'Welcome to\nNIJI STRING! 🎾' },
-  ob1_desc:                { ko: '경기 기록부터 전적 통계, 선수·대회 관리까지\n라켓 스포츠 생활을 이 앱 하나로 관리해보세요.', en: 'From match records to stats,\nplayers, and tournaments — manage it all in one app.' },
-  ob1_btn:                 { ko: '시작하기', en: 'Get Started' },
-  ob2_title:                { ko: '어떤 종목을\n즐기세요?', en: 'Which sport\ndo you play?' },
-  ob2_desc:                { ko: '나중에 프로필 탭에서 언제든 바꿀 수 있어요', en: 'You can change this anytime in the Profile tab' },
-  ob3_title:               { ko: '이름을\n알려주세요', en: "What's your\nname?" },
-  ob3_desc:                { ko: '경기 기록과 통계에 표시될 이름이에요', en: 'This name will appear on your match records and stats' },
-  ob3_ph:                  { ko: '예: 홍길동', en: 'e.g. John Smith' },
-  ob3_required:            { ko: '이름을 입력해 주세요', en: 'Please enter your name' },
-  ob4_title:               { ko: '준비 완료! 🎉', en: 'All set! 🎉' },
-  ob4_desc:                { ko: '딱 2가지만 더 알려드릴게요.\n금방 끝나요!', en: "Just 2 quick things to show you.\nIt'll only take a second!" },
-  ob4_btn:                 { ko: '계속하기 →', en: 'Continue →' },
-  ob_btn_next:             { ko: '다음', en: 'Next' },
+  ob1_title:               { ko: '🎾 NIJI STRING에\n오신 것을 환영합니다', en: 'Welcome to\n🎾 NIJI STRING' },
+  ob1_desc:                { ko: 'NIJI STRING은 모든 기능을 무료로 사용할 수 있는 앱입니다.\n회원가입 없이도 바로 사용할 수 있으며,\n로그인하면 데이터를 안전하게 백업하고\n다른 기기에서도 이어서 사용할 수 있습니다.\n로그인은 필수가 아니며, 언제든지 나중에 할 수 있습니다.', en: 'NIJI STRING is completely free to use.\nYou can start right away without signing up.\nLogging in safely backs up your data\nand lets you continue on other devices.\nLogin is optional — you can always do it later.' },
+  ob1_btn_guest:           { ko: '로그인 없이 시작하기', en: 'Start without login' },
+  ob1_btn_login:           { ko: '로그인하고 시작하기', en: 'Start with login' },
+  ob2_title:               { ko: '곧 시작할게요', en: "Let's get started" },
+  ob2_desc:                { ko: '앞으로 몇 분 동안\n✔ 스트링 등록\n✔ 프로필 등록\n✔ 첫 경기 등록\n까지만 함께 진행합니다.\n완료하면 바로 사용할 수 있습니다.', en: "In just a few minutes, we'll go through:\n✔ String registration\n✔ Profile setup\n✔ Logging your first match\nThat's it — you can start using the app right after." },
+  ob2_btn:                 { ko: '시작하기', en: 'Start' },
+  ob3_title:               { ko: '자동으로\n스트링 관리 화면으로 이동합니다', en: 'Automatically taking you\nto the String Management screen' },
   ob_toast_done:           { ko: '👋 환영해요! 편하게 둘러보세요', en: '👋 Welcome! Feel free to look around' },
-  /* 가이드 투어 (실제 화면 위 말풍선 튜토리얼) - 프로필 탭 / 경기기록(복식) 2단계 */
+  /* 가이드 투어 (실제 화면 위 말풍선 튜토리얼) - 첫 경기 등록까지만 진행 */
   tour_next:               { ko: '다음', en: 'Next' },
   tour_done:               { ko: '시작하기 ✓', en: "Let's Go ✓" },
   tour_skip:               { ko: '건너뛰기', en: 'Skip' },
   tour_prev:               { ko: '이전', en: 'Prev' },
   tour_end_toast:          { ko: '🎉 좋아요! 이제 첫 경기를 기록해보세요', en: '🎉 Great! Now log your first match' },
-  tour1_title:             { ko: '👤 프로필 탭', en: '👤 Profile tab' },
-  tour1_desc:              { ko: '내 정보, 등록한 라켓, 스트링 교체 시기까지\n여기서 한눈에 확인하고 관리할 수 있어요.', en: 'Check and manage your info, registered rackets,\nand string replacement schedule all in one place.' },
-  tour2_title:             { ko: '🎾 먼저 단식/복식을 선택하세요', en: '🎾 First, choose singles or doubles' },
-  tour2_desc:              { ko: '"새 경기 입력"을 누르면 여기서 단식/복식을 고를 수 있어요.\n복식을 선택하면 파트너와 상대 두 명의\n이름까지 입력할 수 있어요.', en: 'After tapping "New Match", choose singles or doubles here.\nWith doubles, you can also enter your partner\nand both opponents\' names.' },
+  tour_str_racket_title:   { ko: '🎾 라켓 이름을 입력해보세요', en: '🎾 Enter your racquet name' },
+  tour_str_racket_desc:    { ko: '입력하면 자동으로 저장돼요.\n마치면 다음으로 넘어가요.', en: 'It saves automatically as you type.\nYou will move on once it is saved.' },
+  tour_str_string_title:   { ko: '🧵 사용 중인 스트링을 입력하세요', en: '🧵 Enter the string you use' },
+  tour_str_string_desc:    { ko: '입력하면 자동으로 저장돼요.\n마치면 다음으로 넘어가요.', en: 'It saves automatically as you type.\nYou will move on once it is saved.' },
+  tour_str_tension_title:  { ko: '🎯 스트링 텐션을 입력하세요', en: '🎯 Enter the string tension' },
+  tour_str_tension_desc:   { ko: '숫자만 입력하면 돼요.\n마치면 다음으로 넘어가요.', en: 'Just enter the number.\nYou will move on once it is saved.' },
+  tour_str_date_title:     { ko: '📅 마지막 교체일을 입력하세요', en: '📅 Enter the last restring date' },
+  tour_str_date_desc:      { ko: '오늘 교체했다면\n"오늘" 버튼을 눌러보세요.', en: 'If you restrung today,\njust tap the "Today" button.' },
+  tour_str_save_title:     { ko: '💾 저장 버튼을 눌러주세요', en: '💾 Tap the save button' },
+  tour_str_save_desc:      { ko: '이 버튼을 눌러야\n스트링 등록이 완료돼요.', en: 'Tap this button to finish\nyour string registration.' },
   tour_prof_name_title:    { ko: '✏️ 이름을 입력해보세요', en: '✏️ Enter your name' },
-  tour_prof_name_desc:     { ko: '여기에 이름(또는 닉네임)을 입력하면\n바로 저장돼요.\n입력을 마치면 자동으로 다음으로 넘어가요.', en: 'Type your name (or nickname) here.\nIt saves automatically.\nYou will move on once it is saved.' },
+  tour_prof_name_desc:     { ko: '입력하면 자동으로 저장돼요.\n마치면 다음으로 넘어가요.', en: 'It saves automatically as you type.\nYou will move on once it is saved.' },
   tour_prof_style_title:   { ko: '🎯 플레이 스타일을 선택하세요', en: '🎯 Choose your play style' },
-  tour_prof_style_desc:    { ko: '나에게 맞는 플레이 스타일을 골라주세요.\n선택하면 바로 저장돼요.', en: 'Pick the play style that fits you.\nIt saves as soon as you choose.' },
-  tour_prof_career_title:  { ko: '📅 구력을 선택하세요', en: '📅 Choose your experience level' },
-  tour_prof_career_desc:   { ko: '운동을 시작한 지 얼마나 되셨나요?\n선택하면 프로필 등록이 완료돼요.', en: 'How long have you been playing?\nChoosing this finishes your profile setup.' },
-  tour_racket_name_title:  { ko: '🎾 라켓 이름을 입력해보세요', en: '🎾 Enter your racquet name' },
-  tour_racket_name_desc:   { ko: '사용 중인 라켓 이름을 입력해주세요.\n입력하면 자동으로 저장돼요.', en: 'Enter the name of your racquet.\nIt saves automatically as you type.' },
-  tour_racket_string_title:{ ko: '🧵 스트링 이름을 입력해보세요', en: '🧵 Enter your string name' },
-  tour_racket_string_desc: { ko: '라켓에 걸려 있는(걸 예정인) 스트링 이름을\n입력해주세요.', en: 'Enter the name of the string on\nthis racquet.' },
-  tour_racket_save_title:  { ko: '💾 저장 버튼을 눌러주세요', en: '💾 Tap the save button' },
-  tour_racket_save_desc:   { ko: '입력한 라켓 정보를 실제로 저장해볼까요?\n이 버튼을 눌러야 라켓 등록이 완료돼요.', en: 'Let us actually save your racquet info.\nTap this button to finish registering it.' },
+  tour_prof_style_desc:    { ko: '선택하면 자동으로 저장돼요.\n마치면 다음으로 넘어가요.', en: 'It saves automatically once selected.\nYou will move on once it is saved.' },
+  tour_prof_career_title:  { ko: '📈 구력을 선택하세요', en: '📈 Choose your experience level' },
+  tour_prof_career_desc:   { ko: '선택하면 자동으로 저장돼요.\n마치면 다음으로 넘어가요.', en: 'It saves automatically once selected.\nYou will move on once it is saved.' },
+  tour_prof_sport_title:   { ko: '🎮 종목을 선택하세요', en: '🎮 Choose your sport' },
+  tour_prof_sport_desc:    { ko: '테니스 또는 배드민턴 중\n하나를 선택해주세요.', en: 'Choose either tennis\nor badminton.' },
+  tour2_title:             { ko: '🎾 단식/복식을 선택하세요', en: '🎾 Choose singles or doubles' },
+  tour2_desc:              { ko: '복식을 선택하면 상대 두 명을\n입력할 수 있어요.', en: 'Choose doubles to enter\ntwo opponents.' },
   tour_gate_hint:          { ko: '👆 먼저 직접 입력(또는 저장)해주세요', en: '👆 Please enter (or save) it first' },
-  tour_match_nav_title:    { ko: '🏸 경기기록 탭으로 이동하세요', en: '🏸 Go to the Match Records tab' },
-  tour_match_nav_desc:     { ko: '여기를 누르면 경기 기록 화면으로 이동해요.', en: 'Tap here to go to the match records screen.' },
-  tour_match_newbtn_title: { ko: '➕ 새 경기 입력 버튼을 눌러보세요', en: '➕ Tap "New Match"' },
-  tour_match_newbtn_desc:  { ko: '이 버튼을 누르면 경기를 입력하는\n창이 열려요.', en: 'Tap this button to open\nthe match entry form.' },
+  tour_match_newbtn_title: { ko: '➕ 새 경기 입력을 눌러보세요', en: '➕ Tap "New Match"' },
+  tour_match_newbtn_desc:  { ko: '이 버튼을 누르면 경기 입력\n창이 열려요.', en: 'Tap this button to open\nthe match entry form.' },
+  tour_match_mode_title:   { ko: '🎾 기록 종류를 선택하세요', en: '🎾 Choose the record type' },
+  tour_match_mode_desc:    { ko: '점수를 매기는 게임인지\n연습 난타인지 선택해주세요.', en: 'Choose "Game" for scored matches\nor "Rally" for practice hitting.' },
+  tour_match_score_title:  { ko: '📊 점수를 입력하세요', en: '📊 Enter the score' },
+  tour_match_score_desc:   { ko: '점수를 입력하면 더욱 정확한\n기록이 돼요. (승패는 자동 판정)', en: 'Entering the score makes your\nrecord more accurate (result auto-detected).' },
   tour_match_opponent_title:{ ko: '🆚 상대 이름을 입력하세요', en: '🆚 Enter your opponent name' },
   tour_match_opponent_desc:{ ko: '함께 경기한 상대의 이름을\n입력해주세요.', en: 'Enter the name of the opponent\nyou played against.' },
   tour_match_result_title: { ko: '🏆 승패를 선택하세요', en: '🏆 Choose the result' },
   tour_match_result_desc:  { ko: '이번 경기에서 이겼는지 졌는지\n선택해주세요.', en: 'Select whether you won\nor lost this match.' },
   tour_match_racket_title: { ko: '🎾 사용한 라켓을 선택하세요', en: '🎾 Select the racquet you used' },
-  tour_match_racket_desc:  { ko: '경기에 사용한 라켓을 선택하면\n스트링 사용량이 자동으로 계산돼요.', en: 'Select the racquet you used\nto auto-track string usage.' },
+  tour_match_racket_desc:  { ko: '없으면 그냥 넘어가도 돼요.\n나중에 프로필에서 등록할 수 있어요.', en: 'Skip if you don\'t have one yet.\nYou can add it later in Profile.' },
   tour_match_save_title:   { ko: '💾 저장 버튼을 눌러주세요', en: '💾 Tap the save button' },
-  tour_match_save_desc:    { ko: '입력한 경기 기록을 실제로 저장해볼까요?\n이 버튼을 눌러야 첫 경기 등록이 완료돼요.', en: 'Let\'s actually save this match.\nTap this button to finish your first match entry.' },
-  tour_first_match_title:  { ko: '🎉 첫 경기 등록 완료!', en: '🎉 First Match Recorded!' },
-  tour_first_match_desc:   { ko: '첫 경기를 성공적으로 기록했어요!\n이제 통계 탭에서 나의 승률과\n기록을 확인할 수 있어요.', en: 'You logged your first match!\nCheck your win rate and records\nin the Stats tab.' },
-  tour_first_match_confirm:{ ko: '확인', en: 'OK' },
-  tour_stats_nav_title:    { ko: '📊 통계 탭으로 이동하세요', en: '📊 Go to the Stats tab' },
-  tour_stats_nav_desc:     { ko: '여기를 누르면 나의 경기 통계를\n볼 수 있어요.', en: 'Tap here to see your\nmatch statistics.' },
-  tour_stats_winrate_title:{ ko: '🏆 경기수 · 승 · 패 · 승률', en: '🏆 Matches · Wins · Losses · Win%' },
-  tour_stats_winrate_desc: { ko: '경기를 입력할 때마다\n자동으로 계산돼서 여기에 표시돼요.', en: 'These update automatically\nevery time you log a match.' },
-  tour_stats_opponent_title:{ ko: '⚔️ 상대 전적', en: '⚔️ Head-to-Head' },
-  tour_stats_opponent_desc:{ ko: '상대별로 나와의 전적과 승률을\n자동으로 모아서 보여줘요.', en: 'Automatically gathers your\nrecord against each opponent.' },
-  tour_stats_partner_title:{ ko: '🤝 파트너 통계', en: '🤝 Partner Stats' },
-  tour_stats_partner_desc: { ko: '복식 경기를 입력하면\n파트너별 궁합도 확인할 수 있어요.', en: 'Enter doubles matches to see\nyour chemistry with each partner.' },
-  tour_stats_monthly_title:{ ko: '📅 월별 승률', en: '📅 Monthly Win%' },
-  tour_stats_monthly_desc: { ko: '최근 12개월 성적 추이를\n그래프로 볼 수 있어요.', en: 'View your last 12 months\nof performance as a graph.' },
-  tour_stats_auto_title:   { ko: '✨ 모두 자동으로 만들어져요', en: '✨ All generated automatically' },
-  tour_stats_auto_desc:    { ko: '경기 기록만 입력하면\n이 모든 통계가 저절로 채워져요.', en: 'Just log your matches —\nall these stats fill in by themselves.' },
-  tour_str2_profile_title: { ko: '👤 프로필 탭으로 이동하세요', en: '👤 Go to the Profile tab' },
-  tour_str2_profile_desc:  { ko: '여기서 스트링 관리 화면으로\n들어갈 수 있어요.', en: 'From here you can enter\nthe string management screen.' },
-  tour_str2_manage_title:  { ko: '🧵 스트링 관리를 눌러보세요', en: '🧵 Tap String Management' },
-  tour_str2_manage_desc:   { ko: '라켓별 스트링 정보와\n교체 시기를 관리할 수 있어요.', en: 'Manage each racquet\'s string info\nand replacement schedule.' },
-  tour_str2_date_title:    { ko: '📅 교체일을 입력하세요', en: '📅 Enter the restring date' },
-  tour_str2_date_desc:     { ko: '스트링을 마지막으로 교체한 날짜를\n입력해주세요.', en: 'Enter the date you last\nrestrung this racquet.' },
-  tour_str2_interval_title:{ ko: '🔁 교체주기를 선택하세요', en: '🔁 Choose the restring cycle' },
-  tour_str2_interval_desc: { ko: '얼마 주기로 스트링을 교체할지\n선택할 수 있어요.', en: 'Choose how often you\nplan to restring.' },
-  tour_str2_hourlimit_title:{ ko: '⏱️ 사용시간 기준을 설정하세요', en: '⏱️ Set the usage-time limit' },
-  tour_str2_hourlimit_desc:{ ko: '실제 스트링 사용시간이 이 시간을\n넘으면 교체를 권장해줘요.', en: 'You\'ll get a replace alert once\nactual usage passes this many hours.' },
-  tour_str2_gamelimit_title:{ ko: '🎾 게임수 기준을 설정하세요', en: '🎾 Set the game-count limit' },
-  tour_str2_gamelimit_desc:{ ko: '이 게임 수를 넘게 치면\n교체 알림이 떠요.', en: 'You\'ll get an alert once you\nplay past this many games.' },
-  tour_str2_alert_title:   { ko: '🔔 자동 알림을 켜보세요', en: '🔔 Turn on automatic alerts' },
-  tour_str2_alert_desc:    { ko: '켜두면 교체 시기가 됐을 때\n자동으로 알려줘요.', en: 'When on, you\'ll be notified\nautomatically when it\'s time.' },
-  tour_str2_explain_title: { ko: '💡 이렇게 계산돼요', en: '💡 How this is calculated' },
-  tour_str2_explain_desc:  { ko: '날짜·게임수·사용시간을 종합해서\n교체 시기를 판단해줘요.', en: 'Replacement timing is judged from\ndate, game count, and usage time together.' },
-  tour_ai_nav_title:       { ko: '🤖 AI 추천을 눌러보세요', en: '🤖 Tap AI Recommendation' },
-  tour_ai_nav_desc:        { ko: '내 기록을 바탕으로 스트링을\n추천해줘요.', en: 'Get a string suggestion based\non your own records.' },
-  tour_ai_string_title:    { ko: '🧵 추천 스트링', en: '🧵 Recommended String' },
-  tour_ai_string_desc:     { ko: '나에게 가장 잘 맞는 스트링을\n자동으로 추천해줘요.', en: 'Automatically suggests the string\nthat fits you best.' },
-  tour_ai_tension_title:   { ko: '🎚️ 추천 텐션', en: '🎚️ Recommended Tension' },
-  tour_ai_tension_desc:    { ko: '함께 사용하면 좋은 텐션도\n같이 알려줘요.', en: 'Also suggests a tension\nthat pairs well with it.' },
-  tour_ai_reason_title:    { ko: '📋 추천 이유', en: '📋 Why This' },
-  tour_ai_reason_desc:     { ko: '왜 이 스트링을 추천했는지\n이유도 함께 보여줘요.', en: 'Shows the reasons behind\nthe recommendation.' },
-  tour_ai_auto_title:      { ko: '✨ 자동으로 분석돼요', en: '✨ Analyzed automatically' },
-  tour_ai_auto_desc:       { ko: '입력하신 스트링 기록과 경기 데이터를\n바탕으로 자동 계산돼요.', en: 'Calculated automatically from your\nstring records and match data.' },
-  tour_final_title:        { ko: '🎉 축하합니다!', en: '🎉 Congratulations!' },
-  tour_final_desc:         { ko: '이제부터 아래 항목들이\n자동으로 관리됩니다.', en: 'From now on, the items below\nare managed automatically.' },
-  tour_final_item1:        { ko: '✅ 경기기록', en: '✅ Match Records' },
-  tour_final_item2:        { ko: '✅ 승률', en: '✅ Win Rate' },
-  tour_final_item3:        { ko: '✅ 상대전적', en: '✅ Head-to-Head' },
-  tour_final_item4:        { ko: '✅ 파트너 통계', en: '✅ Partner Stats' },
-  tour_final_item5:        { ko: '✅ 스트링 교체주기', en: '✅ String Replacement Cycle' },
-  tour_final_item6:        { ko: '✅ AI 추천', en: '✅ AI Recommendation' },
-  tour_final_start_btn:    { ko: 'NIJI STRING 시작하기', en: 'Start NIJI STRING' },
+  tour_match_save_desc:    { ko: '이 버튼을 눌러야\n첫 경기 등록이 완료돼요.', en: 'Tap this button to finish\nyour first match entry.' },
+  tour_first_match_title:  { ko: '🎉 축하합니다!\n첫 경기 등록이 완료되었습니다.', en: '🎉 Congratulations!\nYour first match has been recorded.' },
+  tour_first_match_desc:   { ko: '이제부터\n✔ 승률\n✔ 상대전적\n✔ 파트너 통계\n가 자동으로 생성됩니다.\n\nNIJI STRING은 모든 기능을 무료로 사용할 수 있습니다.\n로그인하면 데이터를 안전하게 백업하고\n다른 기기에서도 이어서 사용할 수 있습니다.\n로그인은 언제든지 설정 또는 프로필에서 가능합니다.\n\n즐겁게 NIJI STRING을 이용해 주세요!', en: 'From now on,\n✔ Win rate\n✔ Head-to-head records\n✔ Partner stats\nwill be generated automatically.\n\nNIJI STRING is completely free to use.\nLogging in safely backs up your data\nand lets you continue on other devices.\nYou can log in anytime from Settings or Profile.\n\nEnjoy using NIJI STRING!' },
+  tour_first_match_confirm:{ ko: '앱 시작하기', en: 'Start the App' },
+  /* 탭별 첫 진입 미니 가이드 (통계/선수/대회/공유) - 각 2~3단계 */
+  guide_stats_1_title:     { ko: '🏆 나의 전적이 여기 보여요', en: '🏆 Your record shows here' },
+  guide_stats_1_desc:      { ko: '경기를 입력할 때마다\n자동으로 채워져요.', en: 'This fills in automatically\nas you log matches.' },
+  guide_stats_2_title:     { ko: '⚔️ 상대·파트너 전적도 자동 정리', en: '⚔️ Opponent & partner records too' },
+  guide_stats_2_desc:      { ko: '눌러서 펼치면\n자세히 볼 수 있어요.', en: 'Tap to expand\nand see details.' },
+  guide_players_1_title:   { ko: '👥 함께 친 사람들이 여기 모여요', en: '👥 People you\'ve played with' },
+  guide_players_1_desc:    { ko: '경기를 기록하면\n자동으로 추가돼요.', en: 'They\'re added automatically\nwhen you log a match.' },
+  guide_players_2_title:   { ko: '➕ 직접 등록할 수도 있어요', en: '➕ You can also add one manually' },
+  guide_players_2_desc:    { ko: '경기를 기록하면 자동으로 추가되지만,\n여기서 미리 등록할 수도 있어요.', en: 'Players are added automatically from matches,\nor you can register one here first.' },
+  guide_tournament_1_title:{ ko: '🏆 대회를 만들어보세요', en: '🏆 Create a tournament' },
+  guide_tournament_1_desc: { ko: '참가자와 대진표를\n자동으로 관리해줘요.', en: 'Manages participants and\nbrackets automatically.' },
+  guide_tournament_2_title:{ ko: '📋 대회를 누르면 상세 화면이 열려요', en: '📋 Tap a tournament for details' },
+  guide_tournament_2_desc: { ko: '경기 결과를 입력하면\n순위가 자동으로 갱신돼요.', en: 'Standings update automatically\nas you enter results.' },
+  guide_share_1_title:     { ko: '🎨 글자 크기를 바꿀 수 있어요', en: '🎨 Adjust the font size' },
+  guide_share_1_desc:      { ko: '내게 편한 크기로\n맞춰보세요.', en: 'Set it to whatever\nis comfortable for you.' },
+  guide_share_2_title:     { ko: '💾 데이터를 내보낼 수 있어요', en: '💾 You can export your data' },
+  guide_share_2_desc:      { ko: '경기 기록을 파일로 저장해서\n따로 보관할 수 있어요.', en: 'Save your match records to a file\nand keep your own backup.' },
   /* 경기 결과 공유 카드 */
   sc_win_label:            { ko: '🏆 승리!', en: '🏆 Win!' },
   sc_lose_label:           { ko: '💪 패배', en: '💪 Lose' },
@@ -2286,18 +2257,7 @@ function _t(key) {
   .ob-emoji { font-size:3.6rem; line-height:1; }
   .ob-title { font-size:1.5rem; font-weight:900; color:var(--text); white-space:pre-line; line-height:1.35; }
   .ob-desc { font-size:0.9333rem; color:var(--text-muted); white-space:pre-line; line-height:1.6; max-width:320px; }
-  .ob-sport-row { display:flex; gap:10px; width:100%; max-width:340px; margin-top:4px; }
-  .ob-sport-btn {
-    flex:1; padding:18px 8px; border-radius:16px; border:1.5px solid var(--border); background:var(--surface2);
-    color:var(--text-muted); cursor:pointer; font-family:inherit; transition:all .2s; display:flex; flex-direction:column; gap:6px; align-items:center;
-  }
-  .ob-sport-btn .ob-sport-icon { font-size:1.8rem; }
-  .ob-sport-btn.selected { border-color:var(--accent); background:rgba(201,169,97,.12); color:var(--accent); }
-  .ob-name-input {
-    width:100%; max-width:320px; padding:14px 16px; margin-top:4px; font-size:1.0667rem; text-align:center;
-    background:var(--surface2); border:1.5px solid var(--border); border-radius:14px; color:var(--text); font-family:inherit; outline:none;
-  }
-  .ob-name-input:focus { border-color:var(--accent); }
+  .ob-login-choice-row { display:flex; flex-direction:column; gap:10px; width:100%; max-width:320px; margin-top:8px; }
   .ob-bottom { padding:16px 24px calc(20px + env(safe-area-inset-bottom)); flex-shrink:0; }
   .ob-next-btn {
     width:100%; padding:15px; border:none; border-radius:14px; background:var(--accent); color:#fff;
@@ -2364,6 +2324,7 @@ function _t(key) {
   #tourCelebrateOverlay.show { display:flex; }
   .tour-celebrate-card {
     position:relative; z-index:2; width:min(320px, calc(100vw - 48px));
+    max-height:calc(100vh - 48px); overflow-y:auto;
     background:var(--surface); border:1px solid var(--border); border-radius:20px;
     padding:32px 24px 24px; text-align:center;
     box-shadow:0 20px 50px rgba(0,0,0,.45);
@@ -2392,26 +2353,6 @@ function _t(key) {
     100% { transform:translateY(360px) rotate(540deg); opacity:0; }
   }
 
-  /* 튜토리얼 최종 완료 화면 */
-  #tourFinalOverlay {
-    position:fixed; inset:0; z-index:10011; display:none;
-    align-items:center; justify-content:center;
-    background:rgba(5,10,8,.82);
-  }
-  #tourFinalOverlay.show { display:flex; }
-  .tour-final-card {
-    position:relative; z-index:2; width:min(340px, calc(100vw - 40px));
-    background:var(--surface); border:1px solid var(--border); border-radius:22px;
-    padding:32px 26px 26px; text-align:center;
-    box-shadow:0 24px 60px rgba(0,0,0,.5);
-    opacity:0; transform:scale(.85) translateY(10px);
-    transition:opacity .35s ease, transform .35s ease;
-    max-height:calc(100vh - 60px); overflow-y:auto;
-  }
-  #tourFinalOverlay.show .tour-final-card { opacity:1; transform:scale(1) translateY(0); }
-  .tour-final-desc { font-size:0.8667rem; color:var(--text-muted); line-height:1.6; white-space:pre-line; margin-bottom:16px; }
-  .tour-final-checklist { text-align:left; background:var(--surface2); border-radius:14px; padding:14px 18px; margin-bottom:22px; }
-  .tour-final-checklist-item { font-size:0.9rem; font-weight:700; color:var(--text); padding:6px 0; }
 
   /* ══════════════════════════════════════════════════════════
      스트링DB / 자동분석 / AI추천 기능용 터치 피드백 공통 클래스
@@ -2476,55 +2417,38 @@ function _t(key) {
       <div class="ob-progress-dot" data-i="0"></div>
       <div class="ob-progress-dot" data-i="1"></div>
       <div class="ob-progress-dot" data-i="2"></div>
-      <div class="ob-progress-dot" data-i="3"></div>
     </div>
     <button class="ob-skip-btn" onclick="obSkip()" data-lang="ob_skip">건너뛰기</button>
   </div>
 
   <div class="ob-steps">
-    <!-- STEP 1: 환영 -->
+    <!-- STEP 1: 환영 + 로그인 선택 -->
     <div class="ob-step" id="ob-step-0">
       <div class="ob-emoji">🎾</div>
-      <div class="ob-title" data-lang="ob1_title">니지스트링에\n오신 걸 환영해요! 🎾</div>
-      <div class="ob-desc" data-lang="ob1_desc">경기 기록부터 전적 통계, 선수·대회 관리까지\n라켓 스포츠 생활을 이 앱 하나로 관리해보세요.</div>
-    </div>
-
-    <!-- STEP 2: 종목 선택 -->
-    <div class="ob-step" id="ob-step-1">
-      <div class="ob-emoji">🏆</div>
-      <div class="ob-title" data-lang="ob2_title">어떤 종목을\n즐기세요?</div>
-      <div class="ob-desc" data-lang="ob2_desc">나중에 프로필 탭에서 언제든 바꿀 수 있어요</div>
-      <div class="ob-sport-row">
-        <button class="ob-sport-btn" data-sport="tennis" onclick="obSelectSport('tennis')">
-          <span class="ob-sport-icon">🎾</span><span data-lang="pf_tennis">테니스</span>
-        </button>
-        <button class="ob-sport-btn" data-sport="badminton" onclick="obSelectSport('badminton')">
-          <span class="ob-sport-icon">🏸</span><span data-lang="pf_badminton">배드민턴</span>
-        </button>
-        <button class="ob-sport-btn" data-sport="pickleball" onclick="obSelectSport('pickleball')">
-          <span class="ob-sport-icon">🥒</span><span data-lang="pf_pickleball">피클볼</span>
-        </button>
+      <div class="ob-title" data-lang="ob1_title">🎾 NIJI STRING에\n오신 것을 환영합니다</div>
+      <div class="ob-desc" data-lang="ob1_desc">NIJI STRING은 모든 기능을 무료로 사용할 수 있는 앱입니다.\n회원가입 없이도 바로 사용할 수 있으며,\n로그인하면 데이터를 안전하게 백업하고\n다른 기기에서도 이어서 사용할 수 있습니다.\n로그인은 필수가 아니며, 언제든지 나중에 할 수 있습니다.</div>
+      <div class="ob-login-choice-row">
+        <button class="ob-next-btn" style="background:var(--surface2);color:var(--text);" onclick="obGotoGuest()" data-lang="ob1_btn_guest">로그인 없이 시작하기</button>
+        <button class="ob-next-btn" onclick="obGotoLogin()" data-lang="ob1_btn_login">로그인하고 시작하기</button>
       </div>
     </div>
 
-    <!-- STEP 3: 이름 입력 -->
-    <div class="ob-step" id="ob-step-2">
-      <div class="ob-emoji">✍️</div>
-      <div class="ob-title" data-lang="ob3_title">이름을\n알려주세요</div>
-      <div class="ob-desc" data-lang="ob3_desc">경기 기록과 통계에 표시될 이름이에요</div>
-      <input type="text" class="ob-name-input" id="obNameInput" data-lang-placeholder="ob3_ph" placeholder="예: 홍길동" oninput="obOnNameInput()" onkeydown="if(event.key==='Enter')obNext()">
+    <!-- STEP 2: 진행 안내 -->
+    <div class="ob-step" id="ob-step-1">
+      <div class="ob-emoji">✅</div>
+      <div class="ob-title" data-lang="ob2_title">곧 시작할게요</div>
+      <div class="ob-desc" data-lang="ob2_desc">앞으로 몇 분 동안\n✔ 스트링 등록\n✔ 프로필 등록\n✔ 첫 경기 등록\n까지만 함께 진행합니다.\n완료하면 바로 사용할 수 있습니다.</div>
     </div>
 
-    <!-- STEP 4: 경기기록 안내 -->
-    <div class="ob-step" id="ob-step-3">
-      <div class="ob-emoji">🎉</div>
-      <div class="ob-title" data-lang="ob4_title">준비 완료! 🎉</div>
-      <div class="ob-desc" data-lang="ob4_desc">이제 첫 경기를 기록해볼까요?\n상대 이름과 결과만 입력하면\n통계가 자동으로 쌓여요.</div>
+    <!-- STEP 3: 자동 전환 (버튼 없음) -->
+    <div class="ob-step" id="ob-step-2">
+      <div class="ob-emoji">👤</div>
+      <div class="ob-title" data-lang="ob3_title">자동으로\n스트링 관리 화면으로 이동합니다</div>
     </div>
   </div>
 
-  <div class="ob-bottom">
-    <button class="ob-next-btn" id="obNextBtn" onclick="obNext()">다음</button>
+  <div class="ob-bottom" id="obBottomBar">
+    <button class="ob-next-btn" id="obNextBtn" onclick="obNext()" data-lang="ob2_btn">시작하기</button>
   </div>
 </div>
 
@@ -2559,17 +2483,6 @@ function _t(key) {
   </div>
 </div>
 
-<!-- ===== 튜토리얼 최종 완료 화면 ===== -->
-<div id="tourFinalOverlay">
-  <div class="tour-final-card">
-    <div id="tourFinalConfettiWrap" style="position:absolute; inset:0; overflow:hidden; border-radius:22px; pointer-events:none;"></div>
-    <div class="tour-celebrate-emoji">🎉</div>
-    <div class="tour-celebrate-title" id="tourFinalTitle"></div>
-    <div class="tour-final-desc" id="tourFinalDesc"></div>
-    <div class="tour-final-checklist" id="tourFinalChecklist"></div>
-    <button class="tour-celebrate-btn" onclick="tourFinalConfirm()" id="tourFinalBtn" data-lang="tour_final_start_btn">NIJI STRING 시작하기</button>
-  </div>
-</div>
 
 <div id="app">
   <div class="topbar">
@@ -4965,15 +4878,12 @@ function _initApp() {
 
 // ===== 온보딩 (첫 사용자 안내) =====
 var _obStep = 0;
-var _obSport = null;
-var _obTotalSteps = 4;
+var _obTotalSteps = 3;
+var _OB_PENDING_LOGIN_KEY = 'nijiOnboardPendingLogin';
 
 // 공유 탭 "온보딩 다시 보기" 버튼용 — obStart()와 달리 신규 사용자 여부를 따지지 않고 무조건 보여줌
 function obReplay() {
   _obStep = 0;
-  _obSport = null;
-  var input = document.getElementById('obNameInput');
-  if (input) input.value = state.profile && state.profile.name ? state.profile.name : '';
   var overlay = document.getElementById('onboardOverlay');
   if (!overlay) return;
   overlay.style.display = 'flex';
@@ -4988,6 +4898,21 @@ function _obStorageKey() {
 // 온보딩을 보여줄지 판단: (1) 완료 기록이 없고, (2) 아직 이름을 입력한 적 없는 진짜 신규 사용자일 때만
 // → 캐시 정리 등으로 완료 기록만 사라진 기존 사용자에게는 다시 뜨지 않도록 이중 체크
 function obStart() {
+  var overlay = document.getElementById('onboardOverlay');
+  if (!overlay) return;
+
+  // STEP1에서 "로그인하고 시작하기"를 누르고 로그인 화면으로 이동했다가 돌아온 경우
+  // (로그인 성공 또는 취소 모두 포함) → STEP1을 다시 보여주지 않고 STEP2부터 이어서 진행
+  try {
+    if (localStorage.getItem(_OB_PENDING_LOGIN_KEY)) {
+      localStorage.removeItem(_OB_PENDING_LOGIN_KEY);
+      _obStep = 1;
+      overlay.style.display = 'flex';
+      _obRenderStep(1, null);
+      return;
+    }
+  } catch(e) {}
+
   try {
     var done = localStorage.getItem(_obStorageKey());
     var hasName = !!(state.profile && state.profile.name && state.profile.name.trim());
@@ -4995,11 +4920,6 @@ function obStart() {
   } catch(e) { return; }
 
   _obStep = 0;
-  _obSport = null;
-  var input = document.getElementById('obNameInput');
-  if (input) input.value = '';
-  var overlay = document.getElementById('onboardOverlay');
-  if (!overlay) return;
   overlay.style.display = 'flex';
   _obRenderStep(0, null);
 }
@@ -5014,47 +4934,34 @@ function _obRenderStep(idx, fromIdx) {
     var i = parseInt(dot.getAttribute('data-i'));
     dot.classList.toggle('done', i <= idx);
   });
+  // STEP1은 화면 안에 자체 버튼(로그인 없이/로그인하고 시작하기)이 있고,
+  // STEP3은 버튼 없이 자동으로 넘어가는 화면이라 둘 다 하단 공용 버튼을 숨긴다
+  var bottomBar = document.getElementById('obBottomBar');
+  if (bottomBar) bottomBar.style.display = (idx === 0 || idx === 2) ? 'none' : 'block';
 
-  var btn = document.getElementById('obNextBtn');
-  if (idx === 0) {
-    btn.textContent = _t('ob1_btn');
-    btn.disabled = false;
-  } else if (idx === 1) {
-    btn.textContent = _t('ob_btn_next');
-    btn.disabled = !_obSport;
-  } else if (idx === 2) {
-    btn.textContent = _t('ob_btn_next');
-    var nameVal = (document.getElementById('obNameInput') || {}).value || '';
-    btn.disabled = !nameVal.trim();
-    setTimeout(function() { var el = document.getElementById('obNameInput'); if (el) el.focus(); }, 350);
-  } else if (idx === 3) {
-    btn.textContent = _t('ob4_btn');
-    btn.disabled = false;
+  // STEP3: 잠깐 보여준 뒤 사용자 조작 없이 자동으로 온보딩을 마치고 프로필 탭으로 이동
+  if (idx === 2) {
+    setTimeout(function() { obFinish(); }, 900);
   }
 }
 
-function obSelectSport(sport) {
-  _obSport = sport;
-  document.querySelectorAll('.ob-sport-btn').forEach(function(b) {
-    b.classList.toggle('selected', b.getAttribute('data-sport') === sport);
-  });
-  var btn = document.getElementById('obNextBtn');
-  if (btn) btn.disabled = false;
+// STEP1 - "로그인 없이 시작하기": 바로 STEP2로 진행
+function obGotoGuest() {
+  var next = 1, prev = _obStep;
+  _obStep = next;
+  _obRenderStep(next, prev);
 }
 
-function obOnNameInput() {
-  var btn = document.getElementById('obNextBtn');
-  var val = (document.getElementById('obNameInput') || {}).value || '';
-  if (btn) btn.disabled = !val.trim();
+// STEP1 - "로그인하고 시작하기": 기존 로그인 화면을 그대로 이용하고,
+// 로그인 화면이 닫히면(성공/취소 모두) STEP2부터 자동으로 이어간다 (아래 _closeLoginScreen 래핑 참고)
+function obGotoLogin() {
+  try { localStorage.setItem(_OB_PENDING_LOGIN_KEY, '1'); } catch(e) {}
+  var overlay = document.getElementById('onboardOverlay');
+  if (overlay) overlay.style.display = 'none';
+  if (typeof _showLoginScreen === 'function') _showLoginScreen(true);
 }
 
 function obNext() {
-  if (_obStep === 1 && !_obSport) return;
-  if (_obStep === 2) {
-    var name = (document.getElementById('obNameInput') || {}).value || '';
-    if (!name.trim()) { showToast(_t('ob3_required')); return; }
-  }
-  if (_obStep === 3) { obFinish(); return; }
   var next = _obStep + 1;
   var prev = _obStep;
   _obStep = next;
@@ -5067,103 +4974,85 @@ function obSkip() {
   if (overlay) overlay.style.display = 'none';
 }
 
+// STEP2 "시작하기" → 온보딩 카드 종료, 실제 프로필 탭으로 이동해 이름 입력 → 첫 경기 등록 가이드투어 시작
 function obFinish() {
-  var name = ((document.getElementById('obNameInput') || {}).value || '').trim();
-  if (!state.profile) state.profile = {};
-  state.profile.name = name;
-  if (_obSport) state.sportType = _obSport;
-  save();
   try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
-
   var overlay = document.getElementById('onboardOverlay');
   if (overlay) overlay.style.display = 'none';
-
-  renderProfile();
   tourStart();
 }
 
+// 로그인 화면을 닫을 때(로그인 성공 또는 사용자가 직접 취소) 온보딩이 진행 중이었다면 STEP2부터 이어서 보여준다.
+// _closeLoginScreen 자체는 한 글자도 수정하지 않고, 바깥에서 감싸서(wrap) 뒤에 이어붙인다.
+(function() {
+  var _origCloseLoginScreen = window._closeLoginScreen;
+  if (typeof _origCloseLoginScreen === 'function') {
+    window._closeLoginScreen = function() {
+      var result = _origCloseLoginScreen.apply(this, arguments);
+      try {
+        if (localStorage.getItem(_OB_PENDING_LOGIN_KEY)) {
+          localStorage.removeItem(_OB_PENDING_LOGIN_KEY);
+          _obStep = 1;
+          var overlay = document.getElementById('onboardOverlay');
+          if (overlay) { overlay.style.display = 'flex'; _obRenderStep(1, null); }
+        }
+      } catch(e) {}
+      return result;
+    };
+  }
+})();
+
 // ===== 가이드 투어 (실제 화면 위에서 주요 기능을 말풍선으로 안내) =====
-// 프로필 탭 하이라이트 → 프로필 실제 입력(이름/스타일/구력) → 라켓 실제 등록(이름/스트링/저장) → 경기기록 순서로 안내
+// 첫 실행 튜토리얼 범위: 스트링 등록 → 프로필 등록 → 첫 경기 등록까지만 진행한다.
+// 통계/선수/대회/공유 탭 안내는 각 탭을 처음 열 때 별도의 짧은 가이드(TAB_GUIDES)로 대체됐다.
 //
 // gate: 이 함수가 있으면 "실제 저장이 일어나야만" 다음 단계로 넘어가는 단계.
 // gate()가 true를 반환할 때만 자동으로 다음 단계로 진행되며, 사용자가 튜토리얼의
 // "다음" 버튼을 눌러도 gate가 만족되기 전에는 넘어가지 않는다. (아래 _tourCheckGate 참고)
 var TOUR_STEPS = [
-  { page:'profile', sel:'#nav-profile', tKey:'tour1_title', dKey:'tour1_desc' },
+  // ── 1) 스트링 관리 등록 (라켓1) ──
+  { page:'stringing', sel:'#str-r1-name', tKey:'tour_str_racket_title', dKey:'tour_str_racket_desc' },
+  { page:'stringing', sel:'#str1-string', tKey:'tour_str_string_title', dKey:'tour_str_string_desc' },
+  { page:'stringing', sel:'#str1-tension', tKey:'tour_str_tension_title', dKey:'tour_str_tension_desc' },
+  { page:'stringing', sel:'#str1-date', tKey:'tour_str_date_title', dKey:'tour_str_date_desc' },
+  { page:'stringing', sel:'#str1-save-btn', tKey:'tour_str_save_title', dKey:'tour_str_save_desc',
+    gate:function(){ return !!(state.profile && state.profile.string); } },
+
+  // ── 2) 프로필 등록 ──
   { page:'profile', sel:'#pf-field-name', tKey:'tour_prof_name_title', dKey:'tour_prof_name_desc',
     gate:function(){ return !!(state.profile && state.profile.name && String(state.profile.name).trim()); } },
   { page:'profile', sel:'#pf-field-style', tKey:'tour_prof_style_title', dKey:'tour_prof_style_desc',
-    gate:function(){ return !!(state.profile && state.profile.style && String(state.profile.style).trim()); } },
+    gate:function(){ return !!(state.profile && state.profile.style); } },
   { page:'profile', sel:'#pf-field-career', tKey:'tour_prof_career_title', dKey:'tour_prof_career_desc',
-    gate:function(){ return !!(state.profile && state.profile.career && String(state.profile.career).trim()); } },
-  { page:'stringing', sel:'#str-r1-name', tKey:'tour_racket_name_title', dKey:'tour_racket_name_desc',
-    gate:function(){ return !!(state.profile && state.profile.racket && String(state.profile.racket).trim()); } },
-  { page:'stringing', sel:'#str1-string', tKey:'tour_racket_string_title', dKey:'tour_racket_string_desc',
-    gate:function(){ return !!(state.profile && state.profile.string && String(state.profile.string).trim()); } },
-  { page:'stringing', sel:'#str1-save-btn', tKey:'tour_racket_save_title', dKey:'tour_racket_save_desc',
-    gate:function(){ return !!(state.profile && state.profile.string && String(state.profile.string).trim() && state.profile.stringDate); } },
-  { page:'match',   sel:'#nav-match', tKey:'tour_match_nav_title', dKey:'tour_match_nav_desc' },
+    gate:function(){ return !!(state.profile && state.profile.career); } },
+  { page:'profile', sel:'.pf-sport-pills', tKey:'tour_prof_sport_title', dKey:'tour_prof_sport_desc',
+    gate:function(){ return !!(state.sportType); } },
+
+  // ── 3) 첫 경기 등록 ──
   { page:'match',   sel:'#matchFormAccHeader', tKey:'tour_match_newbtn_title', dKey:'tour_match_newbtn_desc' },
-  { page:'match',   sel:'#matchFormatToggle', tKey:'tour2_title', dKey:'tour2_desc', beforeShow:function(){
+  { page:'match',   sel:'#matchModeToggle', tKey:'tour_match_mode_title', dKey:'tour_match_mode_desc', beforeShow:function(){
       var body = document.getElementById('matchFormBody');
       if (body && body.style.display === 'none') toggleMatchForm();
     } },
+  { page:'match',   sel:'#matchFormatToggle', tKey:'tour2_title', dKey:'tour2_desc' },
   { page:'match',   sel:function(){
       var format = (document.getElementById('matchFormat') || {}).value;
       return format === 'doubles' ? '#matchOpponent1' : '#matchOpponent';
     }, tKey:'tour_match_opponent_title', dKey:'tour_match_opponent_desc' },
-  { page:'match',   sel:'.match-result-winner', tKey:'tour_match_result_title', dKey:'tour_match_result_desc' },
+  { page:'match',   sel:'#myScore', tKey:'tour_match_score_title', dKey:'tour_match_score_desc' },
   { page:'match',   sel:'#racketSelectGroup', tKey:'tour_match_racket_title', dKey:'tour_match_racket_desc' },
   { page:'match',   sel:'#matchSaveBtn', tKey:'tour_match_save_title', dKey:'tour_match_save_desc',
-    gate:function(){ return !!(state.matches && state.matches.length > 0); }, celebrate:true },
-
-  // ===== 통계 탭 안내 =====
-  { page:'stats', sel:'#nav-stats', tKey:'tour_stats_nav_title', dKey:'tour_stats_nav_desc' },
-  { page:'stats', sel:'.stat-grid', tKey:'tour_stats_winrate_title', dKey:'tour_stats_winrate_desc' },
-  { page:'stats', sel:'#accOpponentHeader', tKey:'tour_stats_opponent_title', dKey:'tour_stats_opponent_desc', beforeShow:function(){
-      var el = document.getElementById('accOpponent');
-      if (el && !el.classList.contains('open')) toggleAcc('accOpponent');
-    } },
-  { page:'stats', sel:'#accPartnerHeader', tKey:'tour_stats_partner_title', dKey:'tour_stats_partner_desc', beforeShow:function(){
-      var el = document.getElementById('accPartner');
-      if (el && !el.classList.contains('open')) toggleAcc('accPartner');
-    } },
-  { page:'stats', sel:'#accMonthlyHeader', tKey:'tour_stats_monthly_title', dKey:'tour_stats_monthly_desc', beforeShow:function(){
-      var el = document.getElementById('accMonthly');
-      if (el && !el.classList.contains('open')) toggleAcc('accMonthly');
-    } },
-  { page:'stats', sel:'#statsRangeNotice', tKey:'tour_stats_auto_title', dKey:'tour_stats_auto_desc' },
-
-  // ===== 스트링 관리(교체 기준 상세 설정) 안내 =====
-  { page:'profile', sel:'#nav-profile', tKey:'tour_str2_profile_title', dKey:'tour_str2_profile_desc' },
-  { page:'profile', sel:'#pfStringManageBtn', tKey:'tour_str2_manage_title', dKey:'tour_str2_manage_desc' },
-  { page:'stringing', sel:'#str1-date', tKey:'tour_str2_date_title', dKey:'tour_str2_date_desc', beforeShow:function(){
-      if ((state.stringViewMode || 'basic') !== 'advanced') setStringViewMode('advanced');
-    } },
-  { page:'stringing', sel:'#str1-interval', tKey:'tour_str2_interval_title', dKey:'tour_str2_interval_desc' },
-  { page:'stringing', sel:'#str1-hourlimit', tKey:'tour_str2_hourlimit_title', dKey:'tour_str2_hourlimit_desc' },
-  { page:'stringing', sel:'#str1-gamelimit', tKey:'tour_str2_gamelimit_title', dKey:'tour_str2_gamelimit_desc' },
-  { page:'stringing', sel:'#str1-alert-wrap', tKey:'tour_str2_alert_title', dKey:'tour_str2_alert_desc' },
-  { page:'stringing', sel:'#str1-alert-sub', tKey:'tour_str2_explain_title', dKey:'tour_str2_explain_desc' },
-
-  // ===== AI 추천 안내 =====
-  { page:'stringing', sel:'#aiRecoBtn', tKey:'tour_ai_nav_title', dKey:'tour_ai_nav_desc' },
-  { page:'stringing', sel:'#airecStringName', tKey:'tour_ai_string_title', dKey:'tour_ai_string_desc', beforeShow:function(){
-      var modal = document.getElementById('aiRecoModal');
-      if (modal && !modal.classList.contains('open')) openAIRecoModal();
-    } },
-  { page:'stringing', sel:'#airecTensionBlock', tKey:'tour_ai_tension_title', dKey:'tour_ai_tension_desc' },
-  { page:'stringing', sel:'#airecReasonBlock', tKey:'tour_ai_reason_title', dKey:'tour_ai_reason_desc' },
-  { page:'stringing', sel:'#airecSourceTag', tKey:'tour_ai_auto_title', dKey:'tour_ai_auto_desc' }
+    gate:function(){ return !!(state.matches && state.matches.length > 0); }, celebrate:true }
 ];
 var _tourIdx = 0;
 
 function tourStart() {
   _tourIdx = 0;
+  _activeGuideMode = 'main';
   var overlay = document.getElementById('tourOverlay');
   if (!overlay) return;
   overlay.style.display = 'block';
-  if (typeof showPage === 'function') showPage('profile');
+  if (typeof showPage === 'function' && TOUR_STEPS[0]) showPage(TOUR_STEPS[0].page);
   setTimeout(function() { tourRenderStep(0); }, 260);
 }
 
@@ -5247,7 +5136,13 @@ function tourPosition(el) {
   }
 }
 
+// _activeGuideMode: 지금 스포트라이트 오버레이를 쓰고 있는 주체가 누구인지.
+// 'main'  = 첫 실행 튜토리얼(TOUR_STEPS), 'tab' = 탭별 첫 진입 미니 가이드(TAB_GUIDES).
+// 오버레이(#tourOverlay)와 다음/이전/건너뛰기 버튼은 두 모드가 공유하며, 항상 한 번에 하나만 켜진다.
+var _activeGuideMode = 'main';
+
 function tourNext() {
+  if (_activeGuideMode === 'tab') { _tgNext(); return; }
   // 이 단계가 "실제 저장"을 기다리는 단계인데 아직 안 됐으면, 다음으로 넘어가지 않는다
   var curStep = TOUR_STEPS[_tourIdx];
   if (curStep && curStep.gate && !curStep.gate()) {
@@ -5264,11 +5159,11 @@ function tourNext() {
   if (finger) finger.classList.remove('show');
   _tourIdx++;
   if (curStep && curStep.celebrate) { tourShowCelebrate(); return; }
-  if (_tourIdx >= TOUR_STEPS.length) { tourShowFinal(); return; }
+  if (_tourIdx >= TOUR_STEPS.length) { tourEnd(); return; }
   setTimeout(function() { tourRenderStep(_tourIdx); }, 200);
 }
 
-// ===== 첫 경기 등록 완료 축하 화면 =====
+// ===== 첫 경기 등록 완료 축하 화면 (첫 실행 온보딩은 여기서 끝난다) =====
 function tourShowCelebrate() {
   var overlay = document.getElementById('tourOverlay');
   if (overlay) overlay.style.display = 'none';
@@ -5294,57 +5189,16 @@ function tourShowCelebrate() {
   if (celOverlay) celOverlay.classList.add('show');
 }
 
+// 첫 경기 등록 축하 확인 → 온보딩 종료 (통계/AI 추천 등 추가 설명 없이 바로 앱 사용 시작)
 function tourCelebrateConfirm() {
   var celOverlay = document.getElementById('tourCelebrateOverlay');
   if (celOverlay) celOverlay.classList.remove('show');
-  if (_tourIdx >= TOUR_STEPS.length) { tourShowFinal(); return; }
-  var overlay = document.getElementById('tourOverlay');
-  if (overlay) overlay.style.display = 'block';
-  setTimeout(function() { tourRenderStep(_tourIdx); }, 200);
-}
-
-// ===== 튜토리얼 최종 완료 화면 =====
-function tourShowFinal() {
-  var overlay = document.getElementById('tourOverlay');
-  if (overlay) overlay.style.display = 'none';
-  var modal = document.getElementById('aiRecoModal');
-  if (modal && modal.classList.contains('open') && typeof closeModal === 'function') closeModal('aiRecoModal');
-  var titleEl = document.getElementById('tourFinalTitle');
-  if (titleEl) titleEl.textContent = _t('tour_final_title');
-  var descEl = document.getElementById('tourFinalDesc');
-  if (descEl) descEl.textContent = _t('tour_final_desc');
-  var list = document.getElementById('tourFinalChecklist');
-  if (list) {
-    var keys = ['tour_final_item1', 'tour_final_item2', 'tour_final_item3', 'tour_final_item4', 'tour_final_item5', 'tour_final_item6'];
-    list.innerHTML = keys.map(function(k) { return '<div class="tour-final-checklist-item">' + _t(k) + '</div>'; }).join('');
-  }
-  var wrap = document.getElementById('tourFinalConfettiWrap');
-  if (wrap) {
-    wrap.innerHTML = '';
-    var colors = ['#c9a961', '#e0546b', '#5aa7e0', '#6bc27a', '#e0b84a'];
-    for (var k2 = 0; k2 < 30; k2++) {
-      var piece = document.createElement('div');
-      piece.className = 'tour-confetti-piece';
-      piece.style.left = (Math.random() * 100) + '%';
-      piece.style.background = colors[k2 % colors.length];
-      piece.style.animationDuration = (0.9 + Math.random() * 0.9) + 's';
-      piece.style.animationDelay = (Math.random() * 0.4) + 's';
-      wrap.appendChild(piece);
-    }
-  }
-  var finalOverlay = document.getElementById('tourFinalOverlay');
-  if (finalOverlay) finalOverlay.classList.add('show');
-}
-
-function tourFinalConfirm() {
-  var finalOverlay = document.getElementById('tourFinalOverlay');
-  if (finalOverlay) finalOverlay.classList.remove('show');
-  try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
-  showPage('profile');
+  tourEnd();
 }
 
 // 이전 단계로 돌아가기
 function tourPrev() {
+  if (_activeGuideMode === 'tab') { _tgPrev(); return; }
   if (_tourIdx <= 0) return;
   var sl = document.getElementById('tourSpotlight');
   var tip = document.getElementById('tourTooltip');
@@ -5358,7 +5212,10 @@ function tourPrev() {
   setTimeout(function() { tourRenderStep(_tourIdx); }, 200);
 }
 
-function tourSkip() { tourEnd(); }
+function tourSkip() {
+  if (_activeGuideMode === 'tab') { _tgEnd(); return; }
+  tourEnd();
+}
 
 function tourEnd() {
   var overlay = document.getElementById('tourOverlay');
@@ -5372,31 +5229,161 @@ function tourEnd() {
   if (arrow) arrow.classList.remove('show');
   if (finger) finger.classList.remove('show');
   try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
-
-  showPage('match');
   showToast(_t('tour_end_toast'));
-  setTimeout(function() {
-    var body = document.getElementById('matchFormBody');
-    if (body && body.style.display === 'none') toggleMatchForm();
-    var header = document.getElementById('matchFormAccHeader');
-    if (header) header.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 250);
 }
 
 window.addEventListener('resize', function() {
   var overlay = document.getElementById('tourOverlay');
-  if (overlay && overlay.style.display !== 'none' && TOUR_STEPS[_tourIdx]) {
+  if (!overlay || overlay.style.display === 'none') return;
+  if (_activeGuideMode === 'tab') {
+    var tgStep = _tgSteps[_tgIdx];
+    if (!tgStep) return;
+    var _tgSel = typeof tgStep.sel === 'function' ? tgStep.sel() : tgStep.sel;
+    var tgEl = document.querySelector(_tgSel);
+    if (tgEl) tourPosition(tgEl);
+    return;
+  }
+  if (TOUR_STEPS[_tourIdx]) {
     var _rSel = typeof TOUR_STEPS[_tourIdx].sel === 'function' ? TOUR_STEPS[_tourIdx].sel() : TOUR_STEPS[_tourIdx].sel;
     var el = document.querySelector(_rSel);
     if (el) tourPosition(el);
   }
 });
 
-// ===== 실제 저장 감지 디스패처 (프로필 등록 + 라켓 등록 튜토리얼용) =====
-// saveProfileField / saveStrField / saveStringingInfo 는 한 글자도 수정하지 않는다.
-// 대신 이 함수들을 바깥에서 한 겹 감싸서(wrap), 원래 동작이 끝난 뒤
-// "지금 튜토리얼 단계의 gate가 충족됐는지"만 조용히 확인한다.
+// ===== 탭별 첫 진입 미니 가이드 (통계/선수/대회/공유) =====
+// 각 탭을 처음 열었을 때만, 그 탭에 맞는 2~3단계 짧은 안내를 보여준다.
+// 첫 실행 튜토리얼(main)과 같은 스포트라이트 오버레이/버튼을 그대로 재사용한다 (위 tourNext/tourPrev/tourSkip 참고).
+var TAB_GUIDES = {
+  stats: [
+    { sel:'.stat-grid', tKey:'guide_stats_1_title', dKey:'guide_stats_1_desc' },
+    { sel:'#accOpponentHeader', tKey:'guide_stats_2_title', dKey:'guide_stats_2_desc' }
+  ],
+  players: [
+    { sel:'#page-players .page-header', tKey:'guide_players_1_title', dKey:'guide_players_1_desc' },
+    { sel:'#playerFormAccHeader', tKey:'guide_players_2_title', dKey:'guide_players_2_desc' }
+  ],
+  tournament: [
+    { sel:'#contestTabRow', tKey:'guide_tournament_1_title', dKey:'guide_tournament_1_desc' },
+    { sel:'#tv-root', tKey:'guide_tournament_2_title', dKey:'guide_tournament_2_desc' }
+  ],
+  share: [
+    { sel:'#fontBtn-15', tKey:'guide_share_1_title', dKey:'guide_share_1_desc' },
+    { sel:'#page-share div[onclick="exportData()"]', tKey:'guide_share_2_title', dKey:'guide_share_2_desc' }
+  ]
+};
+var _tgTab = null;
+var _tgSteps = [];
+var _tgIdx = 0;
+
+function _tgStorageKey(tab) {
+  var uid = window._userId || 'local';
+  return 'nijiTabGuideDone_' + tab + '_' + uid;
+}
+
+// 탭 진입 시 호출 — 첫 실행 튜토리얼이 진행 중이면 겹치지 않도록 건너뛴다
+function maybeStartTabGuide(tab) {
+  if (!TAB_GUIDES[tab]) return;
+  if (_activeGuideMode === 'main') {
+    var mainOverlay = document.getElementById('tourOverlay');
+    if (mainOverlay && mainOverlay.style.display !== 'none') return;
+  }
+  try {
+    if (localStorage.getItem(_tgStorageKey(tab))) return;
+  } catch(e) { return; }
+
+  _tgTab = tab;
+  _tgSteps = TAB_GUIDES[tab];
+  _tgIdx = 0;
+  _activeGuideMode = 'tab';
+  var overlay = document.getElementById('tourOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'block';
+  setTimeout(function() { _tgRenderStep(0); }, 260);
+}
+
+function _tgRenderStep(i) {
+  var step = _tgSteps[i];
+  if (!step) { _tgEnd(); return; }
+  if (step.page && typeof showPage === 'function') showPage(step.page);
+
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      var _sel = typeof step.sel === 'function' ? step.sel() : step.sel;
+      var el = document.querySelector(_sel);
+      if (!el) { _tgIdx = i + 1; _tgRenderStep(_tgIdx); return; }
+      el.scrollIntoView({ block: 'center', behavior: 'instant' });
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          tourPosition(el);
+          var progEl = document.getElementById('tourProgress');
+          if (progEl) progEl.textContent = (i + 1) + ' / ' + _tgSteps.length;
+          var titleEl = document.getElementById('tourTitle');
+          if (titleEl) titleEl.textContent = _t(step.tKey);
+          var descEl = document.getElementById('tourDesc');
+          if (descEl) descEl.textContent = _t(step.dKey);
+          var nextBtn = document.getElementById('tourNextBtn');
+          if (nextBtn) { nextBtn.textContent = (i === _tgSteps.length - 1) ? _t('tour_done') : _t('tour_next'); nextBtn.disabled = false; }
+          var prevBtn = document.getElementById('tourPrevBtn');
+          if (prevBtn) prevBtn.classList.toggle('hidden', i === 0);
+          document.getElementById('tourSpotlight').classList.add('show');
+          document.getElementById('tourTooltip').classList.add('show');
+          document.getElementById('tourArrow').classList.add('show');
+          document.getElementById('tourFinger').classList.add('show');
+        });
+      });
+    });
+  });
+}
+
+function _tgNext() {
+  var sl = document.getElementById('tourSpotlight');
+  var tip = document.getElementById('tourTooltip');
+  var arrow = document.getElementById('tourArrow');
+  var finger = document.getElementById('tourFinger');
+  if (sl) sl.classList.remove('show');
+  if (tip) tip.classList.remove('show');
+  if (arrow) arrow.classList.remove('show');
+  if (finger) finger.classList.remove('show');
+  _tgIdx++;
+  if (_tgIdx >= _tgSteps.length) { _tgEnd(); return; }
+  setTimeout(function() { _tgRenderStep(_tgIdx); }, 200);
+}
+
+function _tgPrev() {
+  if (_tgIdx <= 0) return;
+  var sl = document.getElementById('tourSpotlight');
+  var tip = document.getElementById('tourTooltip');
+  var arrow = document.getElementById('tourArrow');
+  var finger = document.getElementById('tourFinger');
+  if (sl) sl.classList.remove('show');
+  if (tip) tip.classList.remove('show');
+  if (arrow) arrow.classList.remove('show');
+  if (finger) finger.classList.remove('show');
+  _tgIdx--;
+  setTimeout(function() { _tgRenderStep(_tgIdx); }, 200);
+}
+
+function _tgEnd() {
+  var overlay = document.getElementById('tourOverlay');
+  if (overlay) overlay.style.display = 'none';
+  var sl = document.getElementById('tourSpotlight');
+  var tip = document.getElementById('tourTooltip');
+  var arrow = document.getElementById('tourArrow');
+  var finger = document.getElementById('tourFinger');
+  if (sl) sl.classList.remove('show');
+  if (tip) tip.classList.remove('show');
+  if (arrow) arrow.classList.remove('show');
+  if (finger) finger.classList.remove('show');
+  try { if (_tgTab) localStorage.setItem(_tgStorageKey(_tgTab), '1'); } catch(e) {}
+  _activeGuideMode = 'main';
+  _tgTab = null;
+}
+
+// ===== 실제 저장 감지 디스패처 (첫 경기 등록 튜토리얼용) =====
+// saveProfileField / saveMatch는 한 글자도 수정하지 않는다. 대신 이 함수들을 바깥에서 한 겹 감싸서(wrap),
+// 원래 동작이 끝난 뒤 "지금 튜토리얼 단계의 gate가 충족됐는지"만 조용히 확인한다.
 function _tourCheckGate() {
+  if (_activeGuideMode !== 'main') return;
   var overlay = document.getElementById('tourOverlay');
   if (!overlay || overlay.style.display === 'none') return;
   var step = TOUR_STEPS[_tourIdx];
@@ -5418,8 +5405,6 @@ function _tourCheckGate() {
     };
   }
   _tourWrap('saveProfileField');
-  _tourWrap('saveStrField');
-  _tourWrap('saveStringingInfo');
   _tourWrap('saveMatch');
 })();
 
@@ -5463,16 +5448,18 @@ function showPage(name) {
   // 스크롤 맨 위로 초기화
   const content = document.querySelector('.content');
   if (content) content.scrollTop = 0;
-  if (name === 'stats') { renderStats(); syncSportTab(); }
-  if (name === 'players') renderPlayers();
+  if (name === 'stats') { renderStats(); syncSportTab(); maybeStartTabGuide('stats'); }
+  if (name === 'players') { renderPlayers(); maybeStartTabGuide('players'); }
   if (name === 'match') { renderMatchList(); if (!state.editingMatchId) setTodayDate(); updateMatchSportBadge(); updateMatchRacketOptions(); }
   if (name === 'stringing') renderStringing();
   if (name === 'profile') renderStringBanner();
+  if (name === 'share') maybeStartTabGuide('share');
   if (name === 'tournament') {
     // 탭 진입 시 현재 선택된 탭 기준으로 렌더링 (setTimeout으로 DOM이 먼저 표시되게 보장)
     setTimeout(function() {
       renderTournamentSection();
       if (content) content.scrollTop = 0;
+      maybeStartTabGuide('tournament');
     }, 0);
   }
 }
