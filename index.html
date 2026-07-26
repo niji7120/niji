@@ -141,8 +141,12 @@ const NIJI_DICT = {
   tour_match_newbtn_desc:  { ko: '이 버튼을 누르면 경기 입력\n창이 열려요.', en: 'Tap this button to open\nthe match entry form.' },
   tour_match_mode_title:   { ko: '🎾 기록 종류를 선택하세요', en: '🎾 Choose the record type' },
   tour_match_mode_desc:    { ko: '점수를 매기는 게임인지\n연습 난타인지 선택해주세요.', en: 'Choose "Game" for scored matches\nor "Rally" for practice hitting.' },
-  tour_match_score_title:  { ko: '📊 점수를 입력하세요', en: '📊 Enter the score' },
-  tour_match_score_desc:   { ko: '점수를 입력하면 더욱 정확한\n기록이 돼요. (승패는 자동 판정)', en: 'Entering the score makes your\nrecord more accurate (result auto-detected).' },
+  tour_match_myscore_title:{ ko: '📊 내 점수를 입력하세요', en: '📊 Enter your score' },
+  tour_match_myscore_desc: { ko: '내가 딴 점수를 입력해주세요.\n(승패는 자동 판정돼요)', en: 'Enter the score you won.\n(Result is auto-detected.)' },
+  tour_match_oppscore_title:{ ko: '📊 상대 점수를 입력하세요', en: '📊 Enter the opponent score' },
+  tour_match_oppscore_desc:{ ko: '상대가 딴 점수를 입력하면\n기록이 완성돼요.', en: 'Enter the score your opponent\nwon to complete the record.' },
+  tour_match_all_title:    { ko: '📝 경기 정보를 자유롭게 입력하세요', en: '📝 Fill in the match details' },
+  tour_match_all_desc:     { ko: '날짜·게임/난타·단식복식·상대·점수·라켓 등을\n순서 상관없이 원하는 대로 입력한 뒤,\n맨 아래 "경기 저장" 버튼을 누르면 완료돼요.', en: 'Fill in date, game/rally, singles/doubles,\nopponent, score, racket, etc. in any order,\nthen tap "Save Match" at the bottom.' },
   tour_match_opponent_title:{ ko: '🆚 상대 이름을 입력하세요', en: '🆚 Enter your opponent name' },
   tour_match_opponent_desc:{ ko: '함께 경기한 상대의 이름을\n입력해주세요.', en: 'Enter the name of the opponent\nyou played against.' },
   tour_match_partner_title:{ ko: '🤝 파트너 이름을 입력하세요', en: '🤝 Enter your partner name' },
@@ -5043,37 +5047,8 @@ var TOUR_STEPS = [
   { page:'profile', sel:'.pf-sport-pills', tKey:'tour_prof_sport_title', dKey:'tour_prof_sport_desc',
     gate:function(){ return !!(state.sportType); } },
 
-  // ── 3) 첫 경기 등록 ──
-  { page:'match',   sel:'#matchFormAccHeader', tKey:'tour_match_newbtn_title', dKey:'tour_match_newbtn_desc' },
-  { page:'match',   sel:'#matchModeToggle', tKey:'tour_match_mode_title', dKey:'tour_match_mode_desc', beforeShow:_ensureMatchFormOpen },
-  { page:'match',   sel:'#matchFormatToggle', tKey:'tour2_title', dKey:'tour2_desc', beforeShow:_ensureMatchFormOpen,
-    gate:function(){ return !!(document.getElementById('matchFormat') && document.getElementById('matchFormat').value); } },
-  { page:'match',   sel:'#matchPartner', tKey:'tour_match_partner_title', dKey:'tour_match_partner_desc', beforeShow:_ensureMatchFormOpen,
-    gate:function(){
-      var format = (document.getElementById('matchFormat') || {}).value;
-      if (format !== 'doubles') return true; // 단식이면 파트너 입력이 없으므로 이 단계는 건너뜀
-      var el = document.getElementById('matchPartner');
-      return !!(el && el.value && el.value.trim());
-    } },
-  { page:'match',   sel:function(){
-      var format = (document.getElementById('matchFormat') || {}).value;
-      return format === 'doubles' ? '#matchOpponent1' : '#matchOpponent';
-    }, tKey:'tour_match_opponent_title', dKey:'tour_match_opponent_desc', beforeShow:_ensureMatchFormOpen,
-    gate:function(){
-      var format = (document.getElementById('matchFormat') || {}).value;
-      var el = document.getElementById(format === 'doubles' ? 'matchOpponent1' : 'matchOpponent');
-      return !!(el && el.value && el.value.trim());
-    } },
-  { page:'match',   sel:'#matchOpponent2', tKey:'tour_match_opponent2_title', dKey:'tour_match_opponent2_desc', beforeShow:_ensureMatchFormOpen,
-    gate:function(){
-      var format = (document.getElementById('matchFormat') || {}).value;
-      if (format !== 'doubles') return true; // 단식이면 상대2 입력이 없으므로 이 단계는 건너뜀
-      var el = document.getElementById('matchOpponent2');
-      return !!(el && el.value && el.value.trim());
-    } },
-  { page:'match',   sel:'#myScore', tKey:'tour_match_score_title', dKey:'tour_match_score_desc', beforeShow:_ensureMatchFormOpen },
-  { page:'match',   sel:'#racketSelectGroup', tKey:'tour_match_racket_title', dKey:'tour_match_racket_desc', beforeShow:_ensureMatchFormOpen },
-  { page:'match',   sel:'#matchSaveBtn', tKey:'tour_match_save_title', dKey:'tour_match_save_desc', beforeShow:_ensureMatchFormOpen,
+  // ── 3) 첫 경기 등록 (필드별 순서 강제 없이, 폼 전체를 보여주고 자유롭게 입력 후 저장) ──
+  { page:'match',   sel:'#matchFormBody', tKey:'tour_match_all_title', dKey:'tour_match_all_desc', beforeShow:_ensureMatchFormOpen,
     gate:function(){ return !!(state.matches && state.matches.length > 0); }, celebrate:true }
 ];
 var _tourIdx = 0;
@@ -5404,6 +5379,7 @@ function _tourCheckGate() {
   _tourWrap('showPlayerAC');
   _tourWrap('saveStringingInfo');
   _tourWrap('selectSportTab');
+  _tourWrap('autoDetectResult');
 })();
 
 // ===== 저장공간 정리 =====
@@ -6890,6 +6866,38 @@ function updateGameDurationEstimate() {
   el.value = est > 0 ? est : '';
 }
 
+// [정리] 경기 저장 후 / 수정 취소 시 폼을 비우는 코드가 saveMatch()와
+// cancelEditMatch()에 거의 똑같이 중복돼 있던 것을 공용 함수로 통합
+function _resetMatchFormFields() {
+  state.currentResult = null;
+  document.getElementById('winBtn').className = 'winner-btn';
+  document.getElementById('loseBtn').className = 'winner-btn';
+  document.getElementById('matchDate').value = getTodayStr();
+  document.getElementById('matchFormat').value = '';
+  document.getElementById('btnSingles').classList.remove('selected');
+  document.getElementById('btnDoubles').classList.remove('selected');
+  document.getElementById('matchOpponent').value = '';
+  document.getElementById('matchOpponent1').value = '';
+  document.getElementById('matchOpponent2').value = '';
+  document.getElementById('matchPartner').value = '';
+  document.getElementById('myScore').value = '';
+  document.getElementById('oppScore').value = '';
+  document.getElementById('myTiebreak').value = '';
+  document.getElementById('oppTiebreak').value = '';
+  document.getElementById('matchMemo').value = '';
+  var _durationEl = document.getElementById('matchGameDuration');
+  if (_durationEl) _durationEl.value = '';
+  _gameDurationEdited = false;
+  var _racketEl = document.getElementById('matchRacket');
+  if (_racketEl) _racketEl.value = '';
+  var _rallyHourEl = document.getElementById('rallyHour');
+  var _rallyMinEl = document.getElementById('rallyMin');
+  if (_rallyHourEl) _rallyHourEl.value = '';
+  if (_rallyMinEl) _rallyMinEl.value = '';
+  selectRecordType('game');
+  togglePartner();
+}
+
 function saveMatch() {
   const recordType = (document.getElementById('matchRecordType') || {}).value || 'game';
   const date = document.getElementById('matchDate').value;
@@ -7001,34 +7009,7 @@ function saveMatch() {
   // 폼 닫기
   closeMatchForm();
   // 폼 초기화
-  state.currentResult = null;
-  document.getElementById('winBtn').className = 'winner-btn';
-  document.getElementById('loseBtn').className = 'winner-btn';
-  document.getElementById('matchDate').value = getTodayStr();
-  document.getElementById('matchFormat').value = '';
-  document.getElementById('btnSingles').classList.remove('selected');
-  document.getElementById('btnDoubles').classList.remove('selected');
-  document.getElementById('matchOpponent').value = '';
-  document.getElementById('matchOpponent1').value = '';
-  document.getElementById('matchOpponent2').value = '';
-  document.getElementById('matchPartner').value = '';
-  document.getElementById('myScore').value = '';
-  document.getElementById('oppScore').value = '';
-  document.getElementById('myTiebreak').value = '';
-  document.getElementById('oppTiebreak').value = '';
-  document.getElementById('matchMemo').value = '';
-  var matchDurationEl = document.getElementById('matchGameDuration');
-  if (matchDurationEl) matchDurationEl.value = '';
-  _gameDurationEdited = false;
-  var matchRacketEl = document.getElementById('matchRacket');
-  if (matchRacketEl) matchRacketEl.value = '';
-  var rallyHourEl = document.getElementById('rallyHour');
-  var rallyMinEl = document.getElementById('rallyMin');
-  if (rallyHourEl) rallyHourEl.value = '';
-  if (rallyMinEl) rallyMinEl.value = '';
-  selectRecordType('game');
-  // 피클볼 점수 방식 초기화 불필요 (UI 제거됨)
-  togglePartner();
+  _resetMatchFormFields();
   renderMatchList();
   setTodayDate();
   renderStringBanner();
@@ -7450,33 +7431,7 @@ function cancelEditMatch() {
   if (_cancelTitleEl) _cancelTitleEl.textContent = _t('match_new_btn_open');
   document.getElementById('matchSaveBtn').textContent = _t('match_save_btn');
   // 폼 초기화
-  state.currentResult = null;
-  document.getElementById('winBtn').className = 'winner-btn';
-  document.getElementById('loseBtn').className = 'winner-btn';
-  document.getElementById('matchDate').value = getTodayStr();
-  document.getElementById('matchFormat').value = '';
-  document.getElementById('btnSingles').classList.remove('selected');
-  document.getElementById('btnDoubles').classList.remove('selected');
-  document.getElementById('matchOpponent').value = '';
-  document.getElementById('matchOpponent1').value = '';
-  document.getElementById('matchOpponent2').value = '';
-  document.getElementById('matchPartner').value = '';
-  document.getElementById('myScore').value = '';
-  document.getElementById('oppScore').value = '';
-  document.getElementById('myTiebreak').value = '';
-  document.getElementById('oppTiebreak').value = '';
-  document.getElementById('matchMemo').value = '';
-  var _cancelDurationEl = document.getElementById('matchGameDuration');
-  if (_cancelDurationEl) _cancelDurationEl.value = '';
-  _gameDurationEdited = false;
-  var _cancelRacketEl = document.getElementById('matchRacket');
-  if (_cancelRacketEl) _cancelRacketEl.value = '';
-  var _cancelRallyHourEl = document.getElementById('rallyHour');
-  var _cancelRallyMinEl = document.getElementById('rallyMin');
-  if (_cancelRallyHourEl) _cancelRallyHourEl.value = '';
-  if (_cancelRallyMinEl) _cancelRallyMinEl.value = '';
-  selectRecordType('game');
-  togglePartner();
+  _resetMatchFormFields();
   closeMatchForm();
   setTodayDate();
 }
@@ -8307,24 +8262,6 @@ function playStringReplaceVoice(msg) {
   } catch (e) { /* 음성 실패는 무시 */ }
 }
 
-// ===== 텐션 빠른 선택 칩 (종목별로 자주 쓰는 텐션 값) — 타이핑 없이 탭 한 번으로 입력 =====
-function getTensionChipValues() {
-  const sport = state.sportType || 'tennis';
-  if (sport === 'badminton') return [18, 20, 22, 24, 26, 28, 30];
-  return [45, 48, 50, 52, 54, 56, 58, 60]; // 테니스·피클볼 기본값
-}
-function buildTensionChips(num, target) {
-  return getTensionChipValues().map(v =>
-    `<button type="button" class="niji-tapbtn" onclick="setTensionQuick(${num},${v},'${target}')" style="flex:0 0 auto;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:0.76rem;font-weight:700;white-space:nowrap;">${v}</button>`
-  ).join('');
-}
-function setTensionQuick(num, val, target) {
-  const isCross = target === 'cross';
-  const el = document.getElementById(isCross ? `str${num}-cross-tension` : `str${num}-tension`);
-  if (!el) return;
-  el.value = val;
-  saveStrField(num, isCross ? 'crossTension' : 'tension', String(val));
-}
 // ===== 마지막 교체일에 "오늘" 한 번 탭으로 날짜 입력 =====
 function setStrDateToday(num) {
   const el = document.getElementById(`str${num}-date`);
@@ -8410,7 +8347,7 @@ function buildRacketCard(num) {
     <div class="str-adv-only" style="display:flex;gap:8px;margin-bottom:8px;">
       <div style="flex:1;">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_game_limit_lbl')}</label>
-        <input type="number" min="1" class="form-input" id="str${num}-gamelimit" style="font-size:16px;padding:7px 10px;" oninput="saveGameLimit(${num},this.value)">
+        <input type="number" min="1" class="form-input" id="str${num}-gamelimit" style="font-size:16px;padding:7px 10px;" onchange="saveGameLimit(${num},this.value)">
         <div style="font-size:0.62rem;color:var(--text-muted);margin-top:2px;">${_t('str_game_limit_sub')}</div>
       </div>
     </div>
@@ -8418,7 +8355,7 @@ function buildRacketCard(num) {
     <div class="str-adv-only" style="display:flex;gap:8px;margin-bottom:8px;">
       <div style="flex:1;">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_hour_limit_lbl')}</label>
-        <input type="number" min="1" class="form-input" id="str${num}-hourlimit" style="font-size:16px;padding:7px 10px;" oninput="saveHourLimit(${num},this.value)">
+        <input type="number" min="1" class="form-input" id="str${num}-hourlimit" style="font-size:16px;padding:7px 10px;" onchange="saveHourLimit(${num},this.value)">
         <div style="font-size:0.62rem;color:var(--text-muted);margin-top:2px;">${_t('str_hour_limit_sub')}</div>
       </div>
     </div>
@@ -9534,7 +9471,6 @@ function saveStringingInfo(racketNum) {
   const hybEl    = document.getElementById('str' + rn + '-hybrid');
   const crossStrEl = document.getElementById('str' + rn + '-cross-string');
   const crossTenEl = document.getElementById('str' + rn + '-cross-tension');
-  const limitEl  = document.getElementById('str' + rn + '-gamelimit');
   const reasonEl = document.getElementById('str' + rn + '-reason');
   const costEl   = document.getElementById('str' + rn + '-cost');
   if (!strEl || !dateEl) return;
@@ -9566,7 +9502,6 @@ function saveStringingInfo(racketNum) {
   p['crossTension' + rn] = crossTension;
   if (rn === 1) { state.lastStringDate = date; }
   state['stringInterval' + suf] = interval;
-  if (limitEl) state['stringGameLimit' + rn] = parseInt(limitEl.value) || 30;
 
   // 교체 이력에 자동 기록 (같은 라켓·날짜·내용의 중복 기록은 남기지 않음)
   if (!state.stringingHistory) state.stringingHistory = [];
@@ -10344,14 +10279,10 @@ function showPlayerDetail(playerId) {
     m.opponent === player.name || m.opponent2 === player.name
   );
 
-  // 선수 전체 승/패 (내 기록의 반대)
-  const myWinsVs = vsMatches.filter(m => m.result === 'win').length;
-  const myLossVs = vsMatches.filter(m => m.result === 'lose').length;
+  // 나와의 전적 (선수 전체 승/패 = 내 기록의 반대)
+  const myWin = vsMatches.filter(m => m.result === 'win').length;
+  const myLoss = vsMatches.filter(m => m.result === 'lose').length;
   const totalVs = vsMatches.length;
-
-  // 나와의 전적
-  const myWin = myWinsVs;
-  const myLoss = myLossVs;
   const myRate = totalVs > 0 ? Math.round((myWin / totalVs) * 100) : 0;
 
   // 경기 이력 (최신순, 전체)
