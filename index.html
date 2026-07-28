@@ -1563,7 +1563,7 @@ function _t(key) {
     position: fixed; top: max(80px, calc(env(safe-area-inset-top) + 60px)); left: 50%; transform: translateX(-50%) translateY(-20px);
     background: var(--surface); border: 1px solid var(--accent); border-radius: 12px;
     padding: 10px 20px; font-size: 0.8667rem; font-weight: 600; color: var(--text);
-    z-index: 999; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap;
+    z-index: 10050; opacity: 0; transition: all .3s; pointer-events: none; white-space: nowrap;
     box-shadow: 0 8px 32px rgba(0,0,0,.5);
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -4892,6 +4892,7 @@ function obReplay() {
   // 다시보기는 "다시 구경하기" 용도라서, 이미 입력/저장된 데이터가 있어도
   // 단계를 건너뛰지 않고 전부 순서대로 보여줘야 한다 (아래 _guideRenderStep에서 사용)
   _tourReplayMode = true;
+  _tourSportPicked = false;
   _obStep = 0;
   var overlay = document.getElementById('onboardOverlay');
   if (!overlay) return;
@@ -5041,7 +5042,7 @@ var TOUR_STEPS = [
       return !!(p && p.name && String(p.name).trim() && p.club && String(p.club).trim() && p.age && p.hand && p.career && p.style);
     } },
   { page:'profile', sel:'.pf-sport-pills', tKey:'tour_prof_sport_title', dKey:'tour_prof_sport_desc',
-    gate:function(){ return !!(state.sportType); } },
+    gate:function(){ return _tourSportPicked; } },
 
   // ── 3) 첫 경기 등록 (필드별 순서 강제 없이, 폼 전체를 보여주고 자유롭게 입력 후 저장) ──
   { page:'match',   sel:'#matchFormBody', tKey:'tour_match_all_title', dKey:'tour_match_all_desc', beforeShow:_ensureMatchFormOpen,
@@ -5051,9 +5052,14 @@ var _tourIdx = 0;
 // "온보딩 다시보기"로 재실행할 때는 이미 값이 채워져 있어도(=gate가 이미 true)
 // 단계를 건너뛰지 않고 전부 보여줘야 한다. obReplay()에서 true로 켜고, 투어가 끝나면 다시 꺼둔다.
 var _tourReplayMode = false;
+// [수정] 종목 선택(.pf-sport-pills) 단계의 gate가 state.sportType으로 되어있었는데,
+// sportType은 처음부터 'tennis'로 기본값이 들어있어 항상 true라 이 단계가 매번 자동으로 건너뛰어지던 버그.
+// 실제로 사용자가 종목 버튼을 눌렀는지만 별도로 추적하는 플래그로 교체.
+var _tourSportPicked = false;
 
 function tourStart() {
   _tourIdx = 0;
+  _tourSportPicked = false;
   _activeGuideMode = 'main';
   var overlay = document.getElementById('tourOverlay');
   if (!overlay) return;
@@ -5393,6 +5399,16 @@ function _tourCheckGate() {
   _tourWrap('saveStringingInfo');
   _tourWrap('selectSportTab');
   _tourWrap('autoDetectResult');
+
+  // [수정] 종목 버튼(테니스/배드민턴/피클볼)을 실제로 눌렀을 때만 _tourSportPicked를 true로 설정
+  var _origSelectSportTab = window.selectSportTab;
+  if (typeof _origSelectSportTab === 'function') {
+    window.selectSportTab = function() {
+      var result = _origSelectSportTab.apply(this, arguments);
+      _tourSportPicked = true;
+      return result;
+    };
+  }
 })();
 
 // ===== 저장공간 정리 =====
