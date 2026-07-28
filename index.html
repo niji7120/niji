@@ -126,12 +126,8 @@ const NIJI_DICT = {
   tour_str_date_desc:      { ko: '오늘 교체했다면\n"오늘" 버튼을 눌러보세요.', en: 'If you restrung today,\njust tap the "Today" button.' },
   tour_str_save_title:     { ko: '💾 저장 버튼을 눌러주세요', en: '💾 Tap the save button' },
   tour_str_save_desc:      { ko: '이 버튼을 눌러야\n스트링 등록이 완료돼요.', en: 'Tap this button to finish\nyour string registration.' },
-  tour_prof_name_title:    { ko: '✏️ 이름을 입력해보세요', en: '✏️ Enter your name' },
-  tour_prof_name_desc:     { ko: '입력하면 자동으로 저장돼요.\n마치면 다음으로 넘어가요.', en: 'It saves automatically as you type.\nYou will move on once it is saved.' },
-  tour_prof_style_title:   { ko: '🎯 플레이 스타일을 선택하세요', en: '🎯 Choose your play style' },
-  tour_prof_style_desc:    { ko: '선택하면 자동으로 저장돼요.\n마치면 다음으로 넘어가요.', en: 'It saves automatically once selected.\nYou will move on once it is saved.' },
-  tour_prof_career_title:  { ko: '📈 구력을 선택하세요', en: '📈 Choose your experience level' },
-  tour_prof_career_desc:   { ko: '선택하면 자동으로 저장돼요.\n마치면 다음으로 넘어가요.', en: 'It saves automatically once selected.\nYou will move on once it is saved.' },
+  tour_prof_all_title:     { ko: '📝 내 정보를 입력해보세요', en: '📝 Fill in your info' },
+  tour_prof_all_desc:      { ko: '이름·소속·나이·손잡이·구력·스타일을\n모두 입력/선택하면 자동 저장되고\n다음으로 넘어가요.', en: 'Fill in name, club, age,\nhandedness, experience, and style.\nIt saves automatically and moves on.' },
   tour_prof_sport_title:   { ko: '🎮 종목을 선택하세요', en: '🎮 Choose your sport' },
   tour_prof_sport_desc:    { ko: '테니스 또는 배드민턴 중\n하나를 선택해주세요.', en: 'Choose either tennis\nor badminton.' },
   tour2_title:             { ko: '🎾 단식/복식을 선택하세요', en: '🎾 Choose singles or doubles' },
@@ -203,6 +199,7 @@ const NIJI_DICT = {
   str_toast_deleted:       { ko: '🗑️ 삭제 완료',          en: '🗑️ Deleted' },
   str_toast_reset:         { ko: '🔄 라켓 {n} 정보가 초기화됐어요', en: '🔄 Racquet {n} info has been reset' },
   str_reset_btn:           { ko: '🔄 이 라켓 정보 초기화',  en: '🔄 Reset this racquet' },
+  str_toggle_card_btn:     { ko: '펼치기/접기',            en: 'Expand/collapse' },
   str_reset_confirm_title: { ko: '라켓 {n} 초기화할까요?',  en: 'Reset Racquet {n}?' },
   str_reset_confirm_msg:   { ko: '라켓명·스트링·텐션·교체일·교체 이력이 모두 지워져요. 새 라켓으로 다시 입력할 수 있어요.', en: 'Racquet name, string, tension, restring date, and history will all be cleared so you can start fresh with a new racquet.' },
   toast_export_done:       { ko: '💾 내보내기 완료!',     en: '💾 Export complete!' },
@@ -295,11 +292,6 @@ const NIJI_DICT = {
   str_reason_damaged:   { ko: '라켓 파손',                          en: 'Racquet damage' },
   str_reason_other:     { ko: '기타',                                en: 'Other' },
   str_reason_test:      { ko: '시타(테스트)',                        en: 'Test hit' },
-  str_view_mode_lbl:    { ko: '보기 모드',                           en: 'View Mode' },
-  str_view_basic:       { ko: '기본 보기',                           en: 'Basic' },
-  str_view_advanced:    { ko: '고급 보기',                           en: 'Advanced' },
-  str_view_hint_basic:  { ko: '핵심 항목만 표시 중 · 하이브리드·비용·캘린더·이력은 [고급 보기]에서 볼 수 있어요', en: 'Showing core fields only · Hybrid, cost, calendar & history are in [Advanced]' },
-  str_view_hint_advanced: { ko: '모든 상세 옵션 표시 중', en: 'Showing all detailed options' },
   str_test_stat_month:  { ko: '이번 달 시타',                        en: 'Test hits this month' },
   str_test_stat_year:   { ko: '올해 시타',                           en: 'Test hits this year' },
   str_test_stat_unit:   { ko: '회',                                  en: 'x' },
@@ -939,7 +931,7 @@ const NIJI_DICT = {
   manual_s1_2: { ko: '이름·클럽·나이대·손잡이·구력·스타일 항목을 탭하면 바로 수정되고 <b>자동 저장</b>됩니다', en: 'Tap any field (name, club, age, handedness, experience, style) to edit — changes are <b>auto-saved</b>' },
   manual_s1_3: { ko: '라켓은 <b>기본 2자루, "라켓 추가" 버튼으로 4자루까지</b> 등록할 수 있어요. RACQUET 1·2·3·4 항목을 탭해서 펼친 뒤 라켓명·스트링·텐션·교체일을 입력하세요', en: 'You can register <b>2 racquets by default, or up to 4 with the "Add Racquet" button</b>. Tap RACQUET 1·2·3·4 to expand, then enter the name, string, tension, and restring date' },
   manual_s1_4: { ko: '<b>스트링 선택</b> — 과거에 입력한 스트링 목록에서 고르거나, 아래 입력창에 직접 타이핑할 수 있어요. 드롭다운에서 선택하면 입력창에도 자동으로 채워져요', en: '<b>String selection</b> — pick from your past strings in the dropdown, or type directly. Selecting from the dropdown auto-fills the input field' },
-  manual_s1_5: { ko: '<b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'Enter a <b>restring date</b> to see D+ days and games played automatically — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
+  manual_s1_5: { ko: '<b>스트링 교체일</b>을 입력하면 배너에 D+일수와 교체 후 게임 수가 자동 표시돼요 — 설정한 교체 주기 대비 진행률에 따라 🟢 양호 / 🟡 주의 / 🔴 교체 권장 색상이 표시돼요', en: 'Enter a <b>restring date</b> to see D+ days and games played automatically — the color (🟢 Good / 🟡 Caution / 🔴 Replace) reflects progress toward your chosen replacement cycle' },
   manual_s1_6: { ko: '프로필 하단에서 🎾 테니스 / 🏸 배드민턴 / 🏓 피클볼 <b>종목을 설정</b>하세요. 경기기록·통계 탭의 <b>[종목 변경 →]</b> 버튼으로도 바로 이동해요', en: 'Set your <b>sport</b> at the bottom of the profile: 🎾 Tennis / 🏸 Badminton / 🏓 Pickleball. You can also tap <b>[Change Sport →]</b> in the Match or Stats tab' },
   manual_s1_7: { ko: '상단 🌙/☀️ 버튼으로 <b>다크/라이트 테마</b>를 전환할 수 있어요', en: 'Tap 🌙/☀️ at the top to switch between <b>dark and light theme</b>' },
 
@@ -997,7 +989,7 @@ const NIJI_DICT = {
   manual_s6_title: { ko: '6. 스트링 관리', en: '6. String Management' },
   manual_s6_1: { ko: '프로필 탭 → 라켓 카드에서 <b>스트링명</b>을 입력하세요. 과거에 입력한 스트링은 드롭다운에서 바로 선택할 수 있어요', en: 'Go to Profile → racquet card and enter the <b>string name</b>. Previously used strings appear in the dropdown' },
   manual_s6_2: { ko: '<b>스트링 교체일</b>을 입력하면 프로필 배너에 D+일수와 교체 후 게임 수가 자동 표시됩니다', en: 'Enter a <b>restring date</b> to see D+ days and post-restring game count in the profile banner' },
-  manual_s6_3: { ko: '배너 색상으로 교체 시기를 한눈에 확인할 수 있어요 — 🟢 양호(30일 이내) / 🟡 주의(31~90일) / 🔴 교체 권장(90일 초과)', en: 'The banner color shows restring status at a glance — 🟢 Good (≤30d) / 🟡 Caution (31–90d) / 🔴 Replace (>90d)' },
+  manual_s6_3: { ko: '배너 색상으로 교체 시기를 한눈에 확인할 수 있어요 — 설정한 교체 주기 대비 진행률에 따라 🟢 양호 / 🟡 주의 / 🔴 교체 권장으로 표시돼요', en: 'The banner color shows restring status at a glance — it reflects progress toward your chosen replacement cycle (🟢 Good / 🟡 Caution / 🔴 Replace)' },
   manual_s6_4: { ko: '경기 입력 시 <b>사용 라켓</b>을 선택하면 라켓별 게임 수를 따로 카운트해줘요', en: 'Choose a <b>racquet used</b> when logging a match to track game count per racquet separately' },
   manual_s6_5: { ko: '<b>스트링 선택이 안 보여요</b> — 스트링 입력 기록이 없으면 직접 입력창만 표시돼요. 기록이 쌓이면 드롭다운이 자동으로 나타납니다', en: '<b>No string dropdown?</b> — The dropdown only appears after you\'ve entered a string at least once. Just type directly until then' },
   manual_s6_6: { ko: '스트링 관리 탭 상단 <b>🛠️ 교체 인증하기</b> 버튼을 탭하면, 라켓·스트링·텐션·교체일 정보가 자동으로 문구로 만들어져서 카카오톡 등으로 바로 공유할 수 있어요', en: 'Tap <b>🛠️ Share Restring</b> at the top of the String Management tab to instantly generate and share your racquet, string, tension, and restring date via KakaoTalk or any app' },
@@ -2397,10 +2389,7 @@ function _t(key) {
   .niji-star-tap:active { transform:scale(1.25); }
   .niji-chip-tap:active { transform:scale(0.94); opacity:0.85; }
 
-  /* 스트링 관리 - 기본/고급 보기 전환: 기본 모드일 때만 고급 전용 항목을 숨긴다.
-     (inline style.display를 직접 건드리면 원래 flex/grid 레이아웃 값을 잃어버리므로,
-     상위 컨테이너에 클래스를 붙이고 !important로 제어한다) */
-  #page-stringing.str-view-basic .str-adv-only { display: none !important; }
+  /* 스트링 관리: 기본 모드 삭제 — 고급 모드 항목(.str-adv-only)은 항상 표시됨 */
 </style>
       
 </head>
@@ -3093,17 +3082,6 @@ function _t(key) {
         <button type="button" onclick="openStringLifeInfo()" title="스트링 평균 수명 안내" style="width:18px;height:18px;line-height:16px;border-radius:50%;border:1.5px solid var(--text-muted);color:var(--text-muted);background:none;font-size: 0.6667rem;font-weight:700;cursor:pointer;padding:0;">?</button>
       </div>
       <div class="page-sub" data-lang="str_page_sub">라켓별 스트링 교체 주기를 관리하세요</div>
-
-      <!-- 기본/고급 보기 토글 -->
-      <div style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:6px;background:var(--surface2);border-radius:12px;padding:4px;">
-        <button type="button" class="niji-tapbtn" id="strViewBtnBasic" onclick="setStringViewMode('basic')" style="flex:1;border:none;border-radius:9px;padding:9px 8px;font-size:0.8rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;">
-          <span data-lang="str_view_basic">기본 보기</span>
-        </button>
-        <button type="button" class="niji-tapbtn" id="strViewBtnAdvanced" onclick="setStringViewMode('advanced')" style="flex:1;border:none;border-radius:9px;padding:9px 8px;font-size:0.8rem;font-weight:700;cursor:pointer;background:transparent;color:var(--text-muted);">
-          <span data-lang="str_view_advanced">고급 보기</span>
-        </button>
-      </div>
-      <div id="strViewModeHint" style="text-align:center;font-size:0.68rem;color:var(--text-muted);margin-bottom:10px;line-height:1.4;"></div>
 
       <!-- 시타(테스트) 통계 -->
       <div id="strTestStatBox" style="display:none;justify-content:center;gap:14px;font-size:0.74rem;color:var(--text-muted);margin-bottom:10px;"></div>
@@ -3984,7 +3962,6 @@ let state = {
   stringAlertEnabled4: true,
   racketCount: 2, // 2~4: 스트링 관리에 표시할 라켓 수
   stringingHistory: [], // { id, name, date, racket: 1|2|3|4, reason, cost }
-  stringViewMode: 'basic', // 'basic' | 'advanced' - 스트링 관리 화면 기본/고급 보기
   tnTournaments: [],  // 토너먼트 데이터
   stringMasterDB: [], // 스트링 마스터 DB { id, brand, model, gauge, material, shape, color, country, tension, price, features, pros, cons, style, career, racket, ratings:{spin,power,control,feel,tensionHold,durability,armStress}, memo }
 };
@@ -4912,6 +4889,9 @@ var _OB_PENDING_LOGIN_KEY = 'nijiOnboardPendingLogin';
 
 // 공유 탭 "온보딩 다시 보기" 버튼용 — obStart()와 달리 신규 사용자 여부를 따지지 않고 무조건 보여줌
 function obReplay() {
+  // 다시보기는 "다시 구경하기" 용도라서, 이미 입력/저장된 데이터가 있어도
+  // 단계를 건너뛰지 않고 전부 순서대로 보여줘야 한다 (아래 _guideRenderStep에서 사용)
+  _tourReplayMode = true;
   _obStep = 0;
   var overlay = document.getElementById('onboardOverlay');
   if (!overlay) return;
@@ -5053,13 +5033,13 @@ var TOUR_STEPS = [
   { page:'stringing', sel:'#str1-save-btn', tKey:'tour_str_save_title', dKey:'tour_str_save_desc',
     gate:function(){ return !!(state.profile && state.profile.string); } },
 
-  // ── 2) 프로필 등록 ──
-  { page:'profile', sel:'#pf-field-name', tKey:'tour_prof_name_title', dKey:'tour_prof_name_desc',
-    gate:function(){ return !!(state.profile && state.profile.name && String(state.profile.name).trim()); } },
-  { page:'profile', sel:'#pf-item-career', tKey:'tour_prof_career_title', dKey:'tour_prof_career_desc',
-    gate:function(){ return !!(state.profile && state.profile.career); } },
-  { page:'profile', sel:'#pf-item-style', tKey:'tour_prof_style_title', dKey:'tour_prof_style_desc',
-    gate:function(){ return !!(state.profile && state.profile.style); } },
+  // ── 2) 프로필 등록 (필드별 순서 강제 없이, 정보 카드 전체를 보여주고 자유롭게 다 입력/체크하면 다음으로) ──
+  { page:'profile', sel:'#profileInfoGrid', tKey:'tour_prof_all_title', dKey:'tour_prof_all_desc',
+    beforeShow:function(){ if (typeof renderProfile === 'function') renderProfile(); },
+    gate:function(){
+      var p = state.profile;
+      return !!(p && p.name && String(p.name).trim() && p.club && String(p.club).trim() && p.age && p.hand && p.career && p.style);
+    } },
   { page:'profile', sel:'.pf-sport-pills', tKey:'tour_prof_sport_title', dKey:'tour_prof_sport_desc',
     gate:function(){ return !!(state.sportType); } },
 
@@ -5068,6 +5048,9 @@ var TOUR_STEPS = [
     gate:function(){ return !!(state.matches && state.matches.length > 0); }, celebrate:true }
 ];
 var _tourIdx = 0;
+// "온보딩 다시보기"로 재실행할 때는 이미 값이 채워져 있어도(=gate가 이미 true)
+// 단계를 건너뛰지 않고 전부 보여줘야 한다. obReplay()에서 true로 켜고, 투어가 끝나면 다시 꺼둔다.
+var _tourReplayMode = false;
 
 function tourStart() {
   _tourIdx = 0;
@@ -5087,7 +5070,8 @@ function _guideRenderStep(steps, i, setIdx, onEnd) {
   var step = steps[i];
   if (!step) { onEnd(); return; }
   // 이미 조건이 충족된 단계(예: 다시보기 할 때 이미 입력/저장돼 있는 경우)는 자동으로 건너뛴다
-  if (step.gate && step.gate()) { setIdx(i + 1); _guideRenderStep(steps, i + 1, setIdx, onEnd); return; }
+  // 단, "온보딩 다시보기"(_tourReplayMode)로 명시적으로 다시 볼 때는 건너뛰지 않고 전부 보여준다
+  if (!_tourReplayMode && step.gate && step.gate()) { setIdx(i + 1); _guideRenderStep(steps, i + 1, setIdx, onEnd); return; }
   if (typeof showPage === 'function' && step.page) showPage(step.page);
   if (typeof step.beforeShow === 'function') step.beforeShow();
 
@@ -5264,11 +5248,12 @@ function tourEnd() {
   var overlay = document.getElementById('tourOverlay');
   if (overlay) overlay.style.display = 'none';
   _tourHideVisuals();
+  _tourReplayMode = false;
   try { localStorage.setItem(_obStorageKey(), '1'); } catch(e) {}
   showToast(_t('tour_end_toast'));
 }
 
-window.addEventListener('resize', function() {
+function _tourRepositionCurrent() {
   var overlay = document.getElementById('tourOverlay');
   if (!overlay || overlay.style.display === 'none') return;
   if (_activeGuideMode === 'tab') {
@@ -5284,7 +5269,19 @@ window.addEventListener('resize', function() {
     var el = document.querySelector(_rSel);
     if (el) tourPosition(el);
   }
-});
+}
+window.addEventListener('resize', _tourRepositionCurrent);
+// 스크롤 이벤트는 버블링이 안 되지만, capture 단계는 어떤 자식 요소(예: .content)에서
+// 스크롤이 일어나도 document까지 전달된다 — 그래서 캡처링으로 등록해야
+// 화면을 스크롤할 때 밝은 강조창이 입력칸 위치를 실시간으로 계속 따라간다.
+var _tourScrollRaf = null;
+document.addEventListener('scroll', function() {
+  if (_tourScrollRaf) return;
+  _tourScrollRaf = requestAnimationFrame(function() {
+    _tourScrollRaf = null;
+    _tourRepositionCurrent();
+  });
+}, true);
 
 // ===== 탭별 첫 진입 미니 가이드 (통계/선수/대회/공유) =====
 // 각 탭을 처음 열었을 때만, 그 탭에 맞는 2~3단계 짧은 안내를 보여준다.
@@ -6395,6 +6392,15 @@ function calcStringUsageSummary() {
 }
 
 // 라켓별 "게임 임계치" (이 게임 수를 넘기면 게임 수 기준 교체 권장). 기본 30게임.
+// 라켓별 "교체 주기"(개월)를 일(day) 단위로 변환. 기본 3개월(=90일).
+// 스트링 관리 탭에서 선택한 값(state.stringInterval[N])이 원본(source of truth)이며,
+// 날짜 기준 진행률/색상/D-day 계산은 전부 이 함수를 거쳐야 함 (90일 하드코딩 금지).
+function getRacketIntervalDays(num) {
+  const suf = num === 1 ? '' : num;
+  const months = state['stringInterval' + suf] || 3;
+  return months * 30;
+}
+
 function getRacketGameLimit(num) {
   const v = state['stringGameLimit' + num];
   return (v && v > 0) ? v : 30;
@@ -6443,7 +6449,9 @@ function renderStringBanner() {
     return Math.floor((today - replaced) / 86400000);
   }
 
-  function colorClass(d) { return d <= 30 ? 'green' : d <= 90 ? 'yellow' : 'red'; }
+  // d: 경과일, intervalDays: 해당 라켓에 설정된 교체 주기(일). 90일 하드코딩 대신
+  // 선택된 교체 주기 대비 경과 비율(%)로 계산해 freshnessPct/pctColorClass와 동일한 기준을 공유한다.
+  function colorClass(d, intervalDays) { return pctColorClass(freshnessPct(d, intervalDays)); }
   function dayColor(cls) {
     if (cls === 'green') return '#4ade80';
     if (cls === 'orange' || cls === 'yellow') return '#fb923c';
@@ -6463,14 +6471,15 @@ function renderStringBanner() {
     return 'red';
   }
   function statusLabel(cls) {
-    if (cls === 'green')  return isEn ? 'GOOD'    : '좋음';
-    if (cls === 'yellow') return isEn ? 'CAUTION' : '주의';
+    if (cls === 'green') return isEn ? 'GOOD' : '좋음';
+    if (cls === 'yellow' || cls === 'orange') return isEn ? 'CAUTION' : '주의';
     return isEn ? 'REPLACE' : '교체 필요';
   }
-  // 교체 후 경과일을 0~100% 신선도로 환산 (0일=100%, 90일 이상=0%)
-  function freshnessPct(d) {
+  // 교체 후 경과일을 0~100% 신선도로 환산 (0일=100%, 선택한 교체 주기 도달 시=0%)
+  function freshnessPct(d, intervalDays) {
     if (d == null) return null;
-    return Math.max(0, Math.min(100, Math.round(100 - (d / 90) * 100)));
+    const days = intervalDays || 90;
+    return Math.max(0, Math.min(100, Math.round(100 - (d / days) * 100)));
   }
 
   const date1 = p.stringDate  || '';
@@ -6512,15 +6521,16 @@ function renderStringBanner() {
     const name = racket || `${_t('pf_racket_name')} ${num}`;
     // 날짜 기준 등급과 게임수 기준 등급 중 더 심각한 쪽을 표시 (게임 수 데이터도 반영)
     const limit = getRacketGameLimit(num);
+    const intervalDays = getRacketIntervalDays(num);
     const hourStatus = getHourLimitStatus(num, usage ? usage.totalMin : 0);
-    let cls  = diff !== null ? colorClass(diff) : 'none';
+    let cls  = diff !== null ? colorClass(diff, intervalDays) : 'none';
     if (diff !== null && games >= limit && cls === 'green') cls = 'yellow';
     if (diff !== null && games >= limit * 1.3) cls = 'red';
     if (diff !== null && hourStatus.enabled) {
       if (hourStatus.overdue) cls = 'red';
       else if (hourStatus.remainingMin <= hourStatus.limitMin * 0.15 && cls === 'green') cls = 'yellow';
     }
-    const pct = freshnessPct(diff);
+    const pct = freshnessPct(diff, intervalDays);
     const dPctCls = pctColorClass(pct);
     const dColor = pct !== null ? dayColor(dPctCls) : 'var(--border)';
 
@@ -6660,12 +6670,14 @@ function renderStringUsageSummary() {
 }
 
 // 프로필 입력 디바운스 (모바일에서 oninput 과도한 저장 방지)
-let _pfDebounceTimer = null;
+// [수정] 필드마다 독립된 타이머를 써야 함 — 하나의 타이머를 공유하면 "이름" 입력 직후
+// 바로 "소속" 칸을 입력할 때 이름 저장이 취소되어 버리는 문제가 있었음
+let _pfDebounceTimers = {};
 // 라켓 드롭다운 열고 닫기
 
 function pfDebounceSave(key, value) {
-  clearTimeout(_pfDebounceTimer);
-  _pfDebounceTimer = setTimeout(() => saveProfileField(key, value), 600);
+  clearTimeout(_pfDebounceTimers[key]);
+  _pfDebounceTimers[key] = setTimeout(() => saveProfileField(key, value), 600);
 }
 
 function saveProfileField(key, value) {
@@ -8329,6 +8341,26 @@ function setStrDateToday(num) {
   el.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
+// ===== 라켓 카드 접기/펼치기 (라켓이 여러 개일 때 스크롤 부담을 줄이기 위한 아코디언) =====
+function toggleRacketBody(num) {
+  const body = document.getElementById('str' + num + '-body');
+  const icon = document.getElementById('str' + num + '-toggle-icon');
+  if (!body) return;
+  const willOpen = body.style.display === 'none';
+  body.style.display = willOpen ? '' : 'none';
+  if (icon) icon.style.transform = willOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
+}
+
+// ===== 스트링 교체 이력 접기/펼치기 (기본은 접힌 상태) =====
+function toggleStringHistory(num) {
+  const body = document.getElementById('str' + num + '-history-body');
+  const icon = document.getElementById('str' + num + '-history-chevron');
+  if (!body) return;
+  const willOpen = body.style.display === 'none';
+  body.style.display = willOpen ? '' : 'none';
+  if (icon) icon.textContent = willOpen ? '▾' : '▸';
+}
+
 // ===== 라켓 카드 HTML 생성 (라켓 1/2/3/4 공용 템플릿) =====
 function buildRacketCard(num) {
   const accentMap = { 1: 'var(--accent)', 2: 'var(--accent2)', 3: '#c9a961', 4: '#6fbf8f' };
@@ -8346,9 +8378,13 @@ function buildRacketCard(num) {
       <span style="background:${accent};color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET ${num}</span>
       <input class="form-input" id="str-r${num}-name" data-lang-placeholder="${ph}" placeholder="${escHtml(_t(ph))}" style="flex:1;font-size:16px;padding:6px 10px;" oninput="saveStrField(${num},'racket',this.value)" onblur="autofillFromRacketHistory(${num})" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-string');if(n){n.focus();n.select();}}">
       ${removeBtn}
+      <button type="button" class="niji-tapbtn" id="str${num}-toggle-btn" onclick="toggleRacketBody(${num})" title="${escHtml(_t('str_toggle_card_btn'))}" style="background:none;border:none;color:var(--text-muted);font-size:1.15rem;cursor:pointer;padding:2px 8px;line-height:1;">
+        <span id="str${num}-toggle-icon" style="display:inline-block;transition:transform .15s ease;${num > 1 ? 'transform:rotate(-90deg);' : ''}">▾</span>
+      </button>
     </div>
     <div id="stringingAlert${num}" style="margin-bottom:10px;"></div>
 
+    <div id="str${num}-body" style="${num > 1 ? 'display:none;' : ''}">
     <label class="str-adv-only" style="display:flex;align-items:center;gap:6px;font-size:0.78rem;margin-bottom:10px;cursor:pointer;color:var(--text-muted);">
       <input type="checkbox" id="str${num}-hybrid" onchange="onHybridToggle(${num})" style="width:16px;height:16px;">
       <span data-lang="str_hybrid_toggle">🔀 하이브리드 (메인/크로스 다르게)</span>
@@ -8388,7 +8424,7 @@ function buildRacketCard(num) {
           <label class="form-label" style="font-size:0.72rem;margin:0;">${_t('str_last_replace_lbl')}</label>
           <button type="button" class="niji-tapbtn" onclick="setStrDateToday(${num})" style="color:var(--accent);font-weight:700;font-size:0.68rem;background:rgba(124,106,247,.14);border:none;border-radius:8px;padding:7px 9px;line-height:1;white-space:nowrap;">📅 <span data-lang="str_date_today_btn">${_t('str_date_today_btn')}</span></button>
         </div>
-        <input type="date" class="form-input" id="str${num}-date" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(${num})">
+        <input type="date" class="form-input" id="str${num}-date" style="font-size:16px;padding:7px 10px;" onchange="saveStringingInfo(${num})" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-gamelimit');if(n){n.focus();n.select();}else{saveStringingInfo(${num});}}">
       </div>
       <div class="str-adv-only" style="min-width:100px;">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_interval_lbl')}</label>
@@ -8405,7 +8441,7 @@ function buildRacketCard(num) {
     <div class="str-adv-only" style="display:flex;gap:8px;margin-bottom:8px;">
       <div style="flex:1;">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_game_limit_lbl')}</label>
-        <input type="number" min="1" class="form-input" id="str${num}-gamelimit" style="font-size:16px;padding:7px 10px;" onchange="saveGameLimit(${num},this.value)">
+        <input type="number" min="1" class="form-input" id="str${num}-gamelimit" style="font-size:16px;padding:7px 10px;" onchange="saveGameLimit(${num},this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-hourlimit');if(n){n.focus();n.select();}}">
         <div style="font-size:0.62rem;color:var(--text-muted);margin-top:2px;">${_t('str_game_limit_sub')}</div>
       </div>
     </div>
@@ -8413,7 +8449,7 @@ function buildRacketCard(num) {
     <div class="str-adv-only" style="display:flex;gap:8px;margin-bottom:8px;">
       <div style="flex:1;">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_hour_limit_lbl')}</label>
-        <input type="number" min="1" class="form-input" id="str${num}-hourlimit" style="font-size:16px;padding:7px 10px;" onchange="saveHourLimit(${num},this.value)">
+        <input type="number" min="1" class="form-input" id="str${num}-hourlimit" style="font-size:16px;padding:7px 10px;" onchange="saveHourLimit(${num},this.value)" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-cost');if(n){n.focus();n.select();}else{this.blur();saveStringingInfo(${num});}}">
         <div style="font-size:0.62rem;color:var(--text-muted);margin-top:2px;">${_t('str_hour_limit_sub')}</div>
       </div>
     </div>
@@ -8431,7 +8467,7 @@ function buildRacketCard(num) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
       <div class="str-adv-only">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_reason_lbl')}</label>
-        <select class="form-select" id="str${num}-reason" style="font-size:0.85rem;padding:7px 10px;">
+        <select class="form-select" id="str${num}-reason" style="font-size:0.85rem;padding:7px 10px;" onchange="saveStringingInfo(${num})">
           <option value="regular">${_t('str_reason_regular')}</option>
           <option value="tension">${_t('str_reason_tension')}</option>
           <option value="broken">${_t('str_reason_broken')}</option>
@@ -8442,7 +8478,7 @@ function buildRacketCard(num) {
       </div>
       <div class="str-adv-only">
         <label class="form-label" style="font-size:0.72rem;">${_t('str_cost_lbl')}</label>
-        <input type="number" min="0" class="form-input" id="str${num}-cost" placeholder="${escHtml(_t('str_cost_ph'))}" style="font-size:16px;padding:7px 10px;" onkeydown="if(event.key==='Enter')saveStringingInfo(${num})">
+        <input type="number" min="0" class="form-input" id="str${num}-cost" placeholder="${escHtml(_t('str_cost_ph'))}" style="font-size:16px;padding:7px 10px;" onchange="saveStringingInfo(${num})" onkeydown="if(event.key==='Enter')saveStringingInfo(${num})">
       </div>
     </div>
 
@@ -8451,11 +8487,14 @@ function buildRacketCard(num) {
     <button class="btn str-adv-only" style="width:100%;font-size:0.76rem;padding:8px;margin-bottom:4px;background:none;color:var(--text-muted);border:1px dashed var(--border);" onclick="resetRacket(${num})"><span>${_t('str_reset_btn')}</span></button>
 
     <div class="str-adv-only" style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:8px;">
-        <div class="card-title" data-lang="str_history_title${num}" style="font-size:0.82rem;">${_t('str_history_title' + num)}</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:8px;cursor:pointer;" onclick="toggleStringHistory(${num})">
+        <div class="card-title" data-lang="str_history_title${num}" style="font-size:0.82rem;display:flex;align-items:center;gap:5px;">${_t('str_history_title' + num)} <span id="str${num}-history-chevron" style="font-size:0.7rem;color:var(--text-muted);transition:transform .15s ease;display:inline-block;">▸</span></div>
         <div id="stringingTotalCost${num}" style="font-size:0.68rem;color:var(--text-muted);white-space:nowrap;"></div>
       </div>
-      <div id="stringingHistoryList${num}"></div>
+      <div id="str${num}-history-body" style="display:none;">
+        <div id="stringingHistoryList${num}"></div>
+      </div>
+    </div>
     </div>
   </div>`;
 }
@@ -8554,6 +8593,7 @@ function saveGameLimit(num, val) {
   state['stringGameLimit' + num] = (n && n > 0) ? n : 30;
   save();
   renderStringing();
+  renderStringBanner();
 }
 
 function saveHourLimit(num, val) {
@@ -9139,30 +9179,6 @@ function renderStringDBList() {
   }).join('');
 }
 
-// ===== 기본/고급 보기 =====
-function setStringViewMode(mode) {
-  state.stringViewMode = (mode === 'advanced') ? 'advanced' : 'basic';
-  save();
-  applyStringViewMode();
-}
-
-function applyStringViewMode() {
-  const mode = state.stringViewMode || 'basic';
-  const isAdv = mode === 'advanced';
-  const page = document.getElementById('page-stringing');
-  if (page) page.classList.toggle('str-view-basic', !isAdv);
-  const btnB = document.getElementById('strViewBtnBasic');
-  const btnA = document.getElementById('strViewBtnAdvanced');
-  if (btnB && btnA) {
-    btnB.style.background = isAdv ? 'transparent' : 'var(--accent)';
-    btnB.style.color = isAdv ? 'var(--text-muted)' : '#fff';
-    btnA.style.background = isAdv ? 'var(--accent)' : 'transparent';
-    btnA.style.color = isAdv ? '#fff' : 'var(--text-muted)';
-  }
-  const hint = document.getElementById('strViewModeHint');
-  if (hint) hint.textContent = _t(isAdv ? 'str_view_hint_advanced' : 'str_view_hint_basic');
-}
-
 // ===== 시타(테스트) 통계 =====
 function renderStrTestStats() {
   const box = document.getElementById('strTestStatBox');
@@ -9188,7 +9204,6 @@ function renderStrTestStats() {
 
 function renderStringing() {
   renderRacketCards();
-  applyStringViewMode();
   renderStrTestStats();
   const p = state.profile || {};
   const today = getTodayStr();
@@ -9233,7 +9248,6 @@ function renderStringing() {
     const alertEl = document.getElementById('stringingAlert' + num);
     if (alertEl) {
       const dateStr = p['stringDate' + suf] || '';
-      const intervalMonths = state['stringInterval' + suf] || 3;
       if (!dateStr) {
         alertEl.innerHTML = `<div class="stringing-alert" style="margin-bottom:4px;">
           <div class="stringing-alert-icon">ℹ️</div>
@@ -9247,7 +9261,7 @@ function renderStringing() {
         const now = new Date();
         const todayD = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const diffDays = Math.floor((todayD - last) / 86400000);
-        const intervalDays = intervalMonths * 30;
+        const intervalDays = getRacketIntervalDays(num);
         const remaining = intervalDays - diffDays;
 
         const games = countGamesAfterRestring(dateStr, p['stringDate' + (num === 1 ? '' : num) + 'Time'] || '', 'racket' + num);
