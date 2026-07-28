@@ -216,7 +216,7 @@ const NIJI_DICT = {
   pf_pickleball:     { ko: '피클볼',        en: 'Pickleball' },
 
   /* 스트링 관리 탭 */
-  str_page_header:      { ko: '🎾 스트링 관리',                     en: '🎾 String Management' },
+  str_page_header:      { ko: '🎾 스트링 평균수명',                     en: '🎾 String Lifespan' },
   str_close_btn:        { ko: '닫기',                                en: 'Close' },
   str_page_sub:         { ko: '라켓별 스트링 교체 주기를 관리하세요', en: 'Manage restring intervals for each racquet' },
   str_cert_btn:         { ko: '🛠️ 교체 인증하기 (공유)',            en: '🛠️ Share Restring' },
@@ -3078,7 +3078,7 @@ function _t(key) {
         <span data-lang="str_close_btn">닫기</span>
       </div>
       <div class="page-header" style="display:flex;align-items:center;gap:6px;justify-content:center;">
-        <span data-lang="str_page_header">🎾 스트링 관리</span>
+        <span data-lang="str_page_header">🎾 스트링 평균수명</span>
         <button type="button" onclick="openStringLifeInfo()" title="스트링 평균 수명 안내" style="width:18px;height:18px;line-height:16px;border-radius:50%;border:1.5px solid var(--text-muted);color:var(--text-muted);background:none;font-size: 0.6667rem;font-weight:700;cursor:pointer;padding:0;">?</button>
       </div>
       <div class="page-sub" data-lang="str_page_sub">라켓별 스트링 교체 주기를 관리하세요</div>
@@ -8358,7 +8358,7 @@ function toggleStringHistory(num) {
   if (!body) return;
   const willOpen = body.style.display === 'none';
   body.style.display = willOpen ? '' : 'none';
-  if (icon) icon.textContent = willOpen ? '▾' : '▸';
+  if (icon) icon.style.transform = willOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
 }
 
 // ===== 라켓 카드 HTML 생성 (라켓 1/2/3/4 공용 템플릿) =====
@@ -8378,8 +8378,10 @@ function buildRacketCard(num) {
       <span style="background:${accent};color:#fff;font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:1px;white-space:nowrap;">RACQUET ${num}</span>
       <input class="form-input" id="str-r${num}-name" data-lang-placeholder="${ph}" placeholder="${escHtml(_t(ph))}" style="flex:1;font-size:16px;padding:6px 10px;" oninput="saveStrField(${num},'racket',this.value)" onblur="autofillFromRacketHistory(${num})" onkeydown="if(event.key==='Enter'){var n=document.getElementById('str${num}-string');if(n){n.focus();n.select();}}">
       ${removeBtn}
-      <button type="button" class="niji-tapbtn" id="str${num}-toggle-btn" onclick="toggleRacketBody(${num})" title="${escHtml(_t('str_toggle_card_btn'))}" style="background:none;border:none;color:var(--text-muted);font-size:1.15rem;cursor:pointer;padding:2px 8px;line-height:1;">
-        <span id="str${num}-toggle-icon" style="display:inline-block;transition:transform .15s ease;${num > 1 ? 'transform:rotate(-90deg);' : ''}">▾</span>
+      <button type="button" class="niji-tapbtn" id="str${num}-toggle-btn" onclick="toggleRacketBody(${num})" title="${escHtml(_t('str_toggle_card_btn'))}" style="background:none;border:none;color:var(--text);cursor:pointer;padding:4px 10px;line-height:1;">
+        <span id="str${num}-toggle-icon" style="display:inline-flex;transition:transform .15s ease;${num > 1 ? 'transform:rotate(-90deg);' : ''}">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
       </button>
     </div>
     <div id="stringingAlert${num}" style="margin-bottom:10px;"></div>
@@ -8487,8 +8489,8 @@ function buildRacketCard(num) {
     <button class="btn str-adv-only" style="width:100%;font-size:0.76rem;padding:8px;margin-bottom:4px;background:none;color:var(--text-muted);border:1px dashed var(--border);" onclick="resetRacket(${num})"><span>${_t('str_reset_btn')}</span></button>
 
     <div class="str-adv-only" style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px;">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:8px;cursor:pointer;" onclick="toggleStringHistory(${num})">
-        <div class="card-title" data-lang="str_history_title${num}" style="font-size:0.82rem;display:flex;align-items:center;gap:5px;">${_t('str_history_title' + num)} <span id="str${num}-history-chevron" style="font-size:0.7rem;color:var(--text-muted);transition:transform .15s ease;display:inline-block;">▸</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;cursor:pointer;" onclick="toggleStringHistory(${num})">
+        <div class="card-title" style="font-size:0.82rem;display:flex;align-items:center;gap:6px;"><span data-lang="str_history_title${num}">${_t('str_history_title' + num)}</span> <span id="str${num}-history-chevron" style="display:inline-flex;color:var(--text);transition:transform .15s ease;transform:rotate(-90deg);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span></div>
         <div id="stringingTotalCost${num}" style="font-size:0.68rem;color:var(--text-muted);white-space:nowrap;"></div>
       </div>
       <div id="str${num}-history-body" style="display:none;">
