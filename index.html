@@ -800,9 +800,7 @@ const NIJI_DICT = {
   sb_deuce:                { ko: '⚡ DEUCE — 결정 포인트!', en: '⚡ DEUCE — Deciding point!' },
   sb_tiebreak_start:       { ko: '🔀 타이브레이크!',     en: '🔀 Tiebreak!' },
   sb_copied_toast:         { ko: '📋 경기 기록이 복사됐어요! 카카오톡에 붙여넣기 하세요 😊', en: '📋 Match record copied! Paste it into KakaoTalk 😊' },
-  sb_double_fault:         { ko: '⚡ 더블 폴트!',        en: '⚡ Double fault!' },
   sb_fault_second_serve:   { ko: '폴트 — 2차 서브',      en: 'Fault — 2nd serve' },
-  sb_ace:                  { ko: '🎯 에이스!',           en: '🎯 Ace!' },
   sb_no_undo:              { ko: '되돌릴 기록 없음',     en: 'Nothing to undo' },
   sb_undone:               { ko: '↩ 되돌렸습니다',      en: '↩ Undone' },
   sb_share_default_title:  { ko: '경기',                en: 'Match' },
@@ -9470,6 +9468,7 @@ function _buildShareText(matchId) {
   if (scoreStr) txt += `📊 ${_t('sc_share_score')}: ${scoreStr}${tbStr}\n`;
   txt += `🆚 ${_t('sc_share_opp')}: ${opps || _t('sc_share_opp_unknown')}\n`;
   if (myName) txt += `👤 ${_t('sc_share_myname')}: ${myName}\n`;
+  if (m.format === 'doubles' && m.partner) txt += `🤝 ${_t('match_partner_lbl')}: ${m.partner}\n`;
   if (m.memo) txt += `📝 ${m.memo}\n`;
   txt += `━━━━━━━━━━━━━━━━\n`;
   txt += `#NIJI_STRING #${sportName}`;
