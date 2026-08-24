@@ -149,23 +149,22 @@
         </button>
       </div>
 
-      <!-- 상단 히어로: 배너 + 원형 아바타 + 이름 -->
+      <!-- 상단 헤더: 작은 원형 아바타 + 이름 (한 줄) -->
       <div class="pf-wrap">
-        <div class="pf-hero">
-          <div class="pf-hero-banner"></div>
-          <div class="pf-avatar-wrap">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px 10px;background:var(--bg);">
+          <div class="pf-avatar-wrap" style="width:52px;height:52px;margin:0;flex-shrink:0;">
             <div class="pf-bg" onclick="pfBgClick()" onpointerdown="pfBgPointerDown(event)" onpointermove="pfBgPointerMove(event)" onpointerup="pfBgPointerUp(event)" onpointercancel="pfBgPointerUp(event)">
               <img id="avatarImage" class="pf-bg-img" style="display:none;">
-              <div class="pf-bg-initial" id="avatarInitial">A</div>
+              <div class="pf-bg-initial" id="avatarInitial" style="font-size:1.2rem;">A</div>
             </div>
-            <div class="pf-camera-btn">📷</div>
+            <div class="pf-camera-btn" style="width:18px;height:18px;font-size:0.55rem;border-width:2px;">📷</div>
           </div>
-          <div class="pf-drag-hint" id="pfDragHint" style="display:none;" data-lang="pf_drag_hint">↕ 드래그해서 위치 조정</div>
-          <div class="pf-name-row" id="profileNameBig">
-            <span class="pf-club-tag" id="profileClubBig"></span>
-            <span class="pf-name-text" data-lang="pf_default_name">선수</span>
+          <div id="profileNameBig" style="text-align:left;min-width:0;">
+            <span class="pf-club-tag" id="profileClubBig" style="margin-bottom:2px;"></span>
+            <span class="pf-name-text" data-lang="pf_default_name" style="font-size:1.05rem;display:block;">선수</span>
           </div>
         </div>
+        <style>#profileNameBig{text-align:left!important;}#profileNameBig .pf-name-text{font-size:1.05rem!important;line-height:1.25;}#profileNameBig .pf-club-tag{margin-bottom:2px;}</style>
 
         <!-- 하단 콘텐츠 (카드들) -->
         <div class="pf-content" onclick="event.stopPropagation()">
