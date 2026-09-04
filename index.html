@@ -2159,7 +2159,19 @@ window.addEventListener("load", initNijiHistory);
 window.addEventListener("pageshow", initNijiHistory);
 
 var lastBackPressTime = 0;
+/* 일부 기기(WebView/TWA)는 하드웨어 뒤로가기 버튼 한 번에 popstate 이벤트가
+   두 번 이상(거의 동시에, 수십ms 간격으로) 발생하는 경우가 있음 — 이때 매 이벤트마다
+   스택을 하나씩 소비해버리면 사람은 "한 번 눌렀는데 여러 단계가 한꺼번에 닫히거나
+   심하면 곧장 종료"되는 것처럼 보임. 아주 짧은 간격(같은 물리적 버튼 클릭으로 간주할
+   수 있는 수준)으로 다시 들어온 popstate는 처리하지 않고 무시해서, 한 번의 실제
+   버튼 클릭이 정확히 한 단계만 소비하도록 보장한다. */
+var _nijiLastPopstateAt = 0;
 window.addEventListener("popstate", function(event){
+  var _nijiNow = (new Date).getTime();
+  if(_nijiNow - _nijiLastPopstateAt < 350){
+    return;
+  }
+  _nijiLastPopstateAt = _nijiNow;
   /* 가장 안쪽(가장 나중에 열린 화면)부터 순서대로 하나씩만 닫는다.
      스코어보드/토너먼트 점수입력처럼 modal-overlay 클래스를 쓰지 않는
      전체화면 오버레이도 여기서 함께 처리한다. */
