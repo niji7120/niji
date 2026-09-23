@@ -1872,7 +1872,7 @@ function syncMatchSectionFocus(){
   else if(mf&&mf.style.display!=="none") active="newMatchFocusSection";
   updateMatchSectionFocus(active);
 }
-function toggleAcc(id){const body=document.getElementById(id);const arrow=document.getElementById(id+"-arrow");if(!body)return;const isOpen=body.classList.contains("open");body.classList.toggle("open",!isOpen);if(arrow)arrow.classList.toggle("open",!isOpen);if(!isOpen){const ms=getStatsFilteredMatches();if(id==="accSummary")renderSummaryCard(ms);if(id==="accMonthly")renderMonthlyGraph(ms);if(id==="accOpponent")renderOpponentStats(ms);if(id==="accPartner")renderPartnerStats(ms);if(id==="accPosition")renderPositionStats(ms);if(id==="accEnemy")renderEnemyTeamStats(ms);if(id==="accSingles")renderSinglesStats(ms);if(id==="accClubRank"){crRenderBoard();crsRenderList()}}}
+function toggleAcc(id){const body=document.getElementById(id);const arrow=document.getElementById(id+"-arrow");if(!body)return;const isOpen=body.classList.contains("open");body.classList.toggle("open",!isOpen);if(arrow)arrow.classList.toggle("open",!isOpen);if(!isOpen){const ms=getStatsFilteredMatches();if(id==="accSummary")renderSummaryCard(ms);if(id==="accMonthly")renderMonthlyGraph(ms);if(id==="accOpponent")renderOpponentStats(ms);if(id==="accPartner")renderPartnerStats(ms);if(id==="accPosition")renderPositionStats(ms);if(id==="accEnemy")renderEnemyTeamStats(ms);if(id==="accSingles")renderSinglesStats(ms);if(id==="accClubRank"){crRenderBoard();crsRenderList()}}syncMatchSectionFocus();}
 syncMatchSectionFocus();
 /* ===================== 🏅 공유랭킹 (선택 선수만의 순위) - 독립 모듈 시작 =====================
    - 이 블록의 함수/변수는 모두 "cr" 로 시작합니다. Firebase 계정과 무관하게, 내 기기의 경기 기록만으로
