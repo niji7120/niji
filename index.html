@@ -428,7 +428,7 @@ body.light-theme select{
 
       <!-- 경기 입력 폼 아코디언 -->
       <div class="acc-wrap match-focus-section" id="newMatchFocusSection" style="margin-bottom:10px;">
-        <button class="acc-header match-focus-label" id="matchFormAccHeader" onclick="toggleMatchForm()" style="background:linear-gradient(135deg,var(--accent),#a9822f);color:#fff;border-radius:12px;">
+        <button class="acc-header match-focus-label" id="matchFormAccHeader" onclick="toggleMatchForm()" style="background:linear-gradient(135deg,#c9a961,#a9822f);color:#fff;border-radius:12px;">
           <span id="matchFormTitle" data-lang="match_new_btn">➕ 새 경기 입력</span>
           <span class="acc-arrow" id="matchForm-arrow" style="color:rgba(255,255,255,0.85);">▼</span>
         </button>
@@ -515,16 +515,6 @@ body.light-theme select{
               </div>
             </div>
 
-            <!-- 줄 4: 승/패 버튼 -->
-            <div style="margin-bottom:8px;">
-              <div class="form-label" style="margin-bottom:4px;" data-lang="match_result_lbl">결과</div>
-              <div class="match-result-winner">
-                <button class="winner-btn" id="winBtn" onclick="setResult('win')" data-lang="match_win_btn">🏆 승리</button>
-                <button class="winner-btn" id="loseBtn" onclick="setResult('lose')" data-lang="match_lose_btn">😔 패배</button>
-                <button class="winner-btn" id="drawBtn" onclick="setResult('draw')" data-lang="match_draw_btn">🤝 무승부</button>
-              </div>
-            </div>
-
             <!-- 줄 5: 스코어 + 타이브레이크 한 줄 -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
               <div>
@@ -595,6 +585,16 @@ body.light-theme select{
               </div>
             </div>
 
+            <!-- 줄 6-2: 승/패 버튼 -->
+            <div style="margin-bottom:8px;">
+              <div class="form-label" style="margin-bottom:4px;" data-lang="match_result_lbl">결과</div>
+              <div class="match-result-winner">
+                <button class="winner-btn" id="winBtn" onclick="setResult('win')" data-lang="match_win_btn">🏆 승리</button>
+                <button class="winner-btn" id="loseBtn" onclick="setResult('lose')" data-lang="match_lose_btn">😔 패배</button>
+                <button class="winner-btn" id="drawBtn" onclick="setResult('draw')" data-lang="match_draw_btn">🤝 무승부</button>
+              </div>
+            </div>
+
             <!-- 줄 7: 메모 -->
             <div style="margin-bottom:10px;">
               <div class="form-label" style="margin-bottom:4px;" data-lang="match_memo_lbl">📝 메모 (선택)</div>
@@ -609,7 +609,6 @@ body.light-theme select{
       <!-- 오늘 경기 + 이전 경기 기록 -->
        <div id="matchRecordsFocusSection" class="match-focus-section match-records-focus">
        <div class="section-title match-focus-label" style="margin-top:20px;" data-lang="match_today_title">오늘 경기</div>
-      <div class="section-title" style="margin-top:20px;" data-lang="match_today_title">오늘 경기</div>
       <div id="matchListToday" class="match-focus-content"></div>
 
       <!-- 이전 경기 월별 선택 -->
