@@ -1662,14 +1662,32 @@ body.light-theme select{
     </div>
     <div style="color:var(--text-muted);font-size:.85rem;margin-bottom:14px;line-height:1.5;">아래 예약 양식을 작성한 뒤 문자 또는 카카오톡으로 보내주세요.</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <input id="reserveName" type="text" placeholder="성함" autocomplete="name">
-      <input id="reservePhone" type="tel" placeholder="연락처" autocomplete="tel">
-      <select id="reserveSport"><option value="테니스">🎾 테니스</option><option value="배드민턴">🏸 배드민턴</option></select>
-      <input id="reserveRacket" type="text" placeholder="라켓 브랜드 / 모델">
+      <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+        <span style="font-weight:800;white-space:nowrap;">성함:</span>
+        <input id="reserveName" type="text" autocomplete="name" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;">
+      </div>
+      <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+        <span style="font-weight:800;white-space:nowrap;">연락처:</span>
+        <input id="reservePhone" type="tel" autocomplete="tel" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;">
+      </div>
+      <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+        <span style="font-weight:800;white-space:nowrap;">종목:</span>
+        <select id="reserveSport" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;"><option value="테니스">🎾 테니스</option><option value="배드민턴">🏸 배드민턴</option></select>
+      </div>
+      <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+        <span style="font-weight:800;white-space:nowrap;">라켓:</span>
+        <input id="reserveRacket" type="text" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;">
+      </div>
 
       <div id="reserveNormalStringWrap" style="display:flex;flex-direction:column;gap:10px;">
-        <input id="reserveString" type="text" placeholder="스트링">
-        <input id="reserveTension" type="text" placeholder="텐션 (예: 46/44)" inputmode="text">
+        <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+          <span style="font-weight:800;white-space:nowrap;">스트링:</span>
+          <input id="reserveString" type="text" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;">
+        </div>
+        <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+          <span style="font-weight:800;white-space:nowrap;">텐션:</span>
+          <input id="reserveTension" type="text" inputmode="text" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;">
+        </div>
       </div>
 
       <label style="display:flex;align-items:center;gap:9px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);cursor:pointer;font-weight:800;">
@@ -1679,16 +1697,34 @@ body.light-theme select{
 
       <div id="reserveHybridWrap" style="display:none;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--accent);border-radius:10px;background:rgba(201,169,97,.06);">
         <div style="font-size:.8rem;color:var(--text-muted);line-height:1.4;">메인 = 세로 / 크로스 = 가로</div>
-        <input id="reserveMainString" type="text" placeholder="메인 스트링 (세로)">
-        <input id="reserveMainTension" type="text" placeholder="메인 텐션 (예: 46 lb)">
-        <input id="reserveCrossString" type="text" placeholder="크로스 스트링 (가로)">
-        <input id="reserveCrossTension" type="text" placeholder="크로스 텐션 (예: 44 lb)">
+        <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+          <span style="font-weight:800;white-space:nowrap;">메인:</span>
+          <input id="reserveMainString" type="text" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;">
+        </div>
+        <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+          <span style="font-weight:800;white-space:nowrap;">메인 텐션:</span>
+          <input id="reserveMainTension" type="text" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;">
+        </div>
+        <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+          <span style="font-weight:800;white-space:nowrap;">크로스:</span>
+          <input id="reserveCrossString" type="text" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;">
+        </div>
+        <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+          <span style="font-weight:800;white-space:nowrap;">크로스 텐션:</span>
+          <input id="reserveCrossTension" type="text" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;">
+        </div>
       </div>
 
-      <input id="reservePattern" type="text" placeholder="패턴 (예: 16×19, 16×20, 76홀 등)">
+      <div class="reserve-line" style="display:flex;align-items:center;min-height:46px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+        <span style="font-weight:800;white-space:nowrap;">패턴:</span>
+        <input id="reservePattern" type="text" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;min-width:0;">
+      </div>
       <label style="font-size:.82rem;color:var(--text-muted);margin-top:2px;">📅 라켓 작업 완료해서 받고 싶은 날</label>
       <input id="reserveDate" type="date">
-      <textarea id="reserveMemo" rows="3" placeholder="스트링어에게 하고 싶은 말 (요청사항, 참고사항 등)"></textarea>
+      <div style="display:flex;align-items:flex-start;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);">
+        <span style="font-weight:800;white-space:nowrap;padding-top:12px;">요청사항:</span>
+        <textarea id="reserveMemo" rows="3" style="flex:1;border:0;background:transparent;outline:0;padding:12px 0 12px 8px;resize:vertical;min-width:0;"></textarea>
+      </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
       <button type="button" onclick="sendStringReserveSMS()" style="padding:13px;border:0;border-radius:10px;background:var(--accent);color:#fff;font-weight:800;font-size:.95rem;cursor:pointer;">📱 문자 보내기</button>
@@ -1880,7 +1916,7 @@ function _firstTouchStringVoiceAlert(){checkStringReplaceVoiceAlert()}function c
   var r=document.getElementById("reserveRacket");
   if(r&&!r.value&&typeof state!=="undefined"&&state.profile&&state.profile.rackets&&state.profile.rackets[0]&&state.profile.rackets[0].name)r.value=state.profile.rackets[0].name;
   toggleReserveHybrid();
-  var m=document.getElementById("stringReserveModal"); if(m)m.classList.add("show");
+  var m=document.getElementById("stringReserveModal"); if(m)m.classList.add("open");
 }
 function toggleReserveHybrid(){
   var checked=!!(document.getElementById("reserveHybrid")&&document.getElementById("reserveHybrid").checked);
