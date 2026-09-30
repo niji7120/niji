@@ -5,6 +5,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="niji-build" content="20260930-1">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>NIJI STRING</title>
 <meta name="description" content="테니스·배드민턴·피클볼 경기 기록, 스트링 관리, 통계, 선수·대회 관리 앱">
@@ -2383,30 +2384,62 @@ async function sendStringReserveKakao(){
   }
   try{await navigator.clipboard.writeText(text);alert("예약 내용이 복사됐어요. 카카오톡을 열어 붙여넣어 보내주세요.")}catch(e){prompt("예약 내용을 복사해 카카오톡으로 보내주세요.",text)}
 }
-function getTodayStr(){const now=new Date;const kst=new Date(now.getTime()+9*60*60*1e3);return kst.toISOString().split("T")[0]}function setTodayDate(){const el=document.getElementById("matchDate");if(el)el.value=getTodayStr()}window._startApp=function(){var loadingScreen=document.getElementById("loadingScreen");if(loadingScreen)loadingScreen.style.display="flex";load()};window._startApp();if("serviceWorker"in navigator){
-  let _swRefreshing=false;
-  navigator.serviceWorker.addEventListener("controllerchange",function(){
-    if(_swRefreshing)return;
-    _swRefreshing=true;
-    window.location.reload();
+function getTodayStr(){const now=new Date;const kst=new Date(now.getTime()+9*60*60*1e3);return kst.toISOString().split("T")[0]}function setTodayDate(){const el=document.getElementById("matchDate");if(el)el.value=getTodayStr()}window._startApp=function(){var loadingScreen=document.getElementById("loadingScreen");if(loadingScreen)loadingScreen.style.display="flex";load()};window._startApp();(function(){
+if(!("serviceWorker" in navigator))return;
+var hadController=!!navigator.serviceWorker.controller;
+var reloading=false;
+function safeReload(url){
+  if(reloading)return;
+  if(document.getElementById("sb-overlay")){setTimeout(function(){safeReload(url)},5000);return}
+  reloading=true;
+  if(url)location.replace(url);else location.reload();
+}
+navigator.serviceWorker.addEventListener("controllerchange",function(){
+  if(!hadController){hadController=true;return}
+  safeReload();
+});
+var CUR=((document.querySelector('meta[name="niji-build"]')||{}).content)||"";
+var lastCheck=0;
+function updateSW(){
+  try{navigator.serviceWorker.getRegistrations().then(function(regs){regs.forEach(function(r){r.update().catch(function(){})})})}catch(e){}
+}
+function hardRefresh(remote){
+  var p=[];
+  try{if(window.caches)p.push(caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}))}catch(e){}
+  try{p.push(navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}))}catch(e){}
+  Promise.all(p.map(function(x){return x.catch(function(){})})).then(function(){
+    safeReload(location.pathname+"?v="+encodeURIComponent(remote));
   });
-  window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js").then(reg=>{
-      console.log("SW registered");
-      reg.update();
-    }).catch(e=>console.log("SW error:",e));
-    navigator.serviceWorker.getRegistrations().then(function(registrations){
-      for(let reg of registrations){reg.update()}
-    })
-  });
-  document.addEventListener("visibilitychange",function(){
-    if(document.visibilityState==="visible"){
-      navigator.serviceWorker.getRegistrations().then(function(registrations){
-        for(let reg of registrations){reg.update()}
-      })
-    }
-  });
-}</script>
+}
+function checkBuild(force){
+  var now=Date.now();
+  if(!force&&now-lastCheck<15000)return;
+  lastCheck=now;
+  if(!CUR||!navigator.onLine)return;
+  fetch(location.pathname+"?nb="+now,{cache:"no-store",headers:{"Range":"bytes=0-6000"}}).then(function(r){return r.text()}).then(function(t){
+    var m=t.match(/name="niji-build"\s+content="([^"]+)"/);
+    if(!m)return;
+    var remote=m[1];
+    if(remote===CUR)return;
+    var tried="";
+    try{tried=sessionStorage.getItem("niji_upd_try")||""}catch(e){}
+    if(tried===remote)return;
+    try{sessionStorage.setItem("niji_upd_try",remote)}catch(e){}
+    hardRefresh(remote);
+  }).catch(function(){});
+}
+function checkAll(force){updateSW();checkBuild(force)}
+window.addEventListener("load",function(){
+  navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(function(reg){reg.update().catch(function(){})}).catch(function(e){console.log("SW error:",e)});
+  setTimeout(function(){checkAll(true)},1500);
+});
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")checkAll(false)});
+window.addEventListener("pageshow",function(){checkAll(false)});
+window.addEventListener("focus",function(){checkAll(false)});
+window.addEventListener("online",function(){checkAll(true)});
+setInterval(function(){if(document.visibilityState==="visible")checkAll(true)},300000);
+})();
+</script>
 
 
 <!-- 폴더블폰 접고 펼칠 때 레이아웃 자동 재조정 -->
