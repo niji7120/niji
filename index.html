@@ -2641,45 +2641,6 @@ setInterval(function(){if(document.visibilityState==="visible")checkAll(true)},3
   </div>
 </div>
 <script>function crsToggleHelp(id,btn){var el=document.getElementById(id);if(!el)return;var open=el.style.display==="none";el.style.display=open?"block":"none";if(btn){btn.classList.toggle("on",open);var a=btn.querySelector(".crs-help-arrow");if(a)a.textContent=open?"▲":"▼"}}</script>
-
-<script>
-/* NIJI STRING: 좌우 스와이프로 메인 탭 이동 */
-(function () {
-  const swipePages = ["profile", "match", "stats", "players", "tournament", "stringing", "share"];
-  let startX = 0, startY = 0, startTime = 0, tracking = false;
-  function activePageIndex() {
-    const active = document.querySelector(".page.active");
-    if (!active) return -1;
-    const name = active.id.replace(/^page-/, "");
-    return swipePages.indexOf(name);
-  }
-  document.addEventListener("touchstart", function (e) {
-    if (!e.touches || e.touches.length !== 1) { tracking = false; return; }
-    const target = e.target;
-    if (target.closest("input, textarea, select, button, a, [contenteditable='true'], .modal, .popup, .horizontal-scroll")) {
-      tracking = false; return;
-    }
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    startTime = Date.now();
-    tracking = true;
-  }, { passive: true });
-  document.addEventListener("touchend", function (e) {
-    if (!tracking || !e.changedTouches || !e.changedTouches.length) return;
-    tracking = false;
-    const dx = e.changedTouches[0].clientX - startX;
-    const dy = e.changedTouches[0].clientY - startY;
-    if (Math.abs(dx) < 65 || Math.abs(dx) < Math.abs(dy) * 1.25 || Date.now() - startTime > 900) return;
-    if (document.querySelector(".modal.show, .modal.active, .overlay.show, .popup.active")) return;
-    const idx = activePageIndex();
-    if (idx < 0) return;
-    const next = dx < 0 ? idx + 1 : idx - 1;
-    if (next < 0 || next >= swipePages.length) return;
-    if (typeof showPage === "function") showPage(swipePages[next]);
-  }, { passive: true });
-})();
-</script>
-
 </body>
 <script>
 /* ===== Niji 다단계 뒤로가기 시스템 (통합본) =====
@@ -3025,5 +2986,107 @@ function jumpScroll(target,top){var isWin=(target===window);try{target.scrollTo(
 function setKeyboardOpen(on){var body=document.body;if(body.classList.contains("keyboard-open")===on)return;var c=document.querySelector(".content");if(!c){body.classList.toggle("keyboard-open",on);return}var S=c.scrollTop;var r0=c.getBoundingClientRect().top;body.classList.toggle("keyboard-open",on);if(on){var r1=c.getBoundingClientRect().top;var docTop=r1+window.scrollY;jumpScroll(window,Math.max(0,docTop-r0+S))}else{jumpScroll(window,0);var r2=c.getBoundingClientRect().top;jumpScroll(c,Math.max(0,r2-r0))}}
 window._nijiSetKeyboardOpen=setKeyboardOpen;
 document.addEventListener("focusin",function(e){if(!isTextField(e.target))return;if(!hasVisualViewport)setKeyboardOpen(true);setTimeout(function(){if(document.activeElement!==e.target)return;e.target.scrollIntoView({behavior:"smooth",block:"center"})},350)});document.addEventListener("focusout",function(e){if(!isTextField(e.target))return;if(hasVisualViewport)return;setTimeout(function(){if(!isTextField(document.activeElement)){setKeyboardOpen(false);if(!keepScroll())window.scrollTo(0,0)}},200)});if(hasVisualViewport){window.visualViewport.addEventListener("resize",function(){var focused=document.activeElement;var keyboardLikely=window.visualViewport.height<initialWindowHeight*.8;var wasOpen=document.body.classList.contains("keyboard-open");if(keyboardLikely&&isTextField(focused)){setKeyboardOpen(true)}else{setKeyboardOpen(false);if(!isTextField(focused)&&!keepScroll())window.scrollTo(0,0);if(wasOpen&&typeof window._crsOnKeyboardClosed==="function"){try{window._crsOnKeyboardClosed()}catch(err){}}}})}})();</script>
+
+<!-- ===== 좌우 밀어서 탭 이동 (swipe) ===== -->
+<style>
+@keyframes nijiSlideFromRight{from{transform:translateX(28px)}to{transform:translateX(0)}}
+@keyframes nijiSlideFromLeft{from{transform:translateX(-28px)}to{transform:translateX(0)}}
+.page.niji-swipe-next{animation:nijiSlideFromRight .26s ease}
+.page.niji-swipe-prev{animation:nijiSlideFromLeft .26s ease}
+.page.niji-swipe-done{animation:none}
+</style>
+<script>
+(function(){
+  // 하단 메뉴와 같은 순서 (기본모드에서 숨겨진 메뉴는 자동으로 건너뜀)
+  var ORDER=["profile","match","stringing","stats","tournament","share"];
+  var MIN_DX=70;   // 이 정도(px) 이상 밀어야 넘어감
+  var EDGE=20;     // 화면 맨 끝 20px는 폰의 '뒤로가기' 동작과 겹쳐서 제외
+  var MAX_MS=800;  // 너무 느리게 끄는 동작은 제외
+  var t0=null;
+
+  function isShown(el){
+    return !!el&&getComputedStyle(el).display!=="none";
+  }
+
+  // 팝업/스코어보드/가이드 등이 열려 있으면 넘기지 않음
+  function overlayOpen(){
+    if(document.querySelector(".modal-overlay.open,.confirm-overlay.open,#nijiShareModal.open,#tourCelebrateOverlay.show"))return true;
+    var ids=["sb-overlay","sb-input-popup"];
+    for(var i=0;i<ids.length;i++){
+      var o=document.getElementById(ids[i]);
+      if(o&&o.getClientRects().length>0)return true;
+    }
+    var tour=document.getElementById("tourOverlay");
+    if(tour&&tour.style.display==="block")return true;
+    var ls=document.getElementById("loadingScreen");
+    if(ls&&isShown(ls))return true;
+    return false;
+  }
+
+  // 옆으로 스크롤되는 영역(월별 그래프, 대진표 등) 안에서 시작한 동작은 그 영역이 쓰게 둠
+  function inHScroll(el){
+    while(el&&el!==document.body&&el!==document.documentElement){
+      if(el.nodeType===1){
+        var ox=getComputedStyle(el).overflowX;
+        if((ox==="auto"||ox==="scroll")&&el.scrollWidth>el.clientWidth+2)return true;
+      }
+      el=el.parentElement;
+    }
+    return false;
+  }
+
+  function badStart(el){
+    if(!el||!el.closest)return true;
+    if(el.closest("input,textarea,select,.pf-bg,.nav,.player-ac-list,[contenteditable=true]"))return true;
+    var ae=document.activeElement;
+    if(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return true;
+    return inHScroll(el);
+  }
+
+  function go(step){
+    var cur=document.querySelector(".page.active");
+    if(!cur)return;
+    var name=cur.id.replace("page-","");
+    var list=ORDER.filter(function(n){return isShown(document.getElementById("nav-"+n))});
+    var i=list.indexOf(name);
+    if(i<0)return; // 선수목록 등 하위 화면에서는 동작 안 함
+    var j=i+step;
+    if(j<0||j>=list.length)return;
+    showPage(list[j]);
+    var el=document.getElementById("page-"+list[j]);
+    if(!el)return;
+    var cls=step>0?"niji-swipe-next":"niji-swipe-prev";
+    document.querySelectorAll(".page.niji-swipe-done,.page.niji-swipe-next,.page.niji-swipe-prev").forEach(function(pg){pg.classList.remove("niji-swipe-done","niji-swipe-next","niji-swipe-prev")});
+    void el.offsetWidth;
+    el.classList.add(cls);
+    // 효과가 끝나도 원래 있던 '서서히 나타나는 효과'가 다시 켜지지 않게 막아둠 (깜박임 방지)
+    setTimeout(function(){el.classList.remove(cls);el.classList.add("niji-swipe-done")},300);
+  }
+
+  document.addEventListener("touchstart",function(e){
+    t0=null;
+    if(e.touches.length!==1)return;
+    var t=e.touches[0];
+    if(t.clientX<EDGE||t.clientX>window.innerWidth-EDGE)return;
+    if(overlayOpen()||badStart(e.target))return;
+    t0={x:t.clientX,y:t.clientY,time:Date.now()};
+  },{passive:true});
+
+  document.addEventListener("touchcancel",function(){t0=null},{passive:true});
+
+  document.addEventListener("touchend",function(e){
+    if(!t0)return;
+    var s=t0;t0=null;
+    var t=e.changedTouches[0];
+    var dx=t.clientX-s.x,dy=t.clientY-s.y;
+    if(Date.now()-s.time>MAX_MS)return;
+    if(Math.abs(dx)<MIN_DX||Math.abs(dy)>Math.abs(dx)*0.6)return; // 위아래 스크롤은 제외
+    var sel=window.getSelection&&window.getSelection().toString();
+    if(sel)return;
+    if(overlayOpen())return;
+    go(dx<0?1:-1); // 왼쪽으로 밀면 다음 탭, 오른쪽으로 밀면 이전 탭
+  },{passive:true});
+})();
+</script>
 
 </html>
