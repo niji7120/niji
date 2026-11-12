@@ -5,7 +5,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="niji-build" content="20261113-2">
+<meta name="niji-build" content="20261113-3">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>NIJI STRING</title>
 <meta name="description" content="테니스·배드민턴·피클볼 경기 기록, 스트링 관리, 통계, 선수·대회 관리 앱">
@@ -2010,7 +2010,7 @@ body:not(.niji-basic-mode) .match-top-row>.match-focus-section:not(.is-focused)>
     </div>
 
     <div class="rsv-section" id="reserveCouponSection">
-      <div class="rsv-section-title">🎟️ 쿠폰 (선택)</div>
+      <div class="rsv-section-title">🎟️ 쿠폰 (선택)<span id="reserveCouponCount" style="margin-left:auto;font-size:.74rem;letter-spacing:0;text-transform:none;font-weight:800;padding:3px 10px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);white-space:nowrap;">확인 중...</span></div>
       <select id="reserveCoupon" class="rsv-preset-select">
         <option value="">쿠폰 사용 안 함</option>
       </select>
@@ -2747,6 +2747,7 @@ var COUPON_TITLE="공임 1회 무료";
 var COUPON_MONTHS=6;
 var _myCoupons=[];
 var _cpnBusy=false;
+var _cpnState="idle",_cpnUid=null;
 var CPN_BTN="padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;";
 function cpnLoginOk(){if(!window._firebaseDB||!window._userId){showToast("로그인 후 이용할 수 있어요");return false}return true}
 function cpnShow(code){code=String(code||"");return code.length===8?code.slice(0,4)+"-"+code.slice(4):code}
@@ -2797,10 +2798,11 @@ function cpnLoadMine(){
   var box=document.getElementById("cpnWalletList");
   if(!window._firebaseDB||!window._userId){_myCoupons=[];if(box)box.innerHTML='<div style="color:var(--text-muted);font-size:.84rem;padding:16px 0;text-align:center;line-height:1.6;">로그인하면 쿠폰함을 쓸 수 있어요<br>(설정 탭 → 로그인하기)</div>';renderReserveCouponSelect();return Promise.resolve()}
   var uid=window._userId,DB=window._firebaseDB;
+  if(_cpnUid!==uid||_cpnState!=="ok"){_cpnState="loading";_cpnUid=uid;renderReserveCouponSelect()}
   return DB.ref("users/"+uid+"/couponCodes").once("value").then(function(snap){
     var codes=Object.keys(snap.val()||{});
     return Promise.all(codes.map(function(code){return DB.ref("coupons/"+code).once("value").then(function(x){var c=x.val();if(!c||c.ownerUid!==uid){DB.ref("users/"+uid+"/couponCodes/"+code).remove().catch(function(){});return null}c.code=code;return c})}))
-  }).then(function(list){_myCoupons=list.filter(Boolean);cpnRenderWallet();renderReserveCouponSelect()}).catch(function(e){console.warn("coupon load fail",e);if(box)box.innerHTML='<div style="color:#f87171;font-size:.82rem;padding:10px 0;">쿠폰을 불러오지 못했어요. 인터넷 연결을 확인해 주세요</div>'})
+  }).then(function(list){_myCoupons=list.filter(Boolean);_cpnState="ok";_cpnUid=uid;cpnRenderWallet();renderReserveCouponSelect()}).catch(function(e){console.warn("coupon load fail",e);_cpnState="fail";renderReserveCouponSelect();if(box)box.innerHTML='<div style="color:#f87171;font-size:.82rem;padding:10px 0;">쿠폰을 불러오지 못했어요. 인터넷 연결을 확인해 주세요</div>'})
 }
 function cpnRenderWallet(){
   var box=document.getElementById("cpnWalletList");if(!box)return;
@@ -2826,6 +2828,7 @@ function cpnRegister(){
     if(c.ownerUid&&c.ownerUid!==uid){showToast("이미 다른 분이 등록한 쿠폰이에요");return}
     if(c.status==="used"){showToast("이미 사용한 쿠폰이에요");return}
     if(Date.now()>Number(c.expiresAt||0)){showToast("유효기간(6개월)이 지난 쿠폰이에요");return}
+    if(c.ownerUid===uid){return DB.ref("users/"+uid+"/couponCodes/"+code).set(true).then(function(){if(inp)inp.value="";showToast("이미 내 쿠폰함에 있는 쿠폰이에요");return cpnLoadMine()})}
     return DB.ref("coupons/"+code+"/ownerUid").transaction(function(cur){return(cur===null||cur===uid)?uid:undefined}).then(function(r){
       if(!r.committed){showToast("이미 다른 분이 등록한 쿠폰이에요");return}
       return DB.ref("users/"+uid+"/couponCodes/"+code).set(true).then(function(){if(inp)inp.value="";showToast("🎟️ 쿠폰이 등록됐어요!");return cpnLoadMine()})
@@ -2851,12 +2854,23 @@ function cpnGift(code){
 
 /* --- 예약 화면: 쿠폰 선택 / 사용 처리 --- */
 function renderReserveCouponSelect(){
-  var sel=document.getElementById("reserveCoupon"),hint=document.getElementById("reserveCouponHint");if(!sel)return;
+  var sel=document.getElementById("reserveCoupon"),hint=document.getElementById("reserveCouponHint"),cnt=document.getElementById("reserveCouponCount");if(!sel)return;
   var prev=sel.value;
-  var usable=(_myCoupons||[]).filter(function(c){return cpnStatus(c)==="ok"});
+  var loggedIn=!!window._userId;
+  var loaded=loggedIn&&_cpnState==="ok"&&_cpnUid===window._userId;
+  var usable=loaded?(_myCoupons||[]).filter(function(c){return cpnStatus(c)==="ok"}):[];
   sel.innerHTML='<option value="">쿠폰 사용 안 함</option>'+usable.map(function(c){return '<option value="'+c.code+'">'+COUPON_TITLE+' · '+cpnDate(c.expiresAt)+'까지 ('+cpnShow(c.code)+')</option>'}).join("");
   if(prev&&usable.some(function(c){return c.code===prev}))sel.value=prev;
-  if(hint)hint.textContent=!window._userId?"로그인하면 쿠폰을 쓸 수 있어요":usable.length?"쿠폰을 고르고 예약을 보내면 '사용 완료'로 바뀌어요. (스트링 값은 별도)":"사용할 수 있는 쿠폰이 없어요. 쿠폰함에서 코드를 등록해 보세요."
+  if(cnt){
+    var txt,color,bd;
+    if(!loggedIn){txt="로그인 필요";color="var(--text-muted)";bd="var(--border)"}
+    else if(_cpnState==="fail"&&!loaded){txt="불러오기 실패";color="#f87171";bd="#f87171"}
+    else if(!loaded){txt="확인 중...";color="var(--text-muted)";bd="var(--border)"}
+    else if(usable.length>0){txt="사용 가능 "+usable.length+"장";color="#4ade80";bd="#4ade80"}
+    else{txt="사용 가능 0장";color="var(--text-muted)";bd="var(--border)"}
+    cnt.textContent=txt;cnt.style.color=color;cnt.style.borderColor=bd;
+  }
+  if(hint)hint.textContent=!loggedIn?"로그인하면 쿠폰을 쓸 수 있어요":!loaded?(_cpnState==="fail"?"쿠폰을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.":"쿠폰을 확인하고 있어요..."):usable.length?"쿠폰을 고르고 예약을 보내면 '사용 완료'로 바뀌어요. (스트링 값은 별도)":"사용할 수 있는 쿠폰이 없어요. 쿠폰함에서 코드를 등록해 보세요."
 }
 function cpnRedeem(code){
   var uid=window._userId,DB=window._firebaseDB;
@@ -2869,7 +2883,7 @@ function cpnRedeem(code){
     if(!c||c.ownerUid!==uid){alert("이 쿠폰은 내 쿠폰함에 없어요. 쿠폰함을 확인해 주세요.");return false}
     if(c.status==="used"){alert("이미 사용한 쿠폰이에요.");return false}
     if(Date.now()>Number(c.expiresAt||0)){alert("유효기간(6개월)이 지난 쿠폰이라 사용할 수 없어요.");return false}
-    return ref.child("status").transaction(function(cur){return cur==="unused"?"used":undefined}).then(function(r){
+    return ref.child("status").transaction(function(cur){if(cur===null)return "used";return cur==="unused"?"used":undefined}).then(function(r){
       if(!r.committed){alert("이미 사용한 쿠폰이에요.");return false}
       return Promise.all([ref.child("usedAt").set(Date.now()),ref.child("usedBy").set(uid)]).catch(function(){}).then(function(){return true})
     })
@@ -2884,17 +2898,24 @@ function cpnPrepareSend(text){
     return text+"\n쿠폰: "+COUPON_TITLE+" ("+cpnShow(code)+")"
   })
 }
-function sendStringReserveSMS(){
+function cpnSendFlow(sendFn){
   var text=getStringReserveText(); if(!text)return;
-  cpnPrepareSend(text).then(function(t){ if(!t)return; location.href="sms:01072787660?body="+encodeURIComponent(t); });
+  var sel=document.getElementById("reserveCoupon");var code=sel&&sel.value;
+  if(!code){sendFn(text);return}
+  showConfirm("🎟️ 쿠폰을 사용할까요?","쿠폰 "+cpnShow(code)+" 을(를) 사용하면 '사용 완료'로 바뀌고 되돌릴 수 없어요. 계속할까요?","🎟️",function(){
+    cpnPrepareSend(text).then(function(t){if(t)sendFn(t)})
+  },"사용하고 보내기")
 }
-async function sendStringReserveKakao(){
-  var text=getStringReserveText(); if(!text)return;
-  text=await cpnPrepareSend(text); if(!text)return;
-  if(navigator.share){
-    try{await navigator.share({title:"NIJI STRING 스트링 교체 예약",text:text});return}catch(e){}
-  }
-  try{await navigator.clipboard.writeText(text);alert("예약 내용이 복사됐어요. 카카오톡을 열어 붙여넣어 보내주세요.")}catch(e){prompt("예약 내용을 복사해 카카오톡으로 보내주세요.",text)}
+function sendStringReserveSMS(){
+  cpnSendFlow(function(t){location.href="sms:01072787660?body="+encodeURIComponent(t)});
+}
+function sendStringReserveKakao(){
+  cpnSendFlow(async function(text){
+    if(navigator.share){
+      try{await navigator.share({title:"NIJI STRING 스트링 교체 예약",text:text});return}catch(e){}
+    }
+    try{await navigator.clipboard.writeText(text);alert("예약 내용이 복사됐어요. 카카오톡을 열어 붙여넣어 보내주세요.")}catch(e){prompt("예약 내용을 복사해 카카오톡으로 보내주세요.",text)}
+  });
 }
 function getTodayStr(){const now=new Date;const kst=new Date(now.getTime()+9*60*60*1e3);return kst.toISOString().split("T")[0]}function setTodayDate(){const el=document.getElementById("matchDate");if(el)el.value=getTodayStr()}window._startApp=function(){var loadingScreen=document.getElementById("loadingScreen");if(loadingScreen)loadingScreen.style.display="flex";load()};window._startApp();(function(){
 if(!("serviceWorker" in navigator))return;
