@@ -5,7 +5,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="niji-build" content="20261113-3">
+<meta name="niji-build" content="20261117-2">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>NIJI STRING</title>
 <meta name="description" content="테니스·배드민턴·피클볼 경기 기록, 스트링 관리, 통계, 선수·대회 관리 앱">
@@ -1179,6 +1179,10 @@ body:not(.niji-basic-mode) .match-top-row>.match-focus-section:not(.is-focused)>
         <span data-lang="str_reserve_btn">스트링 교체 예약</span>
       </button>
 
+      <div id="adminReplyBtnWrap" style="display:none;">
+        <button type="button" onclick="openWorkDoneReplyModal()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;padding:12px;margin:-6px 0 14px;background:var(--surface2);color:#2f8f6b;border:1.5px solid #2f8f6b;border-radius:14px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;"><span id="adminReplyBtnLabel">✅ 예약 목록 · 작업 완료 답장</span></button>
+      </div>
+
       <button type="button" onclick="openCouponWalletModal()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;padding:12px;margin:-6px 0 14px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--accent);border-radius:14px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit;">🎟️ 내 쿠폰함 · 쿠폰 등록</button>
 
             <!-- ===== 라켓 카드 (1/2/3, JS로 생성됨) ===== -->
@@ -1888,6 +1892,79 @@ body:not(.niji-basic-mode) .match-top-row>.match-focus-section:not(.is-focused)>
       <button onclick="addStringAdminItem()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-weight:700;cursor:pointer;">＋ 스트링 추가</button>
       <button onclick="saveStringAdminList()" style="flex:1;padding:12px;border:0;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;">💾 저장</button>
     </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="workDoneReplyModal" onclick="if(event.target===this)closeModal('workDoneReplyModal')">
+  <div class="modal" style="max-height:92vh;overflow-y:auto;">
+    <div class="modal-header">
+      <span class="modal-title">✅ 예약 목록 · 작업 완료 답장</span>
+      <button class="modal-close" onclick="closeModal('workDoneReplyModal')">✕</button>
+    </div>
+    <div style="color:var(--text-muted);font-size:.82rem;margin-bottom:12px;line-height:1.5;">고객이 앱에서 예약하면 아래 목록에 쌓여요. 작업이 끝나면 <b>작업 완료</b> 버튼을 눌러 답장을 보내세요.</div>
+
+    <div class="rsv-section">
+      <div class="rsv-section-title">📋 접수된 예약<button type="button" onclick="wdLoadList()" style="margin-left:auto;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0;text-transform:none;">🔄 새로고침</button></div>
+      <div class="reserve-date-chips" id="wdFilterChips" style="margin-bottom:8px;">
+        <button type="button" class="reserve-date-chip selected" data-f="pending" onclick="wdSetFilter('pending',this)">⏳ 진행 중</button>
+        <button type="button" class="reserve-date-chip" data-f="done" onclick="wdSetFilter('done',this)">✅ 완료</button>
+      </div>
+      <div id="wdList" style="padding-bottom:8px;"></div>
+    </div>
+
+    <div id="wdFormAnchor"></div>
+    <div id="wdSelBanner" style="display:none;margin-bottom:12px;padding:10px 12px;border:1.5px solid #2f8f6b;border-radius:12px;background:rgba(47,143,107,.10);font-size:.84rem;line-height:1.5;"></div>
+
+    <div class="rsv-section">
+      <div class="rsv-section-title">📩 목록에 없는 예약은 문자 붙여넣기 (선택)</div>
+      <textarea id="wdPaste" rows="3" class="rsv-memo" placeholder="고객이 보낸 예약 문자를 여기에 붙여넣기" oninput="wdParsePaste()"></textarea>
+    </div>
+
+    <div class="rsv-section">
+      <div class="rsv-section-title">👤 받는 고객</div>
+      <div class="rsv-field">
+        <div class="rsv-field-label">성함</div>
+        <input id="wdName" type="text" placeholder="이름을 입력하세요" oninput="wdRefresh(false)">
+      </div>
+      <div class="rsv-field">
+        <div class="rsv-field-label">연락처</div>
+        <input id="wdPhone" type="tel" placeholder="010-0000-0000">
+      </div>
+    </div>
+
+    <div class="reserve-date-card" style="margin-bottom:12px;">
+      <div class="reserve-date-card-head">🚪 라켓 돌려주는 방법</div>
+      <div class="reserve-date-chips" id="wdMethodChips">
+        <button type="button" class="reserve-date-chip selected" data-m="locker" onclick="wdPickMethod('locker',this)">📦 보관함에 넣음</button>
+        <button type="button" class="reserve-date-chip" data-m="store" onclick="wdPickMethod('store',this)">🏬 매장에서 수령</button>
+      </div>
+      <div id="wdPwWrap">
+        <div class="rsv-field" style="border:none;padding-top:8px;">
+          <div class="rsv-field-label">보관함 비밀번호</div>
+          <input id="wdPw" type="text" inputmode="numeric" value="712" oninput="wdRefresh(false)">
+        </div>
+      </div>
+    </div>
+
+    <div class="reserve-date-card" style="margin-bottom:12px;">
+      <div class="reserve-date-card-head">💬 문구 고르기</div>
+      <div class="reserve-date-chips" id="wdTplChips">
+        <button type="button" class="reserve-date-chip selected" data-t="0" onclick="wdPickTpl(0,this)">정중하게</button>
+        <button type="button" class="reserve-date-chip" data-t="1" onclick="wdPickTpl(1,this)">따뜻하게</button>
+        <button type="button" class="reserve-date-chip" data-t="2" onclick="wdPickTpl(2,this)">짧게</button>
+      </div>
+    </div>
+
+    <div class="rsv-section">
+      <div class="rsv-section-title">✏️ 보낼 내용 (눌러서 고칠 수 있어요)</div>
+      <textarea id="wdMsg" rows="8" class="rsv-memo" oninput="_wdEdited=true"></textarea>
+    </div>
+
+    <div class="rsv-send-row">
+      <button type="button" class="rsv-send-btn rsv-send-sms" onclick="wdSendSMS()">📱 문자 보내기</button>
+      <button type="button" class="rsv-send-btn rsv-send-kakao" onclick="wdSendKakao()">💬 카카오톡 보내기</button>
+    </div>
+    <button type="button" onclick="wdCopy()" style="width:100%;padding:12px;margin-top:8px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">📋 문구 복사</button>
   </div>
 </div>
 
@@ -2752,6 +2829,9 @@ function isNijiStringAdmin(){
 function updateNijiAdminUI(){
   var el=document.getElementById("adminStringManageSection");
   if(el)el.style.display=isNijiStringAdmin()?"block":"none";
+  var rb=document.getElementById("adminReplyBtnWrap");
+  if(rb)rb.style.display=isNijiStringAdmin()?"block":"none";
+  try{if(isNijiStringAdmin())wdLoadCount()}catch(e){}
 }
 var NIJI_DEFAULT_STRING_LIST=[
   {name:"존스 팬텀 브레이크 1.17 (원형)",price:20000},
@@ -2840,6 +2920,211 @@ function toggleReserveHybrid(){
   var wrap=document.getElementById("reserveHybridWrap");
   if(normal)normal.style.display=checked?"none":"flex";
   if(wrap)wrap.style.display=checked?"flex":"none";
+}
+/* ===== ✅ 예약 목록 · 작업 완료 답장 (관리자 전용) ===== */
+var _wdMethod="locker",_wdTpl=0,_wdEdited=false,_wdSelId=null,_wdFilter="pending",_wdItems=[];
+function wdBuildMsg(){
+  var name=(document.getElementById("wdName").value||"").trim();
+  var pw=(document.getElementById("wdPw").value||"").trim();
+  var who=name?name+"님":"고객님";
+  var locker=_wdMethod==="locker";
+  var pwLine="📦 보관함 비밀번호: "+(pw||"712");
+  if(_wdTpl===1){
+    if(locker)return "안녕하세요, 니지스트링입니다 🎾\n"+who+", 맡겨주신 라켓 스트링 작업이 끝났어요.\n보관함에 잘 넣어두었으니 편하실 때 찾아가세요.\n"+pwLine+"\n\n써보시고 텐션이나 느낌이 궁금하시면 편하게 말씀해 주세요.\n믿고 맡겨주셔서 감사합니다 🙏";
+    return "안녕하세요, 니지스트링입니다 🎾\n"+who+", 맡겨주신 라켓 스트링 작업이 끝났어요.\n편하실 때 매장에 들러 찾아가세요.\n\n써보시고 텐션이나 느낌이 궁금하시면 편하게 말씀해 주세요.\n믿고 맡겨주셔서 감사합니다 🙏";
+  }
+  if(_wdTpl===2){
+    if(locker)return "[니지스트링] "+who+", 작업 완료! 보관함에 넣어두었습니다.\n비밀번호 "+(pw||"712")+"\n믿고 맡겨주셔서 감사합니다 🙏";
+    return "[니지스트링] "+who+", 작업 완료! 매장에서 찾아가세요.\n믿고 맡겨주셔서 감사합니다 🙏";
+  }
+  if(locker)return "안녕하세요, 니지스트링입니다.\n"+who+" 라켓 스트링 작업을 완료하여 다시 보관함에 넣어두었습니다.\n"+pwLine+"\n\n믿고 맡겨주셔서 감사합니다 🙏";
+  return "안녕하세요, 니지스트링입니다.\n"+who+" 라켓 스트링 작업을 완료하였습니다.\n편하실 때 매장에 오셔서 찾아가 주세요.\n\n믿고 맡겨주셔서 감사합니다 🙏";
+}
+function wdRefresh(force){
+  if(!force&&_wdEdited)return;
+  var m=document.getElementById("wdMsg");
+  if(m){m.value=wdBuildMsg();_wdEdited=false}
+}
+function wdPickMethod(m,btn){
+  _wdMethod=m;
+  document.querySelectorAll("#wdMethodChips .reserve-date-chip").forEach(function(b){b.classList.remove("selected")});
+  if(btn)btn.classList.add("selected");
+  var w=document.getElementById("wdPwWrap");if(w)w.style.display=(m==="locker")?"block":"none";
+  wdRefresh(true);
+}
+function wdPickTpl(n,btn){
+  _wdTpl=n;
+  document.querySelectorAll("#wdTplChips .reserve-date-chip").forEach(function(b){b.classList.remove("selected")});
+  if(btn)btn.classList.add("selected");
+  wdRefresh(true);
+}
+function wdParsePaste(){
+  var s=(document.getElementById("wdPaste").value||"");
+  var g=function(re){var r=s.match(re);return r?r[1].trim():""};
+  var name=g(/성함\s*[:：]\s*(.+)/),phone=g(/연락처\s*[:：]\s*(.+)/),way=g(/라켓 전달 방법\s*[:：]\s*(.+)/);
+  if(name||phone)wdClearSel();
+  if(name)document.getElementById("wdName").value=name;
+  if(phone)document.getElementById("wdPhone").value=phone;
+  if(way){
+    var isLocker=way.indexOf("보관함")>=0;
+    var btn=document.querySelector('#wdMethodChips .reserve-date-chip[data-m="'+(isLocker?"locker":"store")+'"]');
+    wdPickMethod(isLocker?"locker":"store",btn);
+    var pw=way.match(/비밀번호\s*([0-9]+)/);
+    if(pw)document.getElementById("wdPw").value=pw[1];
+  }
+  wdRefresh(true);
+}
+/* --- 예약 목록 (파이어베이스 reservations) --- */
+function wdFmtDT(ms){var d=new Date(Number(ms)||0);return (d.getMonth()+1)+"/"+d.getDate()+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
+function wdFmtDay(s){var m=String(s||"").match(/(\d{4})-(\d{2})-(\d{2})/);return m?(parseInt(m[2],10)+"/"+parseInt(m[3],10)):(s||"-")}
+function wdSetBtnLabel(n){var e=document.getElementById("adminReplyBtnLabel");if(e)e.textContent="✅ 예약 목록 · 작업 완료 답장"+(n>0?" ("+n+"건 대기)":"")}
+function wdLoadCount(){
+  if(!window._firebaseDB||!window._userId||!isNijiStringAdmin())return;
+  window._firebaseDB.ref("reservations").limitToLast(80).once("value").then(function(snap){
+    var v=snap.val()||{},n=0;
+    Object.keys(v).forEach(function(k){if((v[k]||{}).status!=="done")n++});
+    wdSetBtnLabel(n);
+  }).catch(function(){});
+}
+function wdLoadList(){
+  var box=document.getElementById("wdList");if(!box)return;
+  if(!window._firebaseDB||!window._userId){box.innerHTML='<div style="color:var(--text-muted);font-size:.82rem;padding:10px 0;">로그인 후 이용할 수 있어요</div>';return}
+  box.innerHTML='<div style="color:var(--text-muted);font-size:.82rem;padding:10px 0;">불러오는 중...</div>';
+  window._firebaseDB.ref("reservations").limitToLast(80).once("value").then(function(snap){
+    var v=snap.val()||{};
+    _wdItems=Object.keys(v).map(function(k){var o=v[k]||{};o.id=k;return o});
+    wdSetBtnLabel(_wdItems.filter(function(x){return x.status!=="done"}).length);
+    wdRenderList();
+  }).catch(function(e){
+    console.warn("reservation load fail",e);
+    box.innerHTML='<div style="color:#f87171;font-size:.82rem;padding:10px 0;line-height:1.5;">불러오지 못했어요. 파이어베이스 보안 규칙에 예약(reservations)을 추가해 주세요</div>';
+  });
+}
+function wdSetFilter(f,btn){
+  _wdFilter=f;
+  document.querySelectorAll("#wdFilterChips .reserve-date-chip").forEach(function(b){b.classList.remove("selected")});
+  if(btn)btn.classList.add("selected");
+  wdRenderList();
+}
+function wdRenderList(){
+  var box=document.getElementById("wdList");if(!box)return;
+  var done=_wdFilter==="done";
+  var arr=_wdItems.filter(function(x){return done?(x.status==="done"):(x.status!=="done")});
+  if(done)arr.sort(function(a,b){return(b.doneAt||0)-(a.doneAt||0)});
+  else arr.sort(function(a,b){var da=a.wantDate||"9999",db=b.wantDate||"9999";return da<db?-1:da>db?1:(a.createdAt||0)-(b.createdAt||0)});
+  if(!arr.length){box.innerHTML='<div style="color:var(--text-muted);font-size:.84rem;padding:14px 0;text-align:center;">'+(done?"완료된 예약이 없어요":"진행 중인 예약이 없어요")+'</div>';return}
+  box.innerHTML=arr.slice(0,done?20:80).map(function(x){
+    var locker=String(x.visitType||"").indexOf("보관함")>=0;
+    var sel=(_wdSelId===x.id);
+    var main=done
+      ?'<button type="button" style="'+CPN_BTN+'" data-id="'+x.id+'" onclick="wdSetStatus(this.dataset.id,false)">↩️ 진행 중으로 되돌리기</button>'
+      :'<button type="button" style="'+CPN_BTN+'background:#2f8f6b;color:#fff;border-color:#2f8f6b;" data-id="'+x.id+'" onclick="wdPickReservation(this.dataset.id)">✅ 작업 완료 · 답장 쓰기</button>';
+    return '<div style="border:1.5px solid '+(sel?"#2f8f6b":"var(--border)")+';border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--surface2);">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><b style="font-size:.98rem;">'+escHtml(x.name||"이름 없음")+'</b>'+cpnBadge(locker?"📦 보관함":"🏬 매장","#2f8f6b")+'</div>'
+      +'<div style="font-size:.8rem;color:var(--text-muted);line-height:1.6;margin-top:4px;">🎾 '+escHtml(x.racket||"")+(x.stringInfo?'<br>🧵 '+escHtml(x.stringInfo):'')
+      +'<br>📅 받고 싶은 날 '+escHtml(wdFmtDay(x.wantDate))+' · 접수 '+wdFmtDT(x.createdAt)+(done&&x.doneAt?' · 완료 '+wdFmtDT(x.doneAt):'')+'</div>'
+      +'<details style="margin-top:6px;"><summary style="font-size:.76rem;color:var(--text-muted);cursor:pointer;">전체 내용 보기</summary><pre style="white-space:pre-wrap;font-size:.76rem;margin:6px 0 0;font-family:inherit;color:var(--text);">'+escHtml(x.text||"")+'</pre></details>'
+      +'<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">'+main
+      +'<button type="button" style="'+CPN_BTN+'color:#f87171;" data-id="'+x.id+'" onclick="wdDeleteRes(this.dataset.id)">🗑️ 삭제</button></div></div>';
+  }).join("");
+}
+function wdPickReservation(id){
+  var x=_wdItems.filter(function(i){return i.id===id})[0];if(!x)return;
+  _wdSelId=id;
+  document.getElementById("wdPaste").value="";
+  document.getElementById("wdName").value=x.name||"";
+  document.getElementById("wdPhone").value=x.phone||"";
+  var locker=String(x.visitType||"").indexOf("보관함")>=0;
+  var pw=String(x.locker||"").match(/비밀번호\s*([0-9]+)/);
+  document.getElementById("wdPw").value=pw?pw[1]:"712";
+  var btn=document.querySelector('#wdMethodChips .reserve-date-chip[data-m="'+(locker?"locker":"store")+'"]');
+  wdPickMethod(locker?"locker":"store",btn);
+  var b=document.getElementById("wdSelBanner");
+  if(b){b.style.display="block";b.innerHTML='✔ <b>'+escHtml(x.name||"")+'</b>님 예약을 골랐어요 · 보내면 자동으로 \'완료\'가 돼요 <a href="#" onclick="wdClearSel();return false;" style="color:var(--accent);font-weight:700;margin-left:6px;">선택 취소</a>'}
+  wdRenderList();
+  var a=document.getElementById("wdFormAnchor");if(a&&a.scrollIntoView)a.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function wdClearSel(){
+  _wdSelId=null;
+  var b=document.getElementById("wdSelBanner");if(b)b.style.display="none";
+  wdRenderList();
+}
+function wdSetStatus(id,done,cb){
+  if(!window._firebaseDB)return;
+  window._firebaseDB.ref("reservations/"+id).update(done?{status:"done",doneAt:Date.now()}:{status:"pending",doneAt:null}).then(function(){
+    if(cb)cb();
+    wdLoadList();
+  }).catch(function(e){console.warn("reservation update fail",e);showToast("❌ 저장에 실패했어요. 인터넷을 확인해 주세요")});
+}
+function wdDeleteRes(id){
+  showConfirm("예약 삭제","이 예약을 목록에서 삭제할까요? 되돌릴 수 없어요.","🗑️",function(){
+    window._firebaseDB.ref("reservations/"+id).remove().then(function(){
+      showToast("삭제했어요");
+      if(_wdSelId===id){_wdSelId=null;var b=document.getElementById("wdSelBanner");if(b)b.style.display="none"}
+      wdLoadList();
+    }).catch(function(){showToast("❌ 삭제에 실패했어요")});
+  });
+}
+function wdAfterSend(){
+  if(!_wdSelId)return;
+  var id=_wdSelId;_wdSelId=null;
+  var b=document.getElementById("wdSelBanner");if(b)b.style.display="none";
+  wdSetStatus(id,true,function(){showToast("✅ 완료 처리했어요")});
+}
+function openWorkDoneReplyModal(){
+  if(!isNijiStringAdmin()){showToast("관리자만 이용할 수 있어요");return}
+  ["wdPaste","wdName","wdPhone"].forEach(function(id){var e=document.getElementById(id);if(e)e.value=""});
+  document.getElementById("wdPw").value="712";
+  _wdMethod="locker";_wdTpl=0;_wdEdited=false;_wdSelId=null;_wdFilter="pending";
+  var sb=document.getElementById("wdSelBanner");if(sb)sb.style.display="none";
+  document.querySelectorAll("#wdFilterChips .reserve-date-chip").forEach(function(b){b.classList.toggle("selected",b.dataset.f==="pending")});
+  document.querySelectorAll("#wdMethodChips .reserve-date-chip").forEach(function(b){b.classList.toggle("selected",b.dataset.m==="locker")});
+  document.querySelectorAll("#wdTplChips .reserve-date-chip").forEach(function(b){b.classList.toggle("selected",b.dataset.t==="0")});
+  document.getElementById("wdPwWrap").style.display="block";
+  wdRefresh(true);
+  document.getElementById("workDoneReplyModal").classList.add("open");
+  wdLoadList();
+}
+function wdGetText(){
+  var t=(document.getElementById("wdMsg").value||"").trim();
+  if(!t){showToast("보낼 내용이 비어 있어요");return null}
+  return t;
+}
+function wdSendSMS(){
+  var t=wdGetText();if(!t)return;
+  var phone=(document.getElementById("wdPhone").value||"").replace(/[^0-9+]/g,"");
+  if(!phone){showToast("고객 연락처를 입력해 주세요");return}
+  wdAfterSend();
+  var ios=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  location.href="sms:"+phone+(ios?"&":"?")+"body="+encodeURIComponent(t);
+}
+async function wdSendKakao(){
+  var t=wdGetText();if(!t)return;
+  if(navigator.share){
+    try{await navigator.share({text:t});wdAfterSend();return}catch(e){if(e&&e.name==="AbortError")return}
+  }
+  wdCopy();
+}
+function wdCopy(){
+  var t=wdGetText();if(!t)return;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){showToast("📋 복사됐어요. 카카오톡에 붙여넣어 보내세요");wdAfterSend()}).catch(function(){prompt("복사해서 보내주세요",t);wdAfterSend()});
+  }else{prompt("복사해서 보내주세요",t);wdAfterSend()}
+}
+/* --- 고객: 예약을 보낼 때 목록에도 저장 (로그인한 경우) --- */
+var _lastResSaveText="",_lastResSaveAt=0;
+function nijiSaveReservation(text){
+  try{
+    if(!window._firebaseDB||!window._userId)return;
+    var now=Date.now();
+    if(text===_lastResSaveText&&now-_lastResSaveAt<120000)return;
+    var v=function(id){var e=document.getElementById(id);return e?e.value.trim():""};
+    var hybrid=!!(document.getElementById("reserveHybrid")&&document.getElementById("reserveHybrid").checked);
+    var si=hybrid?("메인 "+v("reserveMainString")+" "+v("reserveMainTension")+" / 크로스 "+v("reserveCrossString")+" "+v("reserveCrossTension")):(v("reserveString")+" "+v("reserveTension"));
+    var rec={uid:window._userId,name:v("reserveName"),phone:v("reservePhone"),sport:v("reserveSport"),racket:v("reserveRacket"),stringInfo:si.trim(),visitType:v("reserveVisitType"),locker:v("reserveLockerInfo"),wantDate:v("reserveDate"),text:text,createdAt:now,status:"pending"};
+    _lastResSaveText=text;_lastResSaveAt=now;
+    window._firebaseDB.ref("reservations").push(rec).catch(function(e){console.warn("reservation save fail",e)});
+  }catch(e){console.warn("reservation save error",e)}
 }
 function getStringReserveText(){
   var v=function(id){var e=document.getElementById(id);return e?e.value.trim():""};
@@ -3041,9 +3326,9 @@ function cpnPrepareSend(text){
 function cpnSendFlow(sendFn){
   var text=getStringReserveText(); if(!text)return;
   var sel=document.getElementById("reserveCoupon");var code=sel&&sel.value;
-  if(!code){sendFn(text);return}
+  if(!code){nijiSaveReservation(text);sendFn(text);return}
   showConfirm("🎟️ 쿠폰을 사용할까요?","쿠폰 "+cpnShow(code)+" 을(를) 사용하면 '사용 완료'로 바뀌고 되돌릴 수 없어요. 계속할까요?","🎟️",function(){
-    cpnPrepareSend(text).then(function(t){if(t)sendFn(t)})
+    cpnPrepareSend(text).then(function(t){if(t){nijiSaveReservation(t);sendFn(t)}})
   },"사용하고 보내기")
 }
 function copyReserveAccount(){var t="카카오뱅크 3333-26-4122540 최길희";var done=function(){alert("계좌번호가 복사됐어요.")};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){prompt("계좌번호를 복사해 주세요.",t)})}else{prompt("계좌번호를 복사해 주세요.",t)}}
