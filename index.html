@@ -439,6 +439,7 @@ body:not(.niji-basic-mode) .match-top-row>.match-focus-section:not(.is-focused)>
 }
 #stringReserveModal select.rv-preset{font-size:.9rem !important;font-weight:600;color:var(--text-muted) !important;margin:-6px 0 14px}
 #stringReserveModal textarea{min-height:88px;resize:vertical;font-weight:500;line-height:1.6}
+#stringReserveModal textarea.rv-locker{min-height:72px;resize:none;font-size:15px !important;line-height:1.5;word-break:keep-all}
 
 /* 하이브리드 스위치 */
 #stringReserveModal .rv-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin-bottom:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;cursor:pointer}
@@ -2178,7 +2179,7 @@ body.light-theme #stringReserveModal .reserve-date-display{color:var(--accent2)}
       <div id="reserveVisitLockerWrap" style="display:none;">
         <label class="rv-f" style="margin-top:12px;">
           <span class="rv-l">보관함 위치 <em class="rv-opt">선택</em></span>
-          <input id="reserveLockerInfo" type="text" placeholder="보관함 위치를 입력하세요">
+          <textarea id="reserveLockerInfo" rows="2" class="rv-locker" placeholder="보관함 위치를 입력하세요"></textarea>
         </label>
       </div>
 
