@@ -395,6 +395,112 @@ body:not(.niji-basic-mode) .match-top-row>.match-focus-section:not(.is-focused)>
 .crs-help-bar.on .crs-help-q{background:var(--accent);color:#fff;}
 </style>
       
+<style id="rvStyle">
+/* ===== 스트링 교체 예약 화면 (고객용) : 이 화면에만 적용 ===== */
+#stringReserveModal .modal{padding:18px 16px 0}
+#stringReserveModal .rv-head{align-items:flex-start;gap:12px;margin-bottom:14px}
+#stringReserveModal .rv-sub{font-size:.9rem;color:var(--text-muted);margin-top:4px;line-height:1.5}
+
+#stringReserveModal .rv-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
+#stringReserveModal .rv-step{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+#stringReserveModal .rv-num{width:26px;height:26px;border-radius:50%;background:var(--accent2);color:#fff;font-weight:800;font-size:.85rem;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+#stringReserveModal .rv-step-title{font-size:1.02rem;font-weight:800;color:var(--text);line-height:1.3}
+#stringReserveModal .rv-step-opt{margin-left:auto;font-size:.76rem;font-weight:700;color:var(--text-muted)}
+
+#stringReserveModal .rv-f{display:block;margin:0 0 14px}
+#stringReserveModal .rv-f:last-child{margin-bottom:0}
+#stringReserveModal .rv-l{display:flex;align-items:center;gap:6px;font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:7px;line-height:1.35}
+#stringReserveModal .rv-req{font-style:normal;font-size:.68rem;font-weight:800;color:#fff;background:var(--accent2);padding:2px 8px;border-radius:20px;line-height:1.5}
+#stringReserveModal .rv-opt{font-style:normal;font-size:.68rem;font-weight:700;color:var(--text-muted);border:1px solid var(--border);padding:1px 8px;border-radius:20px;line-height:1.5}
+#stringReserveModal .rv-gap-top{margin-top:18px}
+
+/* 입력칸 : 크고 또렷하게 (글자 16px = 폰에서 화면이 확대되지 않아요) */
+#stringReserveModal input[type="text"],
+#stringReserveModal input[type="tel"],
+#stringReserveModal input[type="date"],
+#stringReserveModal select,
+#stringReserveModal textarea{
+  width:100%;box-sizing:border-box;min-height:48px;padding:11px 14px;
+  font-family:inherit;font-size:16px !important;font-weight:600;line-height:1.4;
+  color:var(--text) !important;background:var(--surface) !important;
+  border:1.5px solid var(--border) !important;border-radius:12px !important;box-shadow:none !important;
+}
+#stringReserveModal input::placeholder,#stringReserveModal textarea::placeholder{color:var(--text-muted);font-weight:400;opacity:.8}
+#stringReserveModal input[type="text"]:focus,
+#stringReserveModal input[type="tel"]:focus,
+#stringReserveModal input[type="date"]:focus,
+#stringReserveModal select:focus,
+#stringReserveModal textarea:focus{
+  border-color:var(--accent2) !important;box-shadow:0 0 0 3px var(--emerald-soft) !important;outline:none !important;
+}
+#stringReserveModal select{
+  -webkit-appearance:none;-moz-appearance:none;appearance:none;cursor:pointer;padding-right:38px;
+  background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2214%22 height=%2214%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222.5%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 14px center !important;
+}
+#stringReserveModal select.rv-preset{font-size:.9rem !important;font-weight:600;color:var(--text-muted) !important;margin:-6px 0 14px}
+#stringReserveModal textarea{min-height:88px;resize:vertical;font-weight:500;line-height:1.6}
+
+/* 하이브리드 스위치 */
+#stringReserveModal .rv-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin-bottom:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;cursor:pointer}
+#stringReserveModal .rv-switch-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+#stringReserveModal .rv-switch-text b{font-size:.95rem;font-weight:800;color:var(--text)}
+#stringReserveModal .rv-switch-text small{font-size:.78rem;color:var(--text-muted);line-height:1.4}
+#stringReserveModal .rv-switch input{-webkit-appearance:none;appearance:none;position:relative;flex-shrink:0;width:50px;height:30px;margin:0;border-radius:15px;background:var(--border);cursor:pointer;transition:background .2s}
+#stringReserveModal .rv-switch input::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+#stringReserveModal .rv-switch input:checked{background:var(--accent2)}
+#stringReserveModal .rv-switch input:checked::after{transform:translateX(20px)}
+#stringReserveModal .rv-switch:has(input:checked){border-color:var(--accent2)}
+#stringReserveModal .rv-switch input:focus-visible{outline:3px solid var(--emerald-soft)}
+
+/* 하이브리드 : 메인 / 크로스 구분 */
+#stringReserveModal .rv-col{gap:0}
+#stringReserveModal #reserveHybridWrap{gap:12px}
+#stringReserveModal .rv-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;border-left-width:5px}
+#stringReserveModal .rv-block-main{border-left-color:var(--accent)}
+#stringReserveModal .rv-block-cross{border-left-color:var(--accent2)}
+#stringReserveModal .rv-block-title{font-size:.98rem;font-weight:800;color:var(--text);margin-bottom:12px}
+#stringReserveModal .rv-block-title small{font-size:.78rem;font-weight:600;color:var(--text-muted);margin-left:4px}
+#stringReserveModal .rv-block .rv-f:last-child{margin-bottom:0}
+#stringReserveModal .rv-block input[type="text"],#stringReserveModal .rv-block select{background:var(--surface2) !important}
+
+/* 선택 버튼 (전달 방법 · 받고 싶은 날) */
+#stringReserveModal .rv-chips{display:grid;gap:8px}
+#stringReserveModal .rv-chips-2{grid-template-columns:1fr 1fr}
+#stringReserveModal .rv-chips-4{grid-template-columns:repeat(4,1fr);margin-bottom:10px}
+#stringReserveModal .reserve-date-chip{min-height:48px;padding:8px 4px;border-radius:12px;border:1.5px solid var(--border) !important;background:var(--surface);color:var(--text);font-size:.92rem;font-weight:700;text-align:center;line-height:1.3}
+#stringReserveModal .reserve-date-chip.selected{background:var(--accent2);border-color:var(--accent2) !important;color:#fff}
+#stringReserveModal .reserve-date-input-wrap input[type="date"]{min-height:52px;font-size:1.05rem !important;font-weight:800}
+#stringReserveModal .reserve-date-icon{display:none}
+#stringReserveModal .reserve-date-input-wrap input[type="date"]{padding-right:14px}
+#stringReserveModal .reserve-date-display{margin-top:8px;font-size:1rem;color:var(--accent2);font-weight:800;min-height:0}
+#stringReserveModal .reserve-date-display:not(:empty)::before{content:"선택한 날짜 · ";font-weight:600;color:var(--text-muted)}
+body.light-theme #stringReserveModal .reserve-date-display{color:var(--accent2)}
+
+/* 쿠폰 */
+#stringReserveModal .rv-coupon{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border)}
+#stringReserveModal .rv-coupon-head{margin-bottom:8px}
+#stringReserveModal .rv-coupon select.rv-preset{margin:0 0 8px}
+#stringReserveModal .rv-hint{font-size:.8rem;color:var(--text-muted);line-height:1.5;margin:0 0 10px}
+#stringReserveModal .rv-link-btn{width:100%;min-height:44px;padding:10px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit}
+
+/* 입금 · 전화 */
+#stringReserveModal .rv-info{background:var(--surface)}
+#stringReserveModal .rv-bank{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+#stringReserveModal .rv-bank-label{font-size:.8rem;font-weight:700;color:var(--text-muted);margin-bottom:4px}
+#stringReserveModal .rv-bank-num{font-size:1rem;font-weight:800;color:var(--text)}
+#stringReserveModal .rv-bank-owner{font-size:.86rem;color:var(--text-muted);margin-top:2px}
+#stringReserveModal .rv-copy{min-height:44px;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0}
+#stringReserveModal .rv-call{width:100%;min-height:48px;padding:12px;border-radius:12px;border:1.5px solid var(--accent2);background:transparent;color:var(--accent2);font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit}
+
+/* 보내기 버튼 : 스크롤해도 화면 아래에 계속 보여요 */
+#stringReserveModal .rv-bar{position:sticky;bottom:0;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 -16px;padding:12px 16px max(12px,env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -6px 16px rgba(0,0,0,.14)}
+#stringReserveModal .rv-send{min-height:54px;padding:12px 8px;border:0;border-radius:14px;font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+#stringReserveModal .rv-send:active{transform:scale(.97)}
+#stringReserveModal .rv-sms{background:linear-gradient(135deg,#ddb96e,#c9a961 55%,#a9822f);color:#16241c}
+#stringReserveModal .rv-kakao{background:#FEE500;color:#3c1e1e}
+
+#stringReserveModal button:focus-visible,#stringReserveModal label:focus-within{outline:2px solid var(--accent2);outline-offset:2px}
+</style>
 </head>
 <body>
 
@@ -1970,105 +2076,114 @@ body:not(.niji-basic-mode) .match-top-row>.match-focus-section:not(.is-focused)>
 
 <div class="modal-overlay" id="stringReserveModal" onclick="if(event.target===this)closeModal('stringReserveModal')">
   <div class="modal" style="max-height:92vh;overflow-y:auto;">
-    <div class="modal-header">
-      <span class="modal-title">🧵 스트링 교체 예약</span>
-      <button class="modal-close" onclick="closeModal('stringReserveModal')">✕</button>
+    <div class="modal-header rv-head">
+      <div>
+        <span class="modal-title">🧵 스트링 교체 예약</span>
+        <div class="rv-sub">빈칸을 채우고 아래 버튼으로 보내면 예약 끝!</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('stringReserveModal')" aria-label="닫기">✕</button>
     </div>
-    <div style="color:var(--text-muted);font-size:.85rem;margin-bottom:16px;line-height:1.5;">아래 예약 양식을 작성한 뒤 문자 또는 카카오톡으로 보내주세요.</div>
 
-    <div class="rsv-section">
-      <div class="rsv-section-title">👤 예약자 정보</div>
-      <div class="rsv-field">
-        <div class="rsv-field-label">성함</div>
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">1</span><span class="rv-step-title">예약하시는 분</span></div>
+      <label class="rv-f">
+        <span class="rv-l">성함 <em class="rv-req">필수</em></span>
         <input id="reserveName" type="text" autocomplete="name" placeholder="이름을 입력하세요">
-      </div>
-      <div class="rsv-field">
-        <div class="rsv-field-label">연락처</div>
-        <input id="reservePhone" type="tel" autocomplete="tel" placeholder="010-0000-0000">
-      </div>
-      <div class="rsv-field">
-        <div class="rsv-field-label">종목</div>
+      </label>
+      <label class="rv-f">
+        <span class="rv-l">연락처 <em class="rv-req">필수</em></span>
+        <input id="reservePhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="010-0000-0000">
+      </label>
+      <label class="rv-f">
+        <span class="rv-l">종목</span>
         <select id="reserveSport"><option value="테니스">🎾 테니스</option><option value="배드민턴">🏸 배드민턴</option></select>
-      </div>
-    </div>
+      </label>
+    </section>
 
-    <div class="reserve-date-card" style="margin-bottom:12px;">
-      <div class="reserve-date-card-head">🚪 라켓 전달 방법</div>
-      <div class="reserve-date-chips" id="reserveVisitTypeChips">
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">2</span><span class="rv-step-title">라켓</span></div>
+      <label class="rv-f">
+        <span class="rv-l">라켓 브랜드 · 모델 <em class="rv-req">필수</em></span>
+        <input id="reserveRacket" type="text" placeholder="예) 윌슨 블레이드 98">
+      </label>
+      <label class="rv-f">
+        <span class="rv-l">패턴 <em class="rv-opt">선택</em></span>
+        <input id="reservePattern" type="text" placeholder="예) 16x19">
+      </label>
+    </section>
+
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">3</span><span class="rv-step-title">스트링</span></div>
+
+      <label class="rv-switch">
+        <span class="rv-switch-text"><b>하이브리드 스트링</b><small>메인(세로)과 크로스(가로)를 다르게 할 때 켜세요</small></span>
+        <input id="reserveHybrid" type="checkbox" onchange="toggleReserveHybrid()">
+      </label>
+
+      <div id="reserveNormalStringWrap" class="rv-col" style="display:flex;flex-direction:column;">
+        <label class="rv-f">
+          <span class="rv-l">스트링 <em class="rv-req">필수</em></span>
+          <input id="reserveString" type="text" placeholder="직접 입력 가능">
+        </label>
+        <select id="reserveStringPreset" class="rv-preset" onchange="applyReserveStringPreset(this.value,'reserveString')">
+          <option value="">📋 스트링 목록에서 선택 (직접 입력도 가능)</option>
+        </select>
+        <label class="rv-f">
+          <span class="rv-l">텐션 (lb) <em class="rv-req">필수</em></span>
+          <input id="reserveTension" type="text" inputmode="text" placeholder="예) 52 / 24">
+        </label>
+      </div>
+
+      <div id="reserveHybridWrap" class="rv-col" style="display:none;flex-direction:column;">
+        <div class="rv-block rv-block-main">
+          <div class="rv-block-title">메인 <small>세로줄</small></div>
+          <label class="rv-f">
+            <span class="rv-l">메인 스트링 <em class="rv-req">필수</em></span>
+            <input id="reserveMainString" type="text" placeholder="직접 입력 가능">
+          </label>
+          <select id="reserveMainStringPreset" class="rv-preset" onchange="applyReserveStringPreset(this.value,'reserveMainString')">
+            <option value="">📋 메인 스트링 목록에서 선택 (직접 입력도 가능)</option>
+          </select>
+          <label class="rv-f">
+            <span class="rv-l">메인 텐션 (lb) <em class="rv-req">필수</em></span>
+            <input id="reserveMainTension" type="text" placeholder="예) 52">
+          </label>
+        </div>
+        <div class="rv-block rv-block-cross">
+          <div class="rv-block-title">크로스 <small>가로줄</small></div>
+          <label class="rv-f">
+            <span class="rv-l">크로스 스트링 <em class="rv-req">필수</em></span>
+            <input id="reserveCrossString" type="text" placeholder="직접 입력 가능">
+          </label>
+          <select id="reserveCrossStringPreset" class="rv-preset" onchange="applyReserveStringPreset(this.value,'reserveCrossString')">
+            <option value="">📋 크로스 스트링 목록에서 선택 (직접 입력도 가능)</option>
+          </select>
+          <label class="rv-f">
+            <span class="rv-l">크로스 텐션 (lb) <em class="rv-req">필수</em></span>
+            <input id="reserveCrossTension" type="text" placeholder="예) 22">
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">4</span><span class="rv-step-title">라켓 맡기는 방법 · 받고 싶은 날</span></div>
+
+      <div class="rv-l">라켓 전달 방법 <em class="rv-req">필수</em></div>
+      <div class="rv-chips rv-chips-2" id="reserveVisitTypeChips">
         <button type="button" class="reserve-date-chip" data-visit="매장 방문" onclick="pickReserveVisitType('매장 방문',this)">🏬 매장 방문</button>
         <button type="button" class="reserve-date-chip" data-visit="라켓 보관함" onclick="pickReserveVisitType('라켓 보관함',this)">📦 라켓 보관함</button>
       </div>
       <input type="hidden" id="reserveVisitType" value="">
       <div id="reserveVisitLockerWrap" style="display:none;">
-        <div class="rsv-field" style="border:none;padding-top:8px;">
-          <div class="rsv-field-label">보관함 위치 (선택)</div>
+        <label class="rv-f" style="margin-top:12px;">
+          <span class="rv-l">보관함 위치 <em class="rv-opt">선택</em></span>
           <input id="reserveLockerInfo" type="text" placeholder="보관함 위치를 입력하세요">
-        </div>
+        </label>
       </div>
-    </div>
 
-    <div class="rsv-section">
-      <div class="rsv-section-title">🎾 라켓 정보</div>
-      <div class="rsv-field">
-        <div class="rsv-field-label">라켓 브랜드 · 모델</div>
-        <input id="reserveRacket" type="text" placeholder="예) 윌슨 블레이드 98">
-      </div>
-      <div class="rsv-field">
-        <div class="rsv-field-label">패턴 (선택)</div>
-        <input id="reservePattern" type="text" placeholder="예) 16x19">
-      </div>
-    </div>
-
-    <label class="rsv-hybrid-toggle">
-      <input id="reserveHybrid" type="checkbox" onchange="toggleReserveHybrid()">
-      🔀 하이브리드 스트링 (메인 · 크로스 다르게)
-    </label>
-
-    <div id="reserveNormalStringWrap" class="rsv-section" style="display:flex;flex-direction:column;">
-      <div class="rsv-section-title">🧵 스트링 정보</div>
-      <div class="rsv-field">
-        <div class="rsv-field-label">스트링</div>
-        <input id="reserveString" type="text" placeholder="직접 입력 가능">
-      </div>
-      <select id="reserveStringPreset" class="rsv-preset-select" onchange="applyReserveStringPreset(this.value,'reserveString')">
-        <option value="">📋 스트링 목록에서 선택 (직접 입력도 가능)</option>
-      </select>
-      <div class="rsv-field">
-        <div class="rsv-field-label">텐션 (lb)</div>
-        <input id="reserveTension" type="text" inputmode="text" placeholder="예) 52 / 24">
-      </div>
-    </div>
-
-    <div id="reserveHybridWrap" class="rsv-section rsv-hybrid-box" style="display:none;flex-direction:column;">
-      <div class="rsv-section-title">🔀 하이브리드 스트링</div>
-      <div class="rsv-hybrid-note">메인 = 세로줄 · 크로스 = 가로줄</div>
-      <div class="rsv-field">
-        <div class="rsv-field-label">메인</div>
-        <input id="reserveMainString" type="text" placeholder="직접 입력 가능">
-      </div>
-      <select id="reserveMainStringPreset" class="rsv-preset-select" onchange="applyReserveStringPreset(this.value,'reserveMainString')">
-        <option value="">📋 메인 스트링 목록에서 선택 (직접 입력도 가능)</option>
-      </select>
-      <div class="rsv-field">
-        <div class="rsv-field-label">메인 텐션</div>
-        <input id="reserveMainTension" type="text" placeholder="예) 52">
-      </div>
-      <div class="rsv-field">
-        <div class="rsv-field-label">크로스</div>
-        <input id="reserveCrossString" type="text" placeholder="직접 입력 가능">
-      </div>
-      <select id="reserveCrossStringPreset" class="rsv-preset-select" onchange="applyReserveStringPreset(this.value,'reserveCrossString')">
-        <option value="">📋 크로스 스트링 목록에서 선택 (직접 입력도 가능)</option>
-      </select>
-      <div class="rsv-field">
-        <div class="rsv-field-label">크로스 텐션</div>
-        <input id="reserveCrossTension" type="text" placeholder="예) 22">
-      </div>
-    </div>
-
-    <div class="reserve-date-card" style="margin-bottom:12px;">
-      <div class="reserve-date-card-head">📅 라켓 작업 완료해서 받고 싶은 날</div>
-      <div class="reserve-date-chips" id="reserveDateChips">
+      <div class="rv-l rv-gap-top">라켓 작업 완료해서 받고 싶은 날 <em class="rv-req">필수</em></div>
+      <div class="rv-chips rv-chips-4" id="reserveDateChips">
         <button type="button" class="reserve-date-chip" data-days="1" onclick="pickReserveDateChip(1,this)">내일</button>
         <button type="button" class="reserve-date-chip" data-days="2" onclick="pickReserveDateChip(2,this)">모레</button>
         <button type="button" class="reserve-date-chip" data-days="3" onclick="pickReserveDateChip(3,this)">3일 후</button>
@@ -2079,32 +2194,40 @@ body:not(.niji-basic-mode) .match-top-row>.match-focus-section:not(.is-focused)>
         <span class="reserve-date-icon">📅</span>
       </div>
       <div class="reserve-date-display" id="reserveDateDisplay"></div>
-    </div>
+    </section>
 
-    <div class="rsv-section">
-      <div class="rsv-section-title">📝 요청사항 (선택)</div>
-      <textarea id="reserveMemo" rows="3" class="rsv-memo" placeholder="전달하고 싶은 내용을 자유롭게 적어주세요"></textarea>
-    </div>
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">5</span><span class="rv-step-title">요청사항 · 쿠폰</span><span class="rv-step-opt">선택</span></div>
+      <label class="rv-f">
+        <span class="rv-l">스트링어에게 하고 싶은 말</span>
+        <textarea id="reserveMemo" rows="3" class="rsv-memo" placeholder="전달하고 싶은 내용을 자유롭게 적어주세요"></textarea>
+      </label>
 
-    <div class="rsv-section" id="reserveCouponSection">
-      <div class="rsv-section-title">🎟️ 쿠폰 (선택)<span id="reserveCouponCount" style="margin-left:auto;font-size:.74rem;letter-spacing:0;text-transform:none;font-weight:800;padding:3px 10px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);white-space:nowrap;">확인 중...</span></div>
-      <select id="reserveCoupon" class="rsv-preset-select">
-        <option value="">쿠폰 사용 안 함</option>
-      </select>
-      <div id="reserveCouponHint" style="font-size:.76rem;color:var(--text-muted);line-height:1.5;margin:6px 0 10px;"></div>
-      <button type="button" onclick="openCouponWalletModal()" style="width:100%;padding:10px;margin-bottom:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.8rem;font-weight:700;cursor:pointer;font-family:inherit;">🎟️ 내 쿠폰함 열기 · 코드 등록</button>
-    </div>
+      <div id="reserveCouponSection" class="rv-coupon">
+        <div class="rv-l rv-coupon-head">🎟️ 쿠폰<span id="reserveCouponCount" style="margin-left:auto;font-size:.74rem;letter-spacing:0;text-transform:none;font-weight:800;padding:3px 10px;border-radius:20px;border:1px solid var(--border);color:var(--text-muted);white-space:nowrap;">확인 중...</span></div>
+        <select id="reserveCoupon" class="rv-preset">
+          <option value="">쿠폰 사용 안 함</option>
+        </select>
+        <div id="reserveCouponHint" class="rv-hint"></div>
+        <button type="button" class="rv-link-btn" onclick="openCouponWalletModal()">🎟️ 내 쿠폰함 열기 · 코드 등록</button>
+      </div>
+    </section>
 
-    <div class="rsv-send-row">
-      <button type="button" class="rsv-send-btn rsv-send-sms" onclick="sendStringReserveSMS()">📱 문자 보내기</button>
-      <button type="button" class="rsv-send-btn rsv-send-kakao" onclick="sendStringReserveKakao()">💬 카카오톡 보내기</button>
-    </div>
-    <button type="button" class="rsv-call-btn" onclick="location.href='tel:01072787660'">📞 바로 전화하기 010-7278-7660</button>
-    <div style="margin-top:10px;padding:13px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface);text-align:center;">
-      <div style="font-size:.78rem;color:var(--text-muted);font-weight:700;margin-bottom:6px;">🏦 입금 계좌</div>
-      <div style="font-size:.95rem;font-weight:800;color:var(--text);line-height:1.6;">카카오뱅크 3333-26-4122540</div>
-      <div style="font-size:.85rem;color:var(--text);margin-bottom:10px;">예금주 최길희</div>
-      <button type="button" onclick="copyReserveAccount()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:.84rem;font-weight:700;cursor:pointer;font-family:inherit;">📋 계좌번호 복사</button>
+    <section class="rv-card rv-info">
+      <div class="rv-bank">
+        <div class="rv-bank-text">
+          <div class="rv-bank-label">🏦 입금 계좌</div>
+          <div class="rv-bank-num">카카오뱅크 3333-26-4122540</div>
+          <div class="rv-bank-owner">예금주 최길희</div>
+        </div>
+        <button type="button" class="rv-copy" onclick="copyReserveAccount()">📋 계좌번호 복사</button>
+      </div>
+      <button type="button" class="rv-call" onclick="location.href='tel:01072787660'">📞 바로 전화하기 010-7278-7660</button>
+    </section>
+
+    <div class="rv-bar">
+      <button type="button" class="rv-send rv-sms" onclick="sendStringReserveSMS()">📱 문자 보내기</button>
+      <button type="button" class="rv-send rv-kakao" onclick="sendStringReserveKakao()">💬 카카오톡 보내기</button>
     </div>
   </div>
 </div>
