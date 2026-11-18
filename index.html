@@ -397,110 +397,136 @@ body:not(.niji-basic-mode) .match-top-row>.match-focus-section:not(.is-focused)>
       
 <style id="rvStyle">
 /* ===== 스트링 교체 예약 화면 (고객용) : 이 화면에만 적용 ===== */
-#stringReserveModal .modal{padding:18px 16px 0}
-#stringReserveModal .rv-head{align-items:flex-start;gap:12px;margin-bottom:14px}
-#stringReserveModal .rv-sub{font-size:.9rem;color:var(--text-muted);margin-top:4px;line-height:1.5}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .modal{padding:18px 16px 0}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-head{align-items:flex-start;gap:12px;margin-bottom:14px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-sub{font-size:.9rem;color:var(--text-muted);margin-top:4px;line-height:1.5}
 
-#stringReserveModal .rv-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
-#stringReserveModal .rv-step{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-#stringReserveModal .rv-num{width:26px;height:26px;border-radius:50%;background:var(--accent2);color:#fff;font-weight:800;font-size:.85rem;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-#stringReserveModal .rv-step-title{font-size:1.02rem;font-weight:800;color:var(--text);line-height:1.3}
-#stringReserveModal .rv-step-opt{margin-left:auto;font-size:.76rem;font-weight:700;color:var(--text-muted)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-step{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-num{width:26px;height:26px;border-radius:50%;background:var(--accent2);color:#fff;font-weight:800;font-size:.85rem;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-step-title{font-size:1.02rem;font-weight:800;color:var(--text);line-height:1.3}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-step-opt{margin-left:auto;font-size:.76rem;font-weight:700;color:var(--text-muted)}
 
-#stringReserveModal .rv-f{display:block;margin:0 0 14px}
-#stringReserveModal .rv-f:last-child{margin-bottom:0}
-#stringReserveModal .rv-l{display:flex;align-items:center;gap:6px;font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:7px;line-height:1.35}
-#stringReserveModal .rv-req{font-style:normal;font-size:.68rem;font-weight:800;color:#fff;background:var(--accent2);padding:2px 8px;border-radius:20px;line-height:1.5}
-#stringReserveModal .rv-opt{font-style:normal;font-size:.68rem;font-weight:700;color:var(--text-muted);border:1px solid var(--border);padding:1px 8px;border-radius:20px;line-height:1.5}
-#stringReserveModal .rv-gap-top{margin-top:18px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-f{display:block;margin:0 0 14px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-f:last-child{margin-bottom:0}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-l{display:flex;align-items:center;gap:6px;font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:7px;line-height:1.35}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-req{font-style:normal;font-size:.68rem;font-weight:800;color:#fff;background:var(--accent2);padding:2px 8px;border-radius:20px;line-height:1.5}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-opt{font-style:normal;font-size:.68rem;font-weight:700;color:var(--text-muted);border:1px solid var(--border);padding:1px 8px;border-radius:20px;line-height:1.5}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-gap-top{margin-top:18px}
 
 /* 입력칸 : 크고 또렷하게 (글자 16px = 폰에서 화면이 확대되지 않아요) */
-#stringReserveModal input[type="text"],
-#stringReserveModal input[type="tel"],
-#stringReserveModal input[type="date"],
-#stringReserveModal select,
-#stringReserveModal textarea{
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) input[type="text"],
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) input[type="tel"],
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) input[type="date"],
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) select,
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) textarea{
   width:100%;box-sizing:border-box;min-height:48px;padding:11px 14px;
   font-family:inherit;font-size:16px !important;font-weight:600;line-height:1.4;
   color:var(--text) !important;background:var(--surface) !important;
   border:1.5px solid var(--border) !important;border-radius:12px !important;box-shadow:none !important;
 }
-#stringReserveModal input::placeholder,#stringReserveModal textarea::placeholder{color:var(--text-muted);font-weight:400;opacity:.8}
-#stringReserveModal input[type="text"]:focus,
-#stringReserveModal input[type="tel"]:focus,
-#stringReserveModal input[type="date"]:focus,
-#stringReserveModal select:focus,
-#stringReserveModal textarea:focus{
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) input::placeholder,:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) textarea::placeholder{color:var(--text-muted);font-weight:400;opacity:.8}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) input[type="text"]:focus,
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) input[type="tel"]:focus,
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) input[type="date"]:focus,
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) select:focus,
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) textarea:focus{
   border-color:var(--accent2) !important;box-shadow:0 0 0 3px var(--emerald-soft) !important;outline:none !important;
 }
-#stringReserveModal select{
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) select{
   -webkit-appearance:none;-moz-appearance:none;appearance:none;cursor:pointer;padding-right:38px;
   background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2214%22 height=%2214%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23888%22 stroke-width=%222.5%22><polyline points=%226 9 12 15 18 9%22/></svg>') no-repeat right 14px center !important;
 }
-#stringReserveModal select.rv-preset{font-size:.9rem !important;font-weight:600;color:var(--text-muted) !important;margin:-6px 0 14px}
-#stringReserveModal textarea{min-height:88px;resize:vertical;font-weight:500;line-height:1.6}
-#stringReserveModal textarea.rv-locker{min-height:72px;resize:none;font-size:15px !important;line-height:1.5;word-break:keep-all}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) select.rv-preset{font-size:.9rem !important;font-weight:600;color:var(--text-muted) !important;margin:-6px 0 14px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) textarea{min-height:88px;resize:vertical;font-weight:500;line-height:1.6}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) textarea.rv-locker{min-height:72px;resize:none;font-size:15px !important;line-height:1.5;word-break:keep-all}
 
 /* 하이브리드 스위치 */
-#stringReserveModal .rv-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin-bottom:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;cursor:pointer}
-#stringReserveModal .rv-switch-text{display:flex;flex-direction:column;gap:2px;min-width:0}
-#stringReserveModal .rv-switch-text b{font-size:.95rem;font-weight:800;color:var(--text)}
-#stringReserveModal .rv-switch-text small{font-size:.78rem;color:var(--text-muted);line-height:1.4}
-#stringReserveModal .rv-switch input{-webkit-appearance:none;appearance:none;position:relative;flex-shrink:0;width:50px;height:30px;margin:0;border-radius:15px;background:var(--border);cursor:pointer;transition:background .2s}
-#stringReserveModal .rv-switch input::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
-#stringReserveModal .rv-switch input:checked{background:var(--accent2)}
-#stringReserveModal .rv-switch input:checked::after{transform:translateX(20px)}
-#stringReserveModal .rv-switch:has(input:checked){border-color:var(--accent2)}
-#stringReserveModal .rv-switch input:focus-visible{outline:3px solid var(--emerald-soft)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin-bottom:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;cursor:pointer}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-switch-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-switch-text b{font-size:.95rem;font-weight:800;color:var(--text)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-switch-text small{font-size:.78rem;color:var(--text-muted);line-height:1.4}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-switch input{-webkit-appearance:none;appearance:none;position:relative;flex-shrink:0;width:50px;height:30px;margin:0;border-radius:15px;background:var(--border);cursor:pointer;transition:background .2s}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-switch input::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-switch input:checked{background:var(--accent2)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-switch input:checked::after{transform:translateX(20px)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-switch:has(input:checked){border-color:var(--accent2)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-switch input:focus-visible{outline:3px solid var(--emerald-soft)}
 
 /* 하이브리드 : 메인 / 크로스 구분 */
-#stringReserveModal .rv-col{gap:0}
-#stringReserveModal #reserveHybridWrap{gap:12px}
-#stringReserveModal .rv-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;border-left-width:5px}
-#stringReserveModal .rv-block-main{border-left-color:var(--accent)}
-#stringReserveModal .rv-block-cross{border-left-color:var(--accent2)}
-#stringReserveModal .rv-block-title{font-size:.98rem;font-weight:800;color:var(--text);margin-bottom:12px}
-#stringReserveModal .rv-block-title small{font-size:.78rem;font-weight:600;color:var(--text-muted);margin-left:4px}
-#stringReserveModal .rv-block .rv-f:last-child{margin-bottom:0}
-#stringReserveModal .rv-block input[type="text"],#stringReserveModal .rv-block select{background:var(--surface2) !important}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-col{gap:0}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) #reserveHybridWrap{gap:12px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-block{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;border-left-width:5px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-block-main{border-left-color:var(--accent)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-block-cross{border-left-color:var(--accent2)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-block-title{font-size:.98rem;font-weight:800;color:var(--text);margin-bottom:12px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-block-title small{font-size:.78rem;font-weight:600;color:var(--text-muted);margin-left:4px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-block .rv-f:last-child{margin-bottom:0}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-block input[type="text"],:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-block select{background:var(--surface2) !important}
 
 /* 선택 버튼 (전달 방법 · 받고 싶은 날) */
-#stringReserveModal .rv-chips{display:grid;gap:8px}
-#stringReserveModal .rv-chips-2{grid-template-columns:1fr 1fr}
-#stringReserveModal .rv-chips-4{grid-template-columns:repeat(4,1fr);margin-bottom:10px}
-#stringReserveModal .reserve-date-chip{min-height:48px;padding:8px 4px;border-radius:12px;border:1.5px solid var(--border) !important;background:var(--surface);color:var(--text);font-size:.92rem;font-weight:700;text-align:center;line-height:1.3}
-#stringReserveModal .reserve-date-chip.selected{background:var(--accent2);border-color:var(--accent2) !important;color:#fff}
-#stringReserveModal .reserve-date-input-wrap input[type="date"]{min-height:52px;font-size:1.05rem !important;font-weight:800}
-#stringReserveModal .reserve-date-icon{display:none}
-#stringReserveModal .reserve-date-input-wrap input[type="date"]{padding-right:14px}
-#stringReserveModal .reserve-date-display{margin-top:8px;font-size:1rem;color:var(--accent2);font-weight:800;min-height:0}
-#stringReserveModal .reserve-date-display:not(:empty)::before{content:"선택한 날짜 · ";font-weight:600;color:var(--text-muted)}
-body.light-theme #stringReserveModal .reserve-date-display{color:var(--accent2)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-chips{display:grid;gap:8px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-chips-2{grid-template-columns:1fr 1fr}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-chips-4{grid-template-columns:repeat(4,1fr);margin-bottom:10px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .reserve-date-chip{min-height:48px;padding:8px 4px;border-radius:12px;border:1.5px solid var(--border) !important;background:var(--surface);color:var(--text);font-size:.92rem;font-weight:700;text-align:center;line-height:1.3}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .reserve-date-chip.selected{background:var(--accent2);border-color:var(--accent2) !important;color:#fff}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .reserve-date-input-wrap input[type="date"]{min-height:52px;font-size:1.05rem !important;font-weight:800}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .reserve-date-icon{display:none}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .reserve-date-input-wrap input[type="date"]{padding-right:14px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .reserve-date-display{margin-top:8px;font-size:1rem;color:var(--accent2);font-weight:800;min-height:0}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .reserve-date-display:not(:empty)::before{content:"선택한 날짜 · ";font-weight:600;color:var(--text-muted)}
+body.light-theme :is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .reserve-date-display{color:var(--accent2)}
 
 /* 쿠폰 */
-#stringReserveModal .rv-coupon{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border)}
-#stringReserveModal .rv-coupon-head{margin-bottom:8px}
-#stringReserveModal .rv-coupon select.rv-preset{margin:0 0 8px}
-#stringReserveModal .rv-hint{font-size:.8rem;color:var(--text-muted);line-height:1.5;margin:0 0 10px}
-#stringReserveModal .rv-link-btn{width:100%;min-height:44px;padding:10px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-coupon{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-coupon-head{margin-bottom:8px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-coupon select.rv-preset{margin:0 0 8px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-hint{font-size:.8rem;color:var(--text-muted);line-height:1.5;margin:0 0 10px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-link-btn{width:100%;min-height:44px;padding:10px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit}
 
 /* 입금 · 전화 */
-#stringReserveModal .rv-info{background:var(--surface)}
-#stringReserveModal .rv-bank{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-#stringReserveModal .rv-bank-label{font-size:.8rem;font-weight:700;color:var(--text-muted);margin-bottom:4px}
-#stringReserveModal .rv-bank-num{font-size:1rem;font-weight:800;color:var(--text)}
-#stringReserveModal .rv-bank-owner{font-size:.86rem;color:var(--text-muted);margin-top:2px}
-#stringReserveModal .rv-copy{min-height:44px;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0}
-#stringReserveModal .rv-call{width:100%;min-height:48px;padding:12px;border-radius:12px;border:1.5px solid var(--accent2);background:transparent;color:var(--accent2);font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-info{background:var(--surface)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-bank{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-bank-label{font-size:.8rem;font-weight:700;color:var(--text-muted);margin-bottom:4px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-bank-num{font-size:1rem;font-weight:800;color:var(--text)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-bank-owner{font-size:.86rem;color:var(--text-muted);margin-top:2px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-copy{min-height:44px;padding:10px 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-call{width:100%;min-height:48px;padding:12px;border-radius:12px;border:1.5px solid var(--accent2);background:transparent;color:var(--accent2);font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit}
 
 /* 보내기 버튼 : 스크롤해도 화면 아래에 계속 보여요 */
-#stringReserveModal .rv-bar{position:sticky;bottom:0;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 -16px;padding:12px 16px max(12px,env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -6px 16px rgba(0,0,0,.14)}
-#stringReserveModal .rv-send{min-height:54px;padding:12px 8px;border:0;border-radius:14px;font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-#stringReserveModal .rv-send:active{transform:scale(.97)}
-#stringReserveModal .rv-sms{background:linear-gradient(135deg,#ddb96e,#c9a961 55%,#a9822f);color:#16241c}
-#stringReserveModal .rv-kakao{background:#FEE500;color:#3c1e1e}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-bar{position:sticky;bottom:0;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 -16px;padding:12px 16px max(12px,env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -6px 16px rgba(0,0,0,.14)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-send{min-height:54px;padding:12px 8px;border:0;border-radius:14px;font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-send:active{transform:scale(.97)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-sms{background:linear-gradient(135deg,#ddb96e,#c9a961 55%,#a9822f);color:#16241c}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-kakao{background:#FEE500;color:#3c1e1e}
 
-#stringReserveModal button:focus-visible,#stringReserveModal label:focus-within{outline:2px solid var(--accent2);outline-offset:2px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) button:focus-visible,:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) label:focus-within{outline:2px solid var(--accent2);outline-offset:2px}
+
+/* ===== 예약 목록 / 내 쿠폰함 : 예약 화면과 같은 모양으로 통일 ===== */
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-chips-3{grid-template-columns:repeat(3,1fr)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-mini{margin-left:auto;min-height:40px;padding:8px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:.84rem;font-weight:700;cursor:pointer;font-family:inherit}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-item{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-item:last-child{margin-bottom:0}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-item.sel{border-color:var(--accent2);box-shadow:0 0 0 2px var(--emerald-soft)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-item.dim{opacity:.62}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-item-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-item-name{font-size:1.08rem;font-weight:800;color:var(--text);line-height:1.3;min-width:0;word-break:keep-all}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-badge{font-size:.78rem;font-weight:800;padding:4px 11px;border-radius:20px;border:1.5px solid currentColor;white-space:nowrap;flex-shrink:0;line-height:1.4}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-item-info{margin-top:8px;font-size:.92rem;color:var(--text-muted);line-height:1.75}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-item-info b{color:var(--text)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-code{font-weight:800;letter-spacing:2px;color:var(--text)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-more{margin-top:8px}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-more summary{font-size:.86rem;font-weight:700;color:var(--text-muted);cursor:pointer;min-height:38px;display:flex;align-items:center}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-more pre{white-space:pre-wrap;font-size:.86rem;line-height:1.6;margin:4px 0 0;font-family:inherit;color:var(--text);background:var(--surface2);border-radius:10px;padding:10px;word-break:break-all}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-item-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-btn{flex:1 1 auto;min-height:46px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:.92rem;font-weight:800;cursor:pointer;font-family:inherit}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-btn:active{transform:scale(.97)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-btn-main{background:var(--accent2);border-color:var(--accent2);color:#fff}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-btn-del{flex:0 0 auto;color:#f87171;border-color:rgba(248,113,113,.55)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-btn-full{display:block;width:100%;flex:none;min-height:52px;font-size:1rem}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-empty{text-align:center;color:var(--text-muted);font-size:.95rem;line-height:1.7;padding:18px 0}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-sel{margin-bottom:12px;padding:12px 14px;border:1.5px solid var(--accent2);border-radius:14px;background:var(--emerald-soft);font-size:.92rem;line-height:1.7;color:var(--text)}
+:is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal) .rv-sel-x{margin-left:8px;min-height:36px;padding:6px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:.84rem;font-weight:700;cursor:pointer;font-family:inherit}
 </style>
 </head>
 <body>
@@ -2004,74 +2030,74 @@ body.light-theme #stringReserveModal .reserve-date-display{color:var(--accent2)}
 
 <div class="modal-overlay" id="workDoneReplyModal" onclick="if(event.target===this)closeModal('workDoneReplyModal')">
   <div class="modal" style="max-height:92vh;overflow-y:auto;">
-    <div class="modal-header">
-      <span class="modal-title">✅ 예약 목록 · 작업 완료 답장</span>
-      <button class="modal-close" onclick="closeModal('workDoneReplyModal')">✕</button>
+    <div class="modal-header rv-head">
+      <div>
+        <span class="modal-title">✅ 예약 목록 · 작업 완료 답장</span>
+        <div class="rv-sub">고객이 앱에서 예약하면 아래에 쌓여요. 작업이 끝나면 <b>작업 완료</b>를 눌러 답장을 보내세요.</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('workDoneReplyModal')" aria-label="닫기">✕</button>
     </div>
-    <div style="color:var(--text-muted);font-size:.82rem;margin-bottom:12px;line-height:1.5;">고객이 앱에서 예약하면 아래 목록에 쌓여요. 작업이 끝나면 <b>작업 완료</b> 버튼을 눌러 답장을 보내세요.</div>
 
-    <div class="rsv-section">
-      <div class="rsv-section-title">📋 접수된 예약<button type="button" onclick="wdLoadList()" style="margin-left:auto;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0;text-transform:none;">🔄 새로고침</button></div>
-      <div class="reserve-date-chips" id="wdFilterChips" style="margin-bottom:8px;">
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">1</span><span class="rv-step-title">접수된 예약</span><button type="button" class="rv-mini" onclick="wdLoadList()">🔄 새로고침</button></div>
+      <div class="rv-chips rv-chips-2" id="wdFilterChips" style="margin-bottom:12px;">
         <button type="button" class="reserve-date-chip selected" data-f="pending" onclick="wdSetFilter('pending',this)">⏳ 진행 중</button>
         <button type="button" class="reserve-date-chip" data-f="done" onclick="wdSetFilter('done',this)">✅ 완료</button>
       </div>
-      <div id="wdList" style="padding-bottom:8px;"></div>
-    </div>
+      <div id="wdList"></div>
+    </section>
 
     <div id="wdFormAnchor"></div>
-    <div id="wdSelBanner" style="display:none;margin-bottom:12px;padding:10px 12px;border:1.5px solid #2f8f6b;border-radius:12px;background:rgba(47,143,107,.10);font-size:.84rem;line-height:1.5;"></div>
+    <div id="wdSelBanner" class="rv-sel" style="display:none;"></div>
 
-    <div class="rsv-section">
-      <div class="rsv-section-title">📩 목록에 없는 예약은 문자 붙여넣기 (선택)</div>
-      <textarea id="wdPaste" rows="3" class="rsv-memo" placeholder="고객이 보낸 예약 문자를 여기에 붙여넣기" oninput="wdParsePaste()"></textarea>
-    </div>
-
-    <div class="rsv-section">
-      <div class="rsv-section-title">👤 받는 고객</div>
-      <div class="rsv-field">
-        <div class="rsv-field-label">성함</div>
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">2</span><span class="rv-step-title">답장 받는 고객</span></div>
+      <label class="rv-f">
+        <span class="rv-l">예약 문자 붙여넣기 <em class="rv-opt">선택</em></span>
+        <textarea id="wdPaste" rows="3" class="rsv-memo" placeholder="목록에 없는 예약이면 고객이 보낸 문자를 여기에 붙여넣기" oninput="wdParsePaste()"></textarea>
+      </label>
+      <label class="rv-f">
+        <span class="rv-l">성함</span>
         <input id="wdName" type="text" placeholder="이름을 입력하세요" oninput="wdRefresh(false)">
-      </div>
-      <div class="rsv-field">
-        <div class="rsv-field-label">연락처</div>
-        <input id="wdPhone" type="tel" placeholder="010-0000-0000">
-      </div>
-    </div>
+      </label>
+      <label class="rv-f">
+        <span class="rv-l">연락처</span>
+        <input id="wdPhone" type="tel" inputmode="tel" placeholder="010-0000-0000">
+      </label>
+    </section>
 
-    <div class="reserve-date-card" style="margin-bottom:12px;">
-      <div class="reserve-date-card-head">🚪 라켓 돌려주는 방법</div>
-      <div class="reserve-date-chips" id="wdMethodChips">
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">3</span><span class="rv-step-title">라켓 돌려주는 방법</span></div>
+      <div class="rv-chips rv-chips-2" id="wdMethodChips">
         <button type="button" class="reserve-date-chip selected" data-m="locker" onclick="wdPickMethod('locker',this)">📦 보관함에 넣음</button>
         <button type="button" class="reserve-date-chip" data-m="store" onclick="wdPickMethod('store',this)">🏬 매장에서 수령</button>
       </div>
-      <div id="wdPwWrap">
-        <div class="rsv-field" style="border:none;padding-top:8px;">
-          <div class="rsv-field-label">보관함 비밀번호</div>
+      <div id="wdPwWrap" class="rv-gap-top">
+        <label class="rv-f">
+          <span class="rv-l">보관함 비밀번호</span>
           <input id="wdPw" type="text" inputmode="numeric" value="712" oninput="wdRefresh(false)">
-        </div>
+        </label>
       </div>
-    </div>
+    </section>
 
-    <div class="reserve-date-card" style="margin-bottom:12px;">
-      <div class="reserve-date-card-head">💬 문구 고르기</div>
-      <div class="reserve-date-chips" id="wdTplChips">
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">4</span><span class="rv-step-title">보낼 문구</span></div>
+      <div class="rv-chips rv-chips-3" id="wdTplChips" style="margin-bottom:14px;">
         <button type="button" class="reserve-date-chip selected" data-t="0" onclick="wdPickTpl(0,this)">정중하게</button>
         <button type="button" class="reserve-date-chip" data-t="1" onclick="wdPickTpl(1,this)">따뜻하게</button>
         <button type="button" class="reserve-date-chip" data-t="2" onclick="wdPickTpl(2,this)">짧게</button>
       </div>
-    </div>
+      <label class="rv-f">
+        <span class="rv-l">내용 <em class="rv-opt">눌러서 고칠 수 있어요</em></span>
+        <textarea id="wdMsg" rows="8" class="rsv-memo" oninput="_wdEdited=true"></textarea>
+      </label>
+      <button type="button" class="rv-link-btn" onclick="wdCopy()">📋 문구 복사</button>
+    </section>
 
-    <div class="rsv-section">
-      <div class="rsv-section-title">✏️ 보낼 내용 (눌러서 고칠 수 있어요)</div>
-      <textarea id="wdMsg" rows="8" class="rsv-memo" oninput="_wdEdited=true"></textarea>
+    <div class="rv-bar">
+      <button type="button" class="rv-send rv-sms" onclick="wdSendSMS()">📱 문자 보내기</button>
+      <button type="button" class="rv-send rv-kakao" onclick="wdSendKakao()">💬 카카오톡 보내기</button>
     </div>
-
-    <div class="rsv-send-row">
-      <button type="button" class="rsv-send-btn rsv-send-sms" onclick="wdSendSMS()">📱 문자 보내기</button>
-      <button type="button" class="rsv-send-btn rsv-send-kakao" onclick="wdSendKakao()">💬 카카오톡 보내기</button>
-    </div>
-    <button type="button" onclick="wdCopy()" style="width:100%;padding:12px;margin-top:8px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">📋 문구 복사</button>
   </div>
 </div>
 
@@ -2265,16 +2291,29 @@ body.light-theme #stringReserveModal .reserve-date-display{color:var(--accent2)}
 
 <div class="modal-overlay" id="couponWalletModal" onclick="if(event.target===this)closeModal('couponWalletModal')">
   <div class="modal" style="max-height:92vh;overflow-y:auto;">
-    <div class="modal-header">
-      <span class="modal-title">🎟️ 내 쿠폰함</span>
-      <button class="modal-close" onclick="closeModal('couponWalletModal')">✕</button>
+    <div class="modal-header rv-head">
+      <div>
+        <span class="modal-title">🎟️ 내 쿠폰함</span>
+        <div class="rv-sub">받은 쿠폰 코드를 등록하면 <b>스트링 교체 예약</b> 때 쓸 수 있어요.</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('couponWalletModal')" aria-label="닫기">✕</button>
     </div>
-    <div style="color:var(--text-muted);font-size:.82rem;margin-bottom:12px;line-height:1.6;">받은 쿠폰 코드를 등록하면 <b>스트링 교체 예약</b> 때 쓸 수 있어요.<br>쿠폰마다 혜택이 달라요 · 발행일부터 6개월</div>
-    <div style="display:flex;gap:8px;margin-bottom:14px;">
-      <input id="cpnRegCode" class="form-input" type="text" maxlength="12" autocapitalize="characters" autocomplete="off" style="flex:1;min-width:0;letter-spacing:2px;text-transform:uppercase;" placeholder="쿠폰 코드 (예: ABCD-EFGH)">
-      <button type="button" onclick="cpnRegister()" style="flex:none;padding:0 18px;border:0;border-radius:10px;background:var(--accent);color:#fff;font-weight:800;cursor:pointer;font-family:inherit;">등록</button>
-    </div>
-    <div id="cpnWalletList"></div>
+
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">1</span><span class="rv-step-title">쿠폰 코드 등록</span></div>
+      <label class="rv-f">
+        <span class="rv-l">쿠폰 코드</span>
+        <input id="cpnRegCode" type="text" maxlength="12" autocapitalize="characters" autocomplete="off" style="letter-spacing:2px;text-transform:uppercase;" placeholder="예) ABCD-EFGH">
+      </label>
+      <button type="button" class="rv-btn rv-btn-main rv-btn-full" onclick="cpnRegister()">🎟️ 등록하기</button>
+      <div class="rv-hint" style="margin:10px 0 0;">쿠폰마다 혜택이 달라요 · 발행일부터 6개월 동안 쓸 수 있어요</div>
+    </section>
+
+    <section class="rv-card">
+      <div class="rv-step"><span class="rv-num">2</span><span class="rv-step-title">내 쿠폰</span></div>
+      <div id="cpnWalletList"></div>
+    </section>
+    <div style="height:max(8px,env(safe-area-inset-bottom));"></div>
   </div>
 </div>
 
@@ -3112,8 +3151,8 @@ function wdLoadCount(){
 }
 function wdLoadList(){
   var box=document.getElementById("wdList");if(!box)return;
-  if(!window._firebaseDB||!window._userId){box.innerHTML='<div style="color:var(--text-muted);font-size:.82rem;padding:10px 0;">로그인 후 이용할 수 있어요</div>';return}
-  box.innerHTML='<div style="color:var(--text-muted);font-size:.82rem;padding:10px 0;">불러오는 중...</div>';
+  if(!window._firebaseDB||!window._userId){box.innerHTML='<div class="rv-empty">로그인 후 이용할 수 있어요</div>';return}
+  box.innerHTML='<div class="rv-empty">불러오는 중...</div>';
   window._firebaseDB.ref("reservations").limitToLast(80).once("value").then(function(snap){
     var v=snap.val()||{};
     _wdItems=Object.keys(v).map(function(k){var o=v[k]||{};o.id=k;return o});
@@ -3121,7 +3160,7 @@ function wdLoadList(){
     wdRenderList();
   }).catch(function(e){
     console.warn("reservation load fail",e);
-    box.innerHTML='<div style="color:#f87171;font-size:.82rem;padding:10px 0;line-height:1.5;">불러오지 못했어요. 파이어베이스 보안 규칙에 예약(reservations)을 추가해 주세요</div>';
+    box.innerHTML='<div class="rv-empty" style="color:#f87171;">불러오지 못했어요. 파이어베이스 보안 규칙에 예약(reservations)을 추가해 주세요</div>';
   });
 }
 function wdSetFilter(f,btn){
@@ -3136,20 +3175,20 @@ function wdRenderList(){
   var arr=_wdItems.filter(function(x){return done?(x.status==="done"):(x.status!=="done")});
   if(done)arr.sort(function(a,b){return(b.doneAt||0)-(a.doneAt||0)});
   else arr.sort(function(a,b){var da=a.wantDate||"9999",db=b.wantDate||"9999";return da<db?-1:da>db?1:(a.createdAt||0)-(b.createdAt||0)});
-  if(!arr.length){box.innerHTML='<div style="color:var(--text-muted);font-size:.84rem;padding:14px 0;text-align:center;">'+(done?"완료된 예약이 없어요":"진행 중인 예약이 없어요")+'</div>';return}
+  if(!arr.length){box.innerHTML='<div class="rv-empty">'+(done?"완료된 예약이 없어요":"진행 중인 예약이 없어요")+'</div>';return}
   box.innerHTML=arr.slice(0,done?20:80).map(function(x){
     var locker=String(x.visitType||"").indexOf("보관함")>=0;
     var sel=(_wdSelId===x.id);
     var main=done
-      ?'<button type="button" style="'+CPN_BTN+'" data-id="'+x.id+'" onclick="wdSetStatus(this.dataset.id,false)">↩️ 진행 중으로 되돌리기</button>'
-      :'<button type="button" style="'+CPN_BTN+'background:#2f8f6b;color:#fff;border-color:#2f8f6b;" data-id="'+x.id+'" onclick="wdPickReservation(this.dataset.id)">✅ 작업 완료 · 답장 쓰기</button>';
-    return '<div style="border:1.5px solid '+(sel?"#2f8f6b":"var(--border)")+';border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--surface2);">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><b style="font-size:.98rem;">'+escHtml(x.name||"이름 없음")+'</b>'+cpnBadge(locker?"📦 보관함":"🏬 매장","#2f8f6b")+'</div>'
-      +'<div style="font-size:.8rem;color:var(--text-muted);line-height:1.6;margin-top:4px;">🎾 '+escHtml(x.racket||"")+(x.stringInfo?'<br>🧵 '+escHtml(x.stringInfo):'')
-      +'<br>📅 받고 싶은 날 '+escHtml(wdFmtDay(x.wantDate))+' · 접수 '+wdFmtDT(x.createdAt)+(done&&x.doneAt?' · 완료 '+wdFmtDT(x.doneAt):'')+'</div>'
-      +'<details style="margin-top:6px;"><summary style="font-size:.76rem;color:var(--text-muted);cursor:pointer;">전체 내용 보기</summary><pre style="white-space:pre-wrap;font-size:.76rem;margin:6px 0 0;font-family:inherit;color:var(--text);">'+escHtml(x.text||"")+'</pre></details>'
-      +'<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">'+main
-      +'<button type="button" style="'+CPN_BTN+'color:#f87171;" data-id="'+x.id+'" onclick="wdDeleteRes(this.dataset.id)">🗑️ 삭제</button></div></div>';
+      ?'<button type="button" class="rv-btn" data-id="'+x.id+'" onclick="wdSetStatus(this.dataset.id,false)">↩️ 진행 중으로 되돌리기</button>'
+      :'<button type="button" class="rv-btn rv-btn-main" data-id="'+x.id+'" onclick="wdPickReservation(this.dataset.id)">✅ 작업 완료 · 답장 쓰기</button>';
+    return '<div class="rv-item'+(sel?' sel':'')+'">'
+      +'<div class="rv-item-top"><b class="rv-item-name">'+escHtml(x.name||"이름 없음")+'</b>'+rvBadge(locker?"📦 보관함":"🏬 매장","var(--accent2)")+'</div>'
+      +'<div class="rv-item-info">'+(x.phone?'📞 '+escHtml(x.phone)+'<br>':'')+'🎾 '+escHtml(x.racket||"")+(x.stringInfo?'<br>🧵 '+escHtml(x.stringInfo):'')
+      +'<br>📅 받고 싶은 날 <b>'+escHtml(wdFmtDay(x.wantDate))+'</b><br>🕐 접수 '+wdFmtDT(x.createdAt)+(done&&x.doneAt?' · 완료 '+wdFmtDT(x.doneAt):'')+'</div>'
+      +'<details class="rv-more"><summary>전체 내용 보기</summary><pre>'+escHtml(x.text||"")+'</pre></details>'
+      +'<div class="rv-item-actions">'+main
+      +'<button type="button" class="rv-btn rv-btn-del" data-id="'+x.id+'" onclick="wdDeleteRes(this.dataset.id)">🗑️ 삭제</button></div></div>';
   }).join("");
 }
 function wdPickReservation(id){
@@ -3164,7 +3203,7 @@ function wdPickReservation(id){
   var btn=document.querySelector('#wdMethodChips .reserve-date-chip[data-m="'+(locker?"locker":"store")+'"]');
   wdPickMethod(locker?"locker":"store",btn);
   var b=document.getElementById("wdSelBanner");
-  if(b){b.style.display="block";b.innerHTML='✔ <b>'+escHtml(x.name||"")+'</b>님 예약을 골랐어요 · 보내면 자동으로 \'완료\'가 돼요 <a href="#" onclick="wdClearSel();return false;" style="color:var(--accent);font-weight:700;margin-left:6px;">선택 취소</a>'}
+  if(b){b.style.display="block";b.innerHTML='✔ <b>'+escHtml(x.name||"")+'</b>님 예약을 골랐어요<br>보내면 자동으로 \'완료\'가 돼요 <button type="button" class="rv-sel-x" onclick="wdClearSel()">선택 취소</button>'}
   wdRenderList();
   var a=document.getElementById("wdFormAnchor");if(a&&a.scrollIntoView)a.scrollIntoView({behavior:"smooth",block:"start"});
 }
@@ -3294,6 +3333,7 @@ function cpnDate(ms){var d=new Date(Number(ms)||0);return d.getFullYear()+"."+St
 function cpnStatus(c){if(!c)return "none";if(c.status==="used")return "used";if(Date.now()>Number(c.expiresAt||0))return "expired";return "ok"}
 function cpnGenCode(){var ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",out="",arr=new Uint32Array(8);try{crypto.getRandomValues(arr)}catch(e){for(var k=0;k<8;k++)arr[k]=Math.floor(Math.random()*4294967296)}for(var i=0;i<8;i++)out+=ch.charAt(arr[i]%ch.length);return out}
 function cpnBadge(txt,color){return '<span style="font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:20px;color:'+color+';border:1px solid '+color+';white-space:nowrap;">'+txt+'</span>'}
+function rvBadge(txt,color){return '<span class="rv-badge" style="color:'+color+';">'+txt+'</span>'}
 function cpnShareText(code,exp,type,pct){var cc={type:type,pct:pct};return "🎟️ NIJI STRING 스트링 교체 쿠폰\n혜택: "+cpnTitle(cc)+" ("+cpnNote(cc)+")\n쿠폰코드: "+cpnShow(code)+"\n유효기간: "+cpnDate(exp)+"까지\n\n사용 방법\n1) 앱 열기 → 장비관리 → 🎟️ 내 쿠폰함\n2) 쿠폰코드 등록\n3) 스트링 교체 예약에서 쿠폰 선택 후 보내기\nhttps://niji7120.github.io/niji/"}
 function cpnCopyFallback(text){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){showToast("📋 쿠폰 안내가 복사됐어요. 카톡에 붙여넣어 보내세요")}).catch(function(){prompt("복사해서 보내주세요",text)})}else{prompt("복사해서 보내주세요",text)}}
 function cpnShare(code,exp,type,pct){var text=cpnShareText(code,exp,type,pct);if(navigator.share){navigator.share({text:text}).catch(function(e){if(e&&e.name==="AbortError"){showToast("쿠폰코드 "+cpnShow(code)+" 를 받는 분께 알려주세요");return}cpnCopyFallback(text)});return}cpnCopyFallback(text)}
@@ -3344,25 +3384,25 @@ function cpnAdminDelete(code){showConfirm("쿠폰 삭제","쿠폰 "+cpnShow(code
 function openCouponWalletModal(){var m=document.getElementById("couponWalletModal");if(m)m.classList.add("open");cpnLoadMine()}
 function cpnLoadMine(){
   var box=document.getElementById("cpnWalletList");
-  if(!window._firebaseDB||!window._userId){_myCoupons=[];if(box)box.innerHTML='<div style="color:var(--text-muted);font-size:.84rem;padding:16px 0;text-align:center;line-height:1.6;">로그인하면 쿠폰함을 쓸 수 있어요<br>(설정 탭 → 로그인하기)</div>';renderReserveCouponSelect();return Promise.resolve()}
+  if(!window._firebaseDB||!window._userId){_myCoupons=[];if(box)box.innerHTML='<div class="rv-empty">로그인하면 쿠폰함을 쓸 수 있어요<br>(설정 탭 → 로그인하기)</div>';renderReserveCouponSelect();return Promise.resolve()}
   var uid=window._userId,DB=window._firebaseDB;
   if(_cpnUid!==uid||_cpnState!=="ok"){_cpnState="loading";_cpnUid=uid;renderReserveCouponSelect()}
   return DB.ref("users/"+uid+"/couponCodes").once("value").then(function(snap){
     var codes=Object.keys(snap.val()||{});
     return Promise.all(codes.map(function(code){return DB.ref("coupons/"+code).once("value").then(function(x){var c=x.val();if(!c||c.ownerUid!==uid){DB.ref("users/"+uid+"/couponCodes/"+code).remove().catch(function(){});return null}c.code=code;return c})}))
-  }).then(function(list){_myCoupons=list.filter(Boolean);_cpnState="ok";_cpnUid=uid;cpnRenderWallet();renderReserveCouponSelect()}).catch(function(e){console.warn("coupon load fail",e);_cpnState="fail";renderReserveCouponSelect();if(box)box.innerHTML='<div style="color:#f87171;font-size:.82rem;padding:10px 0;">쿠폰을 불러오지 못했어요. 인터넷 연결을 확인해 주세요</div>'})
+  }).then(function(list){_myCoupons=list.filter(Boolean);_cpnState="ok";_cpnUid=uid;cpnRenderWallet();renderReserveCouponSelect()}).catch(function(e){console.warn("coupon load fail",e);_cpnState="fail";renderReserveCouponSelect();if(box)box.innerHTML='<div class="rv-empty" style="color:#f87171;">쿠폰을 불러오지 못했어요. 인터넷 연결을 확인해 주세요</div>'})
 }
 function cpnRenderWallet(){
   var box=document.getElementById("cpnWalletList");if(!box)return;
   var rank=function(c){var s=cpnStatus(c);return s==="ok"?0:s==="used"?1:2};
   var arr=(_myCoupons||[]).slice().sort(function(a,b){return rank(a)-rank(b)||(a.expiresAt||0)-(b.expiresAt||0)});
-  if(!arr.length){box.innerHTML='<div style="color:var(--text-muted);font-size:.84rem;padding:16px 0;text-align:center;line-height:1.6;">등록된 쿠폰이 없어요<br>위 칸에 쿠폰 코드를 입력해 등록해 보세요</div>';return}
+  if(!arr.length){box.innerHTML='<div class="rv-empty">등록된 쿠폰이 없어요<br>위 칸에 쿠폰 코드를 입력해 등록해 보세요</div>';return}
   box.innerHTML=arr.map(function(c){
     var st=cpnStatus(c);
-    var badge=st==="ok"?cpnBadge("사용 가능","#4ade80"):st==="used"?cpnBadge("사용 완료","#8a998f"):cpnBadge("기간 만료","#f87171");
-    var sub=cpnTitle(c)+" · "+cpnDate(c.expiresAt)+"까지"+(st==="used"&&c.usedAt?" · 사용 "+cpnDate(c.usedAt):"");
-    var btn=st==="ok"?'<div style="margin-top:8px;"><button type="button" style="'+CPN_BTN+'" data-code="'+c.code+'" onclick="cpnGift(this.dataset.code)">🎁 선물하기</button></div>':"";
-    return '<div style="border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--surface2);'+(st==="ok"?"":"opacity:.65;")+'"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><b style="letter-spacing:2px;font-size:.98rem;">'+cpnShow(c.code)+'</b>'+badge+'</div><div style="font-size:.74rem;color:var(--text-muted);margin-top:4px;">'+sub+'</div>'+btn+'</div>'
+    var badge=st==="ok"?rvBadge("사용 가능","var(--accent2)"):st==="used"?rvBadge("사용 완료","#8a998f"):rvBadge("기간 만료","#f87171");
+    var btn=st==="ok"?'<div class="rv-item-actions"><button type="button" class="rv-btn" data-code="'+c.code+'" onclick="cpnGift(this.dataset.code)">🎁 선물하기</button></div>':"";
+    return '<div class="rv-item'+(st==="ok"?"":" dim")+'"><div class="rv-item-top"><b class="rv-item-name">'+cpnTitle(c)+'</b>'+badge+'</div>'
+      +'<div class="rv-item-info">🎟️ 쿠폰코드 <span class="rv-code">'+cpnShow(c.code)+'</span><br>📅 '+cpnDate(c.expiresAt)+'까지'+(st==="used"&&c.usedAt?' · 사용 '+cpnDate(c.usedAt):'')+'</div>'+btn+'</div>'
   }).join("")
 }
 function cpnRegister(){
