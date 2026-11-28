@@ -2267,7 +2267,7 @@ body.light-theme :is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal)
       </div>
 
       <label class="rv-f" style="margin-top:8px;">
-        <span class="rv-l">보낼 문구 <em class="rv-opt">눌러서 고칠 수 있어요</em></span>
+        <span class="rv-l">글 문구 <em class="rv-opt">복사하거나 글로 보낼 때 써요</em></span>
         <textarea id="wdMsg" rows="8" class="rsv-memo" oninput="_wdEdited=true"></textarea>
       </label>
 
@@ -2284,7 +2284,8 @@ body.light-theme :is(#stringReserveModal,#workDoneReplyModal,#couponWalletModal)
         </label>
       </details>
 
-      <button type="button" class="rv-link-btn" style="margin-top:10px;" onclick="wdCopy()">📋 문구 복사</button>
+      <div style="margin-top:10px;font-size:.84rem;color:var(--text-muted);line-height:1.6;">🖼️ 아래 버튼을 누르면 <b>접수증/완료 안내가 이미지</b>로 보내져요.</div>
+      <button type="button" class="rv-link-btn" style="margin-top:8px;" onclick="wdCopy()">📋 글 문구만 복사</button>
 
       <div class="rv-bar">
         <button type="button" class="rv-send rv-sms" onclick="wdSendSMS()">📱 문자 보내기</button>
@@ -3705,23 +3706,58 @@ function wdGetText(){
   if(!t){showToast("보낼 내용이 비어 있어요");return null}
   return t;
 }
-/* 문자: 손님 번호가 자동으로 들어간 채로 문자앱이 열려요 */
+function wdFmtPhone(x){var d=String(x||"").replace(/[^0-9]/g,"");if(d.length===11)return d.slice(0,3)+"-"+d.slice(3,7)+"-"+d.slice(7);if(d.length===10)return d.slice(0,3)+"-"+d.slice(3,6)+"-"+d.slice(6);return x||""}
+/* 접수증/완료 안내를 이미지 카드로 만들어요 */
+function wdBuildCard(t){
+  var name=(document.getElementById("wdName").value||"").trim();
+  var phone=wdFmtPhone((document.getElementById("wdPhone").value||"").trim());
+  var pw=(document.getElementById("wdPw").value||"").trim()||"712";
+  if(_wdType==="done"){
+    var locker=_wdMethod==="locker";
+    var r=[["성함",name?name+" 님":"고객님"],["작업","스트링 교체 완료"],["받는 방법",locker?"보관함에 넣어둠":"매장에서 수령"]];
+    if(locker)r.push(["보관함 비번",pw]);
+    return {rows:r,memo:"",priceRows:[],total:null,subtitle:"작업 완료 안내",footer:"믿고 맡겨주셔서 감사합니다 · 니지스트링 010-7278-7660"};
+  }
+  var x=_wdItems.filter(function(i){return i.id===_wdSelId})[0]||null;
+  var saved=null;
+  try{if(x&&x.card)saved=JSON.parse(x.card)}catch(e){}
+  var rows,priceRows=[],total=null,memo="";
+  if(saved&&saved.rows&&saved.rows.length){
+    rows=saved.rows.map(function(r){return [r[0],r[1]]});
+    rows.forEach(function(r){if(r[0]==="성함"&&name)r[1]=name;if(r[0]==="연락처"&&phone)r[1]=phone});
+    priceRows=saved.priceRows||[];total=(saved.total==null?null:saved.total);memo=saved.memo||"";
+  }else{
+    rows=[["성함",name||"고객님"]];
+    if(phone)rows.push(["연락처",phone]);
+    if(x&&x.sport)rows.push(["종목",x.sport]);
+    if(_wdInfo.racket)rows.push(["라켓",_wdInfo.racket]);
+    if(x&&x.visitType)rows.push(["전달 방법",x.visitType+(x.locker?" ("+x.locker+")":"")]);
+    if(_wdInfo.str)rows.push(["스트링",_wdInfo.str]);
+    if(x&&x.wantDate)rows.push(["완료 희망일",x.wantDate]);
+  }
+  return {rows:rows,memo:memo,priceRows:priceRows,total:total,subtitle:"스트링 교체 접수증",footer:"맡겨주셔서 감사합니다 · 니지스트링 010-7278-7660"};
+}
+/* 문자: 접수증/완료 안내를 이미지로 보내요 (이미지가 안 되면 글로 문자앱이 열려요) */
 function wdSendSMS(){
   var t=wdGetText();if(!t)return;
   var phone=(document.getElementById("wdPhone").value||"").replace(/[^0-9]/g,"");
   if(!/^01[0-9]{8,9}$/.test(phone)){showToast("연락처를 확인해 주세요 (예: 010-1234-5678)");return}
   var ios=/iPad|iPhone|iPod/.test(navigator.userAgent);
-  var url="sms:"+phone+(ios?"&":"?")+"body="+encodeURIComponent(t);
+  var oldWay=function(){location.href="sms:"+phone+(ios?"&":"?")+"body="+encodeURIComponent(t)};
+  var card=wdBuildCard(t);
   wdAfterSend();
-  location.href=url;
+  rsvSendAsImage(card,oldWay);
 }
-/* 카카오톡: 공유창에서 카톡 → 손님 선택. 안 되면 문구가 복사돼요 */
-async function wdSendKakao(){
+/* 카카오톡: 이미지가 공유창에 떠요. 카톡 → 손님을 고르세요 */
+function wdSendKakao(){
   var t=wdGetText();if(!t)return;
-  if(navigator.share){
-    try{await navigator.share({text:t});wdAfterSend();return}catch(e){if(e&&e.name==="AbortError")return}
-  }
-  wdCopy();
+  var oldWay=async function(){
+    if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}
+    wdCopy();
+  };
+  var card=wdBuildCard(t);
+  wdAfterSend();
+  rsvSendAsImage(card,oldWay);
 }
 function wdCopy(){
   var t=wdGetText();if(!t)return;
@@ -3732,7 +3768,7 @@ function wdCopy(){
 }
 /* --- 고객: 예약을 보낼 때 목록에도 저장 (로그인한 경우) --- */
 var _lastResSaveText="",_lastResSaveAt=0;
-function nijiSaveReservation(text){
+function nijiSaveReservation(text,card){
   try{
     if(!window._firebaseDB||!window._userId)return;
     var now=Date.now();
@@ -3741,6 +3777,7 @@ function nijiSaveReservation(text){
     var hybrid=!!(document.getElementById("reserveHybrid")&&document.getElementById("reserveHybrid").checked);
     var si=hybrid?("메인 "+v("reserveMainString")+" "+v("reserveMainTension")+" / 크로스 "+v("reserveCrossString")+" "+v("reserveCrossTension")):(v("reserveString")+" "+v("reserveTension"));
     var rec={uid:window._userId,name:v("reserveName"),phone:v("reservePhone"),sport:v("reserveSport"),racket:v("reserveRacket"),stringInfo:si.trim(),visitType:v("reserveVisitType"),locker:v("reserveLockerInfo"),wantDate:v("reserveDate"),text:text,createdAt:now,status:"pending"};
+    try{if(card&&card.rows)rec.card=JSON.stringify({rows:card.rows,memo:card.memo||"",priceRows:card.priceRows||[],total:(card.total==null?null:card.total)})}catch(e){}
     _lastResSaveText=text;_lastResSaveAt=now;
     window._firebaseDB.ref("reservations").push(rec).catch(function(e){console.warn("reservation save fail",e)});
   }catch(e){console.warn("reservation save error",e)}
@@ -3974,9 +4011,9 @@ function cpnSendFlow(sendFn){
   var text=getStringReserveText(); if(!text)return;
   var card=null; try{card=rsvBuildCardData()}catch(e){}
   var codes=rsvPickedCodes();
-  if(!codes.length){nijiSaveReservation(text);sendFn(text,card);return}
+  if(!codes.length){nijiSaveReservation(text,card);sendFn(text,card);return}
   showConfirm("🎟️ 쿠폰을 사용할까요?","쿠폰 "+codes.map(cpnShow).join(", ")+" "+(codes.length>1?"을(를) 모두 ":"을(를) ")+"사용하면 '사용 완료'로 바뀌고 되돌릴 수 없어요. 계속할까요?","🎟️",function(){
-    cpnPrepareSend(text).then(function(t){if(t){nijiSaveReservation(t);sendFn(t,card)}})
+    cpnPrepareSend(text).then(function(t){if(t){nijiSaveReservation(t,card);sendFn(t,card)}})
   },"사용하고 보내기")
 }
 function copyReserveAccount(){var t="카카오뱅크 3333-26-4122540 최길희";var done=function(){alert("계좌번호가 복사됐어요.")};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){prompt("계좌번호를 복사해 주세요.",t)})}else{prompt("계좌번호를 복사해 주세요.",t)}}
